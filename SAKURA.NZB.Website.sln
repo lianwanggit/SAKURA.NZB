@@ -1,0 +1,46 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.24720.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{D264D8E5-73DE-4EED-AD81-9A02A51EF957}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B8851A4A-E2D2-4729-8872-FAAC2754A377}"
+	ProjectSection(SolutionItems) = preProject
+		global.json = global.json
+	EndProjectSection
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "SAKURA.NZB.Website", "src\SAKURA.NZB.Website\SAKURA.NZB.Website.xproj", "{C4F87F16-A549-4A41-B066-AD2656E331CD}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "SAKURA.NZB.Data", "src\SAKURA.NZB.Data\SAKURA.NZB.Data.xproj", "{CA25CA71-7FD4-4311-A90A-3BC7C133CF3F}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "SAKURA.NZB.Domain", "src\SAKURA.NZB.Domain\SAKURA.NZB.Domain.xproj", "{6EC6A1C1-95BE-46F4-9669-1DA9CFD14A8C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C4F87F16-A549-4A41-B066-AD2656E331CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C4F87F16-A549-4A41-B066-AD2656E331CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C4F87F16-A549-4A41-B066-AD2656E331CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C4F87F16-A549-4A41-B066-AD2656E331CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CA25CA71-7FD4-4311-A90A-3BC7C133CF3F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA25CA71-7FD4-4311-A90A-3BC7C133CF3F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CA25CA71-7FD4-4311-A90A-3BC7C133CF3F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CA25CA71-7FD4-4311-A90A-3BC7C133CF3F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6EC6A1C1-95BE-46F4-9669-1DA9CFD14A8C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6EC6A1C1-95BE-46F4-9669-1DA9CFD14A8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6EC6A1C1-95BE-46F4-9669-1DA9CFD14A8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6EC6A1C1-95BE-46F4-9669-1DA9CFD14A8C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C4F87F16-A549-4A41-B066-AD2656E331CD} = {D264D8E5-73DE-4EED-AD81-9A02A51EF957}
+		{CA25CA71-7FD4-4311-A90A-3BC7C133CF3F} = {D264D8E5-73DE-4EED-AD81-9A02A51EF957}
+		{6EC6A1C1-95BE-46F4-9669-1DA9CFD14A8C} = {D264D8E5-73DE-4EED-AD81-9A02A51EF957}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,16 @@
+﻿{
+  "version": "1.0.0-*",
+  "description": "SAKURA.NZB.Domain Class Library",
+  "authors": [ "Lemo" ],
+  "tags": [ "" ],
+  "projectUrl": "",
+  "licenseUrl": "",
+
+  "dependencies": {
+    "EntityFramework.MicrosoftSqlServer": "7.0.0-rc1-final"
+  },
+
+  "frameworks": {
+    "dnx46": { }
+  }
+}

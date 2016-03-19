@@ -1,0 +1,7 @@
+﻿{
+  "Data": {
+    "ConnectionStrings": {
+      "NZB": "Server=LEMO-PC;Database=NZB;Trusted_Connection=True;MultipleActiveResultSets=true"
+    }
+  }
+}

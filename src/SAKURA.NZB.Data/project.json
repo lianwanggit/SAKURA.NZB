@@ -1,0 +1,24 @@
+﻿{
+  "version": "1.0.0-*",
+  "description": "SAKURA.NZB.Data Class Library",
+  "authors": [ "Lemo" ],
+  "tags": [ "" ],
+  "projectUrl": "",
+  "licenseUrl": "",
+
+  "dependencies": {
+    "EntityFramework.Commands": "7.0.0-rc1-final",
+    "EntityFramework.MicrosoftSqlServer": "7.0.0-rc1-final",
+    "Microsoft.Extensions.Configuration.FileExtensions": "1.0.0-rc1-final",
+    "Microsoft.Extensions.Configuration.Json": "1.0.0-rc1-final",
+    "SAKURA.NZB.Domain": ""
+  },
+
+  "frameworks": {
+    "dnx46": { }
+  },
+
+  "commands": {
+    "ef": "EntityFramework.Commands"
+  }
+}
