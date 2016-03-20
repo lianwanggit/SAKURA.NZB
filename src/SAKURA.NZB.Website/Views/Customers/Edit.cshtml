@@ -4,14 +4,35 @@
     ViewData["Title"] = "Edit";
 }
 
-<h2>Edit</h2>
-
 <form asp-action="Edit">
+    <h2>
+        客户信息
+        <div class="pull-right" style="margin-bottom: 20px">
+            <p>
+                <a asp-action="Edit" asp-route-id="@Model.Id">
+                    <button type="submit" class="btn btn-success">
+                        保存 <span class="glyphicon glyphicon-save" aria-hidden="true"></span>
+                    </button>
+                </a>
+                <a asp-action="Index">
+                    <input type="button" class="btn btn-danger" value="返回列表" />
+                </a>
+            </p>
+        </div>
+    </h2>
+
     <div class="form-horizontal">
-        <h4>Customer</h4>
+        <h4>@Html.DisplayFor(model => model.FullName)</h4>
         <hr />
         <div asp-validation-summary="ValidationSummary.ModelOnly" class="text-danger"></div>
         <input type="hidden" asp-for="Id" />
+        <div class="form-group">
+            <label asp-for="FullName" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="FullName" class="form-control" />
+                <span asp-validation-for="FullName" class="text-danger" />
+            </div>
+        </div>
         <div class="form-group">
             <label asp-for="Address" class="col-md-2 control-label"></label>
             <div class="col-md-10">
@@ -20,24 +41,25 @@
             </div>
         </div>
         <div class="form-group">
-            <label asp-for="Description" class="col-md-2 control-label"></label>
+            <label asp-for="Phone1" class="col-md-2 control-label"></label>
             <div class="col-md-10">
-                <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger" />
+                <input asp-for="Phone1" class="form-control" />
+                <span asp-validation-for="Phone1" class="text-danger" />
             </div>
         </div>
+        <div class="form-group">
+            <label asp-for="Phone2" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Phone2" class="form-control" />
+                <span asp-validation-for="Phone2" class="text-danger" />
+            </div>
+        </div>
+
         <div class="form-group">
             <label asp-for="Email" class="col-md-2 control-label"></label>
             <div class="col-md-10">
                 <input asp-for="Email" class="form-control" />
                 <span asp-validation-for="Email" class="text-danger" />
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="FullName" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="FullName" class="form-control" />
-                <span asp-validation-for="FullName" class="text-danger" />
             </div>
         </div>
         <div class="form-group">
@@ -56,30 +78,14 @@
             </div>
         </div>
         <div class="form-group">
-            <label asp-for="Phone1" class="col-md-2 control-label"></label>
+            <label asp-for="Description" class="col-md-2 control-label"></label>
             <div class="col-md-10">
-                <input asp-for="Phone1" class="form-control" />
-                <span asp-validation-for="Phone1" class="text-danger" />
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Phone2" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Phone2" class="form-control" />
-                <span asp-validation-for="Phone2" class="text-danger" />
-            </div>
-        </div>
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" />
+                <textarea asp-for="Description" class="form-control" rows="3" ></textarea>
+                <span asp-validation-for="Description" class="text-danger" />
             </div>
         </div>
     </div>
 </form>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
 
 @section Scripts {
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

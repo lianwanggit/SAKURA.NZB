@@ -32,7 +32,7 @@ namespace SAKURA.NZB.Data.Migrations
                     Email = table.Column<string>(nullable: true),
                     FullName = table.Column<string>(nullable: true),
                     IsIdentityUploaded = table.Column<bool>(nullable: false),
-                    Level = table.Column<int>(nullable: false),
+                    Level = table.Column<int>(nullable: true),
                     Phone1 = table.Column<string>(nullable: true),
                     Phone2 = table.Column<string>(nullable: true)
                 },

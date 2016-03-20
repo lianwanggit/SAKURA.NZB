@@ -1,6 +1,7 @@
 ﻿body {
     padding-top: 50px;
     padding-bottom: 20px;
+    color: #777;
 }
 
 /* Wrapping element */
@@ -11,11 +12,11 @@
 }
 
 /* Set widths on the form inputs since otherwise they're 100% wide */
-input,
+/*input,
 select,
 textarea {
     max-width: 280px;
-}
+}*/
 
 /* Carousel */
 .carousel-caption {
@@ -26,6 +27,21 @@ textarea {
         font-size: 20px;
         line-height: 1.4;
     }
+
+.checkbox input[type=checkbox], 
+.checkbox-inline input[type=checkbox], 
+.radio input[type=radio], 
+.radio-inline input[type=radio] {
+    margin-left: 0;
+}
+
+dt {
+    padding-bottom: 5px;
+}
+
+dd {
+    padding-bottom: 10px;
+}
 
 @media (min-width: 768px) {
     .carousel-caption {

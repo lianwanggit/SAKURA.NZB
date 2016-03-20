@@ -1,13 +1,11 @@
 using System.Linq;
 using Microsoft.AspNet.Mvc;
-using Microsoft.AspNet.Mvc.Rendering;
-using Microsoft.Data.Entity;
 using SAKURA.NZB.Data;
 using SAKURA.NZB.Domain;
 
 namespace SAKURA.NZB.Website.Controllers
 {
-    public class CustomersController : Controller
+	public class CustomersController : Controller
     {
         private NZBContext _context;
 

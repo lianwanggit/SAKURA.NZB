@@ -4,11 +4,17 @@
     ViewData["Title"] = "Customer";
 }
 
-<h2>Index</h2>
+<h2>客户</h2>
+<div class="pull-right">
+    <p>
+        <a asp-action="Create">
+            <button type="button" class="btn btn-info">
+                创建客户 <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+            </button>
+        </a>
+    </p>
+</div>
 
-<p>
-    <a asp-action="Create">创建客户</a>
-</p>
 <table class="table">
     <tr>
         <th>
@@ -24,24 +30,44 @@
         </th>
         <th></th>
     </tr>
-    
-@foreach (var item in Model) {
-    <tr>     
-        <td>
-            @Html.DisplayFor(modelItem => item.FullName)
-        </td>
 
-        <td>
-            @Html.DisplayFor(modelItem => item.Phone1)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Address)
-        </td>
-        <td>
-            <a asp-action="Edit" asp-route-id="@item.Id">编辑</a> |
-            <a asp-action="Details" asp-route-id="@item.Id">查看</a> |
-            <a asp-action="Delete" asp-route-id="@item.Id">删除</a>
-        </td>
-    </tr>
-}
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td  onclick="location.href = '@(Url.Action("Details", new { id = item.Id }))'">
+                @Html.DisplayFor(modelItem => item.FullName)
+            </td>
+
+            <td  onclick="location.href = '@(Url.Action("Details", new { id = item.Id }))'">
+                @Html.DisplayFor(modelItem => item.Phone1)
+            </td>
+            <td  onclick="location.href = '@(Url.Action("Details", new { id = item.Id }))'">
+                @Html.DisplayFor(modelItem => item.Address)
+            </td>
+            <td>
+                @*<a asp-action="Delete" asp-route-id="@item.Id"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>*@
+                <a data-toggle="modal" data-target="#myModal" data-id="@item.Id">
+                    <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                </a>
+            </td>
+        </tr>
+    }
 </table>
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">删除确认</h4>
+            </div>
+            <div class="modal-body">
+                你确定永久删除顾客?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-danger">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>

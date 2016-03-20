@@ -46,7 +46,7 @@ namespace SAKURA.NZB.Data.Migrations
 
                     b.Property<bool>("IsIdentityUploaded");
 
-                    b.Property<int>("Level");
+                    b.Property<int?>("Level");
 
                     b.Property<string>("Phone1")
                         .HasAnnotation("MaxLength", 15);
@@ -96,7 +96,8 @@ namespace SAKURA.NZB.Data.Migrations
 
                     b.Property<DateTimeOffset>("DeliveryTime");
 
-                    b.Property<string>("Description");
+                    b.Property<string>("Description")
+                        .HasAnnotation("MaxLength", 255);
 
                     b.Property<float>("Freight");
 
@@ -108,7 +109,8 @@ namespace SAKURA.NZB.Data.Migrations
 
                     b.Property<DateTimeOffset>("ReceiveTime");
 
-                    b.Property<string>("TransitStatus");
+                    b.Property<string>("TransitStatus")
+                        .HasAnnotation("MaxLength", 100);
 
                     b.Property<int?>("WaybillId");
 

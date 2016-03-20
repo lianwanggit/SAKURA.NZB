@@ -20,8 +20,8 @@ namespace SAKURA.NZB.Domain
 		[StringLength(50)]
 		[Display(Name = "电子邮件")]
 		public string Email { get; set; }
-		[Display(Name = "身份证已上传")]
-		public bool? IsIdentityUploaded { get; set; }
+		[Display(Name = "身份证是否已上传")]
+		public bool IsIdentityUploaded { get; set; }
 		[Display(Name = "级别")]
 		public int? Level { get; set; }
 		[StringLength(255)]
