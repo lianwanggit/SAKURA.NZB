@@ -113,7 +113,7 @@ namespace SAKURA.NZB.Website.Controllers
             Customer customer = _context.Customers.Single(m => m.Id == id);
             _context.Customers.Remove(customer);
             _context.SaveChanges();
-            return RedirectToAction("Index");
+            return new HttpOkResult();
         }
     }
 }

@@ -14,7 +14,7 @@
         </a>
     </p>
 </div>
-
+@Html.AntiForgeryToken()
 <table class="table">
     <tr>
         <th>
@@ -34,19 +34,19 @@
     @foreach (var item in Model)
     {
         <tr>
-            <td  onclick="location.href = '@(Url.Action("Details", new { id = item.Id }))'">
+            <td onclick="location.href = '@(Url.Action("Details", new { id = item.Id }))'">
                 @Html.DisplayFor(modelItem => item.FullName)
             </td>
 
-            <td  onclick="location.href = '@(Url.Action("Details", new { id = item.Id }))'">
+            <td onclick="location.href = '@(Url.Action("Details", new { id = item.Id }))'">
                 @Html.DisplayFor(modelItem => item.Phone1)
             </td>
-            <td  onclick="location.href = '@(Url.Action("Details", new { id = item.Id }))'">
+            <td onclick="location.href = '@(Url.Action("Details", new { id = item.Id }))'">
                 @Html.DisplayFor(modelItem => item.Address)
             </td>
             <td>
                 @*<a asp-action="Delete" asp-route-id="@item.Id"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>*@
-                <a data-toggle="modal" data-target="#myModal" data-id="@item.Id">
+                <a data-toggle="modal" data-target="#myModal" style="color: #d9534f" data-id="@item.Id" data-name="@item.FullName">
                     <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
                 </a>
             </td>
@@ -59,15 +59,56 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">删除确认</h4>
+                <h4 class="modal-title" id="myModalLabel">确认删除</h4>
             </div>
             <div class="modal-body">
-                你确定永久删除顾客?
+                你确定永久删除顾客<span id="customer-name"></span>?
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-danger">Save changes</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button class="btn btn-danger" id="btnDelete">
+                    删除
+                    <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                </button>
             </div>
         </div>
     </div>
 </div>
+
+@section scripts{
+    <script type="text/javascript">
+        $(function () {
+            $('#myModal').on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget) // Button that triggered the modal
+                var id = button.data('id') // Extract info from data-* attributes
+                var name = button.data('name')
+
+                var modal = $(this)
+                var btnDelete = modal.find('#btnDelete')
+
+                var removeEvents = function () {
+                    btnDelete.off("click", deleteItem);
+                };
+
+                var deleteItem = function () {
+                    removeEvents();
+                    $.post('@Url.Action("Delete")',
+                        AddAntiForgeryToken({ id: id }))
+                       .done(function () {
+                           location.href = '@(Url.Action("Index"))'
+                       }).fail(function (data) {
+                           alert("error");
+                       });
+                    return false;
+                };
+
+                btnDelete.on("click", deleteItem);
+
+                AddAntiForgeryToken = function (data) {
+                    data.__RequestVerificationToken = $('input[name=__RequestVerificationToken]').val();
+                    return data;
+                };
+            })
+        });
+    </script>
+}

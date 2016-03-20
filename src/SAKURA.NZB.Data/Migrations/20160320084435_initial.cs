@@ -27,13 +27,13 @@ namespace SAKURA.NZB.Data.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Address = table.Column<string>(nullable: true),
+                    Address = table.Column<string>(nullable: false),
                     Description = table.Column<string>(nullable: true),
                     Email = table.Column<string>(nullable: true),
-                    FullName = table.Column<string>(nullable: true),
+                    FullName = table.Column<string>(nullable: false),
                     IsIdentityUploaded = table.Column<bool>(nullable: false),
                     Level = table.Column<int>(nullable: true),
-                    Phone1 = table.Column<string>(nullable: true),
+                    Phone1 = table.Column<string>(nullable: false),
                     Phone2 = table.Column<string>(nullable: true)
                 },
                 constraints: table =>

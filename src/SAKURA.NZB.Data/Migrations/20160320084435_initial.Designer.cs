@@ -8,7 +8,7 @@ using SAKURA.NZB.Data;
 namespace SAKURA.NZB.Data.Migrations
 {
     [DbContext(typeof(NZBContext))]
-    [Migration("20160320025042_initial")]
+    [Migration("20160320084435_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -34,6 +34,7 @@ namespace SAKURA.NZB.Data.Migrations
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("Address")
+                        .IsRequired()
                         .HasAnnotation("MaxLength", 100);
 
                     b.Property<string>("Description")
@@ -43,14 +44,15 @@ namespace SAKURA.NZB.Data.Migrations
                         .HasAnnotation("MaxLength", 50);
 
                     b.Property<string>("FullName")
-                        .HasAnnotation("MaxLength", 50);
+                        .IsRequired()
+                        .HasAnnotation("MaxLength", 10);
 
                     b.Property<bool>("IsIdentityUploaded");
 
                     b.Property<int?>("Level");
 
                     b.Property<string>("Phone1")
-                        .HasAnnotation("MaxLength", 15);
+                        .IsRequired();
 
                     b.Property<string>("Phone2")
                         .HasAnnotation("MaxLength", 15);
