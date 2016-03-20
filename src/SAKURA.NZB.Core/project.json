@@ -1,0 +1,20 @@
+{
+  "version": "1.0.0-*",
+  "description": "SAKURA.NZB.Core Class Library",
+  "authors": [ "Lemo" ],
+  "tags": [ "" ],
+  "projectUrl": "",
+  "licenseUrl": "",
+  "frameworks": {
+    "dnx46": { }
+  },
+  "dependencies": {
+    "EntityFramework.Core": "7.0.0-rc1-final",
+    "EntityFramework.MicrosoftSqlServer": "7.0.0-rc1-final",
+    "Microsoft.Extensions.Configuration.Abstractions": "1.0.0-rc1-final",
+    "Microsoft.Extensions.DependencyInjection.Abstractions": "1.0.0-rc1-final",
+
+    "SAKURA.NZB.Domain": "",
+    "SAKURA.NZB.Data": ""
+  }
+}
