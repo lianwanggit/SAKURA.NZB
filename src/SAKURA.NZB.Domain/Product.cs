@@ -17,7 +17,9 @@ namespace SAKURA.NZB.Domain
 		[Display(Name = "产品简介")]
 		public string Desc { get; set; }
 
+		[Required(ErrorMessage = "请选择产品类别")]
 		[Display(Name = "类别")]
+		public int CategoryId { get; set; }		
 		public Category Category { get; set; }
 
 		[Display(Name = "图片")]
