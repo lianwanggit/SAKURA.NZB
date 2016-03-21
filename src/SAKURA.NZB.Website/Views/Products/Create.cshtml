@@ -12,23 +12,38 @@
         <hr />
         <div asp-validation-summary="ValidationSummary.ModelOnly" class="text-danger"></div>
         <div class="form-group">
-            <label asp-for="CategoryId" class="col-md-2 control-label"></label>
+            <label asp-for="Name" class="col-md-2 control-label"></label>
             <div class="col-md-10">
-                <select asp-for="CategoryId" class ="form-control"></select>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger" />
             </div>
         </div>
         <div class="form-group">
             <label asp-for="Cost" class="col-md-2 control-label"></label>
             <div class="col-md-10">
-                <input asp-for="Cost" class="form-control" />
+                <div class="input-group">
+                    <div class="input-group-addon">$</div>
+                    <input asp-for="Cost" class="form-control" />
+                    <div class="input-group-addon">NZD</div>
+                </div>
                 <span asp-validation-for="Cost" class="text-danger" />
             </div>
         </div>
         <div class="form-group">
-            <label asp-for="Name" class="col-md-2 control-label"></label>
+            <label asp-for="Category" class="col-md-2 control-label"></label>
             <div class="col-md-10">
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger" />
+                <div class="input-group">
+                    <select asp-for="Category" asp-items="ViewBag.CategoryList"
+                         class="form-control" ></select>
+                    <span asp-validation-for="Category" class="text-danger" />
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Desc" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <textarea asp-for="Desc" class="form-control" rows="5"></textarea>
+                <span asp-validation-for="Desc" class="text-danger" />
             </div>
         </div>
         <div class="form-group">

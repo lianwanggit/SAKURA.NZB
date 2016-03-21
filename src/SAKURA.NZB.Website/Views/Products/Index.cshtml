@@ -1,21 +1,32 @@
-@model IEnumerable<SAKURA.NZB.Domain.Product>
+﻿@model IEnumerable<SAKURA.NZB.Domain.Product>
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h2>Index</h2>
+<h2 style="margin-bottom:50px">
+    产品目录
+    <div class="pull-right">
+        <p>
+            <a asp-action="Create">
+                <button type="button" class="btn btn-info">
+                    创建产品 <i class="fa fa-barcode fa-lg"></i>
+                </button>
+            </a>
+        </p>
+    </div>
+</h2> 
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.Cost)
+            @Html.DisplayNameFor(model => model.Name)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Name)
+            @Html.DisplayNameFor(model => model.Category)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Cost)
         </th>
         <th></th>
     </tr>
@@ -24,6 +35,9 @@
     <tr>
         <td>
             @Html.DisplayFor(modelItem => item.Cost)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Desc)
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.Name)

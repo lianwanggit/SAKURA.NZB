@@ -8,14 +8,25 @@ namespace SAKURA.NZB.Domain
     {
 		public int Id { get; set; }
 
-		[MaxLength(100)]
+		[Required(ErrorMessage = "产品名称不能为空")]
+		[MaxLength(100, ErrorMessage = "产品名称不能超过100个字符")]
+		[Display(Name = "产品名")]
 		public string Name { get; set; }
-		[Required]
-		public int CategoryId { get; set; }
-		public Category category { get; set; }
+
+		[MaxLength(1000, ErrorMessage = "产品简介不能超过1000个字符")]
+		[Display(Name = "产品简介")]
+		public string Desc { get; set; }
+
+		[Display(Name = "类别")]
+		public Category Category { get; set; }
+
+		[Display(Name = "图片")]
 		public List<Image> Images { get; set; }
 
-		[DataType(DataType.Currency)]
+		[Required(ErrorMessage = "产品价格不能为空")]
+		[Range(0.01, 9999, ErrorMessage = "产品价格范围必须为[0.01 - 9999]NZD") ]
+		[DataType(DataType.Currency, ErrorMessage = "产品价格必须为数字")]
+		[Display(Name = "价格")]
 		public float Cost { get; set; }
 	}
 }

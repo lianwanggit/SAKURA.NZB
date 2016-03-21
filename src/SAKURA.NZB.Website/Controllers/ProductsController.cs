@@ -1,17 +1,17 @@
 using System.Linq;
 using Microsoft.AspNet.Mvc;
-using Microsoft.AspNet.Mvc.Rendering;
-using Microsoft.Data.Entity;
 using SAKURA.NZB.Data;
 using SAKURA.NZB.Domain;
+using Microsoft.Data.Entity;
+using SAKURA.NZB.Website.ViewModels;
 
 namespace SAKURA.NZB.Website.Controllers
 {
-    public class ProductsController : Controller
+	public class ProductsController : Controller
     {
-        private NZBContext _context;
+        private NZBContext _context;		
 
-        public ProductsController(NZBContext context)
+		public ProductsController(NZBContext context)
         {
             _context = context;    
         }
@@ -19,8 +19,7 @@ namespace SAKURA.NZB.Website.Controllers
         // GET: Products
         public IActionResult Index()
         {
-            var nZBContext = _context.Products.Include(p => p.category);
-            return View(nZBContext.ToList());
+            return View(_context.Products.Include(x => x.Category).ToList());
         }
 
         // GET: Products/Details/5
@@ -31,7 +30,9 @@ namespace SAKURA.NZB.Website.Controllers
                 return HttpNotFound();
             }
 
-            Product product = _context.Products.Single(m => m.Id == id);
+            Product product = _context.Products.Include(x => x.Category)
+				.Include(x => x.Images)
+				.Single(m => m.Id == id);
             if (product == null)
             {
                 return HttpNotFound();
@@ -43,7 +44,9 @@ namespace SAKURA.NZB.Website.Controllers
         // GET: Products/Create
         public IActionResult Create()
         {
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "category");
+			var vm = new CategoryViewModel(_context);
+			ViewBag.CategoryList = vm.CategoryList; 
+
             return View();
         }
 
@@ -58,7 +61,6 @@ namespace SAKURA.NZB.Website.Controllers
                 _context.SaveChanges();
                 return RedirectToAction("Index");
             }
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "category", product.CategoryId);
             return View(product);
         }
 
@@ -75,7 +77,6 @@ namespace SAKURA.NZB.Website.Controllers
             {
                 return HttpNotFound();
             }
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "category", product.CategoryId);
             return View(product);
         }
 
@@ -90,7 +91,6 @@ namespace SAKURA.NZB.Website.Controllers
                 _context.SaveChanges();
                 return RedirectToAction("Index");
             }
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "category", product.CategoryId);
             return View(product);
         }
 
