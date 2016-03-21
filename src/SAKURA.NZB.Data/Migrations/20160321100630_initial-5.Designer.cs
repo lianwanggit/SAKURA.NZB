@@ -8,9 +8,10 @@ using SAKURA.NZB.Data;
 namespace SAKURA.NZB.Data.Migrations
 {
     [DbContext(typeof(NZBContext))]
-    partial class NZBContextModelSnapshot : ModelSnapshot
+    [Migration("20160321100630_initial-5")]
+    partial class initial5
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "7.0.0-rc1-16348")
@@ -163,37 +164,6 @@ namespace SAKURA.NZB.Data.Migrations
                     b.HasKey("Id");
                 });
 
-            modelBuilder.Entity("SAKURA.NZB.Domain.ProductQuote", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<float>("Price");
-
-                    b.Property<int>("ProductId");
-
-                    b.Property<int>("SupplierId");
-
-                    b.HasKey("Id");
-                });
-
-            modelBuilder.Entity("SAKURA.NZB.Domain.Supplier", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("Address")
-                        .HasAnnotation("MaxLength", 10);
-
-                    b.Property<string>("Name")
-                        .HasAnnotation("MaxLength", 50);
-
-                    b.Property<string>("Phone")
-                        .HasAnnotation("MaxLength", 15);
-
-                    b.HasKey("Id");
-                });
-
             modelBuilder.Entity("SAKURA.NZB.Domain.Image", b =>
                 {
                     b.HasOne("SAKURA.NZB.Domain.Product")
@@ -232,17 +202,6 @@ namespace SAKURA.NZB.Data.Migrations
                     b.HasOne("SAKURA.NZB.Domain.Category")
                         .WithMany()
                         .HasForeignKey("CategoryId");
-                });
-
-            modelBuilder.Entity("SAKURA.NZB.Domain.ProductQuote", b =>
-                {
-                    b.HasOne("SAKURA.NZB.Domain.Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId");
-
-                    b.HasOne("SAKURA.NZB.Domain.Supplier")
-                        .WithMany()
-                        .HasForeignKey("SupplierId");
                 });
         }
     }

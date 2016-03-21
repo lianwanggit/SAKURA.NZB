@@ -17,13 +17,15 @@ namespace SAKURA.NZB.Domain
 		[Display(Name = "产品简介")]
 		public string Desc { get; set; }
 
-		[Required(ErrorMessage = "请选择产品类别")]
+		public int CategoryId { get; set; }
 		[Display(Name = "类别")]
-		public int CategoryId { get; set; }		
 		public Category Category { get; set; }
 
 		[Display(Name = "图片")]
 		public List<Image> Images { get; set; }
+
+		[Display(Name = "报价")]
+		public List<ProductQuote> Quotes { get; set; }
 
 		[Required(ErrorMessage = "产品价格不能为空")]
 		[Range(0.01, 9999, ErrorMessage = "产品价格范围必须为[0.01 - 9999]NZD") ]
