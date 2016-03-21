@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = "Create";
     var categories = (IEnumerable<SelectListItem>)ViewData["CategoryId"];
+    var suppliers = (IEnumerable<SelectListItem>)ViewData["SupplierId"];
 }
 
 <h2>Create</h2>
@@ -23,6 +24,20 @@
             <label asp-for="Category" class="col-md-2 control-label"></label>
             <div class="col-md-10">
                 <select asp-for="CategoryId" asp-items="categories" class ="form-control"></select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Quotes" class="col-md-2 control-label"></label>
+            <button class="btn btn-info">sdfsda</button>
+            <div class="col-md-10">
+                <div class="input-group">
+                    <div class="input-group-btn">
+                        <select asp-for="Quotes[0]" asp-items="suppliers" class="form-control"
+                                style="width: 180px"></select>
+                    </div>
+                    <span class="input-group-addon">$</span>
+                    <input asp-for="Quotes[0].Price" class="form-control" />
+                </div>
             </div>
         </div>
         <div class="form-group">

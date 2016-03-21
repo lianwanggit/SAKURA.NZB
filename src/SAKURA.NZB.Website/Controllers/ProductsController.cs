@@ -44,7 +44,8 @@ namespace SAKURA.NZB.Website.Controllers
         public IActionResult Create()
         {
             ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name");
-            return View();
+			ViewData["SupplierId"] = new SelectList(_context.Suppliers, "Id", "Name");
+			return View();
         }
 
         // POST: Products/Create
@@ -58,7 +59,7 @@ namespace SAKURA.NZB.Website.Controllers
                 _context.SaveChanges();
                 return RedirectToAction("Index");
             }
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Category", product.CategoryId);
+            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", product.CategoryId);
             return View(product);
         }
 
@@ -75,7 +76,7 @@ namespace SAKURA.NZB.Website.Controllers
             {
                 return HttpNotFound();
             }
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Category", product.CategoryId);
+            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", product.CategoryId);
             return View(product);
         }
 
@@ -90,7 +91,7 @@ namespace SAKURA.NZB.Website.Controllers
                 _context.SaveChanges();
                 return RedirectToAction("Index");
             }
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Category", product.CategoryId);
+            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", product.CategoryId);
             return View(product);
         }
 
