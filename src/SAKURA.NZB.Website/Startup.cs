@@ -82,17 +82,21 @@ namespace SAKURA.NZB.Website
             app.UseApplicationInsightsExceptionTelemetry();
 
             app.UseStaticFiles();
+			//app.UseIdentity();
 
-            //app.UseIdentity();
+			// To configure external authentication please see http://go.microsoft.com/fwlink/?LinkID=532715
 
-            // To configure external authentication please see http://go.microsoft.com/fwlink/?LinkID=532715
-
-            app.UseMvc(routes =>
+			app.UseMvc(routes =>
             {
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
-            });
+				routes.MapRoute("spa-fallback",
+						"{*anything}",
+						new { controller = "Home", action = "Index" });
+				routes.MapWebApiRoute("defaultApi",
+									  "api/{controller}/{id?}");
+			});
         }
 
         // Entry point for the application.
