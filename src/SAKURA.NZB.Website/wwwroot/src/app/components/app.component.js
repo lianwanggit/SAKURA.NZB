@@ -35,12 +35,12 @@ System.register(["angular2/core", "angular2/router", "./static.component"], func
                             new router_1.AsyncRoute({
                                 path: "/sub",
                                 name: "Sub",
-                                loader: function () { return System.import("app/components/mvc.component").then(function (c) { return c["MvcComponent"]; }); }
+                                loader: function () { return System.import("src/app/components/mvc.component").then(function (c) { return c["MvcComponent"]; }); }
                             }),
                             new router_1.AsyncRoute({
                                 path: "/numbers",
                                 name: "Numbers",
-                                loader: function () { return System.import("app/components/api.component").then(function (c) { return c["ApiComponent"]; }); }
+                                loader: function () { return System.import("src/app/components/api.component").then(function (c) { return c["ApiComponent"]; }); }
                             })
                         ];
                         this.router.config(this.routes);
@@ -52,7 +52,7 @@ System.register(["angular2/core", "angular2/router", "./static.component"], func
                 AppComponent = __decorate([
                     core_1.Component({
                         selector: "app",
-                        templateUrl: "/src/app/app.html",
+                        templateUrl: "./src/app/components/app.html",
                         directives: [router_1.ROUTER_DIRECTIVES]
                     }), 
                     __metadata('design:paramtypes', [router_1.Router, router_1.Location])

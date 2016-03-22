@@ -25,7 +25,7 @@ System.register(["angular2/core"], function(exports_1) {
                 StaticComponent = __decorate([
                     core_1.Component({
                         selector: "static",
-                        templateUrl: "src/app/components/static.html"
+                        templateUrl: "./src/app/components/static.html"
                     }), 
                     __metadata('design:paramtypes', [])
                 ], StaticComponent);

@@ -6,7 +6,7 @@ declare var System: any;
 
 @Component({
     selector: "app",
-    templateUrl: "/src/app/app.html",
+    templateUrl: "./src/app/components/app.html",
     directives: [ROUTER_DIRECTIVES]
 })
 
@@ -24,12 +24,12 @@ export class AppComponent implements OnInit {
                 new AsyncRoute({
                     path: "/sub",
                     name: "Sub",
-                    loader: () => System.import("app/components/mvc.component").then(c => c["MvcComponent"])
+                    loader: () => System.import("src/app/components/mvc.component").then(c => c["MvcComponent"])
                 }),
                 new AsyncRoute({
                     path: "/numbers",
                     name: "Numbers",
-                    loader: () => System.import("app/components/api.component").then(c => c["ApiComponent"])
+                    loader: () => System.import("src/app/components/api.component").then(c => c["ApiComponent"])
                 })
             ];
 
