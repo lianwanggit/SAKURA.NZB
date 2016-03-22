@@ -27,6 +27,7 @@ System.register(["angular2/core", "angular2/router", "./static.component"], func
                     this.router = router;
                     this.location = location;
                     this.routes = null;
+                    this.abc = false;
                 }
                 AppComponent.prototype.ngOnInit = function () {
                     if (this.routes === null) {
@@ -45,10 +46,16 @@ System.register(["angular2/core", "angular2/router", "./static.component"], func
                         ];
                         this.router.config(this.routes);
                     }
+                    this.abc = true;
                 };
                 AppComponent.prototype.getLinkStyle = function (route) {
                     return this.location.path().indexOf(route.path) > -1;
                 };
+                Object.defineProperty(AppComponent.prototype, "getRoutes", {
+                    get: function () { return JSON.stringify(this.routes); },
+                    enumerable: true,
+                    configurable: true
+                });
                 AppComponent = __decorate([
                     core_1.Component({
                         selector: "app",

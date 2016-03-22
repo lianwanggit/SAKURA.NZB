@@ -30,10 +30,15 @@
         <script src="~/js/system.min.js"></script>
         <script src="~/js/rx.min.js"></script>
         <script src="~/js/typescript.min.js"></script>
-        <script src="~/js/angular2/angular2.dev.min.js"></script>
+        @*
+            TODO: min js causes problem, use min js once fix in new angular relase  
+            <script src="~/js/angular2/angular2.dev.min.js"></script> 
+            <script src="~/js/angular2/router.dev.min.js"></script>
+        *@
+        <script src="~/js/angular2/angular2.dev.js"></script>
+        <script src="~/js/angular2/router.dev.js"></script>
         <script src="~/js/angular2/angular2-polyfills.min.js"></script>
-        <script src="~/js/angular2/http.dev.min.js"></script>
-        <script src="~/js/angular2/router.dev.min.js"></script>
+        <script src="~/js/angular2/http.dev.min.js"></script>        
     </environment>
     @Html.ApplicationInsightsJavaScript(TelemetryConfiguration)
 

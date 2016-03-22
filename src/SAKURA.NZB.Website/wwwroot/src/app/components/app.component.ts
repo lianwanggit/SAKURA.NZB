@@ -12,10 +12,11 @@ declare var System: any;
 
 export class AppComponent implements OnInit {
     public routes: RouteDefinition[] = null;
-    constructor(private router: Router,
-        private location: Location) {
+	public abc = false;
 
+    constructor(private router: Router, private location: Location) {
     }
+	
 
     ngOnInit() {
         if (this.routes === null) {
@@ -35,9 +36,13 @@ export class AppComponent implements OnInit {
 
             this.router.config(this.routes);
         }
+
+		this.abc = true;
     }
 
     getLinkStyle(route: RouteDefinition) {
         return this.location.path().indexOf(route.path) > -1;
     }
+
+	get getRoutes() { return JSON.stringify(this.routes);}
 }
