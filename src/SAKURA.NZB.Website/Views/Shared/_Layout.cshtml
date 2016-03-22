@@ -7,17 +7,33 @@
         <link rel="shortcut icon" href="~/images/favicon_16.png" type="image/x-icon" />
 
         <environment names="Development">
-            <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
-            <link rel="stylesheet" href="~/css/font-awesome.css">
-            <link rel="stylesheet" href="~/css/site.css" />
+            <!-- Css -->
+            <link rel="stylesheet" asp-href-include="~/css/*.css">
+
+            <!-- Js -->
+            <script src="~/js/jquery.js"></script>
+            <script src="~/js/bootstrap.js"></script>
+            <script src="~/js/system.js"></script>
+            <script src="~/js/rx.js"></script>
+            <script src="~/js/typescript.js"></script>
+            <script src="~/js/angular2/angular2.dev.js"></script>
+            <script src="~/js/angular2/angular2-polyfills.js"></script>
+            <script src="~/js/angular2/http.dev.js"></script>
+            <script src="~/js/angular2/router.dev.js"></script>
         </environment>
         <environment names="Staging,Production">
-            <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.5/css/bootstrap.min.css"
-                  asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
-                  asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
-            <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
-            <link rel="stylesheet" href="~/css/site.css" />
-            <link rel="stylesheet" href="~/css/font-awesome.min.css">
+            <!-- Css -->      
+            <link rel="stylesheet" asp-href-include="~/css/*.min.css" asp-append-version="true">
+            <!-- Js -->
+            <script src="~/js/jquery.min.js"></script>
+            <script src="~/js/bootstrap.min.js"></script>
+            <script src="~/js/system.min.js"></script>
+            <script src="~/js/rx.min.js"></script>
+            <script src="~/js/typescript.min.js"></script>
+            <script src="~/js/angular2/angular2.dev.min.js"></script>
+            <script src="~/js/angular2/angular2-polyfills.min.js"></script>
+            <script src="~/js/angular2/http.dev.min.js"></script>
+            <script src="~/js/angular2/router.dev.min.js"></script>
         </environment>
         @Html.ApplicationInsightsJavaScript(TelemetryConfiguration)
     </head>

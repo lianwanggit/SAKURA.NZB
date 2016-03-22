@@ -1,45 +1,95 @@
-﻿/// <binding Clean='clean' />
+﻿/// <binding BeforeBuild='default' />
+
 "use strict";
 
-var gulp = require("gulp"),
-    rimraf = require("rimraf"),
-    concat = require("gulp-concat"),
-    cssmin = require("gulp-cssmin"),
-    uglify = require("gulp-uglify");
+var _ = require('lodash'),
+    gulp = require('gulp'),
+    uglify = require('gulp-uglify'),
+    cssmin = require('gulp-cssmin'),
+    rename = require('gulp-rename');
 
-var paths = {
-    webroot: "./wwwroot/"
-};
+var angularJs = [
+    './node_modules/angular2/bundles/angular2.dev.js',
+    './node_modules/angular2/bundles/router.dev.js',
+    './node_modules/angular2/bundles/angular2-polyfills.js',
+    './node_modules/angular2/bundles/http.dev.js'
+];
 
-paths.js = paths.webroot + "js/**/*.js";
-paths.minJs = paths.webroot + "js/**/*.min.js";
-paths.css = paths.webroot + "css/**/*.css";
-paths.minCss = paths.webroot + "css/**/*.min.css";
-paths.concatJsDest = paths.webroot + "js/site.min.js";
-paths.concatCssDest = paths.webroot + "css/site.min.css";
+var js = [
+    './node_modules/bootstrap/dist/js/bootstrap.js',
+    './node_modules/systemjs/dist/system.js',
+    './node_modules/rxjs/bundles/Rx.js',
+    './node_modules/typescript/lib/typescript.js',
+    './node_modules/jquery/dist/jquery.js'
+];
 
-gulp.task("clean:js", function (cb) {
-    rimraf(paths.concatJsDest, cb);
+var siteJs = [
+    './wwwroot/js/site.js'
+];
+
+var css = [
+    './node_modules/bootstrap/dist/css/bootstrap.css'
+];
+
+var fonts = [
+    './node_modules/bootstrap/dist/fonts/*.*'
+];
+
+gulp.task('copy-js', function () {
+    _.forEach(js, function (file, _) {
+        gulp.src(file)
+            .pipe(gulp.dest('./wwwroot/js'))
+    });
+    _.forEach(angularJs, function (file, _) {
+        gulp.src(file)
+            .pipe(gulp.dest('./wwwroot/js/angular2'))
+    });
 });
 
-gulp.task("clean:css", function (cb) {
-    rimraf(paths.concatCssDest, cb);
+gulp.task('copy-min-js', function () {
+    _.forEach(js, function (file, _) {
+        gulp.src(file)
+            .pipe(uglify())
+            .pipe(rename({ extname: '.min.js' }))
+            .pipe(gulp.dest('./wwwroot/js'))
+    });
+    _.forEach(angularJs, function (file, _) {
+        gulp.src(file)
+            .pipe(uglify())
+            .pipe(rename({ extname: '.min.js' }))
+            .pipe(gulp.dest('./wwwroot/js/angular2'))
+    });
+    _.forEach(siteJs, function (file, _) {
+        gulp.src(file)
+            .pipe(uglify())
+            .pipe(rename({ extname: '.min.js' }))
+            .pipe(gulp.dest('./wwwroot/js'))
+    });
 });
 
-gulp.task("clean", ["clean:js", "clean:css"]);
-
-gulp.task("min:js", function () {
-    return gulp.src([paths.js, "!" + paths.minJs], { base: "." })
-        .pipe(concat(paths.concatJsDest))
-        .pipe(uglify())
-        .pipe(gulp.dest("."));
+gulp.task('copy-css', function () {
+    _.forEach(css, function (file, _) {
+        gulp.src(file)
+            .pipe(gulp.dest('./wwwroot/css'))
+    });
+    _.forEach(fonts, function (file, _) {
+        gulp.src(file)
+            .pipe(gulp.dest('./wwwroot/fonts'))
+    });
 });
 
-gulp.task("min:css", function () {
-    return gulp.src([paths.css, "!" + paths.minCss])
-        .pipe(concat(paths.concatCssDest))
-        .pipe(cssmin())
-        .pipe(gulp.dest("."));
+gulp.task('copy-min-css', function () {
+    _.forEach(css, function (file, _) {
+        gulp.src(file)
+            .pipe(cssmin())
+            .pipe(rename({ extname: '.min.css' }))
+            .pipe(gulp.dest('./wwwroot/css'))
+    });
+    _.forEach(fonts, function (file, _) {
+        gulp.src(file)
+            .pipe(gulp.dest('./wwwroot/fonts'))
+    });
 });
 
-gulp.task("min", ["min:js", "min:css"]);
+gulp.task('default', ['copy-js', 'copy-css']);
+gulp.task('minify', ['copy-min-js', 'copy-min-css']);
