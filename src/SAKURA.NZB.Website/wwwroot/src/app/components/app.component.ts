@@ -12,7 +12,6 @@ declare var System: any;
 
 export class AppComponent implements OnInit {
     public routes: RouteDefinition[] = null;
-	public abc = false;
 
     constructor(private router: Router, private location: Location) {
     }
@@ -31,18 +30,19 @@ export class AppComponent implements OnInit {
                     path: "/numbers",
                     name: "Numbers",
                     loader: () => System.import("src/app/components/api.component").then(c => c["ApiComponent"])
+                }),
+				new AsyncRoute({
+                    path: "/customers",
+                    name: "客户",
+                    loader: () => System.import("src/app/components/customers.component").then(c => c["CustomersComponent"])
                 })
             ];
 
             this.router.config(this.routes);
         }
-
-		this.abc = true;
     }
 
     getLinkStyle(route: RouteDefinition) {
         return this.location.path().indexOf(route.path) > -1;
     }
-
-	get getRoutes() { return JSON.stringify(this.routes);}
 }

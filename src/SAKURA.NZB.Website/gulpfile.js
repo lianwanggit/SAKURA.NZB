@@ -31,9 +31,14 @@ var css = [
     './node_modules/bootstrap/dist/css/bootstrap.css'
 ];
 
+var siteCss = [
+    './wwwroot/css/site.css'
+];
+
 var fonts = [
     './node_modules/bootstrap/dist/fonts/*.*'
 ];
+
 
 gulp.task('copy-js', function () {
     _.forEach(js, function (file, _) {
@@ -80,6 +85,12 @@ gulp.task('copy-css', function () {
 
 gulp.task('copy-min-css', function () {
     _.forEach(css, function (file, _) {
+        gulp.src(file)
+            .pipe(cssmin())
+            .pipe(rename({ extname: '.min.css' }))
+            .pipe(gulp.dest('./wwwroot/css'))
+    });
+    _.forEach(siteCss, function (file, _) {
         gulp.src(file)
             .pipe(cssmin())
             .pipe(rename({ extname: '.min.css' }))
