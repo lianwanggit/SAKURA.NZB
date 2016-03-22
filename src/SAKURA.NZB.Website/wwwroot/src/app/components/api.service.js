@@ -27,12 +27,14 @@ System.register(["rxjs/Rx", "angular2/http", "angular2/core"], function(exports_
                 ApiService.prototype.get = function (onNext) {
                     this.http.get("api/random").map(function (response) { return response.json(); }).subscribe(onNext);
                 };
+                ApiService.prototype.getCustomers = function (onNext) {
+                    this.http.get("api/Customers").map(function (response) { return response.json(); }).subscribe(onNext);
+                };
                 ApiService = __decorate([
                     core_1.Injectable(), 
-                    __metadata('design:paramtypes', [(typeof (_a = typeof http_1.Http !== 'undefined' && http_1.Http) === 'function' && _a) || Object])
+                    __metadata('design:paramtypes', [http_1.Http])
                 ], ApiService);
                 return ApiService;
-                var _a;
             })();
             exports_1("ApiService", ApiService);
         }

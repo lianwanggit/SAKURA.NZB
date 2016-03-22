@@ -9,4 +9,8 @@ export class ApiService {
     get(onNext: (json: any) => void) {
         this.http.get("api/random").map(response => response.json()).subscribe(onNext);
     }
+
+	getCustomers(onNext: (json: any) => void) {
+        this.http.get("api/Customers").map(response => response.json()).subscribe(onNext);
+    }
 }

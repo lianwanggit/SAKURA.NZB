@@ -9,9 +9,7 @@ import {ApiService} from "./api.service";
     directives: CORE_DIRECTIVES
 })
 export class CustomersComponent implements OnInit {
-    apiOccurances: number = 0;
-    data: number[];
-    isLoading: boolean = false;
+    data: any;
 
     constructor(private service: ApiService) { }
 
@@ -20,12 +18,10 @@ export class CustomersComponent implements OnInit {
     }
 
     get() {
-        this.isLoading = true;
-        this.service.get(json => {
+        this.service.getCustomers(json => {
             if (json) {
-                this.data = json.numbers;
-                this.isLoading = false;
-                this.apiOccurances++;
+                this.data = JSON.stringify(json);
+
             }
         });
     }

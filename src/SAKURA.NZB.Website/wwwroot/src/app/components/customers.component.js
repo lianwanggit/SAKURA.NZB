@@ -25,20 +25,15 @@ System.register(["angular2/core", "angular2/src/common/directives/core_directive
             CustomersComponent = (function () {
                 function CustomersComponent(service) {
                     this.service = service;
-                    this.apiOccurances = 0;
-                    this.isLoading = false;
                 }
                 CustomersComponent.prototype.ngOnInit = function () {
                     this.get();
                 };
                 CustomersComponent.prototype.get = function () {
                     var _this = this;
-                    this.isLoading = true;
-                    this.service.get(function (json) {
+                    this.service.getCustomers(function (json) {
                         if (json) {
-                            _this.data = json.numbers;
-                            _this.isLoading = false;
-                            _this.apiOccurances++;
+                            _this.data = JSON.stringify(json);
                         }
                     });
                 };
