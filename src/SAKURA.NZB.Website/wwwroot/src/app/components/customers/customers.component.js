@@ -28,6 +28,7 @@ System.register(["angular2/core", "angular2/common", "../api.service", '../../..
                 function Customer(obj) {
                     this.id = obj.Id;
                     this.name = obj.FullName;
+                    this.pinyin = obj.NamePinYin;
                     this.tel = obj.Phone1;
                     this.address = obj.Address;
                 }

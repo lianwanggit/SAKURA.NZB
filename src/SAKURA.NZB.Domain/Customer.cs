@@ -11,6 +11,10 @@ namespace SAKURA.NZB.Domain
 		[Display(Name = "姓名")]
 		public string FullName { get; set; }
 
+		[StringLength(50)]
+		[Required]
+		public string NamePinYin { get; set; }
+
 		[Phone(ErrorMessage = "电话格式不正确")]
 		[Required(ErrorMessage = "电话不能为空")]
 		[Display(Name = "电话")]

@@ -9,12 +9,14 @@ import '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.
 export class Customer {
 	id: number;
 	name: string;
+	pinyin: string;
 	tel: string;
 	address: string;
 
 	constructor(obj) {
 		this.id = obj.Id;
 		this.name = obj.FullName;
+		this.pinyin = obj.NamePinYin;
 		this.tel = obj.Phone1;
 		this.address = obj.Address;
 	}
