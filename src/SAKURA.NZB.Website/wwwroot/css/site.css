@@ -13,13 +13,14 @@
 
 .grey-border {
     padding: 10px;
-    -webkit-box-shadow: 0 0 15px #999;
-    box-shadow: 0 0 15px #999;
-    border-radius: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    -webkit-box-shadow: none;
+    box-shadow: none;
 }
 
 .navbar {
-    margin-bottom: 15px;
+    margin-bottom: 1px;
 }
 
 /* Carousel */
@@ -50,7 +51,7 @@ dd {
 #Header a:focus, a:hover, a:active {
     color: #23527c;
     text-decoration: none;
-    cursor: pointer; 
+    cursor: pointer;
     cursor: hand;
 }
 
@@ -58,8 +59,39 @@ path, line {
     stroke: #777;
 }
 
+.customers-list {
+    list-style: none;
+    overflow: hidden;
+    padding-left: 0;
+}
+
+.customers-list li {
+    float: left;
+    width: 33%;
+    height: 90px;
+    padding: 10px;
+    font-size: 9px;
+    line-height: 1.4;
+    text-align: center;
+    background-color: #f9f9f9;
+    border: 1px solid #fff;
+}
+
 @media (min-width: 768px) {
     .carousel-caption {
         z-index: 10 !important;
+    }
+
+    .customers-list li {
+        width: 20%;
+        height: 115px;
+        font-size: 14px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .customers-list li {
+        width: 12.5%;
+        font-size: 16px;
     }
 }
