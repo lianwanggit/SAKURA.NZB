@@ -47,6 +47,13 @@ dd {
     padding-bottom: 10px;
 }
 
+#Header a:focus, a:hover, a:active {
+    color: #23527c;
+    text-decoration: none;
+    cursor: pointer; 
+    cursor: hand;
+}
+
 path, line {
     stroke: #777;
 }
