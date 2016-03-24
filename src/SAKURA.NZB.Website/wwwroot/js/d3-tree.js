@@ -91,10 +91,12 @@ function create() {
 }
 
 function update() {
+    // comment out due to angular zone bug
+    //.transition()  
 	d3.select('svg')
 		.selectAll('line')
 		.data(branches)
-		.transition()
+
 		.attr('x1', x1)
 		.attr('y1', y1)
 		.attr('x2', x2)
