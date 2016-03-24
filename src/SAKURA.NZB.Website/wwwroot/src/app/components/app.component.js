@@ -1,4 +1,4 @@
-System.register(["angular2/core", "angular2/router", "./static.component"], function(exports_1) {
+System.register(["angular2/core", "angular2/router", "./static.component", "./customers/list.component"], function(exports_1) {
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
         var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
         if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -8,7 +8,7 @@ System.register(["angular2/core", "angular2/router", "./static.component"], func
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, router_1, static_component_1;
+    var core_1, router_1, static_component_1, list_component_1;
     var AppComponent;
     return {
         setters:[
@@ -20,6 +20,9 @@ System.register(["angular2/core", "angular2/router", "./static.component"], func
             },
             function (static_component_1_1) {
                 static_component_1 = static_component_1_1;
+            },
+            function (list_component_1_1) {
+                list_component_1 = list_component_1_1;
             }],
         execute: function() {
             AppComponent = (function () {
@@ -32,6 +35,7 @@ System.register(["angular2/core", "angular2/router", "./static.component"], func
                     if (this.routes === null) {
                         this.routes = [
                             { path: "/index", component: static_component_1.StaticComponent, name: "Index", useAsDefault: true },
+                            { path: "/customers", component: list_component_1.CustomersComponent, name: "客户", useAsDefault: false },
                             new router_1.AsyncRoute({
                                 path: "/sub",
                                 name: "Sub",
@@ -41,11 +45,6 @@ System.register(["angular2/core", "angular2/router", "./static.component"], func
                                 path: "/numbers",
                                 name: "Numbers",
                                 loader: function () { return System.import("src/app/components/api.component").then(function (c) { return c["ApiComponent"]; }); }
-                            }),
-                            new router_1.AsyncRoute({
-                                path: "/customers",
-                                name: "客户",
-                                loader: function () { return System.import("src/app/components/customers/customers.component").then(function (c) { return c["CustomersComponent"]; }); }
                             })
                         ];
                         this.router.config(this.routes);

@@ -1,0 +1,19 @@
+﻿<div class="grey-border">
+    <h2 class="page-header">
+        客户
+        <p class="pull-right">
+            <button type="button" class="btn btn-info">
+                创建客户 <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+            </button>
+        </p>
+    </h2>
+
+    <ul class="customers-list">
+        <li *ngFor="#c of customerList; #i = index">
+            <i class="fa fa-{{i < icons.length ? icons[i] : icons[i % length]}} fa-2x"></i>
+            <h4>{{c.name}}</h4>
+            <span>{{c.tel}}</span>
+        </li>
+    </ul>
+
+</div>

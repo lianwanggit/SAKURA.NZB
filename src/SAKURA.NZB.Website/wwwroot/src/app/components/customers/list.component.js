@@ -57,7 +57,7 @@ System.register(["angular2/core", "angular2/common", "../api.service", '../../..
                 CustomersComponent = __decorate([
                     core_1.Component({
                         selector: "customers",
-                        templateUrl: "/partial/customers",
+                        templateUrl: "/src/app/components/customers/list.html",
                         providers: [api_service_1.ApiService],
                         directives: [common_1.CORE_DIRECTIVES, common_1.FORM_DIRECTIVES]
                     }), 
@@ -69,4 +69,4 @@ System.register(["angular2/core", "angular2/common", "../api.service", '../../..
         }
     }
 });
-//# sourceMappingURL=customers.component.js.map
+//# sourceMappingURL=list.component.js.map

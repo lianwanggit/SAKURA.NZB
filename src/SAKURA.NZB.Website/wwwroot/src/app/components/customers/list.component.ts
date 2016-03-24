@@ -25,7 +25,7 @@ export class Customer {
 
 @Component({
     selector: "customers",
-    templateUrl: "/partial/customers",
+    templateUrl: "/src/app/components/customers/list.html",
     providers: [ApiService],
     directives: [CORE_DIRECTIVES, FORM_DIRECTIVES]
 })

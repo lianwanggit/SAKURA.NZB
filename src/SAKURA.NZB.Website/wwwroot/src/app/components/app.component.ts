@@ -1,6 +1,7 @@
 ﻿import {Component, OnInit} from "angular2/core";
 import {AsyncRoute, Router, RouteDefinition, RouteConfig, Location, ROUTER_DIRECTIVES} from "angular2/router";
 import {StaticComponent} from "./static.component";
+import {CustomersComponent} from "./customers/list.component";
 
 declare var System: any;
 
@@ -21,6 +22,7 @@ export class AppComponent implements OnInit {
         if (this.routes === null) {
             this.routes = [
                 { path: "/index", component: StaticComponent, name: "Index", useAsDefault: true },
+				{ path: "/customers", component: CustomersComponent, name: "客户", useAsDefault: false },
                 new AsyncRoute({
                     path: "/sub",
                     name: "Sub",
@@ -30,11 +32,6 @@ export class AppComponent implements OnInit {
                     path: "/numbers",
                     name: "Numbers",
                     loader: () => System.import("src/app/components/api.component").then(c => c["ApiComponent"])
-                }),
-				new AsyncRoute({
-                    path: "/customers",
-                    name: "客户",
-                    loader: () => System.import("src/app/components/customers/customers.component").then(c => c["CustomersComponent"])
                 })
             ];
 
