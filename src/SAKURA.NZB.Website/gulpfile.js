@@ -27,13 +27,17 @@ paths.angularJs = [
 paths.libJs = [
     './node_modules/bootstrap/dist/js/bootstrap.js',
     './node_modules/systemjs/dist/system.js',
+    './node_modules/systemjs/dist/system.js.map',
     './node_modules/rxjs/bundles/Rx.js',
     './node_modules/typescript/lib/typescript.js',
-    './node_modules/jquery/dist/jquery.js'
+    './node_modules/jquery/dist/jquery.js',
+    './node_modules/d3/d3.js'
 ];
 
 paths.libCss = [
-    './node_modules/bootstrap/dist/css/bootstrap.css'
+    './node_modules/bootstrap/dist/css/bootstrap.css',
+    './node_modules/bootstrap/dist/css/bootstrap.css.map',
+    './node_modules/bootstrap/dist/css/bootstrap.min.css.map',
 ];
 
 paths.libFonts = [

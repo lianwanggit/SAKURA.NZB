@@ -38,7 +38,7 @@
         <script src="~/js/angular2/angular2.dev.js"></script>
         <script src="~/js/angular2/router.dev.js"></script>
         <script src="~/js/angular2/angular2-polyfills.min.js"></script>
-        <script src="~/js/angular2/http.dev.min.js"></script>        
+        <script src="~/js/angular2/http.dev.min.js"></script>   
     </environment>
     @Html.ApplicationInsightsJavaScript(TelemetryConfiguration)
 
@@ -59,32 +59,6 @@
 <base href="/" />
 
 <body>
-    @*<div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a asp-controller="Home" asp-action="Index" class="navbar-brand" style="padding: 10px">
-                    <div>
-                        <img src="~/images/favicon_32.png" width="32" height="32" />
-                        <span>NZ Buy</span>
-                    </div>
-                </a>
-            </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li><a asp-controller="Home" asp-action="Index">首页</a></li>
-                    <li><a asp-controller="Orders" asp-action="Index">订单</a></li>
-                    <li><a asp-controller="Products" asp-action="Index">产品</a></li>
-                    <li><a asp-controller="Customers" asp-action="Index">客户</a></li>
-                </ul>
-            </div>
-        </div>
-    </div>*@
     <div class="container body-content">
         @RenderBody()
         <hr />
@@ -94,20 +68,24 @@
     </div>
 
     <environment names="Development">
-        <script src="~/lib/jquery/dist/jquery.js"></script>
-        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+        @*<script src="~/lib/jquery/dist/jquery.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>*@
         <script src="~/js/site.js" asp-append-version="true"></script>
+        <script src="~/js/d3.js"></script>
+        <script src="~/js/d3-tree.js"></script>
     </environment>
     <environment names="Staging,Production">
-        <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.1.4.min.js"
+        @*<script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.1.4.min.js"
                 asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
                 asp-fallback-test="window.jQuery">
         </script>
         <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.5/bootstrap.min.js"
                 asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
                 asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal">
-        </script>
+        </script>*@
         <script src="~/js/site.min.js" asp-append-version="true"></script>
+        <script src="~/js/d3.min.js"></script>
+        <script src="~/js/d3-tree.min.js"></script>  
     </environment>
 
     @RenderSection("scripts", required: false)
