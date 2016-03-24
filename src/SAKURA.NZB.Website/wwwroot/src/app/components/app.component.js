@@ -45,7 +45,7 @@ System.register(["angular2/core", "angular2/router", "./static.component"], func
                             new router_1.AsyncRoute({
                                 path: "/customers",
                                 name: "客户",
-                                loader: function () { return System.import("src/app/components/customers.component").then(function (c) { return c["CustomersComponent"]; }); }
+                                loader: function () { return System.import("src/app/components/customers/customers.component").then(function (c) { return c["CustomersComponent"]; }); }
                             })
                         ];
                         this.router.config(this.routes);

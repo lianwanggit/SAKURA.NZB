@@ -1,6 +1,6 @@
 ﻿import {Component, OnInit} from "angular2/core";
 import {CORE_DIRECTIVES} from "angular2/src/common/directives/core_directives";
-import {ApiService} from "./api.service";
+import {ApiService} from "../api.service";
 
 @Component({
     selector: "customers",

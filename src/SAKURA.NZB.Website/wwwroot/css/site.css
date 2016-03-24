@@ -11,12 +11,16 @@
     padding-right: 15px;
 }
 
-/* Set widths on the form inputs since otherwise they're 100% wide */
-/*input,
-select,
-textarea {
-    max-width: 280px;
-}*/
+.grey-border {
+    padding: 10px;
+    -webkit-box-shadow: 0 0 15px #999;
+    box-shadow: 0 0 15px #999;
+    border-radius: 5px;
+}
+
+.navbar {
+    margin-bottom: 15px;
+}
 
 /* Carousel */
 .carousel-caption {

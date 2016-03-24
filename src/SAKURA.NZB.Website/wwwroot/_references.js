@@ -19,5 +19,6 @@
 /// <reference path="src/app/components/api.service.js" />
 /// <reference path="src/app/components/app.component.js" />
 /// <reference path="src/app/components/customers.component.js" />
+/// <reference path="src/app/components/customers/customers.component.js" />
 /// <reference path="src/app/components/mvc.component.js" />
 /// <reference path="src/app/components/static.component.js" />
