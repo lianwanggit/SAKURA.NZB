@@ -25,13 +25,19 @@ export class Customer {
 
 @Component({
     selector: "customers",
-    templateUrl: "/src/app/components/customers/list.html",
+    templateUrl: "./src/app/components/customers/list.html",
+	styleUrls: ["./css/customers.css"],
     providers: [ApiService],
     directives: [CORE_DIRECTIVES, FORM_DIRECTIVES]
 })
 export class CustomersComponent implements OnInit {
 	icons = ['ambulance', 'car', 'bicycle', 'bus', 'taxi', 'fighter-jet', 'motorcycle', 'plane', 'rocket', 'ship', 'space-shuttle', 'subway', 'taxi', 'train', 'truck'];
     customerList: Customer[] = [];
+	searchList: Customer[] = [];
+	filterText = '';
+	totalAmount = 0;
+	
+	private _filterText = '';
 
     constructor(private service: ApiService) { }
 
@@ -48,7 +54,41 @@ export class CustomersComponent implements OnInit {
 					that.customerList.push(new Customer(c));
 				});
 
+				that.totalAmount = that.customerList.length;
+				that.searchList = that.customerList.slice();
             }
         });
     }
+
+	onClearFilter() {
+		this.onSearch('');
+	}
+
+	onSearch(value: string) {
+		// Sync value for the special cases, for example,
+		// select value from the historical inputs dropdown list
+		if (this.filterText !== value)
+			this.filterText = value;
+
+		// Avoid multiple submissions
+		if (this.filterText === this._filterText)
+			return;
+
+		this.searchList = [];
+		if (/^$|^[\u4e00-\u9fa5_a-zA-Z0-9 ]+$/g.test(this.filterText)) {
+			this.searchList = this.customerList.ToList<Customer>()
+				.Where(x => this.startsWith(x.name, this.filterText) ||
+					this.startsWith(x.pinyin.toLowerCase(), this.filterText.toLowerCase()) ||
+					this.startsWith(x.tel, this.filterText))
+				.ToArray();
+		}
+
+		this._filterText = this.filterText;
+	}
+
+	startsWith(str:string, searchString:string) {
+		return str.substr(0, searchString.length) === searchString;
+	};
+
+	get amount() { return this.searchList.length; }
 }

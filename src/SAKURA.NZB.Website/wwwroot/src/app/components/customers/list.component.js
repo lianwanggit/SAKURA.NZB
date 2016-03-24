@@ -40,6 +40,10 @@ System.register(["angular2/core", "angular2/common", "../api.service", '../../..
                     this.service = service;
                     this.icons = ['ambulance', 'car', 'bicycle', 'bus', 'taxi', 'fighter-jet', 'motorcycle', 'plane', 'rocket', 'ship', 'space-shuttle', 'subway', 'taxi', 'train', 'truck'];
                     this.customerList = [];
+                    this.searchList = [];
+                    this.filterText = '';
+                    this.totalAmount = 0;
+                    this._filterText = '';
                 }
                 CustomersComponent.prototype.ngOnInit = function () {
                     this.get();
@@ -51,13 +55,47 @@ System.register(["angular2/core", "angular2/common", "../api.service", '../../..
                             json.forEach(function (c) {
                                 that.customerList.push(new Customer(c));
                             });
+                            that.totalAmount = that.customerList.length;
+                            that.searchList = that.customerList.slice();
                         }
                     });
                 };
+                CustomersComponent.prototype.onClearFilter = function () {
+                    this.onSearch('');
+                };
+                CustomersComponent.prototype.onSearch = function (value) {
+                    var _this = this;
+                    // Sync value for the special cases, for example,
+                    // select value from the historical inputs dropdown list
+                    if (this.filterText !== value)
+                        this.filterText = value;
+                    // Avoid multiple submissions
+                    if (this.filterText === this._filterText)
+                        return;
+                    this.searchList = [];
+                    if (/^$|^[\u4e00-\u9fa5_a-zA-Z0-9 ]+$/g.test(this.filterText)) {
+                        this.searchList = this.customerList.ToList()
+                            .Where(function (x) { return _this.startsWith(x.name, _this.filterText) ||
+                            _this.startsWith(x.pinyin.toLowerCase(), _this.filterText.toLowerCase()) ||
+                            _this.startsWith(x.tel, _this.filterText); })
+                            .ToArray();
+                    }
+                    this._filterText = this.filterText;
+                };
+                CustomersComponent.prototype.startsWith = function (str, searchString) {
+                    return str.substr(0, searchString.length) === searchString;
+                };
+                ;
+                Object.defineProperty(CustomersComponent.prototype, "amount", {
+                    get: function () { return this.searchList.length; },
+                    enumerable: true,
+                    configurable: true
+                });
                 CustomersComponent = __decorate([
                     core_1.Component({
                         selector: "customers",
-                        templateUrl: "/src/app/components/customers/list.html",
+                        templateUrl: "./src/app/components/customers/list.html",
+                        styleUrls: ["./css/customers.css"],
                         providers: [api_service_1.ApiService],
                         directives: [common_1.CORE_DIRECTIVES, common_1.FORM_DIRECTIVES]
                     }), 

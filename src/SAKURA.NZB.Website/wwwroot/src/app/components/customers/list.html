@@ -8,8 +8,24 @@
         </p>
     </h2>
 
+    <div class="search-container">
+        <div class="form-group input-group">
+            <input type="text" class="form-control" id="searchAnimals" placeholder="搜索客户中文名, 拼音或者电话"
+                   [(ngModel)]="filterText" (keyup)="onSearch($event.target.value)" (input)="onSearch($event.target.value)" />
+            <div class="input-group-btn">
+                <button type="submit" class="btn btn-default" aria-label="Clear" (click)="onClearFilter()">
+                    <span class="glyphicon glyphicon-remove"></span>
+                </button>
+            </div>
+        </div>
+
+        <p class="text-right text-muted">
+            <small>客户: {{amount}} / {{totalAmount}}</small>
+        </p>
+    </div>
+
     <ul class="customers-list">
-        <li *ngFor="#c of customerList; #i = index">
+        <li *ngFor="#c of searchList; #i = index">
             <i class="fa fa-{{i < icons.length ? icons[i] : icons[i % length]}} fa-2x"></i>
             <h4>{{c.name}}</h4>
             <span>{{c.tel}}</span>
