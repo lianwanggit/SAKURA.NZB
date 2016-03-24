@@ -37,7 +37,7 @@ System.register(["angular2/core", "angular2/common", "../api.service", '../../..
             CustomersComponent = (function () {
                 function CustomersComponent(service) {
                     this.service = service;
-                    this.icons = ['ambulance', 'car', 'bicycle', 'bus', 'taxi', 'car', 'fighter-jet', 'motorcycle', 'plane', 'rocket', 'ship', 'space-shuttle', 'subway', 'taxi', 'train', 'truck'];
+                    this.icons = ['ambulance', 'car', 'bicycle', 'bus', 'taxi', 'fighter-jet', 'motorcycle', 'plane', 'rocket', 'ship', 'space-shuttle', 'subway', 'taxi', 'train', 'truck'];
                     this.customerList = [];
                 }
                 CustomersComponent.prototype.ngOnInit = function () {

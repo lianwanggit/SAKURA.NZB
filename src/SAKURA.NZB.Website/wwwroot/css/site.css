@@ -1,7 +1,7 @@
 ﻿body {
     /*padding-top: 50px;*/
     padding-bottom: 20px;
-    color: #777;
+    color: #333;
 }
 
 /* Wrapping element */
@@ -75,6 +75,11 @@ path, line {
     text-align: center;
     background-color: #f9f9f9;
     border: 1px solid #fff;
+}
+
+.customers-list li:hover {
+    color: #fff;
+    background-color: #d26c6c;
 }
 
 @media (min-width: 768px) {

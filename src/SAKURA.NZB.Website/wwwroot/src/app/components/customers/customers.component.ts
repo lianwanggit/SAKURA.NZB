@@ -28,7 +28,7 @@ export class Customer {
     directives: [CORE_DIRECTIVES, FORM_DIRECTIVES]
 })
 export class CustomersComponent implements OnInit {
-	icons = ['ambulance', 'car', 'bicycle', 'bus', 'taxi', 'car', 'fighter-jet', 'motorcycle', 'plane', 'rocket', 'ship', 'space-shuttle', 'subway', 'taxi', 'train', 'truck'];
+	icons = ['ambulance', 'car', 'bicycle', 'bus', 'taxi', 'fighter-jet', 'motorcycle', 'plane', 'rocket', 'ship', 'space-shuttle', 'subway', 'taxi', 'train', 'truck'];
     customerList: Customer[] = [];
 
     constructor(private service: ApiService) { }
