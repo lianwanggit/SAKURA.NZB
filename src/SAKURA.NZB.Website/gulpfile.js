@@ -8,14 +8,23 @@ var _ = require('lodash'),
     cssmin = require('gulp-cssmin'),
     rename = require('gulp-rename');
 
-var angularJs = [
+var paths = {
+    webroot: "./wwwroot/"
+};
+
+paths.js = paths.webroot + "js/**/*.js";
+paths.minJs = paths.webroot + "js/**/*.min.js";
+paths.css = paths.webroot + "css/**/*.css";
+paths.minCss = paths.webroot + "css/**/*.min.css";
+
+paths.angularJs = [
     './node_modules/angular2/bundles/angular2.dev.js',
     './node_modules/angular2/bundles/router.dev.js',
     './node_modules/angular2/bundles/angular2-polyfills.js',
     './node_modules/angular2/bundles/http.dev.js'
 ];
 
-var js = [
+paths.libJs = [
     './node_modules/bootstrap/dist/js/bootstrap.js',
     './node_modules/systemjs/dist/system.js',
     './node_modules/rxjs/bundles/Rx.js',
@@ -23,84 +32,54 @@ var js = [
     './node_modules/jquery/dist/jquery.js'
 ];
 
-var siteJs = [
-    './wwwroot/js/site.js'
-];
-
-var css = [
+paths.libCss = [
     './node_modules/bootstrap/dist/css/bootstrap.css'
 ];
 
-var siteCss = [
-    './wwwroot/css/site.css'
-];
-
-var fonts = [
+paths.libFonts = [
     './node_modules/bootstrap/dist/fonts/*.*'
 ];
 
+paths.jsDest = paths.webroot + "js";
+paths.angularJsDest = paths.jsDest + "/angular2";
+paths.cssDest = paths.webroot + "css";
+paths.fontDest = paths.webroot + "fonts";
 
 gulp.task('copy-js', function () {
-    _.forEach(js, function (file, _) {
+    _.forEach(paths.libJs, function (file, _) {
         gulp.src(file)
-            .pipe(gulp.dest('./wwwroot/js'))
+            .pipe(gulp.dest(paths.jsDest))
     });
-    _.forEach(angularJs, function (file, _) {
+    _.forEach(paths.angularJs, function (file, _) {
         gulp.src(file)
-            .pipe(gulp.dest('./wwwroot/js/angular2'))
-    });
-});
-
-gulp.task('copy-min-js', function () {
-    _.forEach(js, function (file, _) {
-        gulp.src(file)
-            .pipe(uglify())
-            .pipe(rename({ extname: '.min.js' }))
-            .pipe(gulp.dest('./wwwroot/js'))
-    });
-    _.forEach(angularJs, function (file, _) {
-        gulp.src(file)
-            .pipe(uglify())
-            .pipe(rename({ extname: '.min.js' }))
-            .pipe(gulp.dest('./wwwroot/js/angular2'))
-    });
-    _.forEach(siteJs, function (file, _) {
-        gulp.src(file)
-            .pipe(uglify())
-            .pipe(rename({ extname: '.min.js' }))
-            .pipe(gulp.dest('./wwwroot/js'))
+            .pipe(gulp.dest(paths.angularJsDest))
     });
 });
 
 gulp.task('copy-css', function () {
-    _.forEach(css, function (file, _) {
+    _.forEach(paths.libCss, function (file, _) {
         gulp.src(file)
-            .pipe(gulp.dest('./wwwroot/css'))
+            .pipe(gulp.dest(paths.cssDest))
     });
-    _.forEach(fonts, function (file, _) {
+    _.forEach(paths.libFonts, function (file, _) {
         gulp.src(file)
-            .pipe(gulp.dest('./wwwroot/fonts'))
+            .pipe(gulp.dest(paths.fontDest))
     });
 });
 
-gulp.task('copy-min-css', function () {
-    _.forEach(css, function (file, _) {
-        gulp.src(file)
-            .pipe(cssmin())
-            .pipe(rename({ extname: '.min.css' }))
-            .pipe(gulp.dest('./wwwroot/css'))
-    });
-    _.forEach(siteCss, function (file, _) {
-        gulp.src(file)
-            .pipe(cssmin())
-            .pipe(rename({ extname: '.min.css' }))
-            .pipe(gulp.dest('./wwwroot/css'))
-    });
-    _.forEach(fonts, function (file, _) {
-        gulp.src(file)
-            .pipe(gulp.dest('./wwwroot/fonts'))
-    });
+gulp.task('min-js', function () {
+    gulp.src([paths.js, "!" + paths.minJs], { base: paths.jsDest })
+         .pipe(uglify())
+         .pipe(rename({ extname: '.min.js' }))
+         .pipe(gulp.dest(paths.jsDest));
+});
+
+gulp.task('min-css', function () {
+    gulp.src([paths.css, "!" + paths.minCss], { base: paths.cssDest })
+		.pipe(cssmin())
+        .pipe(rename({ extname: '.min.css' }))
+		.pipe(gulp.dest(paths.cssDest));
 });
 
 gulp.task('default', ['copy-js', 'copy-css']);
-gulp.task('minify', ['copy-min-js', 'copy-min-css']);
+gulp.task('minify', ['min-js', 'min-css']);
