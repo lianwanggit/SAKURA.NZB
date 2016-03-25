@@ -30,6 +30,12 @@
     color: #fff;
 }
 
+.table>tbody>tr:last-of-type>td, 
+.table>tbody>tr:last-of-type>th
+ {
+    border-bottom: 1px solid #ddd;
+}
+
 .table tbody > tr > td.vert-align {
     vertical-align: middle;
 }
@@ -37,13 +43,17 @@
 .table tbody > tr > th {
     background-color: #337ab7;
     color: #fff;
-    width: 60px;
+    width: 50px;
 }
 
     .table tbody > tr > th > h3 {
         text-align: center;
         margin: 10px 0;
     }
+
+.table tbody > tr > td:first-of-type {
+    min-width: 65px;
+}
 
 .table tbody > tr > td:last-of-type {
     border-right: 4px solid #4e8539;
@@ -54,6 +64,10 @@
         width: 20%;
         height: 115px;
         font-size: 14px;
+    }
+
+    .table tbody > tr > th {
+        width: 60px;
     }
 }
 
