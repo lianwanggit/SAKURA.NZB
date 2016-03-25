@@ -1,5 +1,5 @@
 /// <reference path="../../../../lib/TypeScript-Linq/Scripts/typings/System/Collections/Generic/List.ts" />
-System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.service", '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js'], function(exports_1) {
+System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.service", "../../directives/alphaIndexer.component", '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js'], function(exports_1) {
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
         var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
         if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -9,7 +9,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, common_1, router_1, api_service_1;
+    var core_1, common_1, router_1, api_service_1, alphaIndexer_component_1;
     var Customer, CustomerEditComponent;
     return {
         setters:[
@@ -24,6 +24,9 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
             },
             function (api_service_1_1) {
                 api_service_1 = api_service_1_1;
+            },
+            function (alphaIndexer_component_1_1) {
+                alphaIndexer_component_1 = alphaIndexer_component_1_1;
             },
             function (_1) {}],
         execute: function() {
@@ -42,7 +45,6 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
             CustomerEditComponent = (function () {
                 function CustomerEditComponent(service, params) {
                     this.service = service;
-                    this.customerList = [];
                     this.customer = null;
                     this.editMode = false;
                     this.customerId = params.get("id");
@@ -59,6 +61,16 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     this.service.getCustomer(this.customerId, function (json) {
                         if (json) {
                             that.customer = new Customer(json);
+                        }
+                    });
+                    this.service.getCustomers(function (json) {
+                        if (json) {
+                            var list = [].ToList();
+                            json.forEach(function (x) {
+                                var c = new Customer(x);
+                                list.Add(new alphaIndexer_component_1.Element(c.id, c.name, c.pinyin));
+                            });
+                            that.elementSource = list.ToArray();
                         }
                     });
                 };
@@ -78,7 +90,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                         templateUrl: "./src/app/components/customers/edit.html",
                         styleUrls: ["./css/customers.css"],
                         providers: [api_service_1.ApiService],
-                        directives: [common_1.CORE_DIRECTIVES, common_1.FORM_DIRECTIVES]
+                        directives: [common_1.CORE_DIRECTIVES, common_1.FORM_DIRECTIVES, alphaIndexer_component_1.AlphaIndexerComponent]
                     }), 
                     __metadata('design:paramtypes', [api_service_1.ApiService, router_1.RouteParams])
                 ], CustomerEditComponent);

@@ -4,6 +4,7 @@ import {Component, OnInit} from "angular2/core";
 import {CORE_DIRECTIVES, FORM_DIRECTIVES} from "angular2/common";
 import {RouteParams} from 'angular2/router';
 import {ApiService} from "../api.service";
+import {AlphaIndexerComponent, Element} from "../../directives/alphaIndexer.component";
 
 import '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js';
 
@@ -30,10 +31,10 @@ export class Customer {
     templateUrl: "./src/app/components/customers/edit.html",
 	styleUrls: ["./css/customers.css"],
     providers: [ApiService],
-    directives: [CORE_DIRECTIVES, FORM_DIRECTIVES]
+    directives: [CORE_DIRECTIVES, FORM_DIRECTIVES, AlphaIndexerComponent]
 })
 export class CustomerEditComponent implements OnInit {
-    customerList: Customer[] = [];
+    elementSource: Element[];
 
 	customer: Customer = null;
 	editMode = false;
@@ -60,6 +61,18 @@ export class CustomerEditComponent implements OnInit {
                 that.customer = new Customer(json);
             }
         });
+
+		this.service.getCustomers(json => {
+			if (json) {
+				var list = [].ToList<Element>();
+				json.forEach(x => {
+					var c = new Customer(x);
+					list.Add(new Element(c.id, c.name, c.pinyin));
+				});	
+
+				that.elementSource = list.ToArray();	
+			}
+		});
     }
 
 	get data() { return JSON.stringify(this.customer); }

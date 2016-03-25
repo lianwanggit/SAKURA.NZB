@@ -1,6 +1,13 @@
 ﻿<div class="grey-border">
     <h2 class="page-header">{{title}}</h2>
-
-    {{data}}
+    
+    <div class="row">
+        <div class="hidden-xs">
+            <alpha-indexer [elements]="elementSource"></alpha-indexer>
+        </div>
+        <div class="col-xs-12">
+            {{data}}
+        </div>
+    </div>
 </div>
 

@@ -24,3 +24,4 @@
 /// <reference path="src/app/components/customers/list.component.js" />
 /// <reference path="src/app/components/mvc.component.js" />
 /// <reference path="src/app/components/static.component.js" />
+/// <reference path="src/app/directives/alphaindexer.component.js" />
