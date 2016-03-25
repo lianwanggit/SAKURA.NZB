@@ -12,6 +12,7 @@ export class Customer {
 	pinyin: string;
 	tel: string;
 	address: string;
+	index: string;
 
 	constructor(obj) {
 		this.id = obj.Id;
@@ -19,6 +20,7 @@ export class Customer {
 		this.pinyin = obj.NamePinYin;
 		this.tel = obj.Phone1;
 		this.address = obj.Address;
+		this.index = this.pinyin ? this.pinyin.charAt(0).toUpperCase() : 'A';
 	}
 }
 
@@ -55,7 +57,9 @@ export class CustomersComponent implements OnInit {
 				});
 
 				that.totalAmount = that.customerList.length;
-				that.searchList = that.customerList.slice();
+				that.searchList = that.customerList.ToList<Customer>()
+					.OrderBy(x => x.pinyin)
+					.ToArray();;
             }
         });
     }
@@ -80,6 +84,7 @@ export class CustomersComponent implements OnInit {
 				.Where(x => this.startsWith(x.name, this.filterText) ||
 					this.startsWith(x.pinyin.toLowerCase(), this.filterText.toLowerCase()) ||
 					this.startsWith(x.tel, this.filterText))
+				.OrderBy(x => x.pinyin)
 				.ToArray();
 		}
 

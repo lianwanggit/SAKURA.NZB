@@ -31,6 +31,7 @@ System.register(["angular2/core", "angular2/common", "../api.service", '../../..
                     this.pinyin = obj.NamePinYin;
                     this.tel = obj.Phone1;
                     this.address = obj.Address;
+                    this.index = this.pinyin ? this.pinyin.charAt(0).toUpperCase() : 'A';
                 }
                 return Customer;
             })();
@@ -57,7 +58,10 @@ System.register(["angular2/core", "angular2/common", "../api.service", '../../..
                                 that.customerList.push(new Customer(c));
                             });
                             that.totalAmount = that.customerList.length;
-                            that.searchList = that.customerList.slice();
+                            that.searchList = that.customerList.ToList()
+                                .OrderBy(function (x) { return x.pinyin; })
+                                .ToArray();
+                            ;
                         }
                     });
                 };
@@ -79,6 +83,7 @@ System.register(["angular2/core", "angular2/common", "../api.service", '../../..
                             .Where(function (x) { return _this.startsWith(x.name, _this.filterText) ||
                             _this.startsWith(x.pinyin.toLowerCase(), _this.filterText.toLowerCase()) ||
                             _this.startsWith(x.tel, _this.filterText); })
+                            .OrderBy(function (x) { return x.pinyin; })
                             .ToArray();
                     }
                     this._filterText = this.filterText;

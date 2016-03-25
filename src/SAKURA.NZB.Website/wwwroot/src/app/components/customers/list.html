@@ -1,11 +1,9 @@
 ﻿<div class="grey-border">
     <h2 class="page-header">
         客户 <small>({{amount}} / {{totalAmount}})</small>
-        <p class="pull-right">
-            <button type="button" class="btn btn-info">
-                创建 <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
-            </button>
-        </p>
+        <button type="button" class="btn btn-info pull-right">
+            创建 <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+        </button>
     </h2>
 
     <div>
@@ -13,29 +11,38 @@
             <input type="text" class="form-control" id="searchAnimals" placeholder="搜索客户名, 拼音或电话"
                    [(ngModel)]="filterText" (keyup)="onSearch($event.target.value)" (input)="onSearch($event.target.value)" />
             <div class="input-group-btn">
-                <button class="btn btn-default" aria-label="Clear" (click)="onClearFilter()">
+                <button type="button" class="btn btn-default" aria-label="Clear" (click)="onClearFilter()">
                     <span class="glyphicon glyphicon-remove"></span>
                 </button>
             </div>
         </div>
     </div>
 
-    <p class="text-right">
-        <button class="btn btn-default" (click)="onSwitchViewMode(true)">
+
+    <div class="btn-group pull-right" role="group" aria-label="View Mode">
+        <button type="button" class="btn btn-default" (click)="onSwitchViewMode(true)"
+                [ngClass]="{active: isListViewMode}">
             <span class="glyphicon glyphicon-th-list"></span>
         </button>
-        <button class="btn btn-default" (click)="onSwitchViewMode(false)">
+        <button type="button" class="btn btn-default" (click)="onSwitchViewMode(false)"
+                [ngClass]="{active: !isListViewMode}">
             <span class="glyphicon glyphicon-th-large"></span>
         </button>
-    </p>
+    </div>
+    <p style="height:35px">&nbsp;</p>
 
-    <ul class="list-group" *ngIf="isListViewMode">
-        <li class="list-group-item">Cras justo odio</li>
-        <li class="list-group-item">Dapibus ac facilisis in</li>
-        <li class="list-group-item">Morbi leo risus</li>
-        <li class="list-group-item">Porta ac consectetur ac</li>
-        <li class="list-group-item">Vestibulum at eros</li>
-    </ul>
+    <table class="table table-hover" *ngIf="isListViewMode">
+        <tbody>
+            <tr *ngFor="#c of searchList; #i = index">
+                <th scope="row">
+                    <h3>{{c.index}}</h3>
+                </th>
+                <td class="vert-align">{{c.name}}</td>
+                <td class="vert-align">{{c.tel}}</td>
+                <td class="vert-align">{{c.address}}</td>
+            </tr>
+        </tbody>
+    </table>
 
     <ul class="customers-list" *ngIf="!isListViewMode">
         <li *ngFor="#c of searchList; #i = index">
