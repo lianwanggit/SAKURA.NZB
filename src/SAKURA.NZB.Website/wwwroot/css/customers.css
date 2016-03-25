@@ -16,46 +16,53 @@
         border: 1px solid #fff;
     }
 
-.customers-list li:hover{
-    background-color: #d26c6c;
-    color: #fff;
-}
+        .customers-list li:hover {
+            background-color: #d26c6c;
+            color: #fff;
+        }
 
-.table-hover > tbody > tr:hover {  
+.customers-table tr:hover {
     color: #2585ae;
 }
 
-.table-hover > tbody > tr > th:hover {  
+.customers-table th:hover {
     background: #5bc0de;
     color: #fff;
 }
 
-.table>tbody>tr:last-of-type>td, 
-.table>tbody>tr:last-of-type>th
- {
+.item:hover a p.new-label span {
+    display: none;
+}
+
+.item:hover a p.new-label:after {
+    content: 'ADD';
+}
+
+.customers-table tr:last-of-type > td,
+.customers-table tr:last-of-type > th {
     border-bottom: 1px solid #ddd;
 }
 
-.table tbody > tr > td.vert-align {
+.customers-table td.vert-align {
     vertical-align: middle;
 }
 
-.table tbody > tr > th {
+.customers-table th {
     background-color: #337ab7;
     color: #fff;
     width: 50px;
 }
 
-    .table tbody > tr > th > h3 {
+    .customers-table th > h3 {
         text-align: center;
         margin: 10px 0;
     }
 
-.table tbody > tr > td:first-of-type {
+.customers-table tr > td:first-of-type {
     min-width: 65px;
 }
 
-.table tbody > tr > td:last-of-type {
+.customers-table tr > td:last-of-type {
     border-right: 4px solid #4e8539;
 }
 
@@ -66,7 +73,7 @@
         font-size: 14px;
     }
 
-    .table tbody > tr > th {
+    .customers-table th {
         width: 60px;
     }
 }
