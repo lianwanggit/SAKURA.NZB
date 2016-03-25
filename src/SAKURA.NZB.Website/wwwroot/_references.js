@@ -20,6 +20,7 @@
 /// <reference path="src/app/components/api.component.js" />
 /// <reference path="src/app/components/api.service.js" />
 /// <reference path="src/app/components/app.component.js" />
+/// <reference path="src/app/components/customers/edit.component.js" />
 /// <reference path="src/app/components/customers/list.component.js" />
 /// <reference path="src/app/components/mvc.component.js" />
 /// <reference path="src/app/components/static.component.js" />

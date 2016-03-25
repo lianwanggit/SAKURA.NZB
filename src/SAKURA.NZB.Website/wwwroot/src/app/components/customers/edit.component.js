@@ -1,5 +1,5 @@
 /// <reference path="../../../../lib/TypeScript-Linq/Scripts/typings/System/Collections/Generic/List.ts" />
-System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.service", '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js'], function(exports_1) {
+System.register(["angular2/core", "angular2/common", "../api.service", '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js'], function(exports_1) {
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
         var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
         if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -9,8 +9,8 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, common_1, router_1, api_service_1;
-    var Customer, CustomersComponent;
+    var core_1, common_1, api_service_1;
+    var Customer, CustomerEditComponent;
     return {
         setters:[
             function (core_1_1) {
@@ -18,9 +18,6 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
             },
             function (common_1_1) {
                 common_1 = common_1_1;
-            },
-            function (router_1_1) {
-                router_1 = router_1_1;
             },
             function (api_service_1_1) {
                 api_service_1 = api_service_1_1;
@@ -39,10 +36,9 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                 return Customer;
             })();
             exports_1("Customer", Customer);
-            CustomersComponent = (function () {
-                function CustomersComponent(service) {
+            CustomerEditComponent = (function () {
+                function CustomerEditComponent(service) {
                     this.service = service;
-                    this.icons = ['ambulance', 'car', 'bicycle', 'bus', 'taxi', 'fighter-jet', 'motorcycle', 'plane', 'rocket', 'ship', 'space-shuttle', 'subway', 'taxi', 'train', 'truck'];
                     this.customerList = [];
                     this.searchList = [];
                     this.filterText = '';
@@ -50,10 +46,10 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     this.isListViewMode = true;
                     this._filterText = '';
                 }
-                CustomersComponent.prototype.ngOnInit = function () {
+                CustomerEditComponent.prototype.ngOnInit = function () {
                     this.get();
                 };
-                CustomersComponent.prototype.get = function () {
+                CustomerEditComponent.prototype.get = function () {
                     var that = this;
                     this.service.getCustomers(function (json) {
                         if (json) {
@@ -68,55 +64,29 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                         }
                     });
                 };
-                CustomersComponent.prototype.onClearFilter = function () {
-                    this.onSearch('');
-                };
-                CustomersComponent.prototype.onSearch = function (value) {
-                    var _this = this;
-                    // Sync value for the special cases, for example,
-                    // select value from the historical inputs dropdown list
-                    if (this.filterText !== value)
-                        this.filterText = value;
-                    // Avoid multiple submissions
-                    if (this.filterText === this._filterText)
-                        return;
-                    this.searchList = [];
-                    if (/^$|^[\u4e00-\u9fa5_a-zA-Z0-9 ]+$/g.test(this.filterText)) {
-                        this.searchList = this.customerList.ToList()
-                            .Where(function (x) { return _this.startsWith(x.name, _this.filterText) ||
-                            _this.startsWith(x.pinyin.toLowerCase(), _this.filterText.toLowerCase()) ||
-                            _this.startsWith(x.tel, _this.filterText); })
-                            .OrderBy(function (x) { return x.pinyin; })
-                            .ToArray();
-                    }
-                    this._filterText = this.filterText;
-                };
-                CustomersComponent.prototype.onSwitchViewMode = function (list) {
-                    this.isListViewMode = list;
-                };
-                CustomersComponent.prototype.startsWith = function (str, searchString) {
+                CustomerEditComponent.prototype.startsWith = function (str, searchString) {
                     return str.substr(0, searchString.length) === searchString;
                 };
                 ;
-                Object.defineProperty(CustomersComponent.prototype, "amount", {
+                Object.defineProperty(CustomerEditComponent.prototype, "amount", {
                     get: function () { return this.searchList.length; },
                     enumerable: true,
                     configurable: true
                 });
-                CustomersComponent = __decorate([
+                CustomerEditComponent = __decorate([
                     core_1.Component({
-                        selector: "customers",
-                        templateUrl: "./src/app/components/customers/list.html",
+                        selector: "customer-edit",
+                        templateUrl: "./src/app/components/customers/edit.html",
                         styleUrls: ["./css/customers.css"],
                         providers: [api_service_1.ApiService],
-                        directives: [common_1.CORE_DIRECTIVES, common_1.FORM_DIRECTIVES, router_1.ROUTER_DIRECTIVES]
+                        directives: [common_1.CORE_DIRECTIVES, common_1.FORM_DIRECTIVES]
                     }), 
                     __metadata('design:paramtypes', [api_service_1.ApiService])
-                ], CustomersComponent);
-                return CustomersComponent;
+                ], CustomerEditComponent);
+                return CustomerEditComponent;
             })();
-            exports_1("CustomersComponent", CustomersComponent);
+            exports_1("CustomerEditComponent", CustomerEditComponent);
         }
     }
 });
-//# sourceMappingURL=list.component.js.map
+//# sourceMappingURL=edit.component.js.map

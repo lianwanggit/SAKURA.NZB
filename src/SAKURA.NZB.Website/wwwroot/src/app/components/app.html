@@ -6,7 +6,7 @@
             </a>
         </div>
         <ul *ngIf="routes != null" class="nav navbar-nav">
-            <li *ngFor="#rt of routes" [class.active]="getLinkStyle(rt)">
+            <li *ngFor="#rt of menuRoutes" [class.active]="getLinkStyle(rt)">
                 <a [routerLink]="[rt.name]">{{rt.name}}</a>
             </li>
         </ul>

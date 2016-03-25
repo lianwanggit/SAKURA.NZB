@@ -1,4 +1,5 @@
-System.register(["angular2/core", "angular2/router", "./static.component", "./customers/list.component"], function(exports_1) {
+/// <reference path="../../../lib/TypeScript-Linq/Scripts/typings/System/Collections/Generic/List.ts" />
+System.register(["angular2/core", "angular2/router", "./static.component", "./customers/list.component", "./customers/edit.component", '../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js'], function(exports_1) {
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
         var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
         if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -8,7 +9,7 @@ System.register(["angular2/core", "angular2/router", "./static.component", "./cu
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, router_1, static_component_1, list_component_1;
+    var core_1, router_1, static_component_1, list_component_1, edit_component_1;
     var AppComponent;
     return {
         setters:[
@@ -23,19 +24,25 @@ System.register(["angular2/core", "angular2/router", "./static.component", "./cu
             },
             function (list_component_1_1) {
                 list_component_1 = list_component_1_1;
-            }],
+            },
+            function (edit_component_1_1) {
+                edit_component_1 = edit_component_1_1;
+            },
+            function (_1) {}],
         execute: function() {
             AppComponent = (function () {
                 function AppComponent(router, location) {
                     this.router = router;
                     this.location = location;
                     this.routes = null;
+                    this.menuRoutes = null;
                 }
                 AppComponent.prototype.ngOnInit = function () {
                     if (this.routes === null) {
                         this.routes = [
                             { path: "/index", component: static_component_1.StaticComponent, name: "Index", useAsDefault: true },
                             { path: "/customers", component: list_component_1.CustomersComponent, name: "客户", useAsDefault: false },
+                            { path: "/customers/add", component: edit_component_1.CustomerEditComponent, name: "创建客户", useAsDefault: false },
                             new router_1.AsyncRoute({
                                 path: "/sub",
                                 name: "Sub",
@@ -48,10 +55,16 @@ System.register(["angular2/core", "angular2/router", "./static.component", "./cu
                             })
                         ];
                         this.router.config(this.routes);
+                        this.menuRoutes = this.routes.ToList()
+                            .Where(function (x) { return (x.path.match(/\//g) || []).length < 2; })
+                            .ToArray();
                     }
                 };
                 AppComponent.prototype.getLinkStyle = function (route) {
                     return this.location.path().indexOf(route.path) > -1;
+                };
+                AppComponent.prototype.getIsMainMenu = function (route) {
+                    return (route.path.match(/\//g) || []).length < 2;
                 };
                 AppComponent = __decorate([
                     core_1.Component({
