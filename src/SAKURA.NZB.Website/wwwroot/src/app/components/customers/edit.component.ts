@@ -2,6 +2,7 @@
 
 import {Component, OnInit} from "angular2/core";
 import {CORE_DIRECTIVES, FORM_DIRECTIVES} from "angular2/common";
+import {RouteParams} from 'angular2/router';
 import {ApiService} from "../api.service";
 
 import '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js';
@@ -33,14 +34,17 @@ export class Customer {
 })
 export class CustomerEditComponent implements OnInit {
     customerList: Customer[] = [];
-	searchList: Customer[] = [];
-	filterText = '';
-	totalAmount = 0;
-	isListViewMode = true;
 
-	private _filterText = '';
 
-    constructor(private service: ApiService) { }
+	editMode = false;
+	private customerId: string;
+
+    constructor(private service: ApiService, params: RouteParams) {
+		this.customerId = params.get("id");
+		if (this.customerId) {
+			this.editMode = true;			
+		}
+	}
 
     ngOnInit() {
         this.get();
@@ -54,18 +58,9 @@ export class CustomerEditComponent implements OnInit {
                 json.forEach(c => {
 					that.customerList.push(new Customer(c));
 				});
-
-				that.totalAmount = that.customerList.length;
-				that.searchList = that.customerList.ToList<Customer>()
-					.OrderBy(x => x.pinyin)
-					.ToArray();;
             }
         });
     }
 
-	startsWith(str: string, searchString: string) {
-		return str.substr(0, searchString.length) === searchString;
-	};
 
-	get amount() { return this.searchList.length; }
 }

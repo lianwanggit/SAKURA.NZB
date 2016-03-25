@@ -28,7 +28,8 @@ export class AppComponent implements OnInit {
             this.routes = [
                 { path: "/index", component: StaticComponent, name: "Index", useAsDefault: true },
 				{ path: "/customers", component: CustomersComponent, name: "客户", useAsDefault: false },
-				{ path: "/customers/add", component: CustomerEditComponent, name: "创建客户", useAsDefault: false },
+				{ path: "/customers/add", component: CustomerEditComponent, name: "CAdd", useAsDefault: false },
+				{ path: "/customers/edit/:id", component: CustomerEditComponent, name: "CEdit", useAsDefault: false },
 
                 new AsyncRoute({
                     path: "/sub",

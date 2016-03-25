@@ -21,13 +21,14 @@
             color: #fff;
         }
 
-.customers-table tr:hover {
+.customers-table tr:hover,
+.customers-table-tr-selected {
     color: #2585ae;
 }
 
-.customers-table th:hover {
-    background: #5bc0de;
-    color: #fff;
+.customers-table th:hover,
+.customers-table-th-selected {
+    background: #5bc0de !important;
 }
 
 .item:hover a p.new-label span {
@@ -53,9 +54,15 @@
     width: 50px;
 }
 
-    .customers-table th > h3 {
+    .customers-table th:first-child {
         text-align: center;
         margin: 10px 0;
+    }
+
+    .customers-table th > i {
+        padding: 21px 0;
+        cursor: pointer;
+        cursor: hand;
     }
 
 .customers-table tr > td:first-of-type {

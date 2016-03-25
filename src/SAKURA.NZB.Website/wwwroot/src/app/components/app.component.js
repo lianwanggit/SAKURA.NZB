@@ -42,7 +42,8 @@ System.register(["angular2/core", "angular2/router", "./static.component", "./cu
                         this.routes = [
                             { path: "/index", component: static_component_1.StaticComponent, name: "Index", useAsDefault: true },
                             { path: "/customers", component: list_component_1.CustomersComponent, name: "客户", useAsDefault: false },
-                            { path: "/customers/add", component: edit_component_1.CustomerEditComponent, name: "创建客户", useAsDefault: false },
+                            { path: "/customers/add", component: edit_component_1.CustomerEditComponent, name: "CAdd", useAsDefault: false },
+                            { path: "/customers/edit/:id", component: edit_component_1.CustomerEditComponent, name: "CEdit", useAsDefault: false },
                             new router_1.AsyncRoute({
                                 path: "/sub",
                                 name: "Sub",

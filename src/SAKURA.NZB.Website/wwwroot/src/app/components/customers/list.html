@@ -1,7 +1,7 @@
 ﻿<div class="grey-border">
     <h2 class="page-header">
         客户 <small>({{amount}} / {{totalAmount}})</small>
-        <button type="button" class="btn btn-info pull-right" [routerLink]="['创建客户']">
+        <button type="button" class="btn btn-info pull-right" [routerLink]="['CAdd']">
             创建 <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
         </button>
     </h2>
@@ -33,9 +33,10 @@
 
     <table class="table table-hover customers-table" *ngIf="isListViewMode">
         <tbody>
-            <tr *ngFor="#c of searchList; #i = index">
-                <th scope="row">
-                    <h3>{{c.index}}</h3>
+            <tr *ngFor="#c of searchList; #i = index" (click)="onClickListItem(c.id)" [class.customers-table-tr-selected]="c.selected">
+                <th scope="row" (click)="onEdit(c.id)" [class.customers-table-th-selected]="c.selected">
+                    <h3 *ngIf="!c.selected">{{c.index}}</h3>
+                    <i *ngIf="c.selected" class="fa fa-pencil-square-o fa-lg"></i>
                 </th>
                 <td class="vert-align">{{c.name}}</td>
                 <td class="vert-align">{{c.tel}}</td>
@@ -45,7 +46,7 @@
     </table>
 
     <ul class="customers-list" *ngIf="!isListViewMode">
-        <li *ngFor="#c of searchList; #i = index">
+        <li *ngFor="#c of searchList; #i = index" (click)="onEdit(c.id)">
             <i class="fa fa-{{i < icons.length ? icons[i] : icons[i % length]}} fa-2x"></i>
             <h4>{{c.name}}</h4>
             <span>{{c.tel}}</span>

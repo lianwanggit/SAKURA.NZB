@@ -2,7 +2,7 @@
 
 import {Component, OnInit} from "angular2/core";
 import {CORE_DIRECTIVES, FORM_DIRECTIVES} from "angular2/common";
-import {ROUTER_DIRECTIVES} from 'angular2/router';
+import {Router, RouterLink, Location, ROUTER_DIRECTIVES} from 'angular2/router';
 import {ApiService} from "../api.service";
 
 import '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js';
@@ -14,6 +14,7 @@ export class Customer {
 	tel: string;
 	address: string;
 	index: string;
+	selected = false;
 
 	constructor(obj) {
 		this.id = obj.Id;
@@ -39,10 +40,10 @@ export class CustomersComponent implements OnInit {
 	filterText = '';
 	totalAmount = 0;
 	isListViewMode = true;
-	
+
 	private _filterText = '';
 
-    constructor(private service: ApiService) { }
+    constructor(private service: ApiService, private router: Router) { }
 
     ngOnInit() {
         this.get();
@@ -96,7 +97,28 @@ export class CustomersComponent implements OnInit {
 		this.isListViewMode = list;
 	}
 
-	startsWith(str:string, searchString:string) {
+	onClickListItem(id: number) {
+		this.customerList.forEach(x => {
+			if (x.id == id) {
+				x.selected = true;
+				return;
+			}
+
+			x.selected = false;
+		});
+	}
+
+	onEdit(cid: number) {
+		this.customerList.forEach(x => {
+			if (x.id == cid && (!this.isListViewMode || x.selected)) {
+				this.router.navigate(['CEdit', {id: cid }]);
+				return;
+			}
+		});
+	}
+
+
+	startsWith(str: string, searchString: string) {
 		return str.substr(0, searchString.length) === searchString;
 	};
 

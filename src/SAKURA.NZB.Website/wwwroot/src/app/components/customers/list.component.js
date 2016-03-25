@@ -29,6 +29,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
         execute: function() {
             Customer = (function () {
                 function Customer(obj) {
+                    this.selected = false;
                     this.id = obj.Id;
                     this.name = obj.FullName;
                     this.pinyin = obj.NamePinYin;
@@ -40,8 +41,9 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
             })();
             exports_1("Customer", Customer);
             CustomersComponent = (function () {
-                function CustomersComponent(service) {
+                function CustomersComponent(service, router) {
                     this.service = service;
+                    this.router = router;
                     this.icons = ['ambulance', 'car', 'bicycle', 'bus', 'taxi', 'fighter-jet', 'motorcycle', 'plane', 'rocket', 'ship', 'space-shuttle', 'subway', 'taxi', 'train', 'truck'];
                     this.customerList = [];
                     this.searchList = [];
@@ -94,6 +96,24 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                 CustomersComponent.prototype.onSwitchViewMode = function (list) {
                     this.isListViewMode = list;
                 };
+                CustomersComponent.prototype.onClickListItem = function (id) {
+                    this.customerList.forEach(function (x) {
+                        if (x.id == id) {
+                            x.selected = true;
+                            return;
+                        }
+                        x.selected = false;
+                    });
+                };
+                CustomersComponent.prototype.onEdit = function (cid) {
+                    var _this = this;
+                    this.customerList.forEach(function (x) {
+                        if (x.id == cid && (!_this.isListViewMode || x.selected)) {
+                            _this.router.navigate(['CEdit', { id: cid }]);
+                            return;
+                        }
+                    });
+                };
                 CustomersComponent.prototype.startsWith = function (str, searchString) {
                     return str.substr(0, searchString.length) === searchString;
                 };
@@ -111,7 +131,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                         providers: [api_service_1.ApiService],
                         directives: [common_1.CORE_DIRECTIVES, common_1.FORM_DIRECTIVES, router_1.ROUTER_DIRECTIVES]
                     }), 
-                    __metadata('design:paramtypes', [api_service_1.ApiService])
+                    __metadata('design:paramtypes', [api_service_1.ApiService, router_1.Router])
                 ], CustomersComponent);
                 return CustomersComponent;
             })();
