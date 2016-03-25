@@ -55,7 +55,7 @@ dd {
     cursor: hand;
 }
 
-path, line {
+#Header path, line {
     stroke: #777;
 }
 
