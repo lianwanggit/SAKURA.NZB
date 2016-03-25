@@ -43,6 +43,7 @@ System.register(["angular2/core", "angular2/common", "../api.service", '../../..
                     this.searchList = [];
                     this.filterText = '';
                     this.totalAmount = 0;
+                    this.isListViewMode = true;
                     this._filterText = '';
                 }
                 CustomersComponent.prototype.ngOnInit = function () {
@@ -81,6 +82,9 @@ System.register(["angular2/core", "angular2/common", "../api.service", '../../..
                             .ToArray();
                     }
                     this._filterText = this.filterText;
+                };
+                CustomersComponent.prototype.onSwitchViewMode = function (list) {
+                    this.isListViewMode = list;
                 };
                 CustomersComponent.prototype.startsWith = function (str, searchString) {
                     return str.substr(0, searchString.length) === searchString;

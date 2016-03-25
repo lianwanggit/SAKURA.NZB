@@ -22,7 +22,6 @@ export class Customer {
 	}
 }
 
-
 @Component({
     selector: "customers",
     templateUrl: "./src/app/components/customers/list.html",
@@ -36,6 +35,7 @@ export class CustomersComponent implements OnInit {
 	searchList: Customer[] = [];
 	filterText = '';
 	totalAmount = 0;
+	isListViewMode = true;
 	
 	private _filterText = '';
 
@@ -84,6 +84,10 @@ export class CustomersComponent implements OnInit {
 		}
 
 		this._filterText = this.filterText;
+	}
+
+	onSwitchViewMode(list: boolean) {
+		this.isListViewMode = list;
 	}
 
 	startsWith(str:string, searchString:string) {
