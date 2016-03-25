@@ -30,6 +30,9 @@ System.register(["rxjs/Rx", "angular2/http", "angular2/core"], function(exports_
                 ApiService.prototype.getCustomers = function (onNext) {
                     this.http.get("api/Customers").map(function (response) { return response.json(); }).subscribe(onNext);
                 };
+                ApiService.prototype.getCustomer = function (id, onNext) {
+                    this.http.get("api/Customers/" + id).map(function (response) { return response.json(); }).subscribe(onNext);
+                };
                 ApiService = __decorate([
                     core_1.Injectable(), 
                     __metadata('design:paramtypes', [http_1.Http])

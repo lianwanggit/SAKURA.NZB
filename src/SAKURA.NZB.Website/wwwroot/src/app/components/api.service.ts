@@ -13,4 +13,8 @@ export class ApiService {
 	getCustomers(onNext: (json: any) => void) {
         this.http.get("api/Customers").map(response => response.json()).subscribe(onNext);
     }
+
+	getCustomer(id: string, onNext: (json: any) => void) {
+        this.http.get("api/Customers/" + id).map(response => response.json()).subscribe(onNext);
+    }
 }

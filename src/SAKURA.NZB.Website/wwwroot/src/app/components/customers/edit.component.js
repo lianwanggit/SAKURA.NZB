@@ -43,6 +43,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                 function CustomerEditComponent(service, params) {
                     this.service = service;
                     this.customerList = [];
+                    this.customer = null;
                     this.editMode = false;
                     this.customerId = params.get("id");
                     if (this.customerId) {
@@ -50,18 +51,27 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     }
                 }
                 CustomerEditComponent.prototype.ngOnInit = function () {
-                    this.get();
+                    if (this.editMode)
+                        this.get();
                 };
                 CustomerEditComponent.prototype.get = function () {
                     var that = this;
-                    this.service.getCustomers(function (json) {
+                    this.service.getCustomer(this.customerId, function (json) {
                         if (json) {
-                            json.forEach(function (c) {
-                                that.customerList.push(new Customer(c));
-                            });
+                            that.customer = new Customer(json);
                         }
                     });
                 };
+                Object.defineProperty(CustomerEditComponent.prototype, "data", {
+                    get: function () { return JSON.stringify(this.customer); },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(CustomerEditComponent.prototype, "title", {
+                    get: function () { return (this.customer && this.editMode) ? "编辑用户 - " + this.customer.name : "新建用户"; },
+                    enumerable: true,
+                    configurable: true
+                });
                 CustomerEditComponent = __decorate([
                     core_1.Component({
                         selector: "customer-edit",

@@ -5,7 +5,8 @@ using SAKURA.NZB.Domain;
 
 namespace SAKURA.NZB.Website.Controllers
 {
-	[Route("api/[controller]")]
+
+	[Route("api/fake/[controller]")]
 	public class CustomersController : Controller
     {
         private NZBContext _context;

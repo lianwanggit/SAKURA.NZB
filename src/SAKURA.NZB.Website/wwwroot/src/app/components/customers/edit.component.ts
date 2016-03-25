@@ -35,9 +35,10 @@ export class Customer {
 export class CustomerEditComponent implements OnInit {
     customerList: Customer[] = [];
 
-
+	customer: Customer = null;
 	editMode = false;
 	private customerId: string;
+
 
     constructor(private service: ApiService, params: RouteParams) {
 		this.customerId = params.get("id");
@@ -47,20 +48,20 @@ export class CustomerEditComponent implements OnInit {
 	}
 
     ngOnInit() {
-        this.get();
+		if (this.editMode)
+			this.get();
     }
 
     get() {
 		var that = this;
 
-        this.service.getCustomers(json => {
+        this.service.getCustomer(this.customerId, json => {
             if (json) {
-                json.forEach(c => {
-					that.customerList.push(new Customer(c));
-				});
+                that.customer = new Customer(json);
             }
         });
     }
 
-
+	get data() { return JSON.stringify(this.customer); }
+	get title() { return (this.customer && this.editMode) ? "编辑用户 - " + this.customer.name : "新建用户"; }
 }
