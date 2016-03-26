@@ -81,7 +81,7 @@ export class AlphaIndexerComponent implements OnChanges {
 
 	onSearch(value: string) {
 		this.clearIndexSelection();
-		this.clearElementSelection();
+		//this.clearElementSelection();
 
 		if (this.filterText !== value)
 			this.filterText = value;
@@ -124,7 +124,7 @@ export class AlphaIndexerComponent implements OnChanges {
 			.Where(x => x.index === letter)
 			.OrderBy(x => x.pinyin)
 			.ToArray();
-		this.clearElementSelection();
+		//this.clearElementSelection();
 		this._indexer = letter;
 	}
 
