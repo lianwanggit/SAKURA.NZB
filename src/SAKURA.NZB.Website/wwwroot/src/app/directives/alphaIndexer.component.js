@@ -27,6 +27,7 @@ System.register(["angular2/core", "angular2/common", '../../../lib/TypeScript-Li
                     this.name = n;
                     this.pinyin = p;
                     this.index = this.pinyin ? this.pinyin.charAt(0).toUpperCase() : 'A';
+                    this.selected = false;
                 }
                 return Element;
             })();
@@ -35,6 +36,7 @@ System.register(["angular2/core", "angular2/common", '../../../lib/TypeScript-Li
                 function Indexer(l, c) {
                     this.letter = l;
                     this.count = c;
+                    this.selected = false;
                 }
                 return Indexer;
             })();
@@ -43,7 +45,12 @@ System.register(["angular2/core", "angular2/common", '../../../lib/TypeScript-Li
                 function AlphaIndexerComponent() {
                     this.alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
                     this.indexerList = [];
-                    this.resultList = [];
+                    this.elementList = [];
+                    this.filterText = '';
+                    this._filterText = '';
+                    this._indexer = '';
+                    this._selectedId = '';
+                    this.selectedId = new core_1.EventEmitter();
                 }
                 AlphaIndexerComponent.prototype.ngOnChanges = function (changes) {
                     //console.log(JSON.stringify(changes));
@@ -53,26 +60,101 @@ System.register(["angular2/core", "angular2/common", '../../../lib/TypeScript-Li
                             var item = list.First(function (i) { return i.letter === x.index; });
                             item.count += 1;
                         });
-                        this.indexerList = list.ToArray();
-                        this.resultList = this.elements.ToList()
+                        this.indexerList = list.Where(function (x) { return x.count > 0; }).ToArray();
+                        this.elementList = this.elements.ToList()
+                            .OrderBy(function (x) { return x.pinyin; })
+                            .ToArray();
+                        this.onClickElement(this.initialSelectedId);
+                    }
+                };
+                AlphaIndexerComponent.prototype.onClearFilter = function () {
+                    this.onSearch('');
+                };
+                AlphaIndexerComponent.prototype.onSearch = function (value) {
+                    var _this = this;
+                    this.clearIndexSelection();
+                    this.clearElementSelection();
+                    if (this.filterText !== value)
+                        this.filterText = value;
+                    if (this.filterText === this._filterText)
+                        return;
+                    this.elementList = [];
+                    if (/^$|^[\u4e00-\u9fa5_a-zA-Z ]+$/g.test(this.filterText)) {
+                        this.elementList = this.elements.ToList()
+                            .Where(function (x) { return _this.startsWith(x.name, _this.filterText) ||
+                            _this.startsWith(x.pinyin.toLowerCase(), _this.filterText.toLowerCase()); })
                             .OrderBy(function (x) { return x.pinyin; })
                             .ToArray();
                     }
+                    this._filterText = this.filterText;
                 };
-                Object.defineProperty(AlphaIndexerComponent.prototype, "d1", {
-                    get: function () { return JSON.stringify(this.indexerList); },
-                    enumerable: true,
-                    configurable: true
-                });
-                Object.defineProperty(AlphaIndexerComponent.prototype, "d2", {
-                    get: function () { return JSON.stringify(this.resultList); },
-                    enumerable: true,
-                    configurable: true
-                });
+                AlphaIndexerComponent.prototype.onClickIndexer = function (letter) {
+                    //toggle
+                    if (this._indexer === letter) {
+                        this.clearIndexSelection();
+                        this.elementList = this.elements.ToList()
+                            .OrderBy(function (x) { return x.pinyin; })
+                            .ToArray();
+                        return;
+                    }
+                    this.indexerList.forEach(function (x) {
+                        if (x.letter === letter) {
+                            x.selected = true;
+                            return;
+                        }
+                        x.selected = false;
+                    });
+                    this.elementList = this.elements.ToList()
+                        .Where(function (x) { return x.index === letter; })
+                        .OrderBy(function (x) { return x.pinyin; })
+                        .ToArray();
+                    this.clearElementSelection();
+                    this._indexer = letter;
+                };
+                AlphaIndexerComponent.prototype.onClickElement = function (id) {
+                    var _this = this;
+                    if (this._selectedId == id)
+                        return;
+                    this.elementList.forEach(function (x) {
+                        if (x.id.toString() == id) {
+                            x.selected = true;
+                            _this.selectedId.emit(x.id);
+                            return;
+                        }
+                        x.selected = false;
+                    });
+                    this._selectedId = id;
+                };
+                AlphaIndexerComponent.prototype.clearIndexSelection = function () {
+                    var _this = this;
+                    var index = this.indexerList.ToList().FirstOrDefault(function (x) { return x.letter == _this._indexer; });
+                    if (index)
+                        index.selected = false;
+                    this._indexer = '';
+                };
+                AlphaIndexerComponent.prototype.clearElementSelection = function () {
+                    var _this = this;
+                    var element = this.elementList.ToList().FirstOrDefault(function (x) { return x.id.toString() == _this._selectedId; });
+                    if (element)
+                        element.selected = false;
+                    this._selectedId = '';
+                };
+                AlphaIndexerComponent.prototype.startsWith = function (str, searchString) {
+                    return str.substr(0, searchString.length) === searchString;
+                };
+                ;
                 __decorate([
                     core_1.Input(), 
                     __metadata('design:type', Array)
                 ], AlphaIndexerComponent.prototype, "elements", void 0);
+                __decorate([
+                    core_1.Input(), 
+                    __metadata('design:type', String)
+                ], AlphaIndexerComponent.prototype, "initialSelectedId", void 0);
+                __decorate([
+                    core_1.Output(), 
+                    __metadata('design:type', Object)
+                ], AlphaIndexerComponent.prototype, "selectedId", void 0);
                 AlphaIndexerComponent = __decorate([
                     core_1.Component({
                         selector: "alpha-indexer",

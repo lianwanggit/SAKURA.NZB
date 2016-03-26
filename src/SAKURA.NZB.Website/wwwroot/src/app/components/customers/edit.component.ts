@@ -49,18 +49,24 @@ export class CustomerEditComponent implements OnInit {
 	}
 
     ngOnInit() {
-		if (this.editMode)
-			this.get();
+		if (this.editMode) {
+			this.getCustomer(this.customerId);
+			this.getCustomers();
+		}
     }
 
-    get() {
+	getCustomer(id: string) {
 		var that = this;
 
-        this.service.getCustomer(this.customerId, json => {
+        this.service.getCustomer(id, json => {
             if (json) {
                 that.customer = new Customer(json);
             }
         });
+	}
+
+	getCustomers() {
+		var that = this;
 
 		this.service.getCustomers(json => {
 			if (json) {
@@ -68,12 +74,16 @@ export class CustomerEditComponent implements OnInit {
 				json.forEach(x => {
 					var c = new Customer(x);
 					list.Add(new Element(c.id, c.name, c.pinyin));
-				});	
+				});
 
-				that.elementSource = list.ToArray();	
+				that.elementSource = list.ToArray();
 			}
 		});
-    }
+	}
+
+	onElementSelected(id: string) {
+		this.getCustomer(id);
+	}
 
 	get data() { return JSON.stringify(this.customer); }
 	get title() { return (this.customer && this.editMode) ? "编辑用户 - " + this.customer.name : "新建用户"; }

@@ -1,13 +1,13 @@
 ﻿<div class="grey-border">
     <h2 class="page-header">{{title}}</h2>
-    
-    <div class="row">
-        <div class="hidden-xs">
-            <alpha-indexer [elements]="elementSource"></alpha-indexer>
-        </div>
-        <div class="col-xs-12">
-            {{data}}
-        </div>
+
+
+    <div class="hidden-xs">
+        <alpha-indexer [elements]="elementSource" [initialSelectedId]="customerId" (selectedId)="onElementSelected($event)"></alpha-indexer>
     </div>
+    <div>
+        {{data}}
+    </div>
+
 </div>
 

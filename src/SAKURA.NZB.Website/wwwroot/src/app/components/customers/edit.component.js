@@ -53,16 +53,21 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     }
                 }
                 CustomerEditComponent.prototype.ngOnInit = function () {
-                    if (this.editMode)
-                        this.get();
+                    if (this.editMode) {
+                        this.getCustomer(this.customerId);
+                        this.getCustomers();
+                    }
                 };
-                CustomerEditComponent.prototype.get = function () {
+                CustomerEditComponent.prototype.getCustomer = function (id) {
                     var that = this;
-                    this.service.getCustomer(this.customerId, function (json) {
+                    this.service.getCustomer(id, function (json) {
                         if (json) {
                             that.customer = new Customer(json);
                         }
                     });
+                };
+                CustomerEditComponent.prototype.getCustomers = function () {
+                    var that = this;
                     this.service.getCustomers(function (json) {
                         if (json) {
                             var list = [].ToList();
@@ -73,6 +78,9 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                             that.elementSource = list.ToArray();
                         }
                     });
+                };
+                CustomerEditComponent.prototype.onElementSelected = function (id) {
+                    this.getCustomer(id);
                 };
                 Object.defineProperty(CustomerEditComponent.prototype, "data", {
                     get: function () { return JSON.stringify(this.customer); },
