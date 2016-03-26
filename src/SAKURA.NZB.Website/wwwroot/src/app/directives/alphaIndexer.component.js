@@ -73,7 +73,6 @@ System.register(["angular2/core", "angular2/common", '../../../lib/TypeScript-Li
                 AlphaIndexerComponent.prototype.onSearch = function (value) {
                     var _this = this;
                     this.clearIndexSelection();
-                    //this.clearElementSelection();
                     if (this.filterText !== value)
                         this.filterText = value;
                     if (this.filterText === this._filterText)
@@ -108,7 +107,6 @@ System.register(["angular2/core", "angular2/common", '../../../lib/TypeScript-Li
                         .Where(function (x) { return x.index === letter; })
                         .OrderBy(function (x) { return x.pinyin; })
                         .ToArray();
-                    //this.clearElementSelection();
                     this._indexer = letter;
                 };
                 AlphaIndexerComponent.prototype.onClickElement = function (id) {

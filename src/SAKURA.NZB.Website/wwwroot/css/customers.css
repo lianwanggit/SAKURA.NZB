@@ -73,6 +73,12 @@
     border-right: 4px solid #4e8539;
 }
 
+.left-widget {
+    border-right: 1px solid #ccc;
+    display: inline-block;
+    padding-right: 15px;
+}
+
 @media (min-width: 768px) {
     .customers-list li {
         width: 20%;
