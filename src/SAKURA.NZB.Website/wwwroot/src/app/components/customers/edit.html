@@ -1,11 +1,10 @@
 ﻿<div class="grey-border">
-    <h2 class="page-header">{{title}}</h2>
-
-
+    
     <div class="hidden-xs left-widget">
         <alpha-indexer [elements]="elementSource" [initialSelectedId]="customerId" (selectedId)="onElementSelected($event)"></alpha-indexer>
     </div>
-    <div>
+    <div class="row">
+        <h2 class="page-header">{{title}}</h2>
         {{data}}
     </div>
 
