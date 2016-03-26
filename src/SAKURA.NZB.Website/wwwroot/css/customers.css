@@ -90,6 +90,11 @@
     .customers-table th {
         width: 60px;
     }
+
+    .from-container {
+        margin-left: 200px;
+        padding-left: 10px;
+    }
 }
 
 @media (min-width: 1024px) {

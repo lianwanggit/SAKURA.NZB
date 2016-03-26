@@ -1,12 +1,98 @@
 ﻿<div class="grey-border">
-    
+
     <div class="hidden-xs left-widget">
         <alpha-indexer [elements]="elementSource" [initialSelectedId]="customerId" (selectedId)="onElementSelected($event)"></alpha-indexer>
     </div>
-    <div class="row">
-        <h2 class="page-header">{{title}}</h2>
-        {{data}}
-    </div>
 
+    <div class="from-container">
+        <h2 class="page-header">{{title}}</h2>
+
+        <div class="form-group">
+            <label class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <div class="input-group">
+                    <div class="input-group-addon"><i class="fa fa-user fa-lg"></i></div>
+                    <input asp-for="FullName" class="form-control" />
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Address" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <div class="input-group">
+                    <div class="input-group-addon"><i class="fa fa-home fa-lg"></i></div>
+                    <input asp-for="Address" class="form-control" />
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Address1" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <div class="input-group">
+                    <div class="input-group-addon"><i class="fa fa-home fa-lg"></i></div>
+                    <input asp-for="Address1" class="form-control" />
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Phone1" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <div class="input-group">
+                    <div class="input-group-addon"><i class="fa fa-phone fa-lg"></i></div>
+                    <input asp-for="Phone1" class="form-control" />
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Phone2" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <div class="input-group">
+                    <div class="input-group-addon"><i class="fa fa-phone fa-lg"></i></div>
+                    <input asp-for="Phone2" class="form-control" />
+                </div>
+            </div>
+
+        </div>
+        <div class="form-group">
+            <label asp-for="Email" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <div class="input-group">
+                    <div class="input-group-addon"><i class="fa fa-at fa-lg"></i></div>
+                    <input asp-for="Email" class="form-control" />
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <div class="checkbox">
+                    <input asp-for="IsIdentityUploaded" />
+                    <label asp-for="IsIdentityUploaded"></label>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Level" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Level" class="form-control" />
+
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Description" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+            </div>
+        </div>
+
+    </div>
 </div>
+
 
