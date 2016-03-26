@@ -1,96 +1,107 @@
 ﻿<div class="grey-border">
 
-    <div class="hidden-xs left-widget">
+    <div class="hidden-xs left-widget" *ngIf="editMode">
         <alpha-indexer [elements]="elementSource" [initialSelectedId]="customerId" (selectedId)="onElementSelected($event)"></alpha-indexer>
     </div>
 
     <div class="from-container">
         <h2 class="page-header">{{title}}</h2>
-
-        <div class="form-group">
-            <label class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <div class="input-group">
-                    <div class="input-group-addon"><i class="fa fa-user fa-lg"></i></div>
-                    <input asp-for="FullName" class="form-control" />
-                </div>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label asp-for="Address" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <div class="input-group">
-                    <div class="input-group-addon"><i class="fa fa-home fa-lg"></i></div>
-                    <input asp-for="Address" class="form-control" />
-                </div>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label asp-for="Address1" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <div class="input-group">
-                    <div class="input-group-addon"><i class="fa fa-home fa-lg"></i></div>
-                    <input asp-for="Address1" class="form-control" />
-                </div>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label asp-for="Phone1" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <div class="input-group">
-                    <div class="input-group-addon"><i class="fa fa-phone fa-lg"></i></div>
-                    <input asp-for="Phone1" class="form-control" />
-                </div>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label asp-for="Phone2" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <div class="input-group">
-                    <div class="input-group-addon"><i class="fa fa-phone fa-lg"></i></div>
-                    <input asp-for="Phone2" class="form-control" />
+        
+        <form class="form-horizontal" (ngSubmit)="onSubmit()" #myForm="ngForm">
+            <div class="form-group">
+                <label class="col-md-2" for="fullName">姓名</label>
+                <div class="col-md-10">
+                    <input id="fullName" type="text" class="form-control" required maxlength="10"
+                           [(ngModel)]="model.fullName" ngControl="name"  #name="ngForm"/>
+                    <div [hidden]="name.valid || name.pristine" class="alert alert-danger">
+                        姓名不能为空
+                    </div>
                 </div>
             </div>
 
-        </div>
-        <div class="form-group">
-            <label asp-for="Email" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <div class="input-group">
-                    <div class="input-group-addon"><i class="fa fa-at fa-lg"></i></div>
-                    <input asp-for="Email" class="form-control" />
+            <div class="form-group">
+                <label class="col-md-2" for="address">常用地址</label>
+                <div class="col-md-10">
+                    <input id="address" type="text" class="form-control" required maxlength="100"
+                            [(ngModel)]="model.address" ngControl="address"  #address="ngForm"/>
+                    <div [hidden]="address.valid || address.pristine" class="alert alert-danger">
+                        常用地址不能为空
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <div class="checkbox">
-                    <input asp-for="IsIdentityUploaded" />
-                    <label asp-for="IsIdentityUploaded"></label>
-
+            <div class="form-group">
+                <label class="col-md-2" for="address1">备用地址</label>
+                <div class="col-md-10">
+                    <input id="address1" type="text" class="form-control" maxlength="100"
+                            [(ngModel)]="model.address1" />
                 </div>
             </div>
-        </div>
 
-        <div class="form-group">
-            <label asp-for="Level" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Level" class="form-control" />
+            <div class="form-group">
+                <label class="col-md-2" for="phone1">常用电话</label>
+                <div class="col-md-10">
+                    <input id="phone1" type="tel" class="form-control" required 
+                           [(ngModel)]="model.phone1" ngControl="tel"  #tel="ngForm"/>
+                    <div [hidden]="tel.valid || tel.pristine" class="alert alert-danger">
+                        常用电话不能为空
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-md-2" for="Phone2">备用电话</label>
+                <div class="col-md-10">
+                    <input id="Phone2" type="tel" class="form-control" 
+                           [(ngModel)]="model.phone2"/>
+                </div>
 
             </div>
-        </div>
-
-        <div class="form-group">
-            <label asp-for="Description" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+            <div class="form-group">
+                <label class="col-md-2" for="email">电子邮件</label>
+                <div class="col-md-10">
+                    <input id="email" type="email" class="form-control" 
+                           [(ngModel)]="model.email"/>
+                </div>
             </div>
-        </div>
+
+            <div class="form-group">
+                <label class="col-md-2" for="cmn-toggle-1">身份证已上传</label>
+                <div class="col-md-10">
+                    <div class="switch">
+                        <input class="cmn-toggle cmn-toggle-round" id="cmn-toggle-1" type="checkbox"
+                               [(ngModel)]="model.isIdentityUploaded" />
+                        <label for="cmn-toggle-1"></label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-md-2" for="level">级别</label>
+                <div class="col-md-10">
+                    <input id="level" type="number" class="form-control"
+                           [(ngModel)]="model.level" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-md-2" for="description">说明</label>
+                <div class="col-md-10">
+                    <textarea id="description" class="form-control" rows="3" maxlength="255"
+                              [(ngModel)]="model.description" ></textarea>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <button type="button" class="btn btn-default" [routerLink]="['客户']">返回列表</button>
+                    <button type="submit" class="btn btn-success left-spacer"
+                            [disabled]="!myForm.form.valid">
+                        保存 <i class="fa fa-floppy-o fa-lg"></i>
+                    </button>
+                </div>
+            </div>
+        </form>
 
     </div>
 </div>

@@ -92,8 +92,8 @@
     }
 
     .from-container {
-        margin-left: 200px;
-        padding-left: 10px;
+        padding-left: 30px;
+        overflow: hidden;
     }
 }
 

@@ -13,6 +13,7 @@
     "EntityFramework.MicrosoftSqlServer": "7.0.0-rc1-final",
     "Microsoft.Extensions.Configuration.Abstractions": "1.0.0-rc1-final",
     "Microsoft.Extensions.DependencyInjection.Abstractions": "1.0.0-rc1-final",
+    "pinyin4net": "1.0.0",
 
     "SAKURA.NZB.Domain": "",
     "SAKURA.NZB.Data": ""

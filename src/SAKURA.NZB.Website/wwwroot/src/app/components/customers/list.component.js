@@ -30,11 +30,11 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
             Customer = (function () {
                 function Customer(obj) {
                     this.selected = false;
-                    this.id = obj.Id;
-                    this.name = obj.FullName;
-                    this.pinyin = obj.NamePinYin;
-                    this.tel = obj.Phone1;
-                    this.address = obj.Address;
+                    this.id = obj.id;
+                    this.name = obj.fullName;
+                    this.pinyin = obj.namePinYin;
+                    this.tel = obj.phone1;
+                    this.address = obj.address;
                     this.index = this.pinyin ? this.pinyin.charAt(0).toUpperCase() : 'A';
                 }
                 return Customer;
@@ -64,7 +64,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                             });
                             that.totalAmount = that.customerList.length;
                             that.searchList = that.customerList.ToList()
-                                .OrderBy(function (x) { return x.pinyin; })
+                                .OrderBy(function (x) { return x.pinyin.toUpperCase(); })
                                 .ToArray();
                             ;
                         }

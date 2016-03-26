@@ -32,20 +32,29 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
         execute: function() {
             Customer = (function () {
                 function Customer(obj) {
-                    this.id = obj.Id;
-                    this.name = obj.FullName;
-                    this.pinyin = obj.NamePinYin;
-                    this.tel = obj.Phone1;
-                    this.address = obj.Address;
-                    this.index = this.pinyin ? this.pinyin.charAt(0).toUpperCase() : 'A';
+                    this.id = obj.id;
+                    this.fullName = obj.fullName;
+                    this.namePinYin = obj.namePinYin;
+                    this.phone1 = obj.phone1;
+                    this.phone2 = obj.phone2;
+                    this.address = obj.address;
+                    this.address1 = obj.address1;
+                    this.email = obj.email;
+                    this.isIdentityUploaded = obj.isIdentityUploaded;
+                    this.level = obj.level;
+                    this.description = obj.description;
                 }
                 return Customer;
             })();
             exports_1("Customer", Customer);
             CustomerEditComponent = (function () {
-                function CustomerEditComponent(service, params) {
+                function CustomerEditComponent(service, router, params) {
                     this.service = service;
-                    this.customer = null;
+                    this.router = router;
+                    this.model = new Customer({
+                        "id": 0, "fullName": null, "namePinYin": null, "phone1": null, "phone2": null,
+                        "address": null, "address1": null, "email": null, "isIdentityUploaded": false, "level": null, "description": null
+                    });
                     this.editMode = false;
                     this.customerId = params.get("id");
                     if (this.customerId) {
@@ -62,7 +71,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     var that = this;
                     this.service.getCustomer(id, function (json) {
                         if (json) {
-                            that.customer = new Customer(json);
+                            that.model = new Customer(json);
                         }
                     });
                 };
@@ -73,7 +82,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                             var list = [].ToList();
                             json.forEach(function (x) {
                                 var c = new Customer(x);
-                                list.Add(new alphaIndexer_component_1.Element(c.id, c.name, c.pinyin));
+                                list.Add(new alphaIndexer_component_1.Element(c.id, c.fullName, c.namePinYin));
                             });
                             that.elementSource = list.ToArray();
                         }
@@ -82,13 +91,20 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                 CustomerEditComponent.prototype.onElementSelected = function (id) {
                     this.getCustomer(id);
                 };
+                CustomerEditComponent.prototype.onSubmit = function () {
+                    var _this = this;
+                    var that = this;
+                    this.service.postCustomer(JSON.stringify(this.model)).subscribe(function (response) {
+                        _this.router.navigate(['客户']);
+                    });
+                };
                 Object.defineProperty(CustomerEditComponent.prototype, "data", {
-                    get: function () { return JSON.stringify(this.customer); },
+                    get: function () { return JSON.stringify(this.model); },
                     enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(CustomerEditComponent.prototype, "title", {
-                    get: function () { return (this.customer && this.editMode) ? "编辑用户 - " + this.customer.name : "新建用户"; },
+                    get: function () { return (this.model && this.editMode) ? "编辑用户 - " + this.model.fullName : "新建用户"; },
                     enumerable: true,
                     configurable: true
                 });
@@ -98,9 +114,9 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                         templateUrl: "./src/app/components/customers/edit.html",
                         styleUrls: ["./css/customers.css"],
                         providers: [api_service_1.ApiService],
-                        directives: [common_1.CORE_DIRECTIVES, common_1.FORM_DIRECTIVES, alphaIndexer_component_1.AlphaIndexerComponent]
+                        directives: [common_1.CORE_DIRECTIVES, common_1.FORM_DIRECTIVES, router_1.ROUTER_DIRECTIVES, alphaIndexer_component_1.AlphaIndexerComponent]
                     }), 
-                    __metadata('design:paramtypes', [api_service_1.ApiService, router_1.RouteParams])
+                    __metadata('design:paramtypes', [api_service_1.ApiService, router_1.Router, router_1.RouteParams])
                 ], CustomerEditComponent);
                 return CustomerEditComponent;
             })();

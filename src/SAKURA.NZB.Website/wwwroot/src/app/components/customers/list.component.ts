@@ -2,7 +2,7 @@
 
 import {Component, OnInit} from "angular2/core";
 import {CORE_DIRECTIVES, FORM_DIRECTIVES} from "angular2/common";
-import {Router, RouterLink, Location, ROUTER_DIRECTIVES} from 'angular2/router';
+import {Router, ROUTER_DIRECTIVES} from 'angular2/router';
 import {ApiService} from "../api.service";
 
 import '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js';
@@ -17,11 +17,11 @@ export class Customer {
 	selected = false;
 
 	constructor(obj) {
-		this.id = obj.Id;
-		this.name = obj.FullName;
-		this.pinyin = obj.NamePinYin;
-		this.tel = obj.Phone1;
-		this.address = obj.Address;
+		this.id = obj.id;
+		this.name = obj.fullName;
+		this.pinyin = obj.namePinYin;
+		this.tel = obj.phone1;
+		this.address = obj.address;
 		this.index = this.pinyin ? this.pinyin.charAt(0).toUpperCase() : 'A';
 	}
 }
@@ -60,7 +60,7 @@ export class CustomersComponent implements OnInit {
 
 				that.totalAmount = that.customerList.length;
 				that.searchList = that.customerList.ToList<Customer>()
-					.OrderBy(x => x.pinyin)
+					.OrderBy(x => x.pinyin.toUpperCase())
 					.ToArray();;
             }
         });

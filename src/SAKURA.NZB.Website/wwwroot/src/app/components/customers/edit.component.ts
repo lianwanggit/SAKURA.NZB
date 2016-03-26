@@ -2,7 +2,7 @@
 
 import {Component, OnInit} from "angular2/core";
 import {CORE_DIRECTIVES, FORM_DIRECTIVES} from "angular2/common";
-import {RouteParams} from 'angular2/router';
+import {Router, RouteParams, ROUTER_DIRECTIVES} from 'angular2/router';
 import {ApiService} from "../api.service";
 import {AlphaIndexerComponent, Element} from "../../directives/alphaIndexer.component";
 
@@ -10,19 +10,29 @@ import '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.
 
 export class Customer {
 	id: number;
-	name: string;
-	pinyin: string;
-	tel: string;
+	fullName: string;
+	namePinYin: string;
+	phone1: string;
+	phone2: string;
 	address: string;
-	index: string;
+	address1: string;
+	email: string;
+	isIdentityUploaded: boolean;
+	level: number;
+	description: string;
 
 	constructor(obj) {
-		this.id = obj.Id;
-		this.name = obj.FullName;
-		this.pinyin = obj.NamePinYin;
-		this.tel = obj.Phone1;
-		this.address = obj.Address;
-		this.index = this.pinyin ? this.pinyin.charAt(0).toUpperCase() : 'A';
+		this.id = obj.id;
+		this.fullName = obj.fullName;
+		this.namePinYin = obj.namePinYin;
+		this.phone1 = obj.phone1;
+		this.phone2 = obj.phone2;
+		this.address = obj.address;
+		this.address1 = obj.address1;
+		this.email = obj.email;
+		this.isIdentityUploaded = obj.isIdentityUploaded;
+		this.level = obj.level;
+		this.description = obj.description;
 	}
 }
 
@@ -31,20 +41,23 @@ export class Customer {
     templateUrl: "./src/app/components/customers/edit.html",
 	styleUrls: ["./css/customers.css"],
     providers: [ApiService],
-    directives: [CORE_DIRECTIVES, FORM_DIRECTIVES, AlphaIndexerComponent]
+    directives: [CORE_DIRECTIVES, FORM_DIRECTIVES, ROUTER_DIRECTIVES, AlphaIndexerComponent]
 })
 export class CustomerEditComponent implements OnInit {
     elementSource: Element[];
 
-	customer: Customer = null;
+	model: Customer = new Customer({
+		"id": 0, "fullName": null, "namePinYin": null, "phone1": null, "phone2": null,
+		"address": null, "address1": null, "email": null, "isIdentityUploaded": false, "level": null, "description": null
+	});
 	editMode = false;
 	private customerId: string;
 
 
-    constructor(private service: ApiService, params: RouteParams) {
+    constructor(private service: ApiService, private router: Router, params: RouteParams) {
 		this.customerId = params.get("id");
 		if (this.customerId) {
-			this.editMode = true;			
+			this.editMode = true;
 		}
 	}
 
@@ -60,7 +73,7 @@ export class CustomerEditComponent implements OnInit {
 
         this.service.getCustomer(id, json => {
             if (json) {
-                that.customer = new Customer(json);
+                that.model = new Customer(json);
             }
         });
 	}
@@ -73,7 +86,7 @@ export class CustomerEditComponent implements OnInit {
 				var list = [].ToList<Element>();
 				json.forEach(x => {
 					var c = new Customer(x);
-					list.Add(new Element(c.id, c.name, c.pinyin));
+					list.Add(new Element(c.id, c.fullName, c.namePinYin));
 				});
 
 				that.elementSource = list.ToArray();
@@ -85,6 +98,14 @@ export class CustomerEditComponent implements OnInit {
 		this.getCustomer(id);
 	}
 
-	get data() { return JSON.stringify(this.customer); }
-	get title() { return (this.customer && this.editMode) ? "编辑用户 - " + this.customer.name : "新建用户"; }
+	onSubmit() {
+		var that = this;
+
+		this.service.postCustomer(JSON.stringify(this.model)).subscribe(response  => {
+			this.router.navigate(['客户']);
+		});
+	}
+
+	get data() { return JSON.stringify(this.model); }
+	get title() { return (this.model && this.editMode) ? "编辑用户 - " + this.model.fullName : "新建用户"; }
 }

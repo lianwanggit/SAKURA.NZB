@@ -1,11 +1,15 @@
 ﻿using Microsoft.AspNet.Builder;
 using Microsoft.AspNet.Hosting;
+using Microsoft.AspNet.Mvc.Formatters;
 using Microsoft.Data.Entity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using SAKURA.NZB.Core;
 using SAKURA.NZB.Data;
+using System.Linq;
 
 namespace SAKURA.NZB.Website
 {
@@ -43,7 +47,13 @@ namespace SAKURA.NZB.Website
 			var coreModule = new CoreModule(Configuration);
 			coreModule.ConfigureServices(services);
 
-            services.AddMvc();
+            services.AddMvc()
+				.AddMvcOptions(options => {
+					var formatter = options.OutputFormatters.First(f => f is JsonOutputFormatter) as JsonOutputFormatter;
+					formatter.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+					formatter.SerializerSettings.DateFormatHandling = DateFormatHandling.IsoDateFormat;
+
+				});
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
