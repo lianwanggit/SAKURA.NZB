@@ -8,9 +8,10 @@ using SAKURA.NZB.Data;
 namespace SAKURA.NZB.Data.Migrations
 {
     [DbContext(typeof(NZBContext))]
-    partial class NZBContextModelSnapshot : ModelSnapshot
+    [Migration("20160327090630_initial-9")]
+    partial class initial9
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "7.0.0-rc1-16348")
@@ -174,8 +175,6 @@ namespace SAKURA.NZB.Data.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired();
-
-                    b.Property<float>("Price");
 
                     b.HasKey("Id");
                 });
