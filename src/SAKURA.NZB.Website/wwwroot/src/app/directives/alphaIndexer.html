@@ -1,31 +1,33 @@
-﻿<table class="table">
-   <tr>
-       <td colspan="2">
-           <div class="form-group input-group">
-               <input type="text" class="form-control" placeholder="搜索"
-                      [(ngModel)]="filterText" (keyup)="onSearch($event.target.value)" (input)="onSearch($event.target.value)" />
-               <div class="input-group-btn">
-                   <button type="button" class="btn btn-default" aria-label="Clear" (click)="onClearFilter()">
-                       <span class="glyphicon glyphicon-remove"></span>
-                   </button>
-               </div>
-           </div> 
-       </td>
-   </tr>
-     <tr>
+﻿<table class="table" >
+    <tr>
+        <td colspan="2">
+            <div class="form-group input-group">
+                <input type="text" class="form-control" placeholder="搜索"
+                       [(ngModel)]="filterText" (keyup)="onSearch($event.target.value)" (input)="onSearch($event.target.value)" />
+                <div class="input-group-btn">
+                    <button type="button" class="btn btn-default" aria-label="Clear" (click)="onClearFilter()">
+                        <span class="glyphicon glyphicon-remove"></span>
+                    </button>
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr>
         <td>
             <ul class="index-list">
-                <li *ngFor="#item of indexerList; #i = index" >
+                <li *ngFor="#item of indexerList; #i = index">
                     <button class="btn btn-default" (click)="onClickIndexer(item.letter)" [class.active]="item.selected">
                         {{item.letter}} <span class="badge">{{item.count}}</span>
                     </button>
-                </li>            
+                </li>
             </ul>
         </td>
         <td>
-            <div class="list-group">
-                <button type="button" class="list-group-item" *ngFor="#e of elementList; #i = index" (click)="onClickElement(e.id)" 
-                        [class.active]="e.selected">{{e.name}}</button>
+            <div class="list-group" id="flat-scrollbar">
+                <button type="button" class="list-group-item" *ngFor="#e of elementList; #i = index" (click)="onClickElement(e.id)"
+                        [class.active]="e.selected">
+                    {{e.name}}
+                </button>
             </div>
         </td>
     </tr>

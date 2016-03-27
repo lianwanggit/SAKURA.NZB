@@ -97,11 +97,10 @@ System.register(["angular2/core", "angular2/common", '../../../lib/TypeScript-Li
                         return;
                     }
                     this.indexerList.forEach(function (x) {
-                        if (x.letter === letter) {
+                        if (x.letter === letter)
                             x.selected = true;
-                            return;
-                        }
-                        x.selected = false;
+                        else
+                            x.selected = false;
                     });
                     this.elementList = this.elements.ToList()
                         .Where(function (x) { return x.index === letter; })
@@ -113,13 +112,13 @@ System.register(["angular2/core", "angular2/common", '../../../lib/TypeScript-Li
                     var _this = this;
                     if (this._selectedId == id)
                         return;
-                    this.elementList.forEach(function (x) {
+                    this.elements.forEach(function (x) {
                         if (x.id.toString() == id) {
                             x.selected = true;
                             _this.selectedId.emit(x.id);
-                            return;
                         }
-                        x.selected = false;
+                        else
+                            x.selected = false;
                     });
                     this._selectedId = id;
                 };

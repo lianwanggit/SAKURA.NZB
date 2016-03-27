@@ -11,7 +11,7 @@ var maxDepth = 7;
 
 var colorIdx = 0;
 var stroke = '#777';
-var colorSheet = ['#4b717f', '#e7bda2', '#17324e', '#6ba6d4', '#edc613', '#4e8539', '#a5bd97', '#2585ae', '#ff8d00', '#a1008a', '#b30707'];
+var colorSheet = ['#4b717f', '#e7bda2', '#17324e', '#6ba6d4', '#edc613', '#4e8539', '#a5bd97', '#2585ae', '#ff8d00', '#a1008a', '#ff9f95', '#b30707'];
 
 // Tree creation functions
 function branch(b) {

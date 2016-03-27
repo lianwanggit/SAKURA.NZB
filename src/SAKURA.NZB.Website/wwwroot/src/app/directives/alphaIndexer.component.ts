@@ -111,12 +111,10 @@ export class AlphaIndexerComponent implements OnChanges {
 		}
 
 		this.indexerList.forEach(x => {
-			if (x.letter === letter) {
+			if (x.letter === letter)
 				x.selected = true;
-				return;
-			}
-
-			x.selected = false;
+			else
+				x.selected = false;
 		});
 				
 		this.elementList = this.elements.ToList<Element>()
@@ -129,14 +127,13 @@ export class AlphaIndexerComponent implements OnChanges {
 	onClickElement(id: string) {
 		if (this._selectedId == id) return;
 
-		this.elementList.forEach(x => {
+		this.elements.forEach(x => {
 			if (x.id.toString() == id) {
 				x.selected = true;
 				this.selectedId.emit(x.id);
-				return;
 			}
-
-			x.selected = false;
+			else
+				x.selected = false;
 		});	
 
 		this._selectedId = id;
