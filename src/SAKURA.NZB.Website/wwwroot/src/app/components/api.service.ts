@@ -11,11 +11,11 @@ export class ApiService {
     }
 
 	getCustomers(onNext: (json: any) => void) {
-        this.http.get("api/Customers").map(response => response.json()).subscribe(onNext);
+        this.http.get("api/customers").map(response => response.json()).subscribe(onNext);
     }
 
 	getCustomer(id: string, onNext: (json: any) => void) {
-        this.http.get("api/Customers/" + id).map(response => response.json()).subscribe(onNext);
+        this.http.get("api/customers/" + id).map(response => response.json()).subscribe(onNext);
     }
 
 	postCustomer(data: string) {
@@ -23,7 +23,7 @@ export class ApiService {
 		var headers = new Headers();
 		headers.append('Content-Type', 'application/json');
 
-		return this.http.post('api/Customers', data, { headers: headers });
+		return this.http.post('api/customers', data, { headers: headers });
     }
 
 	putCustomer(id: string, data: string) {
@@ -31,6 +31,10 @@ export class ApiService {
 		var headers = new Headers();
 		headers.append('Content-Type', 'application/json');
 
-		return this.http.put('api/Customers/' + id, data, { headers: headers });
+		return this.http.put('api/customers/' + id, data, { headers: headers });
+    }
+
+	getProducts(onNext: (json: any) => void) {
+        this.http.get("api/products").map(response => response.json()).subscribe(onNext);
     }
 }

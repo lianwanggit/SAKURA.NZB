@@ -28,20 +28,23 @@ System.register(["rxjs/Rx", "angular2/http", "angular2/core"], function(exports_
                     this.http.get("api/random").map(function (response) { return response.json(); }).subscribe(onNext);
                 };
                 ApiService.prototype.getCustomers = function (onNext) {
-                    this.http.get("api/Customers").map(function (response) { return response.json(); }).subscribe(onNext);
+                    this.http.get("api/customers").map(function (response) { return response.json(); }).subscribe(onNext);
                 };
                 ApiService.prototype.getCustomer = function (id, onNext) {
-                    this.http.get("api/Customers/" + id).map(function (response) { return response.json(); }).subscribe(onNext);
+                    this.http.get("api/customers/" + id).map(function (response) { return response.json(); }).subscribe(onNext);
                 };
                 ApiService.prototype.postCustomer = function (data) {
                     var headers = new http_1.Headers();
                     headers.append('Content-Type', 'application/json');
-                    return this.http.post('api/Customers', data, { headers: headers });
+                    return this.http.post('api/customers', data, { headers: headers });
                 };
                 ApiService.prototype.putCustomer = function (id, data) {
                     var headers = new http_1.Headers();
                     headers.append('Content-Type', 'application/json');
-                    return this.http.put('api/Customers/' + id, data, { headers: headers });
+                    return this.http.put('api/customers/' + id, data, { headers: headers });
+                };
+                ApiService.prototype.getProducts = function (onNext) {
+                    this.http.get("api/products").map(function (response) { return response.json(); }).subscribe(onNext);
                 };
                 ApiService = __decorate([
                     core_1.Injectable(), 

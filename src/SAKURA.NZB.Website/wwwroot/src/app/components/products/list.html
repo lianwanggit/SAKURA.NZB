@@ -1,0 +1,22 @@
+﻿<div class="grey-border">
+    <h2 class="page-header">
+        产品 <small>({{amount}} / {{totalAmount}})</small>
+        <button type="button" class="btn btn-info pull-right" [routerLink]="['CAdd']">
+            新建 <i class="fa fa-shopping-cart fa-lg"></i>
+        </button>
+    </h2>
+
+    <div>
+        <div class="form-group input-group">
+            <input type="text" class="form-control" placeholder="搜索产品名或品牌"
+                   [(ngModel)]="filterText" (keyup)="onSearch($event.target.value)" (input)="onSearch($event.target.value)" />
+            <div class="input-group-btn">
+                <button type="button" class="btn btn-default" aria-label="Clear" (click)="onClearFilter()">
+                    <span class="glyphicon glyphicon-remove"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    {{data}}
+</div>
