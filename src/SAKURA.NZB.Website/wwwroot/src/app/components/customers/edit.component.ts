@@ -101,9 +101,18 @@ export class CustomerEditComponent implements OnInit {
 	onSubmit() {
 		var that = this;
 
-		this.service.postCustomer(JSON.stringify(this.model)).subscribe(response  => {
-			this.router.navigate(['客户']);
-		});
+		if (!this.editMode)
+			this.service.postCustomer(JSON.stringify(this.model, this.emptyStringToNull))
+				.subscribe(response  => { this.router.navigate(['客户']);
+			});
+		else
+			this.service.putCustomer(this.customerId, JSON.stringify(this.model, this.emptyStringToNull))
+				.subscribe(response  => { this.router.navigate(['客户']);
+			});
+	}
+
+	emptyStringToNull(key: string, value:string) {
+		return value === "" ? null : value;
 	}
 
 	get data() { return JSON.stringify(this.model); }

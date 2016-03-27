@@ -111,10 +111,7 @@ export class AlphaIndexerComponent implements OnChanges {
 		}
 
 		this.indexerList.forEach(x => {
-			if (x.letter === letter)
-				x.selected = true;
-			else
-				x.selected = false;
+			x.selected = x.letter === letter;
 		});
 				
 		this.elementList = this.elements.ToList<Element>()

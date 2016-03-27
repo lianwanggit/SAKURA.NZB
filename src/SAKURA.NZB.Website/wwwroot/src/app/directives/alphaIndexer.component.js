@@ -97,10 +97,7 @@ System.register(["angular2/core", "angular2/common", '../../../lib/TypeScript-Li
                         return;
                     }
                     this.indexerList.forEach(function (x) {
-                        if (x.letter === letter)
-                            x.selected = true;
-                        else
-                            x.selected = false;
+                        x.selected = x.letter === letter;
                     });
                     this.elementList = this.elements.ToList()
                         .Where(function (x) { return x.index === letter; })

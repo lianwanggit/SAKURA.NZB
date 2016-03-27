@@ -18,11 +18,19 @@ export class ApiService {
         this.http.get("api/Customers/" + id).map(response => response.json()).subscribe(onNext);
     }
 
-	postCustomer(data: any) {
+	postCustomer(data: string) {
 
 		var headers = new Headers();
 		headers.append('Content-Type', 'application/json');
 
-		return this.http.post('api/Customers/', data, { headers: headers });
+		return this.http.post('api/Customers', data, { headers: headers });
+    }
+
+	putCustomer(id: string, data: string) {
+
+		var headers = new Headers();
+		headers.append('Content-Type', 'application/json');
+
+		return this.http.put('api/Customers/' + id, data, { headers: headers });
     }
 }

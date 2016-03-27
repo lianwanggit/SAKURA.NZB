@@ -36,7 +36,12 @@ System.register(["rxjs/Rx", "angular2/http", "angular2/core"], function(exports_
                 ApiService.prototype.postCustomer = function (data) {
                     var headers = new http_1.Headers();
                     headers.append('Content-Type', 'application/json');
-                    return this.http.post('api/Customers/', data, { headers: headers });
+                    return this.http.post('api/Customers', data, { headers: headers });
+                };
+                ApiService.prototype.putCustomer = function (id, data) {
+                    var headers = new http_1.Headers();
+                    headers.append('Content-Type', 'application/json');
+                    return this.http.put('api/Customers/' + id, data, { headers: headers });
                 };
                 ApiService = __decorate([
                     core_1.Injectable(), 

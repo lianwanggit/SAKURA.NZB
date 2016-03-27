@@ -57,8 +57,8 @@ namespace SAKURA.NZB.Website.Controllers.API
 			return CreatedAtRoute("GetCustomer", new { controller = "Customers", id = customer.Id }, customer);
 		}
 
-		[HttpPut("{id}")]
-		public IActionResult Put(int id, [FromBody]Customer customer)
+		[HttpPut("{id:int}")]
+		public IActionResult Put(int? id, [FromBody]Customer customer)
 		{
 			if (customer == null || customer.Id != id)
 				return HttpBadRequest();
@@ -73,7 +73,18 @@ namespace SAKURA.NZB.Website.Controllers.API
 				return HttpNotFound();
 			}
 
-			_context.Customers.Update(customer);
+			item.FullName = customer.FullName;
+			item.NamePinYin = customer.NamePinYin;
+			item.Address = customer.Address;
+			item.Address1 = customer.Address1;
+			item.Phone1 = customer.Phone1;
+			item.Phone2 = customer.Phone2;
+			item.Email = customer.Email;
+			item.IsIdentityUploaded = customer.IsIdentityUploaded;
+			item.Level = customer.Level;
+			item.Description = customer.Description;
+						
+			_context.Customers.Update(item);
 			_context.SaveChanges();
 
 			return new NoContentResult();
@@ -83,6 +94,12 @@ namespace SAKURA.NZB.Website.Controllers.API
 		[HttpDelete("{id}")]
 		public void Delete(int id)
 		{
+			var item =_context.Customers.FirstOrDefault(x => x.Id == id);
+			if (item != null)
+			{
+				_context.Customers.Remove(item);
+				_context.SaveChanges();
+			}
 		}
 	}
 }

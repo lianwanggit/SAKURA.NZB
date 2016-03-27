@@ -94,9 +94,19 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                 CustomerEditComponent.prototype.onSubmit = function () {
                     var _this = this;
                     var that = this;
-                    this.service.postCustomer(JSON.stringify(this.model)).subscribe(function (response) {
-                        _this.router.navigate(['客户']);
-                    });
+                    if (!this.editMode)
+                        this.service.postCustomer(JSON.stringify(this.model, this.emptyStringToNull))
+                            .subscribe(function (response) {
+                            _this.router.navigate(['客户']);
+                        });
+                    else
+                        this.service.putCustomer(this.customerId, JSON.stringify(this.model, this.emptyStringToNull))
+                            .subscribe(function (response) {
+                            _this.router.navigate(['客户']);
+                        });
+                };
+                CustomerEditComponent.prototype.emptyStringToNull = function (key, value) {
+                    return value === "" ? null : value;
                 };
                 Object.defineProperty(CustomerEditComponent.prototype, "data", {
                     get: function () { return JSON.stringify(this.model); },
