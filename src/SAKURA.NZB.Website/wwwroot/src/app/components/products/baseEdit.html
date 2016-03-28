@@ -1,1 +1,97 @@
-﻿{{editType}}
+﻿
+<div class="grey-border">
+    <div class="row">
+
+        <div class="col-xs-12 col-sm-4 col-md-3">
+            <h2 class="page-header visible-xs-block">
+                {{title}}
+                <button type="button" class="btn btn-info pull-right" (click)="onCreate()">
+                    新建 <i class="fa fa-plus fa-lg"></i>
+                </button>
+            </h2>
+
+            <div class="list-group">
+                <button type="button" class="list-group-item" *ngFor="#item of namelist; #i = index" (click)="onSelect(item.id)"
+                        [class.active]="item.selected">
+                    {{item.name}}
+                </button>
+            </div>
+        </div>
+
+        <div class="col-xs-12 col-sm-8 col-md-9">
+            <div class="from-container">
+                <h2 class="page-header hidden-xs">
+                    {{title}}
+                    <button type="button" class="btn btn-info pull-right" (click)="onCreate()">
+                        新建 <i class="fa fa-plus fa-lg"></i>
+                    </button>
+                </h2>
+
+                <form class="form-horizontal" (ngSubmit)="onSubmit()" #myForm="ngForm">
+                    <div class="form-group" style="margin-bottom: 40px" *ngIf="isCategory">
+                        <label class="col-md-2" for="cname">名称</label>
+                        <div class="col-md-10">
+                            <input id="cname" type="text" class="form-control" required maxlength="50"
+                                   [(ngModel)]="categoryModel.name" ngControl="cname" #cname="ngForm" />
+                            <div [hidden]="cname.valid || cname.pristine" class="alert alert-danger">
+                                名称不能为空
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 40px" *ngIf="isBrand">
+                        <label class="col-md-2" for="bname">名称</label>
+                        <div class="col-md-10">
+                            <input id="bname" type="text" class="form-control" required maxlength="50"
+                                   [(ngModel)]="brandModel.name" ngControl="bname" #bname="ngForm" />
+                            <div [hidden]="bname.valid || bname.pristine" class="alert alert-danger">
+                                名称不能为空
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group" *ngIf="isSupplier">
+                        <label class="col-md-2" for="sname">名称</label>
+                        <div class="col-md-10">
+                            <input id="sname" type="text" class="form-control" required maxlength="50"
+                                   [(ngModel)]="supplierModel.name" ngControl="sname" #sname="ngForm" />
+                            <div [hidden]="sname.valid || sname.pristine" class="alert alert-danger">
+                                名称不能为空
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group" *ngIf="isSupplier">
+                        <label class="col-md-2" for="sname">地址</label>
+                        <div class="col-md-10">
+                            <input id="sname" type="text" class="form-control" maxlength="100"
+                                   [(ngModel)]="supplierModel.address" />
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 40px" *ngIf="isSupplier">
+                        <label class="col-md-2" for="sname">电话</label>
+                        <div class="col-md-10">
+                            <input id="sname" type="tel" class="form-control"
+                                   [(ngModel)]="supplierModel.phone" />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-offset-2 col-md-10">
+                            <button type="button" class="btn btn-default" [routerLink]="['产品']">返回列表</button>
+                            <button type="submit" class="btn btn-success left-spacer"
+                                    [disabled]="!myForm.form.valid">
+                                保存 <i class="fa fa-floppy-o fa-lg"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+

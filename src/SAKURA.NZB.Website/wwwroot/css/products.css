@@ -34,6 +34,16 @@
     background-color: #f37735;
 }
 
-@media (min-width: 768px) {
+.list-group {
+    padding-bottom: 20px;
+    margin-bottom: 40px;
+    border-bottom: 1px solid #eee;
+}
 
+@media (min-width: 768px) {
+    .list-group {
+        padding-bottom: 0;
+        margin-bottom: 20px;
+        border-bottom: none;
+    }
 }
