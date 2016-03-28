@@ -46,6 +46,45 @@ System.register(["rxjs/Rx", "angular2/http", "angular2/core"], function(exports_
                 ApiService.prototype.getProducts = function (onNext) {
                     this.http.get("api/products").map(function (response) { return response.json(); }).subscribe(onNext);
                 };
+                ApiService.prototype.getCategories = function (onNext) {
+                    this.http.get("api/categories").map(function (response) { return response.json(); }).subscribe(onNext);
+                };
+                ApiService.prototype.postCategory = function (data) {
+                    var headers = new http_1.Headers();
+                    headers.append('Content-Type', 'application/json');
+                    return this.http.post('api/categories', data, { headers: headers });
+                };
+                ApiService.prototype.putCategory = function (id, data) {
+                    var headers = new http_1.Headers();
+                    headers.append('Content-Type', 'application/json');
+                    return this.http.put('api/categories/' + id, data, { headers: headers });
+                };
+                ApiService.prototype.getBrands = function (onNext) {
+                    this.http.get("api/brands").map(function (response) { return response.json(); }).subscribe(onNext);
+                };
+                ApiService.prototype.postBrand = function (data) {
+                    var headers = new http_1.Headers();
+                    headers.append('Content-Type', 'application/json');
+                    return this.http.post('api/brands', data, { headers: headers });
+                };
+                ApiService.prototype.putBrand = function (id, data) {
+                    var headers = new http_1.Headers();
+                    headers.append('Content-Type', 'application/json');
+                    return this.http.put('api/brands/' + id, data, { headers: headers });
+                };
+                ApiService.prototype.getSuppliers = function (onNext) {
+                    this.http.get("api/suppliers").map(function (response) { return response.json(); }).subscribe(onNext);
+                };
+                ApiService.prototype.postSupplier = function (data) {
+                    var headers = new http_1.Headers();
+                    headers.append('Content-Type', 'application/json');
+                    return this.http.post('api/suppliers', data, { headers: headers });
+                };
+                ApiService.prototype.putSupplier = function (id, data) {
+                    var headers = new http_1.Headers();
+                    headers.append('Content-Type', 'application/json');
+                    return this.http.put('api/suppliers/' + id, data, { headers: headers });
+                };
                 ApiService = __decorate([
                     core_1.Injectable(), 
                     __metadata('design:paramtypes', [http_1.Http])
