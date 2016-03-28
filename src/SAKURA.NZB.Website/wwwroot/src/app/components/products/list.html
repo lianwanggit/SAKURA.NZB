@@ -22,15 +22,15 @@
 
     <div class="visible-xs-inline">
         <ul class="reference-list ">
-            <li>
+            <li [routerLink]="['PbeEdit', {type: 'category'}]">
                 <h4>{{categoryAmount}}</h4>
                 类别
             </li>
-            <li>
+            <li [routerLink]="['PbeEdit', {type: 'brand'}]">
                 <h4>{{brandAmount}}</h4>
                 品牌
             </li>
-            <li>
+            <li [routerLink]="['PbeEdit', {type: 'supplier'}]">
                 <h4>{{supplierAmount}}</h4>
                 供应商
             </li>
