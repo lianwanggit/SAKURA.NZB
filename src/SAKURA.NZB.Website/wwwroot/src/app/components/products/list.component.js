@@ -1,5 +1,5 @@
 /// <reference path="../../../../lib/TypeScript-Linq/Scripts/typings/System/Collections/Generic/List.ts" />
-System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.service", '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js'], function(exports_1) {
+System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.service", "./models", '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js'], function(exports_1) {
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
         var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
         if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -9,8 +9,8 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, common_1, router_1, api_service_1;
-    var Category, Brand, Supplier, Quote, Product, ProductsComponent;
+    var core_1, common_1, router_1, api_service_1, models_1;
+    var ProductsComponent;
     return {
         setters:[
             function (core_1_1) {
@@ -25,72 +25,22 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
             function (api_service_1_1) {
                 api_service_1 = api_service_1_1;
             },
+            function (models_1_1) {
+                models_1 = models_1_1;
+            },
             function (_1) {}],
         execute: function() {
-            Category = (function () {
-                function Category(obj) {
-                    this.id = obj.id;
-                    this.name = obj.name;
-                }
-                return Category;
-            })();
-            exports_1("Category", Category);
-            Brand = (function () {
-                function Brand(obj) {
-                    this.id = obj.id;
-                    this.name = obj.name;
-                }
-                return Brand;
-            })();
-            exports_1("Brand", Brand);
-            Supplier = (function () {
-                function Supplier(obj) {
-                    this.id = obj.id;
-                    this.name = obj.name;
-                    this.address = obj.address;
-                    this.phone = obj.phone;
-                }
-                return Supplier;
-            })();
-            exports_1("Supplier", Supplier);
-            Quote = (function () {
-                function Quote(obj) {
-                    this.id = obj.id;
-                    this.productId = obj.productId;
-                    this.supplierId = obj.supplierId;
-                    this.supplier = obj.supplier;
-                    this.price = obj.price;
-                }
-                return Quote;
-            })();
-            exports_1("Quote", Quote);
-            Product = (function () {
-                function Product(obj) {
-                    this.selected = false;
-                    this.id = obj.id;
-                    this.name = obj.fullName;
-                    this.desc = obj.desc;
-                    this.categoryId = obj.categoryId;
-                    this.category = obj.category;
-                    this.brandId = obj.brandId;
-                    this.brand = obj.brand;
-                    this.images = obj.images;
-                    this.quotes = obj.quotes;
-                    this.price = obj.price;
-                }
-                return Product;
-            })();
-            exports_1("Product", Product);
             ProductsComponent = (function () {
                 function ProductsComponent(service, router) {
                     this.service = service;
                     this.router = router;
-                    //icons = ['ambulance', 'car', 'bicycle', 'bus', 'taxi', 'fighter-jet', 'motorcycle', 'plane', 'rocket', 'ship', 'space-shuttle', 'subway', 'taxi', 'train', 'truck'];
                     this.productList = [];
                     this.searchList = [];
                     this.filterText = '';
                     this.totalAmount = 0;
-                    //isListViewMode = true;
+                    this.categoryAmount = 0;
+                    this.brandAmount = 0;
+                    this.supplierAmount = 0;
                     this._filterText = '';
                 }
                 ProductsComponent.prototype.ngOnInit = function () {
@@ -101,13 +51,25 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     this.service.getProducts(function (json) {
                         if (json) {
                             json.forEach(function (c) {
-                                that.productList.push(new Product(c));
+                                that.productList.push(new models_1.Product(c));
                             });
                             that.totalAmount = that.productList.length;
                             that.searchList = that.productList.ToList()
                                 .ToArray();
                             ;
                         }
+                    });
+                    this.service.getCategories(function (json) {
+                        if (json)
+                            that.categoryAmount = json.length;
+                    });
+                    this.service.getBrands(function (json) {
+                        if (json)
+                            that.brandAmount = json.length;
+                    });
+                    this.service.getSuppliers(function (json) {
+                        if (json)
+                            that.supplierAmount = json.length;
                     });
                 };
                 ProductsComponent.prototype.onClearFilter = function () {

@@ -1,11 +1,42 @@
 ﻿<div class="grey-border">
+
     <h2 class="page-header">
         产品 <small>({{amount}} / {{totalAmount}})</small>
-        <button type="button" class="btn btn-info pull-right" [routerLink]="['CAdd']">
-            新建 <i class="fa fa-shopping-bag fa-lg"></i>
-        </button>
+
+        <div class="pull-right">
+            <button type="button" class="btn btn-info hidden-xs" [routerLink]="['PbeEdit', {type: 'category'}]">
+                类别 {{categoryAmount}}
+            </button>
+            <button type="button" class="btn btn-info hidden-xs" [routerLink]="['PbeEdit', {type: 'brand'}]">
+                品牌 {{brandAmount}}
+            </button>
+            <button type="button" class="btn btn-info hidden-xs" [routerLink]="['PbeEdit', {type: 'supplier'}]">
+                供应商 {{supplierAmount}}
+            </button>
+
+            <button type="button" class="btn btn-info" [routerLink]="['CAdd']">
+                新建 <i class="fa fa-shopping-bag fa-lg"></i>
+            </button>
+        </div>
     </h2>
 
+    <div class="visible-xs-inline">
+        <ul class="reference-list ">
+            <li>
+                <h4>{{categoryAmount}}</h4>
+                类别
+            </li>
+            <li>
+                <h4>{{brandAmount}}</h4>
+                品牌
+            </li>
+            <li>
+                <h4>{{supplierAmount}}</h4>
+                供应商
+            </li>
+        </ul>
+    </div>
+  
     <div>
         <div class="form-group input-group">
             <input type="text" class="form-control" placeholder="搜索产品名或品牌"
@@ -17,6 +48,4 @@
             </div>
         </div>
     </div>
-
-    {{data}}
 </div>

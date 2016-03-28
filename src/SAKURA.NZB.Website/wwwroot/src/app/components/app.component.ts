@@ -6,6 +6,7 @@ import {StaticComponent} from "./static.component";
 import {CustomersComponent} from "./customers/list.component";
 import {CustomerEditComponent} from "./customers/edit.component";
 import {ProductsComponent} from "./products/list.component";
+import {ProductBaseEditComponent} from "./products/baseEdit.component";
 
 declare var System: any;
 import '../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js';
@@ -32,6 +33,7 @@ export class AppComponent implements OnInit {
 				{ path: "/customers/add", component: CustomerEditComponent, name: "CAdd", useAsDefault: false },
 				{ path: "/customers/edit/:id", component: CustomerEditComponent, name: "CEdit", useAsDefault: false },
 				{ path: "/products", component: ProductsComponent, name: "产品", useAsDefault: false },
+				{ path: "/products/baseedit/:type", component: ProductBaseEditComponent, name: "PbeEdit", useAsDefault: false },
 
                 new AsyncRoute({
                     path: "/sub",
