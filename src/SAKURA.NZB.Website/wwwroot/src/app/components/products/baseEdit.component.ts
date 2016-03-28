@@ -8,8 +8,6 @@ import {Category, Brand, Supplier, Product} from "./models";
 
 import '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js';
 
-declare var $: any;
-
 export class NameList {
 	id: number;
 	name: string;
