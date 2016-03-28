@@ -1,9 +1,7 @@
 using System.Linq;
 using Microsoft.AspNet.Mvc;
-using Microsoft.AspNet.Mvc.Rendering;
 using Microsoft.Data.Entity;
 using SAKURA.NZB.Data;
-using SAKURA.NZB.Domain;
 
 namespace SAKURA.NZB.Website.Controllers.API
 {
@@ -17,7 +15,7 @@ namespace SAKURA.NZB.Website.Controllers.API
 			_context = context;
 		}
 
-		// GET: Products
+		[HttpGet]
 		public IActionResult Get()
 		{
 			return new ObjectResult(_context.Products

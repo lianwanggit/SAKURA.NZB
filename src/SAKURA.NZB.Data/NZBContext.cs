@@ -6,6 +6,7 @@ namespace SAKURA.NZB.Data
 	public class NZBContext : DbContext
     {
 		public DbSet<Category> Categories { get; set; }
+		public DbSet<Brand> Brands { get; set; }
 		public DbSet<Supplier> Suppliers { get; set; }
 		public DbSet<Product> Products { get; set; }
 		public DbSet<Customer> Customers { get; set; }

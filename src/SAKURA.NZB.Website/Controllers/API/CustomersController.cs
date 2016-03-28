@@ -8,38 +8,32 @@ namespace SAKURA.NZB.Website.Controllers.API
 {
 	[Route("api/[controller]")]
 	public class CustomersController : Controller
-    {
-        private NZBContext _context;
+	{
+		private NZBContext _context;
 
-        public CustomersController(NZBContext context)
-        {
-            _context = context;    
-        }
+		public CustomersController(NZBContext context)
+		{
+			_context = context;
+		}
 
 		[HttpGet]
-		// GET: Customers
 		public IActionResult Get()
-        {
-            return new ObjectResult(_context.Customers.ToList());
-        }
+		{
+			return new ObjectResult(_context.Customers.ToList());
+		}
 
 		[HttpGet("{id:int}", Name = "GetCustomer")]
-		// GET: Customers/Details/5
 		public IActionResult Get(int? id)
-        {
-            if (id == null)
-            {
-                return HttpNotFound();
-            }
+		{
+			if (id == null)
+				return HttpNotFound();
 
-            Customer customer = _context.Customers.Single(m => m.Id == id);
-            if (customer == null)
-            {
-                return HttpNotFound();
-            }
+			var item = _context.Customers.Single(m => m.Id == id);
+			if (item == null)
+				return HttpNotFound();
 
-            return new ObjectResult(customer);
-        }
+			return new ObjectResult(item);
+		}
 
 		[HttpPost]
 		public IActionResult Post([FromBody]Customer customer)
@@ -83,18 +77,17 @@ namespace SAKURA.NZB.Website.Controllers.API
 			item.IsIdentityUploaded = customer.IsIdentityUploaded;
 			item.Level = customer.Level;
 			item.Description = customer.Description;
-						
+
 			_context.Customers.Update(item);
 			_context.SaveChanges();
 
 			return new NoContentResult();
 		}
 
-		// DELETE api/values/5
 		[HttpDelete("{id}")]
 		public void Delete(int id)
 		{
-			var item =_context.Customers.FirstOrDefault(x => x.Id == id);
+			var item = _context.Customers.FirstOrDefault(x => x.Id == id);
 			if (item != null)
 			{
 				_context.Customers.Remove(item);
