@@ -1,1 +1,30 @@
-﻿<h1>Product Edit</h1>
+﻿<div class="grey-border">
+    <h2 class="page-header">{{title}}</h2>
+
+    <form class="form-horizontal" (ngSubmit)="onSubmit()" #myForm="ngForm" [ngFormModel]="productForm" >
+        <div class="form-group">
+            <label class="col-md-2" for="fullName">类别</label>
+            <div class="col-md-10">
+                <select id="category" class="form-control" ngControl="category" #category="ngForm" >
+                    <option *ngFor="#c of categories; #i = index" value="{{c.id}}">{{c.name}}</option>
+                </select>
+ 
+                <div [hidden]="category.valid || category.pristine" class="alert alert-danger">
+                    请选择一个类别
+                </div>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label class="col-md-2" for="fullName">产品名称</label>
+            <div class="col-md-10">
+                <input id="name" type="text" class="form-control" maxlength="100" ngControl="name" #name="ngForm" />
+                <div [hidden]="name.valid || name.pristine" class="alert alert-danger">
+                    产品名称不能为空
+                </div>
+            </div>
+        </div>
+    </form>
+
+    {{data}}
+</div>

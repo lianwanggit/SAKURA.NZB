@@ -50,6 +50,7 @@ export class CustomerEditComponent implements OnInit {
 		"id": 0, "fullName": null, "namePinYin": null, "phone1": null, "phone2": null,
 		"address": null, "address1": null, "email": null, "isIdentityUploaded": false, "level": null, "description": null
 	});
+
 	editMode = false;
 	private customerId: string;
 

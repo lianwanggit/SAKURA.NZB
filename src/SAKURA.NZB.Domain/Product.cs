@@ -9,10 +9,10 @@ namespace SAKURA.NZB.Domain
 		public int Id { get; set; }
 
 		[Required]
-		[MaxLength]
+		[StringLength(100)]
 		public string Name { get; set; }
 
-		[MaxLength]
+		[StringLength(1000)]
 		public string Desc { get; set; }
 
 		public int CategoryId { get; set; }
@@ -25,6 +25,7 @@ namespace SAKURA.NZB.Domain
 
 		public List<ProductQuote> Quotes { get; set; }
 
+		[Required]
 		[DataType(DataType.Currency)]
 		public float Price { get; set; }
 
