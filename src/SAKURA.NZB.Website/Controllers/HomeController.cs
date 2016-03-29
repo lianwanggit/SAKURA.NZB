@@ -13,13 +13,6 @@ namespace SAKURA.NZB.Website.Controllers
             return View();
         }
 
-        public IActionResult Product()
-        {
-            ViewData["Message"] = "Your application description page.";
-
-            return View();
-        }
-
         public IActionResult Contact()
         {
             ViewData["Message"] = "Your contact page.";

@@ -9,7 +9,5 @@ namespace SAKURA.NZB.Website.Controllers
 		public IActionResult Message() => PartialView();
 
 		public IActionResult Numbers() => PartialView();
-
-		public IActionResult Customers() => PartialView();
 	}
 }

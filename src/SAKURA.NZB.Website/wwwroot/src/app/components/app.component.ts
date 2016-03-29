@@ -24,7 +24,7 @@ export class AppComponent implements OnInit {
 
     constructor(private router: Router, private location: Location) {
     }
-	
+
 
     ngOnInit() {
         if (this.routes === null) {
@@ -62,6 +62,6 @@ export class AppComponent implements OnInit {
     }
 
 	getIsMainMenu(route: RouteDefinition) {
-		return  (route.path.match(/\//g) || []).length < 2;
+		return (route.path.match(/\//g) || []).length < 2;
 	}
 }
