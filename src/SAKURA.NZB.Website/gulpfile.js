@@ -12,64 +12,35 @@ var paths = {
     webroot: "./wwwroot/"
 };
 
-paths.js = paths.webroot + "js/**/*.js";
-paths.minJs = paths.webroot + "js/**/*.min.js";
-paths.css = paths.webroot + "css/**/*.css";
-paths.minCss = paths.webroot + "css/**/*.min.css";
+paths.js = paths.webroot + "/js/**/*.js";
+paths.minJs = paths.webroot + "/js/**/*.min.js";
+paths.css = paths.webroot + "/css/**/*.css";
+paths.minCss = paths.webroot + "/css/**/*.min.css";
 
-paths.angularJs = [
-    './node_modules/angular2/bundles/angular2.dev.js',
-    './node_modules/angular2/bundles/router.dev.js',
-    './node_modules/angular2/bundles/angular2-polyfills.js',
-    './node_modules/angular2/bundles/http.dev.js'
-];
-
-paths.libJs = [
-    './node_modules/bootstrap/dist/js/bootstrap.js',
-    './node_modules/systemjs/dist/system.js',
-    './node_modules/systemjs/dist/system.js.map',
-    './node_modules/rxjs/bundles/Rx.js',
-    './node_modules/typescript/lib/typescript.js',
-    './node_modules/jquery/dist/jquery.js',
-    './node_modules/d3/d3.js'
-];
-
-paths.libCss = [
-    './node_modules/bootstrap/dist/css/bootstrap.css',
-    './node_modules/bootstrap/dist/css/bootstrap.css.map',
-    './node_modules/bootstrap/dist/css/bootstrap.min.css.map',
-];
-
-paths.libFonts = [
-    './node_modules/bootstrap/dist/fonts/*.*'
+paths.lib = [
+    './node_modules/angular2/bundles/**/*.*',
+    './node_modules/bootstrap/dist/**/*.*',
+    './node_modules/systemjs/dist/**/*.*',
+    './node_modules/rxjs/bundles/**/*.*',
+    './node_modules/typescript/lib/**/*.*',
+    './node_modules/jquery/dist/**/*.*',
+    './node_modules/d3/*.*'
 ];
 
 paths.jsDest = paths.webroot + "js";
-paths.angularJsDest = paths.jsDest + "/angular2";
 paths.cssDest = paths.webroot + "css";
 paths.fontDest = paths.webroot + "fonts";
 
-gulp.task('copy-js', function () {
-    _.forEach(paths.libJs, function (file, _) {
+gulp.task('copy-lib', function () {
+    _.forEach(paths.lib, function (file, _) {
         gulp.src(file)
-            .pipe(gulp.dest(paths.jsDest))
-    });
-    _.forEach(paths.angularJs, function (file, _) {
-        gulp.src(file)
-            .pipe(gulp.dest(paths.angularJsDest))
+            .pipe(gulp.dest(function (file) {
+                var dest = file.base.replace('node_modules', 'wwwroot\\lib');
+                return dest;
+            }));
     });
 });
 
-gulp.task('copy-css', function () {
-    _.forEach(paths.libCss, function (file, _) {
-        gulp.src(file)
-            .pipe(gulp.dest(paths.cssDest))
-    });
-    _.forEach(paths.libFonts, function (file, _) {
-        gulp.src(file)
-            .pipe(gulp.dest(paths.fontDest))
-    });
-});
 
 gulp.task('min-js', function () {
     gulp.src([paths.js, "!" + paths.minJs], { base: paths.jsDest })
@@ -85,5 +56,5 @@ gulp.task('min-css', function () {
 		.pipe(gulp.dest(paths.cssDest));
 });
 
-gulp.task('default', ['copy-js', 'copy-css']);
+gulp.task('default', ['copy-lib']);
 gulp.task('minify', ['min-js', 'min-css']);

@@ -13,7 +13,7 @@ import '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.
 @Component({
     selector: "products",
     templateUrl: "./src/app/components/products/list.html",
-	styleUrls: ["./css/products.css"],
+	styleUrls: ["./src/app/components/products/products.css"],
     providers: [ApiService],
     directives: [CORE_DIRECTIVES, FORM_DIRECTIVES, ROUTER_DIRECTIVES]
 })

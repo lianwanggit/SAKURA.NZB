@@ -44,7 +44,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     core_1.Component({
                         selector: "product-edit",
                         templateUrl: "./src/app/components/products/edit.html",
-                        styleUrls: ["./css/products.css"],
+                        styleUrls: ["./src/app/components/products/products.css"],
                         providers: [api_service_1.ApiService],
                         directives: [common_1.CORE_DIRECTIVES, common_1.FORM_DIRECTIVES, router_1.ROUTER_DIRECTIVES]
                     }), 

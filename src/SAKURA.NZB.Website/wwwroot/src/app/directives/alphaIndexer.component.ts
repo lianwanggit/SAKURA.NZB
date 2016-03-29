@@ -36,7 +36,7 @@ export class Indexer {
 @Component({
     selector: "alpha-indexer",
     templateUrl: "./src/app/directives/alphaIndexer.html",
-	styleUrls: ["./css/alpha-indexer.css"],
+	styleUrls: ["./src/app/directives/alpha-indexer.css"],
     directives: [CORE_DIRECTIVES, FORM_DIRECTIVES]
 })
 export class AlphaIndexerComponent implements OnChanges {

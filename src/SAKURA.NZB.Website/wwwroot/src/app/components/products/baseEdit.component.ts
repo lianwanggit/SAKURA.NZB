@@ -22,7 +22,7 @@ export class NameList {
 @Component({
     selector: "product-base-edit",
     templateUrl: "./src/app/components/products/baseEdit.html",
-	styleUrls: ["./css/products.css"],
+	styleUrls: ["./src/app/components/products/products.css"],
     providers: [ApiService],
     directives: [CORE_DIRECTIVES, FORM_DIRECTIVES, ROUTER_DIRECTIVES]
 })

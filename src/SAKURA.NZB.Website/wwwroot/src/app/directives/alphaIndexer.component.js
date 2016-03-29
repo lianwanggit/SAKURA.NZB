@@ -153,7 +153,7 @@ System.register(["angular2/core", "angular2/common", '../../../lib/TypeScript-Li
                     core_1.Component({
                         selector: "alpha-indexer",
                         templateUrl: "./src/app/directives/alphaIndexer.html",
-                        styleUrls: ["./css/alpha-indexer.css"],
+                        styleUrls: ["./src/app/directives/alpha-indexer.css"],
                         directives: [common_1.CORE_DIRECTIVES, common_1.FORM_DIRECTIVES]
                     }), 
                     __metadata('design:paramtypes', [])

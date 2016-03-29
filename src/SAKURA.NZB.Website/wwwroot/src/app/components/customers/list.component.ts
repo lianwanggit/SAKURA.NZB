@@ -29,7 +29,7 @@ export class Customer {
 @Component({
     selector: "customers",
     templateUrl: "./src/app/components/customers/list.html",
-	styleUrls: ["./css/customers.css"],
+	styleUrls: ["./src/app/components/customers/customers.css"],
     providers: [ApiService],
     directives: [CORE_DIRECTIVES, FORM_DIRECTIVES, ROUTER_DIRECTIVES]
 })

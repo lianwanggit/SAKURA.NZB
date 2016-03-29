@@ -39,7 +39,7 @@ export class Customer {
 @Component({
     selector: "customer-edit",
     templateUrl: "./src/app/components/customers/edit.html",
-	styleUrls: ["./css/customers.css"],
+	styleUrls: ["./src/app/components/customers/customers.css"],
     providers: [ApiService],
     directives: [CORE_DIRECTIVES, FORM_DIRECTIVES, ROUTER_DIRECTIVES, AlphaIndexerComponent]
 })

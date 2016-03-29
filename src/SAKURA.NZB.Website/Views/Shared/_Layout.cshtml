@@ -9,44 +9,40 @@
     <environment names="Development">
         <!-- Css -->
         <link rel="stylesheet" href="~/css/site.css">
-        <link rel="stylesheet" href="~/css/bootstrap.css">
         <link rel="stylesheet" href="~/css/font-awesome.css">
         <link rel="stylesheet" href="~/css/toggle-switch.css">
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css">
 
         <!-- Js -->
-        <script src="~/js/jquery.js"></script>
-        <script src="~/js/bootstrap.js"></script>
-        <script src="~/js/system.js"></script>
-        <script src="~/js/rx.js"></script>
-        <script src="~/js/typescript.js"></script>
-        <script src="~/js/angular2/angular2.dev.js"></script>
-        <script src="~/js/angular2/angular2-polyfills.js"></script>
-        <script src="~/js/angular2/http.dev.js"></script>
-        <script src="~/js/angular2/router.dev.js"></script>
+        <script src="~/js/d3-tree.js"></script>
+        <script src="~/lib/jquery/dist/jquery.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+        <script src="~/lib/systemjs/dist/system.js"></script>
+        <script src="~/lib/rxjs/bundles/Rx.js"></script>
+        <script src="~/lib/typescript/lib/typescript.js"></script>
+        <script src="~/lib/angular2/bundles/angular2.dev.js"></script>
+        <script src="~/lib/angular2/bundles/angular2-polyfills.js"></script>
+        <script src="~/lib/angular2/bundles/http.dev.js"></script>
+        <script src="~/lib/angular2/bundles/router.dev.js"></script>
     </environment>
     <environment names="Staging,Production">
         <!-- Css -->
         <link rel="stylesheet" href="~/css/site.min.css">
-        <link rel="stylesheet" href="~/css/bootstrap.min.css">
         <link rel="stylesheet" href="~/css/font-awesome.min.css">
         <link rel="stylesheet" href="~/css/toggle-switch.min.css">
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css">
 
         <!-- Js -->
-        <script src="~/js/jquery.min.js"></script>
-        <script src="~/js/bootstrap.min.js"></script>
-        <script src="~/js/system.min.js"></script>
-        <script src="~/js/rx.min.js"></script>
-        <script src="~/js/typescript.min.js"></script>
-        @*
-            TODO: min js causes problem, use min js once fix in new angular relase  
-            <script src="~/js/angular2/angular2.dev.min.js"></script> 
-            <script src="~/js/angular2/router.dev.min.js"></script>
-            <script src="~/js/angular2/angular2-polyfills.min.js"></script>
-        *@
-        <script src="~/js/angular2/angular2.dev.js"></script>
-        <script src="~/js/angular2/router.dev.js"></script>
-        <script src="~/js/angular2/angular2-polyfills.js"></script>
-        <script src="~/js/angular2/http.dev.min.js"></script>   
+        <script src="~/js/d3-tree.min.js"></script>
+        <script src="~/lib/jquery/dist/jquery.min.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+        <script src="~/lib/systemjs/dist/system.js"></script>
+        <script src="~/lib/rxjs/bundles/Rx.min.js"></script>
+        <script src="~/lib/typescript/lib/typescript.js"></script>
+        <script src="~/lib/angular2/bundles/angular2.dev.js"></script>
+        <script src="~/lib/angular2/bundles/angular2-polyfills.min.js"></script>
+        <script src="~/lib/angular2/bundles/http.dev.js"></script>
+        <script src="~/lib/angular2/bundles/router.dev.js"></script>
     </environment>
     @Html.ApplicationInsightsJavaScript(TelemetryConfiguration)
 
@@ -69,33 +65,12 @@
 <body>
     <div class="body-content">
         @RenderBody()
-        
+
         <footer class="container" style="margin-top: 30px">
             <hr />
             <p>&copy; 2016 - Sakura NZ Buy</p>
         </footer>
     </div>
-
-    <environment names="Development">
-        @*<script src="~/lib/jquery/dist/jquery.js"></script>
-        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>*@
-        <script src="~/js/site.js" asp-append-version="true"></script>
-        <script src="~/js/d3.js"></script>
-        <script src="~/js/d3-tree.js"></script>
-    </environment>
-    <environment names="Staging,Production">
-        @*<script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.1.4.min.js"
-                asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
-                asp-fallback-test="window.jQuery">
-        </script>
-        <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.5/bootstrap.min.js"
-                asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
-                asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal">
-        </script>*@
-        <script src="~/js/site.min.js" asp-append-version="true"></script>
-        <script src="~/js/d3.min.js"></script>
-        <script src="~/js/d3-tree.min.js"></script>  
-    </environment>
 
     @RenderSection("scripts", required: false)
 </body>

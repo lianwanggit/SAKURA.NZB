@@ -122,7 +122,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     core_1.Component({
                         selector: "customer-edit",
                         templateUrl: "./src/app/components/customers/edit.html",
-                        styleUrls: ["./css/customers.css"],
+                        styleUrls: ["./src/app/components/customers/customers.css"],
                         providers: [api_service_1.ApiService],
                         directives: [common_1.CORE_DIRECTIVES, common_1.FORM_DIRECTIVES, router_1.ROUTER_DIRECTIVES, alphaIndexer_component_1.AlphaIndexerComponent]
                     }), 
