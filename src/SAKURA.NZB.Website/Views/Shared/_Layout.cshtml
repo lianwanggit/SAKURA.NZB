@@ -8,13 +8,13 @@
 
     <environment names="Development">
         <!-- Css -->
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css">
         <link rel="stylesheet" href="~/css/site.css">
         <link rel="stylesheet" href="~/css/font-awesome.css">
         <link rel="stylesheet" href="~/css/toggle-switch.css">
-        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css">
+        
 
-        <!-- Js -->
-        <script src="~/js/d3-tree.js"></script>
+        <!-- Js -->                
         <script src="~/lib/jquery/dist/jquery.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
         <script src="~/lib/systemjs/dist/system.js"></script>
@@ -23,7 +23,7 @@
         <script src="~/lib/angular2/bundles/angular2.dev.js"></script>
         <script src="~/lib/angular2/bundles/angular2-polyfills.js"></script>
         <script src="~/lib/angular2/bundles/http.dev.js"></script>
-        <script src="~/lib/angular2/bundles/router.dev.js"></script>
+        <script src="~/lib/angular2/bundles/router.dev.js"></script>        
     </environment>
     <environment names="Staging,Production">
         <!-- Css -->
@@ -32,8 +32,7 @@
         <link rel="stylesheet" href="~/css/toggle-switch.min.css">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css">
 
-        <!-- Js -->
-        <script src="~/js/d3-tree.min.js"></script>
+        <!-- Js -->       
         <script src="~/lib/jquery/dist/jquery.min.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
         <script src="~/lib/systemjs/dist/system.js"></script>
@@ -71,6 +70,16 @@
             <p>&copy; 2016 - Sakura NZ Buy</p>
         </footer>
     </div>
+
+    <environment names="Development">
+        <script src="~/lib/d3/d3.js"></script>
+        <script src="~/js/d3-tree.js"></script>
+    </environment>
+    <environment names="Staging,Production">
+        <script src="~/lib/d3/d3.min.js"></script>
+        <script src="~/js/d3-tree.min.js"></script>
+    </environment>
+
 
     @RenderSection("scripts", required: false)
 </body>
