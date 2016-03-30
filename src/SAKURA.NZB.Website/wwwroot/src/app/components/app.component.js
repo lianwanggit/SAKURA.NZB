@@ -74,6 +74,11 @@ System.register(["angular2/core", "angular2/router", "./static.component", "./cu
                             .ToArray();
                     }
                 };
+                AppComponent.prototype.onClickHangfire = function ($event) {
+                    window.location.href = "/hangfire";
+                    $event.preventDefault();
+                    return false;
+                };
                 AppComponent.prototype.getLinkStyle = function (route) {
                     return this.location.path().indexOf(route.path) > -1;
                 };

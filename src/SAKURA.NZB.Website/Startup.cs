@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNet.Builder;
+﻿using Hangfire;
+using Hangfire.Dashboard;
+using Hangfire.SqlServer;
+using Microsoft.AspNet.Builder;
 using Microsoft.AspNet.Hosting;
 using Microsoft.AspNet.Mvc.Formatters;
 using Microsoft.Data.Entity;
@@ -8,7 +11,9 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using SAKURA.NZB.Core;
+using SAKURA.NZB.Core.Hangfire;
 using SAKURA.NZB.Data;
+using System;
 using System.Linq;
 
 namespace SAKURA.NZB.Website
@@ -88,6 +93,8 @@ namespace SAKURA.NZB.Website
 				catch { }
 			}
 
+			app.UseHangfire();
+
 			app.UseIISPlatformHandler(options => options.AuthenticationDescriptions.Clear());
 
 			app.UseApplicationInsightsExceptionTelemetry();
@@ -101,8 +108,6 @@ namespace SAKURA.NZB.Website
 			{
 				routes.MapRoute("Api", "api/{controller}/{action?}", new { controller = "Products" });
 				routes.MapRoute("default", "{controller=Home}/{action=Index}/{id?}");
-				routes.MapRoute("spa-fallback","{*anything}",new { controller = "Home", action = "Index" });
-
 			});
 		}
 

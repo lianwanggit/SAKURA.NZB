@@ -9,6 +9,7 @@
             <li *ngFor="#rt of menuRoutes" [class.active]="getLinkStyle(rt)">
                 <a [routerLink]="[rt.name]">{{rt.name}}</a>
             </li>
+            <li><a (click)="onClickHangfire($event)">Hangfire</a></li>
         </ul>
     </div>
 </nav>

@@ -1,6 +1,8 @@
-﻿using Microsoft.Data.Entity;
+﻿using Hangfire;
+using Microsoft.Data.Entity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using SAKURA.NZB.Core.Hangfire;
 using SAKURA.NZB.Core.Services;
 using SAKURA.NZB.Data;
 
@@ -21,13 +23,15 @@ namespace SAKURA.NZB.Core
 		{
 			services.AddEntityFramework()
 				.AddSqlServer()
-				.AddDbContext<NZBContext>(options =>
-					options.UseSqlServer(_config["Data:DefaultConnection:NZB"]));
+				.AddDbContext<NZBContext>(options => options.UseSqlServer(_config["Data:DefaultConnection:NZB"]))
+				.AddDbContext<HangfireContext>(options => options.UseSqlServer(_config["Data:DefaultConnection:Hangfire"]));
 
 			// Add application services.
 			services.AddTransient<IEmailSender, AuthMessageSender>();
 			services.AddTransient<ISmsSender, AuthMessageSender>();
-		}
 
+			services.AddTransient<IBackgroundJobClient>(_ => new BackgroundJobClient());
+			services.AddTransient<HangfireHelper>();
+		}
     }
 }

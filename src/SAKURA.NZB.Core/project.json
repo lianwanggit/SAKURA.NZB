@@ -9,13 +9,16 @@
     "dnx46": { }
   },
   "dependencies": {
+    "SAKURA.NZB.Domain": "",
+    "SAKURA.NZB.Data": "",
+
     "EntityFramework.Core": "7.0.0-rc1-final",
     "EntityFramework.MicrosoftSqlServer": "7.0.0-rc1-final",
     "Microsoft.Extensions.Configuration.Abstractions": "1.0.0-rc1-final",
     "Microsoft.Extensions.DependencyInjection.Abstractions": "1.0.0-rc1-final",
     "pinyin4net": "1.0.0",
-
-    "SAKURA.NZB.Domain": "",
-    "SAKURA.NZB.Data": ""
+    "Hangfire.Core": "1.5.2",
+    "Hangfire.SqlServer": "1.5.2",
+    "Microsoft.AspNet.Owin": "1.0.0-rc1-final"
   }
 }

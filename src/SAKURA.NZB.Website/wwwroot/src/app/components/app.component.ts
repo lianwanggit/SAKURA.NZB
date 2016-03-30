@@ -57,6 +57,12 @@ export class AppComponent implements OnInit {
         }
     }
 
+	onClickHangfire($event) {
+		window.location.href = "/hangfire";
+		$event.preventDefault();
+		return false;
+	}
+
     getLinkStyle(route: RouteDefinition) {
         return this.location.path().indexOf(route.path) > -1;
     }
