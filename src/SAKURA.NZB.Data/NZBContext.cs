@@ -12,6 +12,8 @@ namespace SAKURA.NZB.Data
 		public DbSet<Customer> Customers { get; set; }
 		public DbSet<Order> Orders { get; set; }
 
+		public DbSet<AppConfig> Configs { get; set; }
+
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
 			modelBuilder.Entity<OrderProduct>()

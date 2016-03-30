@@ -11,6 +11,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using SAKURA.NZB.Core;
+using SAKURA.NZB.Core.BootTasks;
 using SAKURA.NZB.Core.Hangfire;
 using SAKURA.NZB.Data;
 using System;
@@ -109,6 +110,11 @@ namespace SAKURA.NZB.Website
 				routes.MapRoute("Api", "api/{controller}/{action?}", new { controller = "Products" });
 				routes.MapRoute("default", "{controller=Home}/{action=Index}/{id?}");
 			});
+
+			foreach (var bootTask in app.ApplicationServices.GetServices<IBootTask>())
+			{
+				bootTask.Run();
+			}
 		}
 
 		// Entry point for the application.
