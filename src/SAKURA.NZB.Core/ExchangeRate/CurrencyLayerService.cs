@@ -1,4 +1,5 @@
-﻿using SAKURA.NZB.Data;
+﻿using SAKURA.NZB.Core.Configuration;
+using SAKURA.NZB.Data;
 using System;
 using System.Linq;
 
@@ -8,17 +9,19 @@ namespace SAKURA.NZB.Core.ExchangeRate
 	public class CurrencyLayerService
 	{
 		public string BaseAddress = "http://apilayer.net/";
-		public string AccessKey = "74827d4a5b704e85163ec84175a11ae5";
 		private readonly NZBContext _context;
+		private readonly Config _config;
 
-		public CurrencyLayerService(NZBContext context)
+		public CurrencyLayerService(NZBContext context, Config config)
 		{
 			_context = context;
+			_config = config;
 		}
 
 		public void LiveRequest()
 		{
-			var routeUri = $"api/live?access_key={AccessKey}&currencies=NZD,CNY&format=1";
+			var accessKey = _config.GetApiLayerAccessKey();
+			var routeUri = $"api/live?access_key={accessKey}&currencies=NZD,CNY&format=1";
 			var response = WebApiInvoker.GetAsync<LiveRatesResponse>(BaseAddress, routeUri);
 					
 			var result = response.Result;

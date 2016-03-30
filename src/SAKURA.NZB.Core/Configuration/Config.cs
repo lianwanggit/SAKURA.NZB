@@ -13,6 +13,8 @@ namespace SAKURA.NZB.Core.Configuration
 			_context = context;
 		}
 
+		public string GetApiLayerAccessKey() => GetByKey(ConfigKeys.ApiLayerAccessKey);
+
 		public void EnsureDefaults()
 		{
 			if (!Exists(ConfigKeys.ExchangeRateL))
@@ -22,10 +24,8 @@ namespace SAKURA.NZB.Core.Configuration
 				Set(ConfigKeys.ExchangeRateH, Common.ExchangeRateH.ToString());
 		}
 
-		private bool Exists(string key)
-		{
-			return _context.Configs.Any(c => c.Key == key);
-		}
+		private bool Exists(string key) =>  _context.Configs.Any(c => c.Key == key);		
+		private string GetByKey(string key) => _context.Configs.FirstOrDefault(x => x.Key == key)?.Value;	
 
 		private void Set(string key, string value)
 		{
