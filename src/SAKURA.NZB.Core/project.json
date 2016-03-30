@@ -11,7 +11,6 @@
   "dependencies": {
     "SAKURA.NZB.Domain": "",
     "SAKURA.NZB.Data": "",
-
     "EntityFramework.Core": "7.0.0-rc1-final",
     "EntityFramework.MicrosoftSqlServer": "7.0.0-rc1-final",
     "Microsoft.Extensions.Configuration.Abstractions": "1.0.0-rc1-final",
@@ -19,6 +18,8 @@
     "pinyin4net": "1.0.0",
     "Hangfire.Core": "1.5.2",
     "Hangfire.SqlServer": "1.5.2",
-    "Microsoft.AspNet.Owin": "1.0.0-rc1-final"
+    "Microsoft.AspNet.Owin": "1.0.0-rc1-final",
+    "Microsoft.AspNet.WebApi.Client": "5.2.2",
+    "Newtonsoft.Json": "8.0.2"
   }
 }

@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SAKURA.NZB.Core.BootTasks;
 using SAKURA.NZB.Core.Configuration;
+using SAKURA.NZB.Core.ExchangeRate;
 using SAKURA.NZB.Core.Hangfire;
 using SAKURA.NZB.Core.Services;
 using SAKURA.NZB.Data;
@@ -37,7 +38,10 @@ namespace SAKURA.NZB.Core
 			services.AddTransient<IBackgroundJobClient>(_ => new BackgroundJobClient());
 			services.AddTransient<HangfireHelper>();
 
+			services.AddTransient<CurrencyLayerService>();
+
 			services.AddTransient<IBootTask, AppConfigBootTask>();
+			services.AddTransient<IBootTask, QueryExchangeRatesBootTask>();
 		}
     }
 }
