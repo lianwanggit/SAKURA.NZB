@@ -65,6 +65,10 @@ dd {
   border-left: 5px solid #a94442 !important; /* red */
 }
 
+.clickable {
+    cursor: pointer;
+}
+
 #Header a:focus, a:hover, a:active {
     color: #23527c;
     text-decoration: none;

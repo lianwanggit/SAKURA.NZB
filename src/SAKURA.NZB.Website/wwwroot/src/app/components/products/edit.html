@@ -50,7 +50,7 @@
                     <li *ngFor="#q of quotes; #i = index"> 
                         <div class="panel panel-default">
                             <div class="panel-heading">
-                                {{i + 1}} <i class="fa fa-times pull-right"></i>
+                                <b>{{i + 1}}</b> <i class="fa fa-times pull-right clickable" (click)="onRemoveQuote(i)"></i>
                             </div>
                             <div class="panel-body">
                                 <div class="row">

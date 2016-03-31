@@ -92,6 +92,9 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                         supplier: null,
                         price: null }));
                 };
+                ProductEditComponent.prototype.onRemoveQuote = function (i) {
+                    this.quotes.splice(i, 1);
+                };
                 ProductEditComponent.prototype.onSubmit = function () {
                 };
                 Object.defineProperty(ProductEditComponent.prototype, "title", {

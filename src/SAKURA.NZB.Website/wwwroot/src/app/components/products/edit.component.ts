@@ -88,6 +88,10 @@ export class ProductEditComponent implements OnInit {
 			price: null}));
 	}
 
+	onRemoveQuote(i: number) {
+		this.quotes.splice(i, 1);
+	}
+
 	onSubmit() {
 
 	}
