@@ -1,4 +1,4 @@
-﻿namespace SAKURA.NZB.Core.Configuration
+﻿namespace SAKURA.NZB.Business.Configuration
 {
 	public class ConfigKeys
     {

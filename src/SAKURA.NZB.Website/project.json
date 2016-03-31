@@ -8,7 +8,7 @@
   "dependencies": {
     "SAKURA.NZB.Domain": "",
     "SAKURA.NZB.Data": "",
-    "SAKURA.NZB.Core": "",
+    "SAKURA.NZB.Business": "",
 
     "EntityFramework.MicrosoftSqlServer": "7.0.0-rc1-final",
     "Microsoft.ApplicationInsights.AspNet": "1.0.0-rc1",

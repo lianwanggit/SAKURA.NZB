@@ -1,9 +1,9 @@
-﻿using SAKURA.NZB.Core.Configuration;
+﻿using SAKURA.NZB.Business.Configuration;
 using SAKURA.NZB.Data;
 using System;
 using System.Linq;
 
-namespace SAKURA.NZB.Core.ExchangeRate
+namespace SAKURA.NZB.Business.ExchangeRate
 {
 	// http://apilayer.net/api/live?access_key=74827d4a5b704e85163ec84175a11ae5&currencies=NZD,CNY&format=1
 	public class CurrencyLayerService

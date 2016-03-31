@@ -2,7 +2,7 @@
 using SAKURA.NZB.Domain;
 using System.Linq;
 
-namespace SAKURA.NZB.Core.Configuration
+namespace SAKURA.NZB.Business.Configuration
 {
 	public class Config
     {

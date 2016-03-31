@@ -1,4 +1,4 @@
-﻿namespace SAKURA.NZB.Core.BootTasks
+﻿namespace SAKURA.NZB.Business.BootTasks
 {
 	public interface IBootTask
 	{

@@ -1,7 +1,7 @@
 ﻿using SAKURA.NZB.Data;
 using System.Linq;
 
-namespace SAKURA.NZB.Core.Hangfire
+namespace SAKURA.NZB.Business.Hangfire
 {
 	public class HangfireHelper
 	{

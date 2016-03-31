@@ -10,9 +10,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using SAKURA.NZB.Core;
-using SAKURA.NZB.Core.BootTasks;
-using SAKURA.NZB.Core.Hangfire;
+using SAKURA.NZB.Business;
+using SAKURA.NZB.Business.BootTasks;
+using SAKURA.NZB.Business.Hangfire;
 using SAKURA.NZB.Data;
 using System;
 using System.Linq;
@@ -50,7 +50,7 @@ namespace SAKURA.NZB.Website
 			// Add framework services.
 			services.AddApplicationInsightsTelemetry(Configuration);
 
-			var coreModule = new CoreModule(Configuration);
+			var coreModule = new BusinessServices(Configuration);
 			coreModule.ConfigureServices(services);
 
 			services.AddMvc()

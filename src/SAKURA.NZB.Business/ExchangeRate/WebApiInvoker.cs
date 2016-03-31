@@ -3,7 +3,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
-namespace SAKURA.NZB.Core.ExchangeRate
+namespace SAKURA.NZB.Business.ExchangeRate
 {
 	public static class WebApiInvoker
 	{

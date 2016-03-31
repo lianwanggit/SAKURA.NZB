@@ -8,9 +8,9 @@ using Microsoft.Extensions.DependencyInjection;
 using SAKURA.NZB.Data;
 using Hangfire.SqlServer;
 using Microsoft.Data.Entity;
-using SAKURA.NZB.Core.Hangfire;
+using SAKURA.NZB.Business.Hangfire;
 
-namespace SAKURA.NZB.Core
+namespace SAKURA.NZB.Business
 {
 	public static class ApplicationBuilderExtensions
 	{

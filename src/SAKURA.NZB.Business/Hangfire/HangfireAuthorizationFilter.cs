@@ -1,7 +1,7 @@
 ﻿using Hangfire.Dashboard;
 using System.Collections.Generic;
 
-namespace SAKURA.NZB.Core.Hangfire
+namespace SAKURA.NZB.Business.Hangfire
 {
 	public class HangfireAuthorizationFilter : IAuthorizationFilter
 	{

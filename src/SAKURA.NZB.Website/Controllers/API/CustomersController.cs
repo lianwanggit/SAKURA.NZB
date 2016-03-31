@@ -2,7 +2,7 @@ using System.Linq;
 using Microsoft.AspNet.Mvc;
 using SAKURA.NZB.Data;
 using SAKURA.NZB.Domain;
-using SAKURA.NZB.Core.Extensions;
+using SAKURA.NZB.Business.Extensions;
 
 namespace SAKURA.NZB.Website.Controllers.API
 {

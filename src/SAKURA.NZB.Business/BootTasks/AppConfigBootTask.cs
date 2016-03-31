@@ -1,6 +1,6 @@
-﻿using SAKURA.NZB.Core.Configuration;
+﻿using SAKURA.NZB.Business.Configuration;
 
-namespace SAKURA.NZB.Core.BootTasks
+namespace SAKURA.NZB.Business.BootTasks
 {
 	public class AppConfigBootTask : IBootTask
 	{

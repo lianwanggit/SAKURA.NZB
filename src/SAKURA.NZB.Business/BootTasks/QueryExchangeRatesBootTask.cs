@@ -1,7 +1,7 @@
 ﻿using Hangfire;
-using SAKURA.NZB.Core.ExchangeRate;
+using SAKURA.NZB.Business.ExchangeRate;
 
-namespace SAKURA.NZB.Core.BootTasks
+namespace SAKURA.NZB.Business.BootTasks
 {
 	public class QueryExchangeRatesBootTask : IBootTask
 	{

@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace SAKURA.NZB.Core.Extensions
+namespace SAKURA.NZB.Business.Extensions
 {
 	public static class StringExtensions
     {

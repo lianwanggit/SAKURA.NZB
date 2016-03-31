@@ -1,6 +1,6 @@
 {
   "version": "1.0.0-*",
-  "description": "SAKURA.NZB.Core Class Library",
+  "description": "SAKURA.NZB.Business Class Library",
   "authors": [ "Lemo" ],
   "tags": [ "" ],
   "projectUrl": "",

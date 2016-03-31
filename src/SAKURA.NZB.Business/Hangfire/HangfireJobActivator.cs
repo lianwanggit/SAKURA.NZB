@@ -2,7 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using System;
 
-namespace SAKURA.NZB.Core.Hangfire
+namespace SAKURA.NZB.Business.Hangfire
 {
 	public class HangfireJobActivator : JobActivator
 	{

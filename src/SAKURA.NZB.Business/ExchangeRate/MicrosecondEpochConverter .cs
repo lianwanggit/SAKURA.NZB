@@ -2,7 +2,7 @@
 using Newtonsoft.Json.Converters;
 using System;
 
-namespace SAKURA.NZB.Core.ExchangeRate
+namespace SAKURA.NZB.Business.ExchangeRate
 {
 	public class MicrosecondEpochConverter : DateTimeConverterBase
 	{

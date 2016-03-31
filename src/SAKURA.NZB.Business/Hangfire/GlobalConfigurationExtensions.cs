@@ -2,7 +2,7 @@
 using Hangfire.Annotations;
 using System;
 
-namespace SAKURA.NZB.Core.Hangfire
+namespace SAKURA.NZB.Business.Hangfire
 {
 	public static class GlobalConfigurationExtensions
 	{
