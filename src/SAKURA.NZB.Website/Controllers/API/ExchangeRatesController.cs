@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using Microsoft.AspNet.Mvc;
 using SAKURA.NZB.Data;
+using SAKURA.NZB.Business.Configuration;
 
 namespace SAKURA.NZB.Website.Controllers.API
 {
@@ -8,10 +9,19 @@ namespace SAKURA.NZB.Website.Controllers.API
     public class ExchangeRatesController : Controller
     {
 		private NZBContext _context;
+		private Config _config;
 
-		public ExchangeRatesController(NZBContext context)
+		private class NzdToCnyRates
+		{
+			public float FixedRateHigh { get; set; }
+			public float FixedRateLow { get; set; }
+			public float? CurrentRate { get; set; }
+		}
+
+		public ExchangeRatesController(NZBContext context, Config config)
 		{
 			_context = context;
+			_config = config;
 		}
 
         [HttpGet]
@@ -23,7 +33,12 @@ namespace SAKURA.NZB.Website.Controllers.API
         [HttpGet, Route("latest")]
         public IActionResult Get(int id)
         {
-			return new ObjectResult(_context.ExchangeRates.OrderByDescending(e => e.ModifiedTime).FirstOrDefault());
+			var rate = _context.ExchangeRates.OrderByDescending(e => e.ModifiedTime).FirstOrDefault();
+			return new ObjectResult(new NzdToCnyRates {
+				FixedRateHigh = _config.GetFixedRateHigh(),
+				FixedRateLow = _config.GetFixedRateLow(),
+				CurrentRate = rate?.NZDCNY
+			});
 		}
     }
 }

@@ -89,4 +89,8 @@ export class ApiService {
 
 		return this.http.put('api/suppliers/' + id, data, { headers: headers });
     }
+
+	getLatestExchangeRates(onNext: (json: any) => void) {
+        this.http.get("api/exchangerates/latest").map(response => response.json()).subscribe(onNext);
+    }
 }

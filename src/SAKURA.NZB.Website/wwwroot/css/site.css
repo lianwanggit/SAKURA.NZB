@@ -57,7 +57,7 @@ dd {
     padding-bottom: 10px;
 }
 
-.ng-valid {
+.ng-valid[required] {
   border-left: 5px solid #42A948 !important; /* green */
 }
 

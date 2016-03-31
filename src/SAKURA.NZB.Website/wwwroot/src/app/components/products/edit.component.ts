@@ -4,11 +4,10 @@ import {Component, OnInit} from "angular2/core";
 import {CORE_DIRECTIVES, FORM_DIRECTIVES, ControlGroup, Control, Validators} from "angular2/common";
 import {Router, RouteParams, ROUTER_DIRECTIVES} from 'angular2/router';
 import {ApiService} from "../api.service";
-import {Category, Brand, Supplier, Product} from "./models";
+import {Category, Brand, Supplier, Product, Quote} from "./models";
 import {SelectValidator, ValidationResult} from "../../validators/selectValidator";
 
 import '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js';
-
 
 @Component({
     selector: "product-edit",
@@ -21,6 +20,12 @@ export class ProductEditComponent implements OnInit {
 	categories: Category[] = [];
 	brands: Brand[] = [];
 	suppliers: Supplier[] = [];
+
+	quotes: Quote[] = [];
+
+	fixedRateHigh: number;
+	fixedRateLow: number;
+	currentRate: number;
 
 	model: Product = new Product({
 		"id": 0, "name": null, "desc": null, "categoryId": 0, "category": null,
@@ -39,6 +44,7 @@ export class ProductEditComponent implements OnInit {
 
 		this.productForm = new ControlGroup({
 			category: new Control(this.model.categoryId, SelectValidator.unselected),
+			brand: new Control(this.model.brandId, SelectValidator.unselected),
 			name: new Control(this.model.name, Validators.required)
 		});
 	}
@@ -64,6 +70,22 @@ export class ProductEditComponent implements OnInit {
 					that.suppliers.push(new Supplier(s));
 				});
 		});
+		this.service.getLatestExchangeRates(json => {
+			if (json) {
+				that.fixedRateHigh = json.fixedRateHigh;
+				that.fixedRateLow = json.fixedRateLow;
+				that.currentRate = json.currentRate.toFixed(2);
+			}				
+		});
+	}
+
+	onAddQuote() {
+		this.quotes.push(new Quote({
+			id: 0,
+			productId: 0,
+			supplierId: 0,
+			supplier: null,
+			price: null}));
 	}
 
 	onSubmit() {
@@ -71,5 +93,6 @@ export class ProductEditComponent implements OnInit {
 	}
 
 	get title() { return (this.model && this.editMode) ? "编辑产品 - " + this.model.name : "新建产品"; }
-	get data() { return JSON.stringify(this.productForm.value); }
+	get canAddQuote() { return !this.quotes || (this.quotes.length < this.suppliers.length); }
+	get data() { return JSON.stringify(this.quotes); }
 }

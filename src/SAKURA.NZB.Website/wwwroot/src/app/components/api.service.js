@@ -85,6 +85,9 @@ System.register(["rxjs/Rx", "angular2/http", "angular2/core"], function(exports_
                     headers.append('Content-Type', 'application/json');
                     return this.http.put('api/suppliers/' + id, data, { headers: headers });
                 };
+                ApiService.prototype.getLatestExchangeRates = function (onNext) {
+                    this.http.get("api/exchangerates/latest").map(function (response) { return response.json(); }).subscribe(onNext);
+                };
                 ApiService = __decorate([
                     core_1.Injectable(), 
                     __metadata('design:paramtypes', [http_1.Http])

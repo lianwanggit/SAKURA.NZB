@@ -40,6 +40,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     this.categories = [];
                     this.brands = [];
                     this.suppliers = [];
+                    this.quotes = [];
                     this.model = new models_1.Product({
                         "id": 0, "name": null, "desc": null, "categoryId": 0, "category": null,
                         "brandId": 0, "brand": null, "images": null, "quotes": null, "price": 0, "selected": false
@@ -51,6 +52,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     }
                     this.productForm = new common_1.ControlGroup({
                         category: new common_1.Control(this.model.categoryId, selectValidator_1.SelectValidator.unselected),
+                        brand: new common_1.Control(this.model.brandId, selectValidator_1.SelectValidator.unselected),
                         name: new common_1.Control(this.model.name, common_1.Validators.required)
                     });
                 }
@@ -74,6 +76,21 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                                 that.suppliers.push(new models_1.Supplier(s));
                             });
                     });
+                    this.service.getLatestExchangeRates(function (json) {
+                        if (json) {
+                            that.fixedRateHigh = json.fixedRateHigh;
+                            that.fixedRateLow = json.fixedRateLow;
+                            that.currentRate = json.currentRate.toFixed(2);
+                        }
+                    });
+                };
+                ProductEditComponent.prototype.onAddQuote = function () {
+                    this.quotes.push(new models_1.Quote({
+                        id: 0,
+                        productId: 0,
+                        supplierId: 0,
+                        supplier: null,
+                        price: null }));
                 };
                 ProductEditComponent.prototype.onSubmit = function () {
                 };
@@ -82,8 +99,13 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     enumerable: true,
                     configurable: true
                 });
+                Object.defineProperty(ProductEditComponent.prototype, "canAddQuote", {
+                    get: function () { return !this.quotes || (this.quotes.length < this.suppliers.length); },
+                    enumerable: true,
+                    configurable: true
+                });
                 Object.defineProperty(ProductEditComponent.prototype, "data", {
-                    get: function () { return JSON.stringify(this.productForm.value); },
+                    get: function () { return JSON.stringify(this.quotes); },
                     enumerable: true,
                     configurable: true
                 });

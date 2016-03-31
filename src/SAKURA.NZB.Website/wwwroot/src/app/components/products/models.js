@@ -37,6 +37,9 @@ System.register([], function(exports_1) {
                     this.supplier = obj.supplier;
                     this.price = obj.price;
                 }
+                Quote.prototype.currencyConvert = function (rate) {
+                    return isNaN(this.price) ? '\u00A0' : (this.price * rate).toFixed(2).toString().replace(/\.?0+$/, "");
+                };
                 return Quote;
             })();
             exports_1("Quote", Quote);

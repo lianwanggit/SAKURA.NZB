@@ -14,18 +14,21 @@ namespace SAKURA.NZB.Business.Configuration
 		}
 
 		public string GetApiLayerAccessKey() => GetByKey(ConfigKeys.ApiLayerAccessKey);
+		public float GetFixedRateHigh() => GetFloatByKey(ConfigKeys.FixedRateHigh);
+		public float GetFixedRateLow() => GetFloatByKey(ConfigKeys.FixedRateLow);
 
 		public void EnsureDefaults()
 		{
-			if (!Exists(ConfigKeys.ExchangeRateL))
-				Set(ConfigKeys.ExchangeRateL, Common.ExchangeRateL.ToString());
+			if (!Exists(ConfigKeys.FixedRateLow))
+				Set(ConfigKeys.FixedRateLow, Common.ExchangeRateL.ToString());
 
-			if (!Exists(ConfigKeys.ExchangeRateH))
-				Set(ConfigKeys.ExchangeRateH, Common.ExchangeRateH.ToString());
+			if (!Exists(ConfigKeys.FixedRateHigh))
+				Set(ConfigKeys.FixedRateHigh, Common.ExchangeRateH.ToString());
 		}
 
 		private bool Exists(string key) =>  _context.Configs.Any(c => c.Key == key);		
-		private string GetByKey(string key) => _context.Configs.FirstOrDefault(x => x.Key == key)?.Value;	
+		private string GetByKey(string key) => _context.Configs.FirstOrDefault(x => x.Key == key)?.Value;
+		private float GetFloatByKey(string key) => float.Parse(_context.Configs.FirstOrDefault(x => x.Key == key)?.Value);
 
 		private void Set(string key, string value)
 		{

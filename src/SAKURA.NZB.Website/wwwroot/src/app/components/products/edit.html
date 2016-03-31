@@ -1,22 +1,35 @@
 ﻿<div class="grey-border">
     <h2 class="page-header">{{title}}</h2>
 
-    <form class="form-horizontal" (ngSubmit)="onSubmit()" #myForm="ngForm" [ngFormModel]="productForm" >
+    <form class="form-horizontal" (ngSubmit)="onSubmit()" #myForm="ngForm" [ngFormModel]="productForm">
         <div class="form-group">
-            <label class="col-md-2" for="fullName">类别</label>
+            <label class="col-md-2" for="category">类别</label>
             <div class="col-md-10">
-                <select id="category" class="form-control" ngControl="category" #category="ngForm" >
+                <select id="category" class="form-control" ngControl="category" #category="ngForm">
                     <option *ngFor="#c of categories; #i = index" value="{{c.id}}">{{c.name}}</option>
                 </select>
- 
+
                 <div [hidden]="category.valid || category.pristine" class="alert alert-danger">
                     请选择一个类别
                 </div>
             </div>
         </div>
-        
+
         <div class="form-group">
-            <label class="col-md-2" for="fullName">产品名称</label>
+            <label class="col-md-2" for="brand">品牌</label>
+            <div class="col-md-10">
+                <select id="brand" class="form-control" ngControl="brand" #brand="ngForm">
+                    <option *ngFor="#c of brands; #i = index" value="{{c.id}}">{{c.name}}</option>
+                </select>
+
+                <div [hidden]="brand.valid || brand.pristine" class="alert alert-danger">
+                    请选择一个品牌
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-md-2" for="name">产品名称</label>
             <div class="col-md-10">
                 <input id="name" type="text" class="form-control" maxlength="100" ngControl="name" #name="ngForm" />
                 <div [hidden]="name.valid || name.pristine" class="alert alert-danger">
@@ -24,7 +37,58 @@
                 </div>
             </div>
         </div>
-    </form>
 
-    {{data}}
+        <div class="form-group">
+            <div class="col-md-12">
+                <button type="button" class="btn btn-info" (click)="onAddQuote()" [disabled]="!canAddQuote">供应商报价 <i class="fa fa-plus fa-lg"></i></button>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-12">
+                <ul class="quote-list">
+                    <li *ngFor="#q of quotes; #i = index"> 
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                {{i + 1}} <i class="fa fa-times pull-right"></i>
+                            </div>
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div class="col-xs-7 supplier-field">
+                                        <select id="category" class="form-control" [(ngModel)]="q.supplierId">
+                                            <option *ngFor="#s of suppliers" value="{{s.id}}">{{s.name}}</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xs-5">
+                                        <input type="number" class="form-control" id="exampleInputAmount" placeholder="NZD" [(ngModel)]="q.price" min="1" />
+                                    </div>
+                                </div>
+                                <table class="table table-bordered">
+                                    <tr>
+                                        <td class="text-center info">{{currentRate}} <i class="fa fa-refresh fa-spin"></i></td>
+                                        <td class="text-center danger">{{fixedRateLow}} <i class="fa fa-angle-down"></i></td>
+                                        <td class="text-center success">{{fixedRateHigh}} <i class="fa fa-angle-up"></i></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center">{{q.currencyConvert(currentRate)}}</td>
+                                        <td class="text-center">{{q.currencyConvert(fixedRateLow)}}</td>
+                                        <td class="text-center">{{q.currencyConvert(fixedRateHigh)}}</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+
+                                                                       
+                       
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-12">
+                {{data}}
+            </div>
+        </div>
+    </form>
 </div>

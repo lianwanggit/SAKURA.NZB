@@ -46,6 +46,10 @@ export class Quote {
 		this.supplier = obj.supplier;
 		this.price = obj.price;
 	}
+
+	currencyConvert(rate: number) {
+		return isNaN(this.price) ? '\u00A0' : (this.price * rate).toFixed(2).toString().replace(/\.?0+$/, "");
+	}
 }
 
 export class Product {
