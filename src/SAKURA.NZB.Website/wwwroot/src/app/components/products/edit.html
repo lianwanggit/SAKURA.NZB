@@ -38,16 +38,16 @@
             </div>
         </div>
 
-        <div class="form-group">
-            <div class="col-md-12">
+        <div class="form-group visible-xs-block">
+            <div class="col-sm-12 col-md-offset-2 col-md-10" style="margin-top: 20px">
                 <button type="button" class="btn btn-info" (click)="onAddQuote()" [disabled]="!canAddQuote">供应商报价 <i class="fa fa-plus fa-lg"></i></button>
             </div>
         </div>
 
-        <div class="form-group">
-            <div class="col-md-12">
-                <ul class="quote-list">
-                    <li *ngFor="#q of quotes; #i = index"> 
+        <div class="form-group visible-xs-block">
+            <div class="col-xs-12">
+                <ul class="quote-card">
+                    <li *ngFor="#q of quotes; #i = index">
                         <div class="panel panel-default">
                             <div class="panel-heading">
                                 <b>{{i + 1}}</b> <i class="fa fa-times pull-right clickable" (click)="onRemoveQuote(i)"></i>
@@ -60,7 +60,8 @@
                                         </select>
                                     </div>
                                     <div class="col-xs-5">
-                                        <input type="number" class="form-control" id="exampleInputAmount" placeholder="NZD" [(ngModel)]="q.price" min="1" />
+                                        <input type="number" class="form-control" id="exampleInputAmount" placeholder="NZD" [(ngModel)]="q.price"
+                                               min="1" step="0.01" />
                                     </div>
                                 </div>
                                 <table class="table table-bordered">
@@ -77,17 +78,74 @@
                                 </table>
                             </div>
                         </div>
-
-                                                                       
-                       
                     </li>
                 </ul>
             </div>
         </div>
 
+        <div class="form-group hidden-xs">
+            <div class="col-sm-12 col-md-offset-2 col-md-10">
+                <table class="table table-bordered quote-list">
+                   <thead>
+                       <tr>
+                           <td>
+                               供应商 
+                               <button type="button" class="btn btn-info pull-right" (click)="onAddQuote()" [disabled]="!canAddQuote"><i class="fa fa-plus fa-lg"></i></button>
+                           </td>
+                           <td style="width:15%">报价</td>
+                           <td class="text-center info">实时汇率: <b>{{currentRate}}</b><i class="fa fa-refresh fa-spin" ></i></td>
+                           <td class="text-center danger">固定汇率: <b>{{fixedRateLow}}</b><i class="fa fa-angle-down"></i></td>
+                           <td class="text-center success">固定汇率: <b>{{fixedRateHigh}}</b><i class="fa fa-angle-up"></i></td>
+                           <td style="width:40px"></td>
+                       </tr>
+                    </thead> 
+                    <tbody>
+                        <tr *ngFor="#q of quotes; #i = index" class="quote-detail">
+                            <td>
+                                <select id="category" class="form-control no-border" [(ngModel)]="q.supplierId">
+                                    <option *ngFor="#s of suppliers" value="{{s.id}}">{{s.name}}</option>
+                                </select>
+                            </td>
+                            <td>
+                                <input type="number" class="form-control no-border" id="exampleInputAmount" placeholder="NZD" [(ngModel)]="q.price"
+                                       min="1" step="0.01" />
+                            </td>
+                            <td class="text-center" [ngClass]="{placeholder: !q.price}">{{q.currencyConvert(currentRate)}}</td>
+                            <td class="text-center" [ngClass]="{placeholder: !q.price}">{{q.currencyConvert(fixedRateLow)}}</td>
+                            <td class="text-center" [ngClass]="{placeholder: !q.price}">{{q.currencyConvert(fixedRateHigh)}}</td>
+                            <td class="text-center"><i class="fa fa-times clickable" (click)="onRemoveQuote(i)"></i></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
         <div class="form-group">
-            <div class="col-md-12">
-                {{data}}
+            <label class="col-md-2" for="price">定价</label>
+            <div class="col-md-10">
+                <div class="input-group">
+                    <i class="fa fa-yen input-group-addon"></i>
+                    <input id="price" type="number" class="form-control" min="1" step="0.01" placeholder="CNY" ngControl="price" />
+                </div>
+
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-md-2" for="desc">描述</label>
+            <div class="col-md-10">
+                <textarea id="desc" type="text" class="form-control" min="1" ngControl="desc" rows="3"></textarea>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <button type="button" class="btn btn-default" [routerLink]="['产品']">返回列表</button>
+                <button type="submit" class="btn btn-success left-spacer"
+                        [disabled]="!myForm.form.valid">
+                    保存 <i class="fa fa-floppy-o fa-lg"></i>
+                </button>
             </div>
         </div>
     </form>

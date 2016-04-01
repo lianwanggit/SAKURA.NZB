@@ -40,19 +40,19 @@
     border-bottom: 1px solid #eee;
 }
 
-.quote-list {
+.quote-card {
     list-style: none;
     overflow: hidden;
     padding-left: 0;
 }
 
-.quote-list li {
+.quote-card li {
     float: left;
     width: 100%;
     height: 180px;
 }
 
-.supplier-field {
+.quote-card .supplier-field {
     padding-right: 0;
 }
 
@@ -64,9 +64,22 @@
     padding: 8px;
 }
 
-.quote-list table {
+.quote-card table {
     margin-top: 5px;
     margin-bottom: 0;
+}
+
+.quote-detail td {
+    padding: 0;
+    vertical-align: middle;
+}
+
+.quote-list thead td button {
+    padding: 0 5px;
+}
+
+.quote-list .placeholder {
+    color: #999;
 }
 
 @media (min-width: 768px) {
@@ -75,27 +88,5 @@
         margin-bottom: 20px;
         border-bottom: none;
     }
-
-    .quote-list li {
-         width: 50%;
-    }
-
-    .quote-list li:nth-child(2n+1) {
-        padding-right: 15px;
-    }
 }
 
-@media (min-width: 1024px) {
-    .quote-list li {
-         width: 33%;
-    }
-
-    .quote-list li:nth-child(2n+1) {
-        padding-right: 0;
-    }
-
-     .quote-list li:nth-child(3n+2) {
-        padding: 0 15px;
-    }
-
-}

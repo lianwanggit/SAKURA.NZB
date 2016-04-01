@@ -48,7 +48,7 @@ export class Quote {
 	}
 
 	currencyConvert(rate: number) {
-		return isNaN(this.price) ? '\u00A0' : (this.price * rate).toFixed(2).toString().replace(/\.?0+$/, "");
+		return !this.price || isNaN(this.price) ? 'CNY' : (this.price * rate).toFixed(2).toString().replace(/\.?0+$/, "");
 	}
 }
 

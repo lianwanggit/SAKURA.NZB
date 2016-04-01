@@ -29,7 +29,7 @@ export class ProductEditComponent implements OnInit {
 
 	model: Product = new Product({
 		"id": 0, "name": null, "desc": null, "categoryId": 0, "category": null,
-		"brandId": 0, "brand": null, "images": null, "quotes": null, "price": 0, "selected": false
+		"brandId": 0, "brand": null, "images": null, "quotes": null, "price": null, "selected": false
 	});
 	productForm: ControlGroup;
 
@@ -45,7 +45,9 @@ export class ProductEditComponent implements OnInit {
 		this.productForm = new ControlGroup({
 			category: new Control(this.model.categoryId, SelectValidator.unselected),
 			brand: new Control(this.model.brandId, SelectValidator.unselected),
-			name: new Control(this.model.name, Validators.required)
+			name: new Control(this.model.name, Validators.required),
+			price: new Control(this.model.price),
+			desc: new Control(this.model.desc)
 		});
 	}
 

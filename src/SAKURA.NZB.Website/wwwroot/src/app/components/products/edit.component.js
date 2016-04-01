@@ -43,7 +43,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     this.quotes = [];
                     this.model = new models_1.Product({
                         "id": 0, "name": null, "desc": null, "categoryId": 0, "category": null,
-                        "brandId": 0, "brand": null, "images": null, "quotes": null, "price": 0, "selected": false
+                        "brandId": 0, "brand": null, "images": null, "quotes": null, "price": null, "selected": false
                     });
                     this.editMode = false;
                     this.productId = params.get("id");
@@ -53,7 +53,9 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     this.productForm = new common_1.ControlGroup({
                         category: new common_1.Control(this.model.categoryId, selectValidator_1.SelectValidator.unselected),
                         brand: new common_1.Control(this.model.brandId, selectValidator_1.SelectValidator.unselected),
-                        name: new common_1.Control(this.model.name, common_1.Validators.required)
+                        name: new common_1.Control(this.model.name, common_1.Validators.required),
+                        price: new common_1.Control(this.model.price),
+                        desc: new common_1.Control(this.model.desc)
                     });
                 }
                 ProductEditComponent.prototype.ngOnInit = function () {
