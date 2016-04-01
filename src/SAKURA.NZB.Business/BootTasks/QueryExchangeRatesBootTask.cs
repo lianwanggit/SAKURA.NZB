@@ -16,7 +16,7 @@ namespace SAKURA.NZB.Business.BootTasks
 
 		public void Run()
 		{
-			_service.LiveRequest();
+			//_service.LiveRequest();
 			RecurringJob.AddOrUpdate("query-live-currency-rates-task", () => _service.LiveRequest(), Cron.Hourly);
 		}
 	}
