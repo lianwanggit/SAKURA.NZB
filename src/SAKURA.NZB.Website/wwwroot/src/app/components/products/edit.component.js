@@ -43,7 +43,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     this.quotes = [];
                     this.model = new models_1.Product({
                         "id": 0, "name": null, "desc": null, "categoryId": 0, "category": null,
-                        "brandId": 0, "brand": null, "images": null, "quotes": null, "price": null, "selected": false
+                        "brandId": 0, "brand": null, "images": null, "quotes": null, "price": null
                     });
                     this.editMode = false;
                     this.productId = params.get("id");
@@ -98,6 +98,19 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     this.quotes.splice(i, 1);
                 };
                 ProductEditComponent.prototype.onSubmit = function () {
+                    var _this = this;
+                    var form = this.productForm.value;
+                    var p = new models_1.Product({
+                        "id": 0, "name": form.name, "desc": form.desc, "categoryId": form.category, "category": null,
+                        "brandId": form.brand, "brand": null, "images": null, "quotes": this.quotes, "price": form.price, "selected": false
+                    });
+                    this.service.postProduct(JSON.stringify(p, this.emptyStringToNull))
+                        .subscribe(function (response) {
+                        _this.router.navigate(['产品']);
+                    });
+                };
+                ProductEditComponent.prototype.emptyStringToNull = function (key, value) {
+                    return value === "" ? null : value;
                 };
                 Object.defineProperty(ProductEditComponent.prototype, "title", {
                     get: function () { return (this.model && this.editMode) ? "编辑产品 - " + this.model.name : "新建产品"; },
@@ -109,8 +122,17 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     enumerable: true,
                     configurable: true
                 });
-                Object.defineProperty(ProductEditComponent.prototype, "data", {
-                    get: function () { return JSON.stringify(this.quotes); },
+                Object.defineProperty(ProductEditComponent.prototype, "isLowPrice", {
+                    get: function () {
+                        var price = this.productForm.value.price;
+                        if (price && this.quotes.length > 0) {
+                            var lowQuote = this.quotes.ToList().Min(function (q) { return q.price; });
+                            if (lowQuote && price <= lowQuote * this.currentRate) {
+                                return true;
+                            }
+                        }
+                        return false;
+                    },
                     enumerable: true,
                     configurable: true
                 });

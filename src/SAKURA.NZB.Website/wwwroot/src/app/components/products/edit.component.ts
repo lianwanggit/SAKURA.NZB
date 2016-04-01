@@ -29,7 +29,7 @@ export class ProductEditComponent implements OnInit {
 
 	model: Product = new Product({
 		"id": 0, "name": null, "desc": null, "categoryId": 0, "category": null,
-		"brandId": 0, "brand": null, "images": null, "quotes": null, "price": null, "selected": false
+		"brandId": 0, "brand": null, "images": null, "quotes": null, "price": null
 	});
 	productForm: ControlGroup;
 
@@ -95,10 +95,33 @@ export class ProductEditComponent implements OnInit {
 	}
 
 	onSubmit() {
+		var form = this.productForm.value;
+		var p = new Product({
+			"id": 0, "name": form.name, "desc": form.desc, "categoryId": form.category, "category": null,
+			"brandId": form.brand, "brand": null, "images": null, "quotes": this.quotes, "price": form.price, "selected": false
+		});
 
+		this.service.postProduct(JSON.stringify(p, this.emptyStringToNull))
+			.subscribe(response  => {
+				this.router.navigate(['产品']);
+			});
+	}
+
+	emptyStringToNull(key: string, value: string) {
+		return value === "" ? null : value;
 	}
 
 	get title() { return (this.model && this.editMode) ? "编辑产品 - " + this.model.name : "新建产品"; }
 	get canAddQuote() { return !this.quotes || (this.quotes.length < this.suppliers.length); }
-	get data() { return JSON.stringify(this.quotes); }
+	get isLowPrice() {
+		var price = this.productForm.value.price;
+		if (price && this.quotes.length > 0) {
+			var lowQuote = this.quotes.ToList<Quote>().Min(q => q.price);
+			if (lowQuote && price <= lowQuote * this.currentRate) {
+				return true;
+			}
+		}
+
+		return false;
+	}
 }

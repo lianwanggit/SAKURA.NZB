@@ -2,6 +2,7 @@ using System.Linq;
 using Microsoft.AspNet.Mvc;
 using Microsoft.Data.Entity;
 using SAKURA.NZB.Data;
+using SAKURA.NZB.Domain;
 
 namespace SAKURA.NZB.Website.Controllers.API
 {
@@ -26,105 +27,70 @@ namespace SAKURA.NZB.Website.Controllers.API
 				.ToList());
 		}
 
-		//// GET: Products/Details/5
-		//public IActionResult Details(int? id)
-		//{
-		//	if (id == null)
-		//	{
-		//		return HttpNotFound();
-		//	}
+		[HttpGet("{id:int}", Name = "GetProduct")]
+		public IActionResult Get(int? id)
+		{
+			if (id == null)
+				return HttpNotFound();
 
-		//	Product product = _context.Products.Single(m => m.Id == id);
-		//	if (product == null)
-		//	{
-		//		return HttpNotFound();
-		//	}
+			var item = _context.Products
+				.Include(p => p.Category)
+				.Include(p => p.Brand)
+				.Include(p => p.Quotes).ThenInclude(q => q.Supplier)
+				.Include(p => p.Images)
+				.Single(p => p.Id == id);
 
-		//	return View(product);
-		//}
+			if (item == null)
+				return HttpNotFound();
 
-		//// GET: Products/Create
-		//public IActionResult Create()
-		//{
-		//	ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name");
-		//	ViewData["SupplierId"] = new SelectList(_context.Suppliers, "Id", "Name");
-		//	return View();
-		//}
+			return new ObjectResult(item);
+		}
 
-		//// POST: Products/Create
-		//[HttpPost]
-		//[ValidateAntiForgeryToken]
-		//public IActionResult Create(Product product)
-		//{
-		//	if (ModelState.IsValid)
-		//	{
-		//		_context.Products.Add(product);
-		//		_context.SaveChanges();
-		//		return RedirectToAction("Index");
-		//	}
-		//	ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", product.CategoryId);
-		//	return View(product);
-		//}
+		[HttpPost]
+		public IActionResult Post([FromBody]Product product)
+		{
+			if (product == null)
+				return HttpBadRequest();
 
-		//// GET: Products/Edit/5
-		//public IActionResult Edit(int? id)
-		//{
-		//	if (id == null)
-		//	{
-		//		return HttpNotFound();
-		//	}
+			if (!Validate(product))
+				return HttpBadRequest();
 
-		//	Product product = _context.Products.Single(m => m.Id == id);
-		//	if (product == null)
-		//	{
-		//		return HttpNotFound();
-		//	}
-		//	ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", product.CategoryId);
-		//	return View(product);
-		//}
+			_context.Products.Add(product);
+			_context.SaveChanges();
 
-		//// POST: Products/Edit/5
-		//[HttpPost]
-		//[ValidateAntiForgeryToken]
-		//public IActionResult Edit(Product product)
-		//{
-		//	if (ModelState.IsValid)
-		//	{
-		//		_context.Update(product);
-		//		_context.SaveChanges();
-		//		return RedirectToAction("Index");
-		//	}
-		//	ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", product.CategoryId);
-		//	return View(product);
-		//}
+			return CreatedAtRoute("GetProduct", new { controller = "Products", id = product.Id }, product);
+		}
 
-		//// GET: Products/Delete/5
-		//[ActionName("Delete")]
-		//public IActionResult Delete(int? id)
-		//{
-		//	if (id == null)
-		//	{
-		//		return HttpNotFound();
-		//	}
+		private bool Validate(Product product)
+		{
+			if (string.IsNullOrEmpty(product.Name))
+				return false;
 
-		//	Product product = _context.Products.Single(m => m.Id == id);
-		//	if (product == null)
-		//	{
-		//		return HttpNotFound();
-		//	}
+			var category = _context.Categories.FirstOrDefault(c => c.Id == product.CategoryId);
+			if (category == null)
+				return false;
+			product.Category = category;
 
-		//	return View(product);
-		//}
+			var brand = _context.Brands.FirstOrDefault(b => b.Id == product.BrandId);
+			if (brand == null)
+				return false;
+			product.Brand = brand;
 
-		//// POST: Products/Delete/5
-		//[HttpPost, ActionName("Delete")]
-		//[ValidateAntiForgeryToken]
-		//public IActionResult DeleteConfirmed(int id)
-		//{
-		//	Product product = _context.Products.Single(m => m.Id == id);
-		//	_context.Products.Remove(product);
-		//	_context.SaveChanges();
-		//	return RedirectToAction("Index");
-		//}
+			foreach (var q in product.Quotes)
+			{
+				if (q.Price <= 0.0)
+					return false;
+
+				var supplier = _context.Suppliers.FirstOrDefault(s => s.Id == q.SupplierId);
+				if (supplier == null)
+					return false;
+				q.Supplier = supplier;
+			}
+
+			if (product.Price <= 0.0)
+				return false;
+
+			return true;
+		}
 	}
 }

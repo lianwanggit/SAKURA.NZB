@@ -45,9 +45,8 @@ System.register([], function(exports_1) {
             exports_1("Quote", Quote);
             Product = (function () {
                 function Product(obj) {
-                    this.selected = false;
                     this.id = obj.id;
-                    this.name = obj.fullName;
+                    this.name = obj.name;
                     this.desc = obj.desc;
                     this.categoryId = obj.categoryId;
                     this.category = obj.category;

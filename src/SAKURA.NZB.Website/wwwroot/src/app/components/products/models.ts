@@ -63,11 +63,10 @@ export class Product {
 	images: any[];
 	quotes: Quote[];
 	price: number;
-	selected = false;
 
 	constructor(obj) {
 		this.id = obj.id;
-		this.name = obj.fullName;
+		this.name = obj.name;
 		this.desc = obj.desc;
 		this.categoryId = obj.categoryId;
 		this.category = obj.category;
