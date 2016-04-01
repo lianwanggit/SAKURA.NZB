@@ -8,6 +8,18 @@ import {Category, Brand, Supplier, Product, BaseType} from "./models";
 
 import '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js';
 
+class ProductListItem {
+	constructor(public id: number, public name: string, public category: string, public brand: string,
+		public price: number, public quotes: QuoteListItem[] = [],
+		public isCategoryItem = false) {
+	}
+}
+
+class QuoteListItem {
+	constructor(supplier: string, public price: number,
+		public priceFixedRateHigh, public priceFixedRateLow) {
+	}
+}
 
 
 @Component({
@@ -18,14 +30,18 @@ import '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.
     directives: [CORE_DIRECTIVES, FORM_DIRECTIVES, ROUTER_DIRECTIVES]
 })
 export class ProductsComponent implements OnInit {
-    productList: Product[] = [];
-	searchList: Product[] = [];
+    productList = [].ToList<Product>();
+	searchList: ProductListItem[] = [];
 	filterText = '';
 	totalAmount = 0;
 
 	categoryAmount = 0;
 	brandAmount = 0;
 	supplierAmount = 0;
+
+	fixedRateHigh: number;
+	fixedRateLow: number;
+	currentRate: number;
 
 	private _filterText = '';
 
@@ -41,12 +57,11 @@ export class ProductsComponent implements OnInit {
         this.service.getProducts(json => {
             if (json) {
                 json.forEach(c => {
-					that.productList.push(new Product(c));
+					that.productList.Add(new Product(c));
 				});
 
-				that.totalAmount = that.productList.length;
-				that.searchList = that.productList.ToList<Product>()
-					.ToArray();;
+				that.totalAmount = that.productList.Count();
+				that.addProductsToSearchList(that.productList);
             }
         });
 
@@ -61,6 +76,14 @@ export class ProductsComponent implements OnInit {
 		this.service.getSuppliers(json => {
 			if (json)
 				that.supplierAmount = json.length;
+		});
+
+		this.service.getLatestExchangeRates(json => {
+			if (json) {
+				that.fixedRateHigh = json.fixedRateHigh;
+				that.fixedRateLow = json.fixedRateLow;
+				that.currentRate = json.currentRate.toFixed(2);
+			}
 		});
     }
 
@@ -80,34 +103,63 @@ export class ProductsComponent implements OnInit {
 
 		this.searchList = [];
 		if (/^$|^[\u4e00-\u9fa5_a-zA-Z0-9 ]+$/g.test(this.filterText)) {
-			this.searchList = this.productList.ToList<Product>()
+			var result = this.productList
 				.Where(x => this.startsWith(x.name, this.filterText) ||
-					this.startsWith(x.brand.name.toLowerCase(), this.filterText.toLowerCase()))
-				.ToArray();
+					this.startsWith(x.category.name, this.filterText) ||
+					this.startsWith(x.brand.name.toLowerCase(), this.filterText.toLowerCase()));
+
+			this.addProductsToSearchList(result);
 		}
 
 		this._filterText = this.filterText;
 	}
 
-	onClickListItem(id: number) {
-		this.productList.forEach(x => {
-			x.selected = x.id == id;
-		});
-	}
+	//onClickListItem(id: number) {
+	//	this.productList.forEach(x => {
+	//		x.selected = x.id == id;
+	//	});
+	//}
 
-	onEdit(cid: number) {
-		this.productList.forEach(x => {
-			if (x.id == cid && x.selected) {
-				//this.router.navigate(['CEdit', { id: cid }]);
-				return;
-			}
-		});
-	}
+	//onEdit(cid: number) {
+	//	this.productList.forEach(x => {
+	//		if (x.id == cid && x.selected) {
+	//			//this.router.navigate(['CEdit', { id: cid }]);
+	//			return;
+	//		}
+	//	});
+	//}
 
+	addProductsToSearchList(products: List<Product>) {
+		var list = [].ToList<ProductListItem>();
+		var category = '';
+		var that = this;
+
+		products.ForEach(p => {
+			if (p.category.name !== category) {
+				list.Add(new ProductListItem(null, null, p.category.name, null, null, null, true));
+				category = p.category.name;
+			} 
+
+			var quoteItemList: QuoteListItem[] = [];
+			p.quotes.forEach(q => {
+				quoteItemList.push(new QuoteListItem(q.supplier.name, q.price,
+					that.currencyConvert(that.fixedRateHigh, q.price),
+					that.currencyConvert(that.fixedRateLow, q.price)));
+			});
+
+			list.Add(new ProductListItem(p.id, p.name, p.category.name, p.brand.name, p.price, quoteItemList));
+		});
+
+		this.searchList = list.ToArray();
+	}
 
 	startsWith(str: string, searchString: string) {
 		return str.substr(0, searchString.length) === searchString;
 	};
+
+	currencyConvert(rate: number, price: number) {
+		return !price || isNaN(price) ? '' : (price * rate).toFixed(2).toString().replace(/\.?0+$/, "");
+	}
 
 	get amount() { return this.searchList.length; }
 	get data() { return JSON.stringify(this.searchList); }

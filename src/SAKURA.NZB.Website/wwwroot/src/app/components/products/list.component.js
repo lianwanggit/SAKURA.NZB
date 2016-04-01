@@ -10,7 +10,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
     var core_1, common_1, router_1, api_service_1, models_1;
-    var ProductsComponent;
+    var ProductListItem, QuoteListItem, ProductsComponent;
     return {
         setters:[
             function (core_1_1) {
@@ -30,11 +30,33 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
             },
             function (_1) {}],
         execute: function() {
+            ProductListItem = (function () {
+                function ProductListItem(id, name, category, brand, price, quotes, isCategoryItem) {
+                    if (quotes === void 0) { quotes = []; }
+                    if (isCategoryItem === void 0) { isCategoryItem = false; }
+                    this.id = id;
+                    this.name = name;
+                    this.category = category;
+                    this.brand = brand;
+                    this.price = price;
+                    this.quotes = quotes;
+                    this.isCategoryItem = isCategoryItem;
+                }
+                return ProductListItem;
+            })();
+            QuoteListItem = (function () {
+                function QuoteListItem(supplier, price, priceFixedRateHigh, priceFixedRateLow) {
+                    this.price = price;
+                    this.priceFixedRateHigh = priceFixedRateHigh;
+                    this.priceFixedRateLow = priceFixedRateLow;
+                }
+                return QuoteListItem;
+            })();
             ProductsComponent = (function () {
                 function ProductsComponent(service, router) {
                     this.service = service;
                     this.router = router;
-                    this.productList = [];
+                    this.productList = [].ToList();
                     this.searchList = [];
                     this.filterText = '';
                     this.totalAmount = 0;
@@ -51,12 +73,10 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     this.service.getProducts(function (json) {
                         if (json) {
                             json.forEach(function (c) {
-                                that.productList.push(new models_1.Product(c));
+                                that.productList.Add(new models_1.Product(c));
                             });
-                            that.totalAmount = that.productList.length;
-                            that.searchList = that.productList.ToList()
-                                .ToArray();
-                            ;
+                            that.totalAmount = that.productList.Count();
+                            that.addProductsToSearchList(that.productList);
                         }
                     });
                     this.service.getCategories(function (json) {
@@ -70,6 +90,13 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     this.service.getSuppliers(function (json) {
                         if (json)
                             that.supplierAmount = json.length;
+                    });
+                    this.service.getLatestExchangeRates(function (json) {
+                        if (json) {
+                            that.fixedRateHigh = json.fixedRateHigh;
+                            that.fixedRateLow = json.fixedRateLow;
+                            that.currentRate = json.currentRate.toFixed(2);
+                        }
                     });
                 };
                 ProductsComponent.prototype.onClearFilter = function () {
@@ -86,30 +113,51 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                         return;
                     this.searchList = [];
                     if (/^$|^[\u4e00-\u9fa5_a-zA-Z0-9 ]+$/g.test(this.filterText)) {
-                        this.searchList = this.productList.ToList()
+                        var result = this.productList
                             .Where(function (x) { return _this.startsWith(x.name, _this.filterText) ||
-                            _this.startsWith(x.brand.name.toLowerCase(), _this.filterText.toLowerCase()); })
-                            .ToArray();
+                            _this.startsWith(x.category.name, _this.filterText) ||
+                            _this.startsWith(x.brand.name.toLowerCase(), _this.filterText.toLowerCase()); });
+                        this.addProductsToSearchList(result);
                     }
                     this._filterText = this.filterText;
                 };
-                ProductsComponent.prototype.onClickListItem = function (id) {
-                    this.productList.forEach(function (x) {
-                        x.selected = x.id == id;
-                    });
-                };
-                ProductsComponent.prototype.onEdit = function (cid) {
-                    this.productList.forEach(function (x) {
-                        if (x.id == cid && x.selected) {
-                            //this.router.navigate(['CEdit', { id: cid }]);
-                            return;
+                //onClickListItem(id: number) {
+                //	this.productList.forEach(x => {
+                //		x.selected = x.id == id;
+                //	});
+                //}
+                //onEdit(cid: number) {
+                //	this.productList.forEach(x => {
+                //		if (x.id == cid && x.selected) {
+                //			//this.router.navigate(['CEdit', { id: cid }]);
+                //			return;
+                //		}
+                //	});
+                //}
+                ProductsComponent.prototype.addProductsToSearchList = function (products) {
+                    var list = [].ToList();
+                    var category = '';
+                    var that = this;
+                    products.ForEach(function (p) {
+                        if (p.category.name !== category) {
+                            list.Add(new ProductListItem(null, null, p.category.name, null, null, null, true));
+                            category = p.category.name;
                         }
+                        var quoteItemList = [];
+                        p.quotes.forEach(function (q) {
+                            quoteItemList.push(new QuoteListItem(q.supplier.name, q.price, that.currencyConvert(that.fixedRateHigh, q.price), that.currencyConvert(that.fixedRateLow, q.price)));
+                        });
+                        list.Add(new ProductListItem(p.id, p.name, p.category.name, p.brand.name, p.price, quoteItemList));
                     });
+                    this.searchList = list.ToArray();
                 };
                 ProductsComponent.prototype.startsWith = function (str, searchString) {
                     return str.substr(0, searchString.length) === searchString;
                 };
                 ;
+                ProductsComponent.prototype.currencyConvert = function (rate, price) {
+                    return !price || isNaN(price) ? '' : (price * rate).toFixed(2).toString().replace(/\.?0+$/, "");
+                };
                 Object.defineProperty(ProductsComponent.prototype, "amount", {
                     get: function () { return this.searchList.length; },
                     enumerable: true,
