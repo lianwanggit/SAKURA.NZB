@@ -10,7 +10,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
     var core_1, common_1, router_1, api_service_1, models_1;
-    var ProductListItem, QuoteListItem, ProductsComponent;
+    var ProductListItem, QuoteListItem, QuoteHeader, ProductsComponent;
     return {
         setters:[
             function (core_1_1) {
@@ -55,6 +55,25 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                 }
                 return QuoteListItem;
             })();
+            QuoteHeader = (function () {
+                function QuoteHeader(supplier, fixedRateHigh, fixedRateLow) {
+                    this.supplier = supplier;
+                    this.fixedRateHigh = fixedRateHigh;
+                    this.fixedRateLow = fixedRateLow;
+                }
+                ;
+                QuoteHeader.prototype.reset = function (supplier, fixedRateHigh, fixedRateLow) {
+                    this.supplier = supplier;
+                    this.fixedRateLow = fixedRateLow;
+                    this.fixedRateHigh = fixedRateHigh;
+                };
+                QuoteHeader.prototype.empty = function () {
+                    this.supplier = null;
+                    this.fixedRateHigh = null;
+                    this.fixedRateLow = null;
+                };
+                return QuoteHeader;
+            })();
             ProductsComponent = (function () {
                 function ProductsComponent(service, router) {
                     this.service = service;
@@ -62,6 +81,8 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     this.productList = [].ToList();
                     this.searchList = [];
                     this.selectedItem = null;
+                    this.quoteHeader1 = new QuoteHeader(null, null, null);
+                    this.quoteHeader2 = new QuoteHeader(null, null, null);
                     this.filterText = '';
                     this.totalAmount = 0;
                     this.categoryAmount = 0;
@@ -132,27 +153,27 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     }
                     this._filterText = this.filterText;
                 };
-                //onClickListItem(id: number) {
-                //	this.productList.forEach(x => {
-                //		x.selected = x.id == id;
-                //	});
-                //}
                 ProductsComponent.prototype.onSelect = function (id) {
+                    this.selectedItem = null;
                     var that = this;
                     this.searchList.forEach(function (x) {
-                        x.selected = x.id == id;
+                        x.selected = x.id == id && !x.isCategoryItem;
                         if (x.selected)
                             that.selectedItem = x;
                     });
+                    if (this.selectedItem && this.selectedItem.quotes.length > 0) {
+                        this.quoteHeader1.reset(this.selectedItem.quotes[0].supplier, this.fixedRateLow, this.fixedRateHigh);
+                    }
+                    else {
+                        this.quoteHeader1.empty();
+                    }
+                    if (this.selectedItem && this.selectedItem.quotes.length > 1) {
+                        this.quoteHeader2.reset(this.selectedItem.quotes[1].supplier, this.fixedRateLow, this.fixedRateHigh);
+                    }
+                    else {
+                        this.quoteHeader2.empty();
+                    }
                 };
-                //onEdit(cid: number) {
-                //	this.productList.forEach(x => {
-                //		if (x.id == cid && x.selected) {
-                //			//this.router.navigate(['CEdit', { id: cid }]);
-                //			return;
-                //		}
-                //	});
-                //}
                 ProductsComponent.prototype.addProductsToSearchList = function (products) {
                     var list = [].ToList();
                     var category = '';
@@ -179,22 +200,6 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                 };
                 Object.defineProperty(ProductsComponent.prototype, "amount", {
                     get: function () { return this.searchList.ToList().Where(function (p) { return !p.isCategoryItem; }).Count(); },
-                    enumerable: true,
-                    configurable: true
-                });
-                Object.defineProperty(ProductsComponent.prototype, "supplier1", {
-                    get: function () {
-                        return (this.selectedItem && this.selectedItem.quotes && this.selectedItem.quotes.length > 0) ?
-                            this.selectedItem.quotes[0].supplier : "报价 1";
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-                Object.defineProperty(ProductsComponent.prototype, "supplier2", {
-                    get: function () {
-                        return (this.selectedItem && this.selectedItem.quotes && this.selectedItem.quotes.length > 1) ?
-                            this.selectedItem.quotes[1].supplier : "报价 2";
-                    },
                     enumerable: true,
                     configurable: true
                 });

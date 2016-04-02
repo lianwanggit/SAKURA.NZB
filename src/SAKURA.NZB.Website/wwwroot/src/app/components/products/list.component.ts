@@ -22,6 +22,22 @@ class QuoteListItem {
 	}
 }
 
+class QuoteHeader {
+	constructor(public supplier: string, public fixedRateHigh: number, public fixedRateLow: number) {
+	};
+
+	reset(supplier: string, fixedRateHigh: number, fixedRateLow: number) {
+		this.supplier = supplier;
+		this.fixedRateLow = fixedRateLow;
+		this.fixedRateHigh = fixedRateHigh;
+	}
+
+	empty() {
+		this.supplier = null;
+		this.fixedRateHigh = null;
+		this.fixedRateLow = null;
+	}
+}
 
 @Component({
     selector: "products",
@@ -34,6 +50,9 @@ export class ProductsComponent implements OnInit {
     productList = [].ToList<Product>();
 	searchList: ProductListItem[] = [];
 	selectedItem: ProductListItem = null;
+	quoteHeader1: QuoteHeader = new QuoteHeader(null, null, null);
+	quoteHeader2: QuoteHeader = new QuoteHeader(null, null, null);
+
 	filterText = '';
 	totalAmount = 0;
 
@@ -125,31 +144,31 @@ export class ProductsComponent implements OnInit {
 		this._filterText = this.filterText;
 	}
 
-	//onClickListItem(id: number) {
-	//	this.productList.forEach(x => {
-	//		x.selected = x.id == id;
-	//	});
-	//}
-
 	onSelect(id: number) {
+		this.selectedItem = null
 		var that = this;
 
 		this.searchList.forEach(x => {
-			x.selected = x.id == id;
+			x.selected = x.id == id && !x.isCategoryItem;
 
 			if (x.selected)
 				that.selectedItem = x;
 		});
-	}
 
-	//onEdit(cid: number) {
-	//	this.productList.forEach(x => {
-	//		if (x.id == cid && x.selected) {
-	//			//this.router.navigate(['CEdit', { id: cid }]);
-	//			return;
-	//		}
-	//	});
-	//}
+		if (this.selectedItem && this.selectedItem.quotes.length > 0) {
+			this.quoteHeader1.reset(this.selectedItem.quotes[0].supplier, this.fixedRateLow, this.fixedRateHigh);
+		}
+		else {
+			this.quoteHeader1.empty();
+		}
+
+		if (this.selectedItem && this.selectedItem.quotes.length > 1) {
+			this.quoteHeader2.reset(this.selectedItem.quotes[1].supplier, this.fixedRateLow, this.fixedRateHigh);
+		}
+		else {
+			this.quoteHeader2.empty();
+		}
+	}
 
 	addProductsToSearchList(products: List<Product>) {
 		var list = [].ToList<ProductListItem>();
@@ -184,12 +203,4 @@ export class ProductsComponent implements OnInit {
 	}
 
 	get amount() { return this.searchList.ToList<ProductListItem>().Where(p => !p.isCategoryItem).Count(); }
-	get supplier1() {
-		return (this.selectedItem && this.selectedItem.quotes && this.selectedItem.quotes.length > 0) ?
-			this.selectedItem.quotes[0].supplier : "报价 1";
-	}
-	get supplier2() {
-		return (this.selectedItem && this.selectedItem.quotes && this.selectedItem.quotes.length > 1) ?
-			this.selectedItem.quotes[1].supplier : "报价 2";
-	}
 }
