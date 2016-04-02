@@ -5,13 +5,13 @@
 
         <div class="pull-right">
             <button type="button" class="btn btn-info hidden-xs" [routerLink]="['PbeEdit', {type: 'category'}]">
-                类别 {{categoryAmount}}
+                类别 <span class="badge">{{categoryAmount}}</span>
             </button>
             <button type="button" class="btn btn-info hidden-xs" [routerLink]="['PbeEdit', {type: 'brand'}]">
-                品牌 {{brandAmount}}
+                品牌 <span class="badge">{{brandAmount}}</span>
             </button>
             <button type="button" class="btn btn-info hidden-xs" [routerLink]="['PbeEdit', {type: 'supplier'}]">
-                供应商 {{supplierAmount}}
+                供应商 <span class="badge">{{supplierAmount}}</span>
             </button>
 
             <button type="button" class="btn btn-info" [routerLink]="['PAdd']">
@@ -52,22 +52,31 @@
     <table class="table table-hover table-bordered">
         <thead>
             <tr>
-                <td></td>
+                <th>类别 / 产品</th>
+                <th>定价</th>
+                <th>{{supplier1}}</th>
+                <th>{{fixedRateLow}}</th>
+                <th>{{fixedRateHigh}}</th>
+                <th>{{supplier2}}</th>
+                <th>{{fixedRateLow}}</th>
+                <th>{{fixedRateHigh}}</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="#s of searchList; #i = index">
-                <td *ngIf="s.isCategoryItem" colspan="8">{{s.category}}</td>
+            <tr *ngFor="#s of searchList; #i = index" (click)="onSelect(s.id)" [ngClass]="{'info': s.selected}">
+                <td *ngIf="s.isCategoryItem" colspan="9" class="active">{{s.category}}</td>
 
                 <td *ngIf="!s.isCategoryItem">{{s.brand}} {{s.name}}</td>
-                <td *ngIf="!s.isCategoryItem"><i class="fa fa-yen"></i> {{s.price}}</td>
+                <td *ngIf="!s.isCategoryItem">{{s.price}}</td>
 
-                <td *ngIf="!s.isCategoryItem"><i class="fa fa-dollar"></i>{{s.quotes[0]?.price}}</td>
-                <td *ngIf="!s.isCategoryItem"><i class="fa fa-yen"></i> {{s.quotes[0]?.priceFixedRateLow}}</td>
-                <td *ngIf="!s.isCategoryItem"><i class="fa fa-yen"></i> {{s.quotes[0]?.priceFixedRateHigh}}</td>
-                <td *ngIf="!s.isCategoryItem"><i class="fa fa-dollar"></i>{{s.quotes[1]?.price}}</td>
-                <td *ngIf="!s.isCategoryItem"><i class="fa fa-yen"></i> {{s.quotes[1]?.priceFixedRateLow}}</td>
-                <td *ngIf="!s.isCategoryItem"><i class="fa fa-yen"></i> {{s.quotes[1]?.priceFixedRateHigh}}</td>              
+                <td *ngIf="!s.isCategoryItem">{{s.quotes[0]?.price}}</td>
+                <td *ngIf="!s.isCategoryItem">{{s.quotes[0]?.priceFixedRateLow}}</td>
+                <td *ngIf="!s.isCategoryItem">{{s.quotes[0]?.priceFixedRateHigh}}</td>
+                <td *ngIf="!s.isCategoryItem">{{s.quotes[1]?.price}}</td>
+                <td *ngIf="!s.isCategoryItem">{{s.quotes[1]?.priceFixedRateLow}}</td>
+                <td *ngIf="!s.isCategoryItem">{{s.quotes[1]?.priceFixedRateHigh}}</td>              
+                <td *ngIf="!s.isCategoryItem" class="text-center" [routerLink]="['PEdit', { id: s.id }]"><i class="fa fa-pencil-square-o fa-lg"></i></td>
             </tr>
         </tbody>
     </table>

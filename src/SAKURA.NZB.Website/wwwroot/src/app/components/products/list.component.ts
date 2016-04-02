@@ -10,14 +10,15 @@ import '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.
 
 class ProductListItem {
 	constructor(public id: number, public name: string, public category: string, public brand: string,
-		public price: number, public quotes: QuoteListItem[] = [],
-		public isCategoryItem = false) {
+		public price: string, public quotes: QuoteListItem[] = [],
+		public isCategoryItem = false,
+		public selected = false) {
 	}
 }
 
 class QuoteListItem {
-	constructor(supplier: string, public price: number,
-		public priceFixedRateHigh, public priceFixedRateLow) {
+	constructor(public supplier: string, public price: string,
+		public priceFixedRateHigh: string, public priceFixedRateLow: string) {
 	}
 }
 
@@ -32,6 +33,7 @@ class QuoteListItem {
 export class ProductsComponent implements OnInit {
     productList = [].ToList<Product>();
 	searchList: ProductListItem[] = [];
+	selectedItem: ProductListItem = null;
 	filterText = '';
 	totalAmount = 0;
 
@@ -44,6 +46,8 @@ export class ProductsComponent implements OnInit {
 	currentRate: number;
 
 	private _filterText = '';
+	private _isProductsLoaded = false;
+	private _isRatesLoaded = false;
 
     constructor(private service: ApiService, private router: Router) { }
 
@@ -54,6 +58,18 @@ export class ProductsComponent implements OnInit {
     get() {
 		var that = this;
 
+		this.service.getLatestExchangeRates(json => {
+			if (json) {
+				that.fixedRateHigh = json.fixedRateHigh;
+				that.fixedRateLow = json.fixedRateLow;
+				that.currentRate = json.currentRate.toFixed(2);
+				that._isRatesLoaded = true;
+
+				if (that._isProductsLoaded)
+					that.addProductsToSearchList(that.productList);
+			}
+		});
+
         this.service.getProducts(json => {
             if (json) {
                 json.forEach(c => {
@@ -61,7 +77,10 @@ export class ProductsComponent implements OnInit {
 				});
 
 				that.totalAmount = that.productList.Count();
-				that.addProductsToSearchList(that.productList);
+				that._isProductsLoaded = true;
+
+				if (that._isRatesLoaded)
+					that.addProductsToSearchList(that.productList);
             }
         });
 
@@ -76,14 +95,6 @@ export class ProductsComponent implements OnInit {
 		this.service.getSuppliers(json => {
 			if (json)
 				that.supplierAmount = json.length;
-		});
-
-		this.service.getLatestExchangeRates(json => {
-			if (json) {
-				that.fixedRateHigh = json.fixedRateHigh;
-				that.fixedRateLow = json.fixedRateLow;
-				that.currentRate = json.currentRate.toFixed(2);
-			}
 		});
     }
 
@@ -120,6 +131,17 @@ export class ProductsComponent implements OnInit {
 	//	});
 	//}
 
+	onSelect(id: number) {
+		var that = this;
+
+		this.searchList.forEach(x => {
+			x.selected = x.id == id;
+
+			if (x.selected)
+				that.selectedItem = x;
+		});
+	}
+
 	//onEdit(cid: number) {
 	//	this.productList.forEach(x => {
 	//		if (x.id == cid && x.selected) {
@@ -138,16 +160,16 @@ export class ProductsComponent implements OnInit {
 			if (p.category.name !== category) {
 				list.Add(new ProductListItem(null, null, p.category.name, null, null, null, true));
 				category = p.category.name;
-			} 
+			}
 
 			var quoteItemList: QuoteListItem[] = [];
 			p.quotes.forEach(q => {
-				quoteItemList.push(new QuoteListItem(q.supplier.name, q.price,
+				quoteItemList.push(new QuoteListItem(q.supplier.name, '$ ' + q.price,
 					that.currencyConvert(that.fixedRateHigh, q.price),
 					that.currencyConvert(that.fixedRateLow, q.price)));
 			});
 
-			list.Add(new ProductListItem(p.id, p.name, p.category.name, p.brand.name, p.price, quoteItemList));
+			list.Add(new ProductListItem(p.id, p.name, p.category.name, p.brand.name, '¥ ' + p.price, quoteItemList));
 		});
 
 		this.searchList = list.ToArray();
@@ -158,9 +180,16 @@ export class ProductsComponent implements OnInit {
 	};
 
 	currencyConvert(rate: number, price: number) {
-		return !price || isNaN(price) ? '' : (price * rate).toFixed(2).toString().replace(/\.?0+$/, "");
+		return !price || isNaN(price) ? '' : '¥ ' + (price * rate).toFixed(2).toString().replace(/\.?0+$/, "");
 	}
 
-	get amount() { return this.searchList.length; }
-	get data() { return JSON.stringify(this.searchList); }
+	get amount() { return this.searchList.ToList<ProductListItem>().Where(p => !p.isCategoryItem).Count(); }
+	get supplier1() {
+		return (this.selectedItem && this.selectedItem.quotes && this.selectedItem.quotes.length > 0) ?
+			this.selectedItem.quotes[0].supplier : "报价 1";
+	}
+	get supplier2() {
+		return (this.selectedItem && this.selectedItem.quotes && this.selectedItem.quotes.length > 1) ?
+			this.selectedItem.quotes[1].supplier : "报价 2";
+	}
 }
