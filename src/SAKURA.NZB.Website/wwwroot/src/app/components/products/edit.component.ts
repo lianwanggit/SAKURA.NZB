@@ -21,7 +21,7 @@ export class ProductEditComponent implements OnInit {
 	brands: Brand[] = [];
 	suppliers: Supplier[] = [];
 
-	quotes: Quote[] = [];
+	//quotes: Quote[] = [];
 
 	fixedRateHigh: number;
 	fixedRateLow: number;
@@ -29,7 +29,7 @@ export class ProductEditComponent implements OnInit {
 
 	model: Product = new Product({
 		"id": 0, "name": null, "desc": null, "categoryId": 0, "category": null,
-		"brandId": 0, "brand": null, "images": null, "quotes": null, "price": null
+		"brandId": 0, "brand": null, "images": null, "quotes": [], "price": null
 	});
 	productForm: ControlGroup;
 
@@ -77,28 +77,56 @@ export class ProductEditComponent implements OnInit {
 				that.fixedRateHigh = json.fixedRateHigh;
 				that.fixedRateLow = json.fixedRateLow;
 				that.currentRate = json.currentRate.toFixed(2);
-			}				
+			}
 		});
+
+		if (this.editMode) {
+			this.service.getProduct(this.productId, json => {
+				if (json) {
+					that.model = new Product(json);
+					var categoryControl: any;
+					categoryControl = that.productForm.controls['category'];
+					categoryControl.updateValue(that.model.categoryId);
+
+					var brandControl: any;
+					brandControl = that.productForm.controls['brand'];
+					brandControl.updateValue(that.model.brandId);
+
+					var nameControl: any;
+					nameControl = that.productForm.controls['name'];
+					nameControl.updateValue(that.model.name);
+
+					var priceControl: any;
+					priceControl = that.productForm.controls['price'];
+					priceControl.updateValue(that.model.price);
+
+					var descControl: any;
+					descControl = that.productForm.controls['desc'];
+					descControl.updateValue(that.model.desc);
+				}
+			});
+		}
 	}
 
 	onAddQuote() {
-		this.quotes.push(new Quote({
+		this.model.quotes.push(new Quote({
 			id: 0,
 			productId: 0,
 			supplierId: 0,
 			supplier: null,
-			price: null}));
+			price: null
+		}));
 	}
 
 	onRemoveQuote(i: number) {
-		this.quotes.splice(i, 1);
+		this.model.quotes.splice(i, 1);
 	}
 
 	onSubmit() {
 		var form = this.productForm.value;
 		var p = new Product({
 			"id": 0, "name": form.name, "desc": form.desc, "categoryId": form.category, "category": null,
-			"brandId": form.brand, "brand": null, "images": null, "quotes": this.quotes, "price": form.price, "selected": false
+			"brandId": form.brand, "brand": null, "images": null, "quotes": this.model.quotes, "price": form.price, "selected": false
 		});
 
 		this.service.postProduct(JSON.stringify(p, this.emptyStringToNull))
@@ -112,11 +140,11 @@ export class ProductEditComponent implements OnInit {
 	}
 
 	get title() { return (this.model && this.editMode) ? "编辑产品 - " + this.model.name : "新建产品"; }
-	get canAddQuote() { return !this.quotes || (this.quotes.length < this.suppliers.length); }
+	get canAddQuote() { return !this.model.quotes || (this.model.quotes.length < this.suppliers.length); }
 	get isLowPrice() {
 		var price = this.productForm.value.price;
-		if (price && this.quotes.length > 0) {
-			var lowQuote = this.quotes.ToList<Quote>().Min(q => q.price);
+		if (price && this.model.quotes.length > 0) {
+			var lowQuote = this.model.quotes.ToList<Quote>().Min(q => q.price);
 			if (lowQuote && price <= lowQuote * this.currentRate) {
 				return true;
 			}

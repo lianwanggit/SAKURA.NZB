@@ -72,9 +72,12 @@ export class Product {
 		this.category = obj.category;
 		this.brandId = obj.brandId;
 		this.brand = obj.brand;
-		this.images = obj.images;
-		this.quotes = obj.quotes;
+		this.images = obj.images;	
 		this.price = obj.price;
+
+		var that = this;
+		this.quotes = [];
+		obj.quotes.forEach(q => that.quotes.push(new Quote(q)));
 	}
 }
 

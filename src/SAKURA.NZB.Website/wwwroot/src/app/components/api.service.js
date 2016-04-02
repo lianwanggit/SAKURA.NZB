@@ -46,6 +46,9 @@ System.register(["rxjs/Rx", "angular2/http", "angular2/core"], function(exports_
                 ApiService.prototype.getProducts = function (onNext) {
                     this.http.get("api/products").map(function (response) { return response.json(); }).subscribe(onNext);
                 };
+                ApiService.prototype.getProduct = function (id, onNext) {
+                    this.http.get("api/products/" + id).map(function (response) { return response.json(); }).subscribe(onNext);
+                };
                 ApiService.prototype.postProduct = function (data) {
                     var headers = new http_1.Headers();
                     headers.append('Content-Type', 'application/json');

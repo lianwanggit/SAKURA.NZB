@@ -47,7 +47,7 @@
         <div class="form-group visible-xs-block">
             <div class="col-xs-12">
                 <ul class="quote-card">
-                    <li *ngFor="#q of quotes; #i = index">
+                    <li *ngFor="#q of model.quotes; #i = index">
                         <div class="panel panel-default">
                             <div class="panel-heading">
                                 <b>{{i + 1}}</b> <i class="fa fa-times pull-right clickable" (click)="onRemoveQuote(i)"></i>
@@ -103,7 +103,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr *ngFor="#q of quotes; #i = index" class="quote-detail">
+                            <tr *ngFor="#q of model.quotes; #i = index" class="quote-detail">
                                 <td>
                                     <select id="category" class="form-control no-border" [(ngModel)]="q.supplierId">
                                         <option *ngFor="#s of suppliers" value="{{s.id}}">{{s.name}}</option>

@@ -53,8 +53,10 @@ System.register([], function(exports_1) {
                     this.brandId = obj.brandId;
                     this.brand = obj.brand;
                     this.images = obj.images;
-                    this.quotes = obj.quotes;
                     this.price = obj.price;
+                    var that = this;
+                    this.quotes = [];
+                    obj.quotes.forEach(function (q) { return that.quotes.push(new Quote(q)); });
                 }
                 return Product;
             })();

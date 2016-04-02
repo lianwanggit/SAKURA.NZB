@@ -40,10 +40,9 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     this.categories = [];
                     this.brands = [];
                     this.suppliers = [];
-                    this.quotes = [];
                     this.model = new models_1.Product({
                         "id": 0, "name": null, "desc": null, "categoryId": 0, "category": null,
-                        "brandId": 0, "brand": null, "images": null, "quotes": null, "price": null
+                        "brandId": 0, "brand": null, "images": null, "quotes": [], "price": null
                     });
                     this.editMode = false;
                     this.productId = params.get("id");
@@ -85,24 +84,47 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                             that.currentRate = json.currentRate.toFixed(2);
                         }
                     });
+                    if (this.editMode) {
+                        this.service.getProduct(this.productId, function (json) {
+                            if (json) {
+                                that.model = new models_1.Product(json);
+                                var categoryControl;
+                                categoryControl = that.productForm.controls['category'];
+                                categoryControl.updateValue(that.model.categoryId);
+                                var brandControl;
+                                brandControl = that.productForm.controls['brand'];
+                                brandControl.updateValue(that.model.brandId);
+                                var nameControl;
+                                nameControl = that.productForm.controls['name'];
+                                nameControl.updateValue(that.model.name);
+                                var priceControl;
+                                priceControl = that.productForm.controls['price'];
+                                priceControl.updateValue(that.model.price);
+                                var descControl;
+                                descControl = that.productForm.controls['desc'];
+                                descControl.updateValue(that.model.desc);
+                            }
+                        });
+                    }
                 };
                 ProductEditComponent.prototype.onAddQuote = function () {
-                    this.quotes.push(new models_1.Quote({
+                    this.model.quotes.push(new models_1.Quote({
                         id: 0,
                         productId: 0,
                         supplierId: 0,
                         supplier: null,
-                        price: null }));
+                        price: null
+                    }));
                 };
                 ProductEditComponent.prototype.onRemoveQuote = function (i) {
-                    this.quotes.splice(i, 1);
+                    this.model.quotes.splice(i, 1);
                 };
                 ProductEditComponent.prototype.onSubmit = function () {
                     var _this = this;
                     var form = this.productForm.value;
                     var p = new models_1.Product({
                         "id": 0, "name": form.name, "desc": form.desc, "categoryId": form.category, "category": null,
-                        "brandId": form.brand, "brand": null, "images": null, "quotes": this.quotes, "price": form.price, "selected": false
+                        "brandId": form.brand, "brand": null, "images": null, "quotes": this.model.quotes, "price": form.price, "selected": false
                     });
                     this.service.postProduct(JSON.stringify(p, this.emptyStringToNull))
                         .subscribe(function (response) {
@@ -118,15 +140,15 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     configurable: true
                 });
                 Object.defineProperty(ProductEditComponent.prototype, "canAddQuote", {
-                    get: function () { return !this.quotes || (this.quotes.length < this.suppliers.length); },
+                    get: function () { return !this.model.quotes || (this.model.quotes.length < this.suppliers.length); },
                     enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(ProductEditComponent.prototype, "isLowPrice", {
                     get: function () {
                         var price = this.productForm.value.price;
-                        if (price && this.quotes.length > 0) {
-                            var lowQuote = this.quotes.ToList().Min(function (q) { return q.price; });
+                        if (price && this.model.quotes.length > 0) {
+                            var lowQuote = this.model.quotes.ToList().Min(function (q) { return q.price; });
                             if (lowQuote && price <= lowQuote * this.currentRate) {
                                 return true;
                             }

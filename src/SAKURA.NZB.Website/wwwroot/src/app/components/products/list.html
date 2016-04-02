@@ -76,7 +76,7 @@
                 <td *ngIf="!s.isCategoryItem">{{s.quotes[1]?.price}}</td>
                 <td *ngIf="!s.isCategoryItem">{{s.quotes[1]?.priceFixedRateLow}}</td>
                 <td *ngIf="!s.isCategoryItem">{{s.quotes[1]?.priceFixedRateHigh}}</td>              
-                <td *ngIf="!s.isCategoryItem" class="text-center" [routerLink]="['PEdit', { id: s.id }]"><i class="fa fa-pencil-square-o fa-lg"></i></td>
+                <td *ngIf="!s.isCategoryItem" class="text-center clickable" [routerLink]="['PEdit', { id: s.id }]"><i class="fa fa-pencil-square-o fa-lg"></i></td>
             </tr>
         </tbody>
     </table>
