@@ -3,6 +3,8 @@ using Microsoft.AspNet.Mvc;
 using Microsoft.Data.Entity;
 using SAKURA.NZB.Data;
 using SAKURA.NZB.Domain;
+using System.Collections.Generic;
+using System;
 
 namespace SAKURA.NZB.Website.Controllers.API
 {
@@ -25,7 +27,7 @@ namespace SAKURA.NZB.Website.Controllers.API
 				.Include(p => p.Quotes).ThenInclude(q => q.Supplier)
 				.Include(p => p.Images)
 				.OrderBy(p => p.CategoryId)
-				.ThenBy(p => p.BrandId)			
+				.ThenBy(p => p.BrandId)
 				.ToList());
 		}
 
@@ -63,36 +65,90 @@ namespace SAKURA.NZB.Website.Controllers.API
 			return CreatedAtRoute("GetProduct", new { controller = "Products", id = product.Id }, product);
 		}
 
+		[HttpPut("{id:int}")]
+		public IActionResult Put(int? id, [FromBody]Product product)
+		{
+			if (product == null || product.Id != id)
+				return HttpBadRequest();
+
+			if (!Validate(product))
+				return HttpBadRequest();
+
+			var item = _context.Products.Include(p => p.Quotes).FirstOrDefault(x => x.Id == id);
+			if (item == null)
+			{
+				return HttpNotFound();
+			}
+
+			item.Name = product.Name;
+			item.CategoryId = product.CategoryId;
+			item.BrandId = product.BrandId;
+			item.Price = product.Price;
+			item.Desc = product.Desc;
+
+			item.Quotes.Clear();
+			_context.SaveChanges();
+
+			foreach (var q in product.Quotes)
+			{
+				item.Quotes.Add(new ProductQuote
+				{
+					ProductId =  q.ProductId,
+					SupplierId = q.SupplierId,
+					Price = q.Price
+				});
+			}
+			_context.SaveChanges();
+
+			return new NoContentResult();
+		}
+
 		private bool Validate(Product product)
 		{
 			if (string.IsNullOrEmpty(product.Name))
 				return false;
 
-			var category = _context.Categories.FirstOrDefault(c => c.Id == product.CategoryId);
-			if (category == null)
+			if (!_context.Categories.Any(c => c.Id == product.CategoryId))
 				return false;
-			product.Category = category;
 
-			var brand = _context.Brands.FirstOrDefault(b => b.Id == product.BrandId);
-			if (brand == null)
+			if (!_context.Brands.Any(b => b.Id == product.BrandId))
 				return false;
-			product.Brand = brand;
 
 			foreach (var q in product.Quotes)
 			{
 				if (q.Price <= 0.0)
 					return false;
 
-				var supplier = _context.Suppliers.FirstOrDefault(s => s.Id == q.SupplierId);
-				if (supplier == null)
+				if (!_context.Suppliers.Any(s => s.Id == q.SupplierId))
 					return false;
-				q.Supplier = supplier;
 			}
 
 			if (product.Price <= 0.0)
 				return false;
 
 			return true;
+		}
+	}
+
+	class ProductQuoteComparer : IEqualityComparer<ProductQuote>
+	{
+		public bool Equals(ProductQuote x, ProductQuote y)
+		{
+			return x.ProductId == y.ProductId
+				&& x.SupplierId == y.SupplierId
+				&& x.Price == y.Price;
+		}
+
+		public int GetHashCode(ProductQuote obj)
+		{
+			unchecked
+			{
+				var hashCode = 13;
+				hashCode = (hashCode * 397) ^ obj.ProductId;
+				hashCode = (hashCode * 397) ^ obj.SupplierId;
+				hashCode = (hashCode * 397) ^ obj.Price.GetHashCode();
+				return hashCode;
+			}
 		}
 	}
 }

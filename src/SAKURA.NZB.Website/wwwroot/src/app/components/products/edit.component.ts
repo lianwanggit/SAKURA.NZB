@@ -129,10 +129,18 @@ export class ProductEditComponent implements OnInit {
 			"brandId": form.brand, "brand": null, "images": null, "quotes": this.model.quotes, "price": form.price, "selected": false
 		});
 
-		this.service.postProduct(JSON.stringify(p, this.emptyStringToNull))
-			.subscribe(response  => {
-				this.router.navigate(['产品']);
-			});
+		if (!this.editMode) {
+			this.service.postProduct(JSON.stringify(p, this.emptyStringToNull))
+				.subscribe(response  => {
+					this.router.navigate(['产品']);
+				});
+		} else {
+			p.id = parseInt(this.productId);
+			this.service.putProduct(this.productId, JSON.stringify(p, this.emptyStringToNull))
+				.subscribe(response  => {
+					this.router.navigate(['产品']);
+				});
+		}
 	}
 
 	emptyStringToNull(key: string, value: string) {

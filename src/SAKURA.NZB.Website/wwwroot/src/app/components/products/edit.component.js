@@ -126,10 +126,19 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                         "id": 0, "name": form.name, "desc": form.desc, "categoryId": form.category, "category": null,
                         "brandId": form.brand, "brand": null, "images": null, "quotes": this.model.quotes, "price": form.price, "selected": false
                     });
-                    this.service.postProduct(JSON.stringify(p, this.emptyStringToNull))
-                        .subscribe(function (response) {
-                        _this.router.navigate(['产品']);
-                    });
+                    if (!this.editMode) {
+                        this.service.postProduct(JSON.stringify(p, this.emptyStringToNull))
+                            .subscribe(function (response) {
+                            _this.router.navigate(['产品']);
+                        });
+                    }
+                    else {
+                        p.id = parseInt(this.productId);
+                        this.service.putProduct(this.productId, JSON.stringify(p, this.emptyStringToNull))
+                            .subscribe(function (response) {
+                            _this.router.navigate(['产品']);
+                        });
+                    }
                 };
                 ProductEditComponent.prototype.emptyStringToNull = function (key, value) {
                     return value === "" ? null : value;
