@@ -11,14 +11,14 @@ namespace SAKURA.NZB.Domain
 		[Required]
 		public int CustomerId { get; set; }
 		public Customer Customer { get; set; }
-		public DateTimeOffset OrderTime { get; set; }
-		public DateTimeOffset DeliveryTime { get; set; }
-		public DateTimeOffset ReceiveTime { get; set; }
+		public DateTimeOffset? OrderTime { get; set; }
+		public DateTimeOffset? DeliveryTime { get; set; }
+		public DateTimeOffset? ReceiveTime { get; set; }
 		public OrderState OrderState { get; set; }
 		public PaymentState PaymentState { get; set; }
-		public float Weight { get; set; }
+		public float? Weight { get; set; }
 		[DataType(DataType.Currency)]
-		public float Freight { get; set; }
+		public float? Freight { get; set; }
 		public Image Waybill { get; set; }
 		[StringLength(100)]
 		public string TransitStatus { get; set; }

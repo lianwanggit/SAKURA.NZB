@@ -135,27 +135,27 @@ namespace SAKURA.NZB.Data.Migrations
 
                     b.Property<int>("CustomerId");
 
-                    b.Property<DateTimeOffset>("DeliveryTime");
+                    b.Property<DateTimeOffset?>("DeliveryTime");
 
                     b.Property<string>("Description")
                         .HasAnnotation("MaxLength", 255);
 
-                    b.Property<float>("Freight");
+                    b.Property<float?>("Freight");
 
                     b.Property<int>("OrderState");
 
-                    b.Property<DateTimeOffset>("OrderTime");
+                    b.Property<DateTimeOffset?>("OrderTime");
 
                     b.Property<int>("PaymentState");
 
-                    b.Property<DateTimeOffset>("ReceiveTime");
+                    b.Property<DateTimeOffset?>("ReceiveTime");
 
                     b.Property<string>("TransitStatus")
                         .HasAnnotation("MaxLength", 100);
 
                     b.Property<int?>("WaybillId");
 
-                    b.Property<float>("Weight");
+                    b.Property<float?>("Weight");
 
                     b.HasKey("Id");
                 });
@@ -166,8 +166,6 @@ namespace SAKURA.NZB.Data.Migrations
                         .ValueGeneratedOnAdd();
 
                     b.Property<float>("Cost");
-
-                    b.Property<int>("ExchangeRateId");
 
                     b.Property<int>("OrderId");
 
@@ -252,10 +250,6 @@ namespace SAKURA.NZB.Data.Migrations
 
             modelBuilder.Entity("SAKURA.NZB.Domain.OrderProduct", b =>
                 {
-                    b.HasOne("SAKURA.NZB.Domain.ExchangeRate")
-                        .WithMany()
-                        .HasForeignKey("ExchangeRateId");
-
                     b.HasOne("SAKURA.NZB.Domain.Order")
                         .WithMany()
                         .HasForeignKey("OrderId");
