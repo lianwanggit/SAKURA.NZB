@@ -40,6 +40,13 @@ System.register([], function(exports_1) {
                 Quote.prototype.currencyConvert = function (rate) {
                     return !this.price || isNaN(this.price) ? 'CNY' : (this.price * rate).toFixed(2).toString().replace(/\.?0+$/, "");
                 };
+                Object.defineProperty(Quote.prototype, "isValid", {
+                    get: function () {
+                        return this.price && !isNaN(this.price) && this.supplierId && !isNaN(this.supplierId) && (this.supplierId > 0);
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
                 return Quote;
             })();
             exports_1("Quote", Quote);

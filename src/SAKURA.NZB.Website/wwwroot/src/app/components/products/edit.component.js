@@ -153,6 +153,11 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     enumerable: true,
                     configurable: true
                 });
+                Object.defineProperty(ProductEditComponent.prototype, "isQuotesValid", {
+                    get: function () { return this.model.quotes.ToList().All(function (q) { return q.isValid; }); },
+                    enumerable: true,
+                    configurable: true
+                });
                 Object.defineProperty(ProductEditComponent.prototype, "isLowPrice", {
                     get: function () {
                         var price = this.productForm.value.price;

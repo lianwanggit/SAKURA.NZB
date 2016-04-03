@@ -149,6 +149,7 @@ export class ProductEditComponent implements OnInit {
 
 	get title() { return (this.model && this.editMode) ? "编辑产品 - " + this.model.name : "新建产品"; }
 	get canAddQuote() { return !this.model.quotes || (this.model.quotes.length < this.suppliers.length); }
+	get isQuotesValid() { return this.model.quotes.ToList<Quote>().All(q => q.isValid); }
 	get isLowPrice() {
 		var price = this.productForm.value.price;
 		if (price && this.model.quotes.length > 0) {

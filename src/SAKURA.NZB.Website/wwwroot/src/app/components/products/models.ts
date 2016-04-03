@@ -50,6 +50,10 @@ export class Quote {
 	currencyConvert(rate: number) {
 		return !this.price || isNaN(this.price) ? 'CNY' : (this.price * rate).toFixed(2).toString().replace(/\.?0+$/, "");
 	}
+
+	get isValid() {
+		return this.price && !isNaN(this.price) && this.supplierId && !isNaN(this.supplierId) && (this.supplierId > 0)
+	}
 }
 
 export class Product {

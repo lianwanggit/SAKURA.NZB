@@ -48,7 +48,7 @@
             <div class="col-xs-12">
                 <ul class="quote-card">
                     <li *ngFor="#q of model.quotes; #i = index">
-                        <div class="panel panel-default">
+                        <div class="panel panel-default" [ngClass]="{'panel-danger': !q.isValid}">
                             <div class="panel-heading">
                                 <b>{{i + 1}}</b> <i class="fa fa-times pull-right clickable" (click)="onRemoveQuote(i)"></i>
                             </div>
@@ -67,25 +67,29 @@
                                 <table class="table table-bordered">
                                     <tr>
                                         <td class="text-center info">{{currentRate}} <i class="fa fa-refresh fa-spin"></i></td>
-                                        <td class="text-center danger">{{fixedRateLow}} <i class="fa fa-angle-down"></i></td>
+                                        <td class="text-center success">{{fixedRateLow}} <i class="fa fa-angle-down"></i></td>
                                         <td class="text-center success">{{fixedRateHigh}} <i class="fa fa-angle-up"></i></td>
                                     </tr>
                                     <tr>
-                                        <td class="text-center">{{q.currencyConvert(currentRate)}}</td>
-                                        <td class="text-center">{{q.currencyConvert(fixedRateLow)}}</td>
-                                        <td class="text-center">{{q.currencyConvert(fixedRateHigh)}}</td>
+                                        <td class="text-center" [ngClass]="{placeholder: !q.price}">{{q.currencyConvert(currentRate)}}</td>
+                                        <td class="text-center" [ngClass]="{placeholder: !q.price}">{{q.currencyConvert(fixedRateLow)}}</td>
+                                        <td class="text-center" [ngClass]="{placeholder: !q.price}">{{q.currencyConvert(fixedRateHigh)}}</td>
                                     </tr>
                                 </table>
                             </div>
                         </div>
                     </li>
                 </ul>
+
+                <div [hidden]="isQuotesValid" class="alert alert-danger">
+                    供应商和报价不能为空
+                </div>
             </div>
         </div>
 
         <div class="form-group hidden-xs">
             <div class="col-sm-12 col-md-offset-2 col-md-10">
-                <div class="panel panel-default">
+                <div class="panel panel-default" [ngClass]="{'panel-danger': !isQuotesValid}">
                     <div class="panel-heading">
                         供应商报价
                         <button type="button" class="btn btn-info btn-xs pull-right" (click)="onAddQuote()" [disabled]="!canAddQuote"><i class="fa fa-plus fa-lg"></i></button>
@@ -97,7 +101,7 @@
                                 <td>供应商</td>
                                 <td style="width:15%">报价</td>
                                 <td class="text-center info">实时汇率: <b>{{currentRate}}</b> <i class="fa fa-refresh fa-spin"></i></td>
-                                <td class="text-center danger">固定汇率: <b>{{fixedRateLow}}</b> <i class="fa fa-angle-down"></i></td>
+                                <td class="text-center success">固定汇率: <b>{{fixedRateLow}}</b> <i class="fa fa-angle-down"></i></td>
                                 <td class="text-center success">固定汇率: <b>{{fixedRateHigh}}</b> <i class="fa fa-angle-up"></i></td>
                                 <td style="width:40px"></td>
                             </tr>
@@ -120,6 +124,10 @@
                             </tr>
                         </tbody>
                     </table>
+                </div>
+
+                <div [hidden]="isQuotesValid" class="alert alert-danger">
+                    供应商和报价不能为空
                 </div>
             </div>
         </div>
@@ -150,7 +158,7 @@
             <div class="col-md-offset-2 col-md-10">
                 <button type="button" class="btn btn-default" [routerLink]="['产品']">返回列表</button>
                 <button type="submit" class="btn btn-success left-spacer"
-                        [disabled]="!myForm.form.valid">
+                        [disabled]="!myForm.form.valid || !isQuotesValid">
                     保存 <i class="fa fa-floppy-o fa-lg"></i>
                 </button>
             </div>
