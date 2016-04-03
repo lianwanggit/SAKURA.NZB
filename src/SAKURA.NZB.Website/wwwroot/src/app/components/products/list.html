@@ -53,13 +53,13 @@
         <thead>
             <tr>
                 <th>类别 / 产品</th>
-                <th>定价</th>
-                <th>{{quoteHeader1.supplier}}</th>
-                <th>{{quoteHeader1.fixedRateLow}}</th>
-                <th>{{quoteHeader1.fixedRateHigh}}</th>
-                <th>{{quoteHeader2.supplier}}</th>
-                <th>{{quoteHeader2.fixedRateLow}}</th>
-                <th>{{quoteHeader2.fixedRateHigh}}</th>
+                <th class="hidden-xs">定价</th>
+                <th class="hidden-xs">{{quoteHeader1.supplier}}</th>
+                <th class="hidden-xs">{{quoteHeader1.fixedRateLow}}</th>
+                <th class="hidden-xs">{{quoteHeader1.fixedRateHigh}}</th>
+                <th class="hidden-xs hidden-sm">{{quoteHeader2.supplier}}</th>
+                <th class="hidden-xs hidden-sm">{{quoteHeader2.fixedRateLow}}</th>
+                <th class="hidden-xs hidden-sm">{{quoteHeader2.fixedRateHigh}}</th>
                 <th></th>
             </tr>
         </thead>
@@ -68,14 +68,14 @@
                 <td *ngIf="s.isCategoryItem" colspan="9" class="active">{{s.category}}</td>
 
                 <td *ngIf="!s.isCategoryItem">{{s.brand}} {{s.name}}</td>
-                <td *ngIf="!s.isCategoryItem">{{s.price}}</td>
+                <td *ngIf="!s.isCategoryItem" class="hidden-xs">{{s.price}}</td>
 
-                <td *ngIf="!s.isCategoryItem">{{s.quotes[0]?.price}}</td>
-                <td *ngIf="!s.isCategoryItem">{{s.quotes[0]?.priceFixedRateLow}}</td>
-                <td *ngIf="!s.isCategoryItem">{{s.quotes[0]?.priceFixedRateHigh}}</td>
-                <td *ngIf="!s.isCategoryItem">{{s.quotes[1]?.price}}</td>
-                <td *ngIf="!s.isCategoryItem">{{s.quotes[1]?.priceFixedRateLow}}</td>
-                <td *ngIf="!s.isCategoryItem">{{s.quotes[1]?.priceFixedRateHigh}}</td>              
+                <td *ngIf="!s.isCategoryItem" class="hidden-xs">{{s.quotes[0]?.price}}</td>
+                <td *ngIf="!s.isCategoryItem" class="hidden-xs">{{s.quotes[0]?.priceFixedRateLow}}</td>
+                <td *ngIf="!s.isCategoryItem" class="hidden-xs">{{s.quotes[0]?.priceFixedRateHigh}}</td>
+                <td *ngIf="!s.isCategoryItem" class="hidden-xs hidden-sm">{{s.quotes[1]?.price}}</td>
+                <td *ngIf="!s.isCategoryItem" class="hidden-xs hidden-sm">{{s.quotes[1]?.priceFixedRateLow}}</td>
+                <td *ngIf="!s.isCategoryItem" class="hidden-xs hidden-sm">{{s.quotes[1]?.priceFixedRateHigh}}</td>              
                 <td *ngIf="!s.isCategoryItem" class="text-center clickable" [routerLink]="['PEdit', { id: s.id }]"><i class="fa fa-pencil-square-o fa-lg"></i></td>
             </tr>
         </tbody>
