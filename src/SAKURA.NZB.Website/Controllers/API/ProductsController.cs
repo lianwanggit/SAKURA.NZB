@@ -4,7 +4,6 @@ using Microsoft.Data.Entity;
 using SAKURA.NZB.Data;
 using SAKURA.NZB.Domain;
 using System.Collections.Generic;
-using System;
 
 namespace SAKURA.NZB.Website.Controllers.API
 {
