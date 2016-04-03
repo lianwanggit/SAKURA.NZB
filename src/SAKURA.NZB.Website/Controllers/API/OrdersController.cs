@@ -21,10 +21,8 @@ namespace SAKURA.NZB.Website.Controllers
 		public IActionResult Get()
 		{
 			return new ObjectResult(_context.Orders
-				.Include(o => o.Customer)
 				.Include(o => o.Products)
-					.ThenInclude(p => p.Product)
-					.ThenInclude(p => p.Category)
+					.ThenInclude(p => p.Customer)
 				.Include(o => o.Products)
 					.ThenInclude(p => p.Product)
 					.ThenInclude(p => p.Brand)

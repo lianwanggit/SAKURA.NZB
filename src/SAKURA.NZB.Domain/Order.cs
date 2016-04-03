@@ -8,10 +8,7 @@ namespace SAKURA.NZB.Domain
     {
 		public int Id { get; set; }
 		public List<OrderProduct> Products { get; set; }
-		[Required]
-		public int CustomerId { get; set; }
-		public Customer Customer { get; set; }
-		public DateTimeOffset? OrderTime { get; set; }
+		public DateTimeOffset OrderTime { get; set; }
 		public DateTimeOffset? DeliveryTime { get; set; }
 		public DateTimeOffset? ReceiveTime { get; set; }
 		public OrderState OrderState { get; set; }

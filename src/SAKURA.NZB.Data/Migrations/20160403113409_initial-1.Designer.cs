@@ -8,9 +8,10 @@ using SAKURA.NZB.Data;
 namespace SAKURA.NZB.Data.Migrations
 {
     [DbContext(typeof(NZBContext))]
-    partial class NZBContextModelSnapshot : ModelSnapshot
+    [Migration("20160403113409_initial-1")]
+    partial class initial1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "7.0.0-rc1-16348")
@@ -165,8 +166,6 @@ namespace SAKURA.NZB.Data.Migrations
 
                     b.Property<float>("Cost");
 
-                    b.Property<int>("CustomerId");
-
                     b.Property<int>("OrderId");
 
                     b.Property<float>("Price");
@@ -246,10 +245,6 @@ namespace SAKURA.NZB.Data.Migrations
 
             modelBuilder.Entity("SAKURA.NZB.Domain.OrderProduct", b =>
                 {
-                    b.HasOne("SAKURA.NZB.Domain.Customer")
-                        .WithMany()
-                        .HasForeignKey("CustomerId");
-
                     b.HasOne("SAKURA.NZB.Domain.Order")
                         .WithMany()
                         .HasForeignKey("OrderId");
