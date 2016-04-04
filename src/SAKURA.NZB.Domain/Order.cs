@@ -21,5 +21,14 @@ namespace SAKURA.NZB.Domain
 		public string TransitStatus { get; set; }
 		[StringLength(255)]
 		public string Description { get; set; }
-    } 
+		[StringLength(10)]
+		[Required]
+		public string Recipient { get; set; }
+		[Phone]
+		[Required]
+		public string Phone { get; set; }
+		[StringLength(100)]
+		[Required]
+		public string Address { get; set; }
+	} 
 }
