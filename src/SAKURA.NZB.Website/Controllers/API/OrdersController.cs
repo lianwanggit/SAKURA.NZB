@@ -28,10 +28,6 @@ namespace SAKURA.NZB.Website.Controllers
 				.Include(o => o.Products)
 					.ThenInclude(p => p.Product)
 					.ThenInclude(p => p.Brand)
-				.Include(o => o.Products)
-					.ThenInclude(p => p.Product)
-					.ThenInclude(p => p.Quotes)
-					.ThenInclude(q => q.Supplier)
 				.OrderByDescending(o => o.OrderTime)
 				.ToList();
 
@@ -44,7 +40,6 @@ namespace SAKURA.NZB.Website.Controllers
 
 			return new ObjectResult(models);
 		}
-
 
 		private static OrderModel MapTo(Order o)
 		{
