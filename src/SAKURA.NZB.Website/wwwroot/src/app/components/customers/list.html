@@ -47,7 +47,7 @@
 
     <ul class="customers-list" *ngIf="!isListViewMode">
         <li *ngFor="#c of searchList; #i = index" (click)="onEdit(c.id)">
-            <i class="fa fa-{{i < icons.length ? icons[i] : icons[i % length]}} fa-2x"></i>
+            <i class="fa fa-{{icons[i % icons.length]}} fa-2x"></i>
             <h4>{{c.name}}</h4>
             <span>{{c.tel}}</span>
         </li>

@@ -30,13 +30,13 @@ export class AppComponent implements OnInit {
         if (this.routes === null) {
             this.routes = [
                 { path: "/index", component: StaticComponent, name: "Index", useAsDefault: true },
-				{ path: "/customers", component: CustomersComponent, name: "客户", useAsDefault: false },
-				{ path: "/customers/add", component: CustomerEditComponent, name: "CAdd", useAsDefault: false },
-				{ path: "/customers/edit/:id", component: CustomerEditComponent, name: "CEdit", useAsDefault: false },
 				{ path: "/products", component: ProductsComponent, name: "产品", useAsDefault: false },
 				{ path: "/products/edit/base/:type", component: ProductBaseEditComponent, name: "PbeEdit", useAsDefault: false },
 				{ path: "/products/add", component: ProductEditComponent, name: "PAdd", useAsDefault: false },
 				{ path: "/products/edit/:id", component: ProductEditComponent, name: "PEdit", useAsDefault: false },
+				{ path: "/customers", component: CustomersComponent, name: "客户", useAsDefault: false },
+				{ path: "/customers/add", component: CustomerEditComponent, name: "CAdd", useAsDefault: false },
+				{ path: "/customers/edit/:id", component: CustomerEditComponent, name: "CEdit", useAsDefault: false },
 
                 new AsyncRoute({
                     path: "/sub",

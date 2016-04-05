@@ -156,14 +156,14 @@ export class ProductsComponent implements OnInit {
 		});
 
 		if (this.selectedItem && this.selectedItem.quotes.length > 0) {
-			this.quoteHeader1.reset(this.selectedItem.quotes[0].supplier, this.fixedRateLow, this.fixedRateHigh);
+			this.quoteHeader1.reset(this.selectedItem.quotes[0].supplier, this.fixedRateHigh, this.fixedRateLow);
 		}
 		else {
 			this.quoteHeader1.empty();
 		}
 
 		if (this.selectedItem && this.selectedItem.quotes.length > 1) {
-			this.quoteHeader2.reset(this.selectedItem.quotes[1].supplier, this.fixedRateLow, this.fixedRateHigh);
+			this.quoteHeader2.reset(this.selectedItem.quotes[1].supplier, this.fixedRateHigh, this.fixedRateLow);
 		}
 		else {
 			this.quoteHeader2.empty();

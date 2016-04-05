@@ -50,13 +50,13 @@ System.register(["angular2/core", "angular2/router", "./static.component", "./cu
                     if (this.routes === null) {
                         this.routes = [
                             { path: "/index", component: static_component_1.StaticComponent, name: "Index", useAsDefault: true },
-                            { path: "/customers", component: list_component_1.CustomersComponent, name: "客户", useAsDefault: false },
-                            { path: "/customers/add", component: edit_component_1.CustomerEditComponent, name: "CAdd", useAsDefault: false },
-                            { path: "/customers/edit/:id", component: edit_component_1.CustomerEditComponent, name: "CEdit", useAsDefault: false },
                             { path: "/products", component: list_component_2.ProductsComponent, name: "产品", useAsDefault: false },
                             { path: "/products/edit/base/:type", component: baseEdit_component_1.ProductBaseEditComponent, name: "PbeEdit", useAsDefault: false },
                             { path: "/products/add", component: edit_component_2.ProductEditComponent, name: "PAdd", useAsDefault: false },
                             { path: "/products/edit/:id", component: edit_component_2.ProductEditComponent, name: "PEdit", useAsDefault: false },
+                            { path: "/customers", component: list_component_1.CustomersComponent, name: "客户", useAsDefault: false },
+                            { path: "/customers/add", component: edit_component_1.CustomerEditComponent, name: "CAdd", useAsDefault: false },
+                            { path: "/customers/edit/:id", component: edit_component_1.CustomerEditComponent, name: "CEdit", useAsDefault: false },
                             new router_1.AsyncRoute({
                                 path: "/sub",
                                 name: "Sub",
