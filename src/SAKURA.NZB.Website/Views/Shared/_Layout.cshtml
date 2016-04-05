@@ -20,6 +20,7 @@
         <script src="~/lib/systemjs/dist/system.js"></script>
         <script src="~/lib/rxjs/bundles/Rx.js"></script>
         <script src="~/lib/typescript/lib/typescript.js"></script>
+        <script src="~/lib/moment/min/moment-with-locales.js"></script>
         <script src="~/lib/angular2/bundles/angular2.dev.js"></script>
         <script src="~/lib/angular2/bundles/angular2-polyfills.js"></script>
         <script src="~/lib/angular2/bundles/http.dev.js"></script>
@@ -38,6 +39,7 @@
         <script src="~/lib/systemjs/dist/system.js"></script>
         <script src="~/lib/rxjs/bundles/Rx.min.js"></script>
         <script src="~/lib/typescript/lib/typescript.js"></script>
+        <script src="~/lib/moment/min/moment-with-locales.min.js"></script>
         <script src="~/lib/angular2/bundles/angular2.dev.js"></script>
         <script src="~/lib/angular2/bundles/angular2-polyfills.min.js"></script>
         <script src="~/lib/angular2/bundles/http.dev.js"></script>
@@ -53,6 +55,9 @@
                     format: 'register',
                     defaultExtension: 'js'
                 }
+            },
+            map: {
+                moment: 'lib/moment/min/moment.min.js'
             }
         });
         System.import('src/app/boot')
@@ -62,7 +67,7 @@
 <base href="/" />
 
 <body>
-    <div class="body-content">
+    <div>
         @RenderBody()
 
         <footer class="container" style="margin-top: 30px">

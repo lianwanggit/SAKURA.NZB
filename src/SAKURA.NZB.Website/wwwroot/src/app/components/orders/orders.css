@@ -1,2 +1,44 @@
-﻿body {
+﻿.bg-header {
+    color: #fff;
+    background-color: #333;
 }
+
+.year-header {
+    margin:0;
+    padding: 10px 0 20px 0;
+}
+
+.month-header span {   
+    padding-left: 10px;
+}
+
+.month-header table {
+    width: 160px;
+}
+
+.month-header table td:first-child {
+    width: 30%;
+}
+
+.month-header table td:nth-child(2) {
+    width: 33%;
+}
+
+@media (min-width: 768px) {
+    .month-header table {
+        width: 300px;
+    }
+
+    .month-header table td:first-child {
+        width: 20%;
+    }
+
+    .month-header table td:nth-child(2) {
+        width: 25%;
+    }
+
+    .month-header table td:nth-child(3) {
+        width: 25%;
+    }
+}
+

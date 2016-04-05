@@ -24,7 +24,8 @@ paths.lib = [
     './node_modules/rxjs/bundles/**/*.*',
     './node_modules/typescript/lib/**/*.*',
     './node_modules/jquery/dist/**/*.*',
-    './node_modules/d3/*.*'
+    './node_modules/d3/*.*',
+    './node_modules/moment/min/**/*.*'
 ];
 
 paths.jsDest = paths.webroot + "js";

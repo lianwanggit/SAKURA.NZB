@@ -1,8 +1,29 @@
 ﻿<div class="grey-border">
-    <h2 class="page-header">Orders</h2>
-
+    <h2 class="page-header">Orders</h2>  
     {{diagnoise}}
 
+    <div *ngFor="#y of data" >
+        <h3 class="text-center bg-header year-header" *ngIf="thisYear != y.year">{{y.year}}</h3>
+        <div *ngFor="#m of y.monthGroups">
+            <div class="bg-header month-header clearfix">
+                <span class="pull-left">{{m.month}}</span>
+                <div class="pull-right">
+                    <table class="month-header">
+                        <tr>
+                            <td><i class="fa fa-shopping-cart"></i> {{m.models.length}}</td>
+                            <td><i class="fa fa-dollar"></i> {{m.totalCost}}</td>
+                            <td><i class="fa fa-yen"></i> {{m.totalPrice}}</td>
+                            <td class="hidden-xs"><i class="fa fa-money"></i> {{m.totalProfit(currentRate)}}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>          
+            
+            <div class="details" *ngFor="#md of m.models">
+                <small class="text-muted">{{md.orderTime}}</small>
+            </div>
+        </div>
+    </div>
 </div>   
 
     

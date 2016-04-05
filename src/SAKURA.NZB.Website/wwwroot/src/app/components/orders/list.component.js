@@ -38,7 +38,11 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                 function MonthGroup(month, models) {
                     this.month = month;
                     this.models = models;
+                    var list = this.models.ToList();
+                    this.totalCost = list.Sum(function (om) { return om.totalCost; });
+                    this.totalPrice = list.Sum(function (om) { return om.totalPrice; });
                 }
+                MonthGroup.prototype.totalProfit = function (rate) { return (this.totalPrice - this.totalCost * rate).toFixed(2); };
                 return MonthGroup;
             })();
             OrderModel = (function () {
@@ -53,6 +57,10 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     this.phone = phone;
                     this.address = address;
                     this.customerOrders = customerOrders;
+                    var list = this.customerOrders.ToList();
+                    this.totalCost = list.Sum(function (co) { return co.totalCost; });
+                    this.totalPrice = list.Sum(function (co) { return co.totalPrice; });
+                    this.totalProfit = list.Sum(function (co) { return co.totalProfit; });
                 }
                 return OrderModel;
             })();
@@ -61,17 +69,23 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     this.customerId = customerId;
                     this.customerName = customerName;
                     this.orderProducts = orderProducts;
+                    var list = this.orderProducts.ToList();
+                    this.totalCost = list.Sum(function (op) { return op.cost * op.qty; });
+                    this.totalPrice = list.Sum(function (op) { return op.price * op.qty; });
+                    this.totalProfit = list.Sum(function (op) { return op.profit; });
                 }
                 return CustomerOrder;
             })();
             OrderProduct = (function () {
-                function OrderProduct(productId, productBrand, productName, cost, price, qty) {
+                function OrderProduct(productId, productBrand, productName, cost, price, qty, exchangeRate) {
                     this.productId = productId;
                     this.productBrand = productBrand;
                     this.productName = productName;
                     this.cost = cost;
                     this.price = price;
                     this.qty = qty;
+                    this.exchangeRate = exchangeRate;
+                    this.profit = (this.price - this.cost * this.exchangeRate) * this.qty;
                 }
                 return OrderProduct;
             })();
@@ -83,6 +97,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     //searchList: Customer[] = [];
                     this.filterText = '';
                     this.totalAmount = 0;
+                    this.thisYear = moment().year();
                     this._filterText = '';
                 }
                 OrdersComponent.prototype.ngOnInit = function () {
@@ -91,6 +106,13 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                 OrdersComponent.prototype.get = function () {
                     var _this = this;
                     var that = this;
+                    this.service.getLatestExchangeRates(function (json) {
+                        if (json) {
+                            that.fixedRateHigh = json.fixedRateHigh;
+                            that.fixedRateLow = json.fixedRateLow;
+                            that.currentRate = json.currentRate.toFixed(2);
+                        }
+                    });
                     this.service.getOrders(function (json) {
                         if (json) {
                             var yearGroups = [].ToList();
@@ -103,11 +125,11 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                                     mg.models.forEach(function (om) {
                                         om.customerOrders.forEach(function (co) {
                                             co.orderProducts.forEach(function (op) {
-                                                products.Add(new OrderProduct(op.productId, op.productBrand, op.productName, op.cost, op.price, op.qty));
+                                                products.Add(new OrderProduct(op.productId, op.productBrand, op.productName, op.cost, op.price, op.qty, that.currentRate));
                                             });
                                             customers.Add(new CustomerOrder(co.customerId, co.customerName, products.ToArray()));
                                         });
-                                        orders.Add(new OrderModel(om.id, om.orderTime, om.deliveryTime, om.receiveTime, om.orderState, om.paymentState, om.recipient, om.phone, om.address, customers.ToArray()));
+                                        orders.Add(new OrderModel(om.id, moment(om.orderTime).format('YYYY-MM-DD'), om.deliveryTime, om.receiveTime, om.orderState, om.paymentState, om.recipient, om.phone, om.address, customers.ToArray()));
                                     });
                                     monthGroups.Add(new MonthGroup(mg.month, orders.ToArray()));
                                 });
