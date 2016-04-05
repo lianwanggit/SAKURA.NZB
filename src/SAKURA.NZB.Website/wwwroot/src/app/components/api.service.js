@@ -101,6 +101,9 @@ System.register(["rxjs/Rx", "angular2/http", "angular2/core"], function(exports_
                 ApiService.prototype.getLatestExchangeRates = function (onNext) {
                     this.http.get("api/exchangerates/latest").map(function (response) { return response.json(); }).subscribe(onNext);
                 };
+                ApiService.prototype.getOrders = function (onNext) {
+                    this.http.get("api/orders").map(function (response) { return response.json(); }).subscribe(onNext);
+                };
                 ApiService = __decorate([
                     core_1.Injectable(), 
                     __metadata('design:paramtypes', [http_1.Http])

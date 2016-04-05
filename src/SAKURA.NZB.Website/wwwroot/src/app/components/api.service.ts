@@ -111,4 +111,8 @@ export class ApiService {
 	getLatestExchangeRates(onNext: (json: any) => void) {
         this.http.get("api/exchangerates/latest").map(response => response.json()).subscribe(onNext);
     }
+
+	getOrders(onNext: (json: any) => void) {
+        this.http.get("api/orders").map(response => response.json()).subscribe(onNext);
+    }
 }

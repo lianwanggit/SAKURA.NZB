@@ -1,5 +1,5 @@
 /// <reference path="../../../lib/TypeScript-Linq/Scripts/typings/System/Collections/Generic/List.ts" />
-System.register(["angular2/core", "angular2/router", "./static.component", "./customers/list.component", "./customers/edit.component", "./products/list.component", "./products/baseEdit.component", "./products/edit.component", '../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js'], function(exports_1) {
+System.register(["angular2/core", "angular2/router", "./static.component", "./customers/list.component", "./customers/edit.component", "./products/list.component", "./products/baseEdit.component", "./products/edit.component", "./orders/list.component", '../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js'], function(exports_1) {
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
         var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
         if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -9,7 +9,7 @@ System.register(["angular2/core", "angular2/router", "./static.component", "./cu
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, router_1, static_component_1, list_component_1, edit_component_1, list_component_2, baseEdit_component_1, edit_component_2;
+    var core_1, router_1, static_component_1, list_component_1, edit_component_1, list_component_2, baseEdit_component_1, edit_component_2, list_component_3;
     var AppComponent;
     return {
         setters:[
@@ -37,6 +37,9 @@ System.register(["angular2/core", "angular2/router", "./static.component", "./cu
             function (edit_component_2_1) {
                 edit_component_2 = edit_component_2_1;
             },
+            function (list_component_3_1) {
+                list_component_3 = list_component_3_1;
+            },
             function (_1) {}],
         execute: function() {
             AppComponent = (function () {
@@ -50,6 +53,7 @@ System.register(["angular2/core", "angular2/router", "./static.component", "./cu
                     if (this.routes === null) {
                         this.routes = [
                             { path: "/index", component: static_component_1.StaticComponent, name: "Index", useAsDefault: true },
+                            { path: "/orders", component: list_component_3.OrdersComponent, name: "订单", useAsDefault: false },
                             { path: "/products", component: list_component_2.ProductsComponent, name: "产品", useAsDefault: false },
                             { path: "/products/edit/base/:type", component: baseEdit_component_1.ProductBaseEditComponent, name: "PbeEdit", useAsDefault: false },
                             { path: "/products/add", component: edit_component_2.ProductEditComponent, name: "PAdd", useAsDefault: false },

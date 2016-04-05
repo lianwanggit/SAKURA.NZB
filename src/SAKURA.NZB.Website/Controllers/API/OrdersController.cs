@@ -6,23 +6,24 @@ using SAKURA.NZB.Data;
 using SAKURA.NZB.Domain;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace SAKURA.NZB.Website.Controllers
 {
 	[Route("api/[controller]")]
 	public class OrdersController : Controller
-    {
-        private NZBContext _context;
+	{
+		private NZBContext _context;
 
-        public OrdersController(NZBContext context)
-        {
-            _context = context;    
-        }
+		public OrdersController(NZBContext context)
+		{
+			_context = context;
+		}
 
 		[HttpGet]
 		public IActionResult Get()
 		{
-			var orders =  _context.Orders
+			var orders = _context.Orders
 				.Include(o => o.Products)
 					.ThenInclude(p => p.Customer)
 				.Include(o => o.Products)
@@ -32,13 +33,25 @@ namespace SAKURA.NZB.Website.Controllers
 				.ToList();
 
 			var models = new List<OrderModel>();
-			orders.ForEach(o => 
+			orders.ForEach(o =>
 			{
 				var model = MapTo(o);
 				models.Add(model);
 			});
 
-			return new ObjectResult(models);
+			var groupedModels = from m in models
+								group m by m.OrderTime.Year into yg
+								select
+								new
+								{
+									Year = yg.Key,
+									MonthGroups =
+										from o in yg
+										group o by o.OrderTime.ToString("MMMM", CultureInfo.InvariantCulture) into mg
+										select new { Month = mg.Key, Models = mg }
+								};
+
+			return new ObjectResult(groupedModels);
 		}
 
 		private static OrderModel MapTo(Order o)
@@ -49,8 +62,8 @@ namespace SAKURA.NZB.Website.Controllers
 				OrderTime = o.OrderTime.LocalDateTime,
 				DeliveryTime = o.DeliveryTime?.LocalDateTime,
 				ReceiveTime = o.ReceiveTime?.LocalDateTime,
-				OrderState = o.OrderState,
-				PaymentState = o.PaymentState,
+				OrderState = o.OrderState.ToString(),
+				PaymentState = o.PaymentState.ToString(),
 				Weight = o.Weight,
 				Freight = o.Freight,
 				Waybill = o.Waybill,
@@ -106,8 +119,8 @@ namespace SAKURA.NZB.Website.Controllers
 		public DateTime OrderTime { get; set; }
 		public DateTime? DeliveryTime { get; set; }
 		public DateTime? ReceiveTime { get; set; }
-		public OrderState OrderState { get; set; }
-		public PaymentState PaymentState { get; set; }
+		public string OrderState { get; set; }
+		public string PaymentState { get; set; }
 		public float? Weight { get; set; }
 		public float? Freight { get; set; }
 		public Image Waybill { get; set; }
