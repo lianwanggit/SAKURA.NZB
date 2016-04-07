@@ -60,6 +60,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     var list = this.customerOrders.ToList();
                     this.totalCost = list.Sum(function (co) { return co.totalCost; });
                     this.totalPrice = list.Sum(function (co) { return co.totalPrice; });
+                    this.totalQty = list.Sum(function (co) { return co.totalQty; });
                     this.totalProfit = list.Sum(function (co) { return co.totalProfit; });
                 }
                 return OrderModel;
@@ -72,6 +73,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     var list = this.orderProducts.ToList();
                     this.totalCost = list.Sum(function (op) { return op.cost * op.qty; });
                     this.totalPrice = list.Sum(function (op) { return op.price * op.qty; });
+                    this.totalQty = list.Sum(function (op) { return op.qty; });
                     this.totalProfit = list.Sum(function (op) { return op.profit; });
                 }
                 return CustomerOrder;
@@ -104,7 +106,6 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     this.get();
                 };
                 OrdersComponent.prototype.get = function () {
-                    var _this = this;
                     var that = this;
                     this.service.getLatestExchangeRates(function (json) {
                         if (json) {
@@ -116,14 +117,14 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     this.service.getOrders(function (json) {
                         if (json) {
                             var yearGroups = [].ToList();
-                            var monthGroups = [].ToList();
-                            var orders = [].ToList();
-                            var customers = [].ToList();
-                            var products = [].ToList();
                             json.forEach(function (c) {
+                                var monthGroups = [].ToList();
                                 c.monthGroups.forEach(function (mg) {
+                                    var orders = [].ToList();
                                     mg.models.forEach(function (om) {
+                                        var customers = [].ToList();
                                         om.customerOrders.forEach(function (co) {
+                                            var products = [].ToList();
                                             co.orderProducts.forEach(function (op) {
                                                 products.Add(new OrderProduct(op.productId, op.productBrand, op.productName, op.cost, op.price, op.qty, that.currentRate));
                                             });
@@ -134,7 +135,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                                     monthGroups.Add(new MonthGroup(mg.month, orders.ToArray()));
                                 });
                                 yearGroups.Add(new YearGroup(c.year, monthGroups.ToArray()));
-                                _this.data = yearGroups.ToArray();
+                                that.data = yearGroups.ToArray();
                             });
                         }
                     });

@@ -1,11 +1,11 @@
 ﻿<div class="grey-border">
-    <h2 class="page-header">Orders</h2>  
+    <h2 class="page-header">Orders</h2>
     {{diagnoise}}
 
-    <div *ngFor="#y of data" >
-        <h3 class="text-center bg-header year-header" *ngIf="thisYear != y.year">{{y.year}}</h3>
+    <div *ngFor="#y of data">
+        <h3 class="text-center bg-cyan year-header" *ngIf="thisYear != y.year">{{y.year}}</h3>
         <div *ngFor="#m of y.monthGroups">
-            <div class="bg-header month-header clearfix">
+            <div class="bg-primary-light month-header clearfix">
                 <span class="pull-left">{{m.month}}</span>
                 <div class="pull-right">
                     <table class="month-header">
@@ -17,13 +17,52 @@
                         </tr>
                     </table>
                 </div>
-            </div>          
-            
-            <div class="details" *ngFor="#md of m.models">
+            </div>
+
+            <div class="details" *ngFor="#md of m.models; #imd = index">
                 <small class="text-muted">{{md.orderTime}}</small>
+                <table>
+                    <tr *ngFor="#co of md.customerOrders; #ico = index">
+                        <td class="v-align-middle customer">
+                            <i class="fa fa-user bg-cyan hidden-xs"></i><span>{{co.customerName}}</span>
+                        </td>
+                        <td>
+                            <table class="table product-list">
+                                <tr *ngIf="ico == 0 && imd == 0">
+                                    <th>产品名</th>
+                                    <th class="hidden-xs">成本</th>
+                                    <th class="hidden-xs">数量</th>
+                                    <th class="hidden-xs">售价</th>
+                                    <th>利润</th>
+                                </tr>
+                                <tr *ngFor="#op of co.orderProducts">
+                                    <td>{{op.productBrand}} {{op.productName}}</td>
+                                    <td class="hidden-xs">$ {{op.cost}}</td>
+                                    <td class="hidden-xs">{{op.qty}}</td>
+                                    <td class="hidden-xs">¥ {{op.price}}</td>
+                                    <td>¥ {{op.profit}}</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            <table class="table">
+                                <tr>
+                                    <td></td>
+                                    <td class="hidden-xs">$ {{md.totalCost}}</td>
+                                    <td class="hidden-xs">{{md.totalQty}}</td>
+                                    <td class="hidden-xs">¥ {{md.totalPrice}}</td>
+                                    <td>¥ {{md.totalProfit}}</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
             </div>
         </div>
     </div>
-</div>   
+</div>
 
-    
+

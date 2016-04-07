@@ -24,6 +24,44 @@
     width: 33%;
 }
 
+.details {
+ 
+}
+
+.details table {
+    margin-bottom: 0;
+    font-size: 12px;
+}
+
+.v-align-middle {
+   vertical-align: middle;
+}
+
+.customer {
+    border: 1px solid #ddd;
+    width: 60px;   
+    padding-left: 5px;
+}
+
+.customer i {
+    display: inline-block;
+    vertical-align: middle;
+    width: 20px;
+    height: 20px;
+    border-radius: 10px;
+    text-align: center;
+    line-height: 20px;
+    margin-left: 15px;
+}
+
+.customer span {
+    padding-left: 5px;
+}
+
+.product-list {
+    
+}
+
 @media (min-width: 768px) {
     .month-header table {
         width: 300px;

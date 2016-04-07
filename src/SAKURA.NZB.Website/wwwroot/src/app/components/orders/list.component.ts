@@ -29,6 +29,7 @@ class MonthGroup {
 class OrderModel {
 	totalCost: number;
 	totalPrice: number;
+	totalQty: number;
 	totalProfit: number;
 
 	constructor(public id: number, public orderTime: any, public deliveryTime: Date, public receiveTime: Date,
@@ -38,6 +39,7 @@ class OrderModel {
 		var list = this.customerOrders.ToList<CustomerOrder>();
 		this.totalCost = list.Sum(co => co.totalCost);
 		this.totalPrice = list.Sum(co => co.totalPrice);
+		this.totalQty = list.Sum(co => co.totalQty);
 		this.totalProfit = list.Sum(co => co.totalProfit);
 	}
 }
@@ -45,12 +47,14 @@ class OrderModel {
 class CustomerOrder {
 	totalCost: number;
 	totalPrice: number;
+	totalQty: number;
 	totalProfit: number;
 
 	constructor(public customerId: number, public customerName: string, public orderProducts: OrderProduct[]) {
 		var list = this.orderProducts.ToList<OrderProduct>();
 		this.totalCost = list.Sum(op => op.cost * op.qty);
 		this.totalPrice = list.Sum(op => op.price * op.qty);
+		this.totalQty = list.Sum(op => op.qty);
 		this.totalProfit = list.Sum(op => op.profit);
 	}
 }
@@ -103,17 +107,15 @@ export class OrdersComponent implements OnInit {
 
 		this.service.getOrders(json => {
 			if (json) {
-
-				var yearGroups = [].ToList<YearGroup>();
-				var monthGroups = [].ToList<MonthGroup>();
-				var orders = [].ToList<OrderModel>();
-				var customers = [].ToList<CustomerOrder>();
-				var products = [].ToList<OrderProduct>();
-
-				json.forEach(c => {				
+				var yearGroups = [].ToList<YearGroup>();				
+				json.forEach(c => {
+					var monthGroups = [].ToList<MonthGroup>();				
 					c.monthGroups.forEach(mg => {
+						var orders = [].ToList<OrderModel>();
 						mg.models.forEach(om => {
+							var customers = [].ToList<CustomerOrder>();
 							om.customerOrders.forEach(co => {
+								var products = [].ToList<OrderProduct>();
 								co.orderProducts.forEach(op => {
 									products.Add(new OrderProduct(op.productId, op.productBrand, op.productName, op.cost,
 										op.price, op.qty, that.currentRate));
@@ -131,7 +133,7 @@ export class OrdersComponent implements OnInit {
 					});
 
 					yearGroups.Add(new YearGroup(c.year, monthGroups.ToArray()));
-					this.data = yearGroups.ToArray();
+					that.data = yearGroups.ToArray();
 				});
 			}
 		});
