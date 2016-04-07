@@ -13,34 +13,44 @@
 }
 
 .month-header table {
-    width: 160px;
+    width: 115px;
 }
 
 .month-header table td:first-child {
-    width: 30%;
+    width: 35%;
 }
 
-.month-header table td:nth-child(2) {
+/*.month-header table td:nth-child(2) {
     width: 33%;
-}
+}*/
 
 .details {
- 
-}
-
-.details table {
-    margin-bottom: 0;
     font-size: 12px;
 }
 
-.v-align-middle {
-   vertical-align: middle;
+.details > div:first-of-type {
+    padding-bottom: 8px;
+}
+
+.details > div:nth-of-type(n+2) {
+    padding-top: 8px;
+    border-top: 1px solid #999;
+}
+
+.vertical-align-parent {
+  display: flex;
+  flex-direction: row;
+}
+
+.vertical-align-parent .vertical-align {
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Optional, to align inner items 
+                              horizontally inside the column */
 }
 
 .customer {
-    border: 1px solid #ddd;
-    width: 60px;   
-    padding-left: 5px;
+    border-top:  1px solid #ddd;
 }
 
 .customer i {
@@ -54,12 +64,23 @@
     margin-left: 15px;
 }
 
-.customer span {
-    padding-left: 5px;
+.product-list {
+    padding: 0;
 }
 
-.product-list {
-    
+.product-list table {
+    margin-bottom: 0;
+}
+
+.product-list th,
+.product-list td {
+    padding: 0;
+}
+
+.product-list th:last-of-type,
+.product-list td:last-of-type {
+    padding-left: 8px;
+    width: 60px;
 }
 
 @media (min-width: 768px) {

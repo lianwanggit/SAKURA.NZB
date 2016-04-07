@@ -62,6 +62,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     this.totalPrice = list.Sum(function (co) { return co.totalPrice; });
                     this.totalQty = list.Sum(function (co) { return co.totalQty; });
                     this.totalProfit = list.Sum(function (co) { return co.totalProfit; });
+                    this.strTotalProfit = this.totalProfit.toFixed(2);
                 }
                 return OrderModel;
             })();
@@ -75,6 +76,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     this.totalPrice = list.Sum(function (op) { return op.price * op.qty; });
                     this.totalQty = list.Sum(function (op) { return op.qty; });
                     this.totalProfit = list.Sum(function (op) { return op.profit; });
+                    this.strTotalProfit = this.totalProfit.toFixed(2);
                 }
                 return CustomerOrder;
             })();
@@ -88,6 +90,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     this.qty = qty;
                     this.exchangeRate = exchangeRate;
                     this.profit = (this.price - this.cost * this.exchangeRate) * this.qty;
+                    this.strProfit = this.profit.toFixed(2);
                 }
                 return OrderProduct;
             })();
@@ -112,8 +115,12 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                             that.fixedRateHigh = json.fixedRateHigh;
                             that.fixedRateLow = json.fixedRateLow;
                             that.currentRate = json.currentRate.toFixed(2);
+                            that.loadOrders();
                         }
                     });
+                };
+                OrdersComponent.prototype.loadOrders = function () {
+                    var that = this;
                     this.service.getOrders(function (json) {
                         if (json) {
                             var yearGroups = [].ToList();

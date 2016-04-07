@@ -31,6 +31,7 @@ class OrderModel {
 	totalPrice: number;
 	totalQty: number;
 	totalProfit: number;
+	strTotalProfit: string;
 
 	constructor(public id: number, public orderTime: any, public deliveryTime: Date, public receiveTime: Date,
 		public orderState: string, public paymentState: string, public recipient: string, public phone: string,
@@ -41,6 +42,7 @@ class OrderModel {
 		this.totalPrice = list.Sum(co => co.totalPrice);
 		this.totalQty = list.Sum(co => co.totalQty);
 		this.totalProfit = list.Sum(co => co.totalProfit);
+		this.strTotalProfit = this.totalProfit.toFixed(2);
 	}
 }
 
@@ -49,6 +51,7 @@ class CustomerOrder {
 	totalPrice: number;
 	totalQty: number;
 	totalProfit: number;
+	strTotalProfit: string;
 
 	constructor(public customerId: number, public customerName: string, public orderProducts: OrderProduct[]) {
 		var list = this.orderProducts.ToList<OrderProduct>();
@@ -56,15 +59,18 @@ class CustomerOrder {
 		this.totalPrice = list.Sum(op => op.price * op.qty);
 		this.totalQty = list.Sum(op => op.qty);
 		this.totalProfit = list.Sum(op => op.profit);
+		this.strTotalProfit = this.totalProfit.toFixed(2);
 	}
 }
 
 class OrderProduct {
 	profit: number;
+	strProfit: string;
 
 	constructor(public productId: number, public productBrand: string, public productName: string, public cost: number,
 		public price: number, public qty: number, public exchangeRate: number) {
 		this.profit = (this.price - this.cost * this.exchangeRate) * this.qty;
+		this.strProfit = this.profit.toFixed(2);
 	}
 }
 
@@ -102,14 +108,22 @@ export class OrdersComponent implements OnInit {
 				that.fixedRateHigh = json.fixedRateHigh;
 				that.fixedRateLow = json.fixedRateLow;
 				that.currentRate = json.currentRate.toFixed(2);
+
+				that.loadOrders();
 			}
 		});
 
+
+	}
+
+	loadOrders() {
+		var that = this;
+
 		this.service.getOrders(json => {
 			if (json) {
-				var yearGroups = [].ToList<YearGroup>();				
+				var yearGroups = [].ToList<YearGroup>();
 				json.forEach(c => {
-					var monthGroups = [].ToList<MonthGroup>();				
+					var monthGroups = [].ToList<MonthGroup>();
 					c.monthGroups.forEach(mg => {
 						var orders = [].ToList<OrderModel>();
 						mg.models.forEach(om => {

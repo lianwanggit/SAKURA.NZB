@@ -1,6 +1,5 @@
 ﻿<div class="grey-border">
     <h2 class="page-header">Orders</h2>
-    {{diagnoise}}
 
     <div *ngFor="#y of data">
         <h3 class="text-center bg-cyan year-header" *ngIf="thisYear != y.year">{{y.year}}</h3>
@@ -11,23 +10,26 @@
                     <table class="month-header">
                         <tr>
                             <td><i class="fa fa-shopping-cart"></i> {{m.models.length}}</td>
-                            <td><i class="fa fa-dollar"></i> {{m.totalCost}}</td>
-                            <td><i class="fa fa-yen"></i> {{m.totalPrice}}</td>
-                            <td class="hidden-xs"><i class="fa fa-money"></i> {{m.totalProfit(currentRate)}}</td>
+                            <td class="hidden-xs"><i class="fa fa-dollar"></i> {{m.totalCost}}</td>
+                            <td class="hidden-xs"><i class="fa fa-yen"></i> {{m.totalPrice}}</td>
+                            <td><i class="fa fa-money"></i> {{m.totalProfit(currentRate)}}</td>
                         </tr>
                     </table>
                 </div>
             </div>
 
-            <div class="details" *ngFor="#md of m.models; #imd = index">
-                <small class="text-muted">{{md.orderTime}}</small>
-                <table>
-                    <tr *ngFor="#co of md.customerOrders; #ico = index">
-                        <td class="v-align-middle customer">
-                            <i class="fa fa-user bg-cyan hidden-xs"></i><span>{{co.customerName}}</span>
-                        </td>
-                        <td>
-                            <table class="table product-list">
+            <div class="details">
+                <div *ngFor="#md of m.models; #imd = index">
+                    <small class="text-muted">{{md.orderTime}}</small>
+
+                    <div class="row vertical-align-parent" *ngFor="#co of md.customerOrders; #ico = index">
+                        <div class="col-xs-3">
+                            <div class="customer">
+                                <i class="fa fa-user bg-cyan hidden-xs"></i><span>{{co.customerName}}</span>
+                            </div>
+                        </div>
+                        <div class="col-xs-7 product-list">
+                            <table class="table">
                                 <tr *ngIf="ico == 0 && imd == 0">
                                     <th>产品名</th>
                                     <th class="hidden-xs">成本</th>
@@ -40,27 +42,26 @@
                                     <td class="hidden-xs">$ {{op.cost}}</td>
                                     <td class="hidden-xs">{{op.qty}}</td>
                                     <td class="hidden-xs">¥ {{op.price}}</td>
-                                    <td>¥ {{op.profit}}</td>
+                                    <td>¥ {{op.strProfit}}</td>
                                 </tr>
-                            </table>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td>
-                            <table class="table">
-                                <tr>
+                                <tr *ngIf="ico == md.customerOrders.length - 1">
                                     <td></td>
                                     <td class="hidden-xs">$ {{md.totalCost}}</td>
                                     <td class="hidden-xs">{{md.totalQty}}</td>
                                     <td class="hidden-xs">¥ {{md.totalPrice}}</td>
-                                    <td>¥ {{md.totalProfit}}</td>
+                                    <td><strong>¥ {{md.strTotalProfit}}</strong></td>
                                 </tr>
                             </table>
-                        </td>
-                    </tr>
-                </table>
+                        </div>
+                        <div class="col-xs-1 vertical-align">
+                            <div>
+                                <i class="fa fa-angle-right"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
+           
         </div>
     </div>
 </div>
