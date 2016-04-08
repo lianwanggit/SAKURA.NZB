@@ -32,6 +32,8 @@ class OrderModel {
 	totalQty: number;
 	totalProfit: number;
 	strTotalProfit: string;
+	statusRate: number;
+	statusText: string;
 
 	constructor(public id: number, public orderTime: any, public deliveryTime: Date, public receiveTime: Date,
 		public orderState: string, public paymentState: string, public weight: number, public recipient: string, public phone: string,
@@ -43,6 +45,44 @@ class OrderModel {
 		this.totalQty = list.Sum(co => co.totalQty);
 		this.totalProfit = list.Sum(co => co.totalProfit);
 		this.strTotalProfit = this.totalProfit.toFixed(2);
+
+		switch (this.orderState) {
+			case 'Created':
+				this.statusRate = 0;
+				this.statusText = '已创建';
+				break;
+			case 'ToBeConfirmed':
+				this.statusRate = 10;
+				this.statusText = '待确认';
+				break;
+			case 'Confirmed':
+				this.statusRate = 50;
+				this.statusText = '已确认';
+				break;
+			case 'Delivered':
+				this.statusRate = 70;
+				this.statusText = '已发货';
+				break;
+			case 'Transit':
+				this.statusRate = 80;
+				this.statusText = '转运中';
+				break;
+			case 'Received':
+				this.statusRate = 90;
+				this.statusText = '已签收';
+				break;
+			case 'Completed':
+				this.statusRate = 100;
+				this.statusText = '完成';
+				break;
+			case 'Discarded':
+				this.statusRate = 0;
+				this.statusText = '无效';
+				break;
+			default:
+				this.statusRate = 0;
+				this.statusText = '未知';
+		}
 	}
 }
 

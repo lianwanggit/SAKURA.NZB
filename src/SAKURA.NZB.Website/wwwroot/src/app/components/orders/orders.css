@@ -57,6 +57,10 @@
     border-top:  1px solid #ddd;
 }
 
+.customer > i {
+    margin: 3px 8px 0 10px;
+}
+
 .widget-icon {
     display: inline-block;
     vertical-align: middle;
@@ -65,7 +69,7 @@
     border-radius: 10px;
     text-align: center;
     line-height: 20px;
-    margin: 3px 8px 0 10px;
+
 }
 
 .product-list {
@@ -93,6 +97,18 @@
 
 .summary > td:last-of-type {
     color: green;
+}
+
+.product-status {
+    padding-left: 0;
+}
+
+.unpaid {
+    color: #aaa;
+}
+
+.paid {
+    color: #4caf50;
 }
 
 @media (min-width: 768px) {
