@@ -75,24 +75,21 @@
                             </div>
                         </div>
                         <div class="col-sm-2 hidden-xs product-status">
-                             <table>
-                                 <tr>
-                                     <td><span class="badge progress-bar-info" *ngIf="md.weight > 0"><i class="widget-icon fa fa-balance-scale"></i> {{md.weight}}</span></td>
-                                     <td rowspan="2">
-                                         <div class="c100 p{{md.statusRate}} xs">
-                                             <span>{{md.statusRate}}%</span>
-                                             <div class="slice">
-                                                 <div class="bar"></div>
-                                                 <div class="fill"></div>
-                                             </div>
-                                         </div>
-                                     </td>
-                                 </tr>
-                                 <tr>
-                                     <td><i class="fa fa-credit-card fa-2x" [ngClass]="{unpaid: md.paymentState != 'Paid', paid: md.paymentState == 'Paid'}"></i></td>
-                                 </tr>
-                             </table>
-                            
+                            <div class="row">
+                                <div class="hidden-xs hidden-sm col-md-4">
+                                    <span class="badge progress-bar-info" *ngIf="md.weight > 0"><i class="widget-icon fa fa-balance-scale"></i> {{md.weight}}</span>
+                                    <i class="fa fa-credit-card fa-2x" [ngClass]="{unpaid: md.paymentState != 'Paid', paid: md.paymentState == 'Paid'}"></i>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="c100 p{{md.statusRate}} small text-center">
+                                        <span>{{md.statusText}}</span>
+                                        <div class="slice">
+                                            <div class="bar"></div>
+                                            <div class="fill"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>                            
                         </div>
                     </div>
                 </div>
