@@ -3,8 +3,8 @@
 
     <div *ngFor="#y of data">
         <h3 class="text-center bg-cyan year-header" *ngIf="thisYear != y.year">{{y.year}}</h3>
-        <div *ngFor="#m of y.monthGroups">
-            <div class="bg-primary-light month-header clearfix">
+        <div *ngFor="#m of y.monthGroups; #img = index">
+            <div class="month-header clearfix bg-info-light">
                 <span class="pull-left">{{m.month}}</span>
                 <div class="pull-right">
                     <table class="month-header">
@@ -20,48 +20,69 @@
 
             <div class="details">
                 <div *ngFor="#md of m.models; #imd = index">
-                    <small class="text-muted">{{md.orderTime}}</small>
-
-                    <div class="row vertical-align-parent" *ngFor="#co of md.customerOrders; #ico = index">
-                        <div class="col-xs-3">
-                            <div class="customer">
-                                <i class="fa fa-user bg-cyan hidden-xs"></i><span>{{co.customerName}}</span>
+                    <div class="row vertical-align-parent order-header">
+                        <div class="col-xs-6 vertical-align"><small class="text-muted">{{md.orderTime}}</small></div>
+                        <div class="col-xs-6 vertical-align order-action">
+                            <div class="dropdown ">
+                                <button class="btn btn-default btn-xs dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    更新
+                                    <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu2">
+                                    <li><a href="#">Action</a></li>
+                                    <li><a href="#">Another action</a></li>
+                                    <li><a href="#">Something else here</a></li>
+                                    <li role="separator" class="divider"></li>
+                                    <li><a href="#">Separated link</a></li>
+                                </ul>
                             </div>
                         </div>
-                        <div class="col-xs-7 product-list">
-                            <table class="table">
-                                <tr *ngIf="ico == 0 && imd == 0">
-                                    <th>产品名</th>
-                                    <th class="hidden-xs">成本</th>
-                                    <th class="hidden-xs">数量</th>
-                                    <th class="hidden-xs">售价</th>
-                                    <th>利润</th>
-                                </tr>
-                                <tr *ngFor="#op of co.orderProducts">
-                                    <td>{{op.productBrand}} {{op.productName}}</td>
-                                    <td class="hidden-xs">$ {{op.cost}}</td>
-                                    <td class="hidden-xs">{{op.qty}}</td>
-                                    <td class="hidden-xs">¥ {{op.price}}</td>
-                                    <td>¥ {{op.strProfit}}</td>
-                                </tr>
-                                <tr *ngIf="ico == md.customerOrders.length - 1">
-                                    <td></td>
-                                    <td class="hidden-xs">$ {{md.totalCost}}</td>
-                                    <td class="hidden-xs">{{md.totalQty}}</td>
-                                    <td class="hidden-xs">¥ {{md.totalPrice}}</td>
-                                    <td><strong>¥ {{md.strTotalProfit}}</strong></td>
-                                </tr>
-                            </table>
+                    </div>
+                                                           
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-10">
+                            <div class="row" *ngFor="#co of md.customerOrders; #ico = index">
+                                <div class="col-xs-4 col-sm-3 col-md-2">
+                                    <div class="customer">
+                                        <i class="widget-icon fa fa-user hidden-xs {{colorSheet[co.customerId % 12]}}"></i><span>{{co.customerName}}</span>
+                                    </div>
+                                </div>
+                                <div class="col-xs-8 col-sm-9 col-md-10 product-list">
+                                    <table class="table">
+                                        <tr *ngIf="ico == 0 && imd == 0">
+                                            <th>产品名</th>
+                                            <th class="hidden-xs">成本</th>
+                                            <th class="hidden-xs">数量</th>
+                                            <th class="hidden-xs">售价</th>
+                                            <th>利润</th>
+                                        </tr>
+                                        <tr *ngFor="#op of co.orderProducts">
+                                            <td>{{op.productBrand}} {{op.productName}}</td>
+                                            <td class="hidden-xs">$ {{op.cost}}</td>
+                                            <td class="hidden-xs">{{op.qty}}</td>
+                                            <td class="hidden-xs">¥ {{op.price}}</td>
+                                            <td>¥ {{op.strProfit}}</td>
+                                        </tr>
+                                        <tr class="summary" *ngIf="ico == md.customerOrders.length - 1">
+                                            <td></td>
+                                            <td class="hidden-xs">$ {{md.totalCost}}</td>
+                                            <td class="hidden-xs">{{md.totalQty}}</td>
+                                            <td class="hidden-xs">¥ {{md.totalPrice}}</td>
+                                            <td>¥ {{md.strTotalProfit}}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
-                        <div class="col-xs-1 vertical-align">
+                        <div class="col-sm-2 hidden-xs">
                             <div>
-                                <i class="fa fa-angle-right"></i>
-                            </div>
+                                <i class="widget-icon fa fa-balance-scale"></i><span>{{md.weight}}</span>
+                            </div>       
                         </div>
                     </div>
                 </div>
             </div>
-           
+
         </div>
     </div>
 </div>

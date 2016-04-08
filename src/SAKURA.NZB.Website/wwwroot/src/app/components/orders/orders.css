@@ -20,10 +20,6 @@
     width: 35%;
 }
 
-/*.month-header table td:nth-child(2) {
-    width: 33%;
-}*/
-
 .details {
     font-size: 12px;
 }
@@ -37,6 +33,10 @@
     border-top: 1px solid #999;
 }
 
+.order-header {
+    height: 30px;
+}
+
 .vertical-align-parent {
   display: flex;
   flex-direction: row;
@@ -45,15 +45,19 @@
 .vertical-align-parent .vertical-align {
   display: flex;
   align-items: center;
-  justify-content: center; /* Optional, to align inner items 
-                              horizontally inside the column */
+  /*justify-content: center; /* Optional, to align inner items 
+                              horizontally inside the column */*/
+}
+
+.order-action {
+   justify-content:flex-end;
 }
 
 .customer {
     border-top:  1px solid #ddd;
 }
 
-.customer i {
+.widget-icon {
     display: inline-block;
     vertical-align: middle;
     width: 20px;
@@ -61,11 +65,11 @@
     border-radius: 10px;
     text-align: center;
     line-height: 20px;
-    margin-left: 15px;
+    margin: 3px 8px 0 10px;
 }
 
 .product-list {
-    padding: 0;
+    padding-left: 0;
 }
 
 .product-list table {
@@ -77,10 +81,18 @@
     padding: 0;
 }
 
-.product-list th:last-of-type,
-.product-list td:last-of-type {
+.product-list th:nth-of-type(n+2),
+.product-list td:nth-of-type(n+2) {
     padding-left: 8px;
-    width: 60px;
+    width: 70px;
+}
+
+.summary > td {
+    padding-top: 3px;
+}
+
+.summary > td:last-of-type {
+    color: green;
 }
 
 @media (min-width: 768px) {

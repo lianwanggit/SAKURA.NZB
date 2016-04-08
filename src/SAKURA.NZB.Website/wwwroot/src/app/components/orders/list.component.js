@@ -46,13 +46,14 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                 return MonthGroup;
             })();
             OrderModel = (function () {
-                function OrderModel(id, orderTime, deliveryTime, receiveTime, orderState, paymentState, recipient, phone, address, customerOrders) {
+                function OrderModel(id, orderTime, deliveryTime, receiveTime, orderState, paymentState, weight, recipient, phone, address, customerOrders) {
                     this.id = id;
                     this.orderTime = orderTime;
                     this.deliveryTime = deliveryTime;
                     this.receiveTime = receiveTime;
                     this.orderState = orderState;
                     this.paymentState = paymentState;
+                    this.weight = weight;
                     this.recipient = recipient;
                     this.phone = phone;
                     this.address = address;
@@ -104,6 +105,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     this.totalAmount = 0;
                     this.thisYear = moment().year();
                     this._filterText = '';
+                    this.colorSheet = ['bg-red', 'bg-pink', 'bg-purple', 'bg-deeppurple', 'bg-indigo', 'bg-blue', 'bg-teal', 'bg-green', 'bg-orange', 'bg-deeporange', 'bg-brown', 'bg-bluegrey'];
                 }
                 OrdersComponent.prototype.ngOnInit = function () {
                     this.get();
@@ -137,7 +139,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                                             });
                                             customers.Add(new CustomerOrder(co.customerId, co.customerName, products.ToArray()));
                                         });
-                                        orders.Add(new OrderModel(om.id, moment(om.orderTime).format('YYYY-MM-DD'), om.deliveryTime, om.receiveTime, om.orderState, om.paymentState, om.recipient, om.phone, om.address, customers.ToArray()));
+                                        orders.Add(new OrderModel(om.id, moment(om.orderTime).format('YYYY-MM-DD'), om.deliveryTime, om.receiveTime, om.orderState, om.paymentState, om.weight, om.recipient, om.phone, om.address, customers.ToArray()));
                                     });
                                     monthGroups.Add(new MonthGroup(mg.month, orders.ToArray()));
                                 });

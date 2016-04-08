@@ -34,7 +34,7 @@ class OrderModel {
 	strTotalProfit: string;
 
 	constructor(public id: number, public orderTime: any, public deliveryTime: Date, public receiveTime: Date,
-		public orderState: string, public paymentState: string, public recipient: string, public phone: string,
+		public orderState: string, public paymentState: string, public weight: number, public recipient: string, public phone: string,
 		public address: string, public customerOrders: CustomerOrder[]) {
 
 		var list = this.customerOrders.ToList<CustomerOrder>();
@@ -93,6 +93,7 @@ export class OrdersComponent implements OnInit {
 	currentRate: number;
 
 	private _filterText = '';
+	colorSheet = ['bg-red', 'bg-pink', 'bg-purple', 'bg-deeppurple', 'bg-indigo', 'bg-blue', 'bg-teal', 'bg-green', 'bg-orange', 'bg-deeporange', 'bg-brown', 'bg-bluegrey'];
 
     constructor(private service: ApiService, private router: Router) { }
 
@@ -139,7 +140,7 @@ export class OrdersComponent implements OnInit {
 							});
 
 							orders.Add(new OrderModel(om.id, moment(om.orderTime).format('YYYY-MM-DD'), om.deliveryTime, om.receiveTime,
-								om.orderState, om.paymentState, om.recipient, om.phone, om.address,
+								om.orderState, om.paymentState, om.weight, om.recipient, om.phone, om.address,
 								customers.ToArray()));
 						});
 
