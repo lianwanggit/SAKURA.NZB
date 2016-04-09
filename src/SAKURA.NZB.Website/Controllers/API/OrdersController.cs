@@ -110,6 +110,24 @@ namespace SAKURA.NZB.Website.Controllers
 			});
 		}
 
+		[HttpPost("deliver")]
+		public IActionResult Deliver([FromBody]OrderDeliveryModel model)
+		{
+			var item = _context.Orders.FirstOrDefault(x => x.Id == model.OrderId);
+			if (item == null)
+			{
+				return HttpNotFound();
+			}
+
+			item.WaybillNumber = model.WaybillNumber;
+			item.Weight = model.Weight;
+			item.Freight = model.Freight;
+
+			_context.SaveChanges();
+
+			return new NoContentResult();
+		}
+
 		private static OrderModel MapTo(Order o, string sender, string senderPhone)
 		{
 			var model = new OrderModel
