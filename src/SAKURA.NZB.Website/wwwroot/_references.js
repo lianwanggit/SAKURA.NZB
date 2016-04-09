@@ -19,5 +19,6 @@
 /// <reference path="src/app/components/products/list.component.js" />
 /// <reference path="src/app/components/products/models.js" />
 /// <reference path="src/app/components/static.component.js" />
-/// <reference path="src/app/directives/alphaindexer.component.js" />
+/// <reference path="src/app/directives/alphaindexer.directive.js" />
+/// <reference path="src/app/directives/clipboard.directive.js" />
 /// <reference path="src/app/validators/selectvalidator.js" />

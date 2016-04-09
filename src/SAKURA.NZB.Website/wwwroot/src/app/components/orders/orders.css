@@ -20,7 +20,8 @@
     width: 35%;
 }
 
-.details {
+.details,
+.dropdown-menu {
     font-size: 12px;
 }
 
@@ -35,6 +36,10 @@
 
 .order-header {
     height: 30px;
+}
+
+.order {
+    margin-bottom: 10px;
 }
 
 .vertical-align-parent {

@@ -10,7 +10,7 @@ System.register(["angular2/core", "angular2/common", '../../../lib/TypeScript-Li
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
     var core_1, common_1;
-    var Element, Indexer, AlphaIndexerComponent;
+    var Element, Indexer, AlphaIndexerDirective;
     return {
         setters:[
             function (core_1_1) {
@@ -41,8 +41,8 @@ System.register(["angular2/core", "angular2/common", '../../../lib/TypeScript-Li
                 return Indexer;
             })();
             exports_1("Indexer", Indexer);
-            AlphaIndexerComponent = (function () {
-                function AlphaIndexerComponent() {
+            AlphaIndexerDirective = (function () {
+                function AlphaIndexerDirective() {
                     this.alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
                     this.indexerList = [];
                     this.elementList = [];
@@ -52,7 +52,7 @@ System.register(["angular2/core", "angular2/common", '../../../lib/TypeScript-Li
                     this._selectedId = '';
                     this.selectedId = new core_1.EventEmitter();
                 }
-                AlphaIndexerComponent.prototype.ngOnChanges = function (changes) {
+                AlphaIndexerDirective.prototype.ngOnChanges = function (changes) {
                     //console.log(JSON.stringify(changes));
                     if (this.elements) {
                         var list = this.alphabet.ToList().Select(function (x) { return new Indexer(x, 0); });
@@ -67,10 +67,10 @@ System.register(["angular2/core", "angular2/common", '../../../lib/TypeScript-Li
                         this.onClickElement(this.initialSelectedId);
                     }
                 };
-                AlphaIndexerComponent.prototype.onClearFilter = function () {
+                AlphaIndexerDirective.prototype.onClearFilter = function () {
                     this.onSearch('');
                 };
-                AlphaIndexerComponent.prototype.onSearch = function (value) {
+                AlphaIndexerDirective.prototype.onSearch = function (value) {
                     var _this = this;
                     this.clearIndexSelection();
                     if (this.filterText !== value)
@@ -87,7 +87,7 @@ System.register(["angular2/core", "angular2/common", '../../../lib/TypeScript-Li
                     }
                     this._filterText = this.filterText;
                 };
-                AlphaIndexerComponent.prototype.onClickIndexer = function (letter) {
+                AlphaIndexerDirective.prototype.onClickIndexer = function (letter) {
                     //toggle
                     if (this._indexer === letter) {
                         this.clearIndexSelection();
@@ -105,7 +105,7 @@ System.register(["angular2/core", "angular2/common", '../../../lib/TypeScript-Li
                         .ToArray();
                     this._indexer = letter;
                 };
-                AlphaIndexerComponent.prototype.onClickElement = function (id) {
+                AlphaIndexerDirective.prototype.onClickElement = function (id) {
                     var _this = this;
                     if (this._selectedId == id)
                         return;
@@ -119,37 +119,37 @@ System.register(["angular2/core", "angular2/common", '../../../lib/TypeScript-Li
                     });
                     this._selectedId = id;
                 };
-                AlphaIndexerComponent.prototype.clearIndexSelection = function () {
+                AlphaIndexerDirective.prototype.clearIndexSelection = function () {
                     var _this = this;
                     var index = this.indexerList.ToList().FirstOrDefault(function (x) { return x.letter == _this._indexer; });
                     if (index)
                         index.selected = false;
                     this._indexer = '';
                 };
-                AlphaIndexerComponent.prototype.clearElementSelection = function () {
+                AlphaIndexerDirective.prototype.clearElementSelection = function () {
                     var _this = this;
                     var element = this.elementList.ToList().FirstOrDefault(function (x) { return x.id.toString() == _this._selectedId; });
                     if (element)
                         element.selected = false;
                     this._selectedId = '';
                 };
-                AlphaIndexerComponent.prototype.startsWith = function (str, searchString) {
+                AlphaIndexerDirective.prototype.startsWith = function (str, searchString) {
                     return str.substr(0, searchString.length) === searchString;
                 };
                 ;
                 __decorate([
                     core_1.Input(), 
                     __metadata('design:type', Array)
-                ], AlphaIndexerComponent.prototype, "elements", void 0);
+                ], AlphaIndexerDirective.prototype, "elements", void 0);
                 __decorate([
                     core_1.Input(), 
                     __metadata('design:type', String)
-                ], AlphaIndexerComponent.prototype, "initialSelectedId", void 0);
+                ], AlphaIndexerDirective.prototype, "initialSelectedId", void 0);
                 __decorate([
                     core_1.Output(), 
                     __metadata('design:type', Object)
-                ], AlphaIndexerComponent.prototype, "selectedId", void 0);
-                AlphaIndexerComponent = __decorate([
+                ], AlphaIndexerDirective.prototype, "selectedId", void 0);
+                AlphaIndexerDirective = __decorate([
                     core_1.Component({
                         selector: "alpha-indexer",
                         templateUrl: "./src/app/directives/alphaIndexer.html",
@@ -157,11 +157,11 @@ System.register(["angular2/core", "angular2/common", '../../../lib/TypeScript-Li
                         directives: [common_1.CORE_DIRECTIVES, common_1.FORM_DIRECTIVES]
                     }), 
                     __metadata('design:paramtypes', [])
-                ], AlphaIndexerComponent);
-                return AlphaIndexerComponent;
+                ], AlphaIndexerDirective);
+                return AlphaIndexerDirective;
             })();
-            exports_1("AlphaIndexerComponent", AlphaIndexerComponent);
+            exports_1("AlphaIndexerDirective", AlphaIndexerDirective);
         }
     }
 });
-//# sourceMappingURL=alphaIndexer.component.js.map
+//# sourceMappingURL=alphaIndexer.directive.js.map

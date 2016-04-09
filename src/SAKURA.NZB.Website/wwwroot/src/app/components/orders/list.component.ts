@@ -4,10 +4,10 @@ import {Component, OnInit} from "angular2/core";
 import {CORE_DIRECTIVES, FORM_DIRECTIVES} from "angular2/common";
 import {Router, ROUTER_DIRECTIVES} from 'angular2/router';
 import {ApiService} from "../api.service";
-
-declare var moment: any;
+import {ClipboardDirective} from '../../directives/clipboard.directive';
 import '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js';
 
+declare var moment: any;
 
 class YearGroup {
 	constructor(public year: number, public monthGroups: MonthGroup[]) { }
@@ -34,6 +34,7 @@ class OrderModel {
 	strTotalProfit: string;
 	statusRate: number;
 	statusText: string;
+	orderText: string;
 
 	constructor(public id: number, public orderTime: any, public deliveryTime: Date, public receiveTime: Date,
 		public orderState: string, public paymentState: string, public weight: number, public recipient: string, public phone: string,
@@ -51,10 +52,6 @@ class OrderModel {
 				this.statusRate = 0;
 				this.statusText = '已创建';
 				break;
-			case 'ToBeConfirmed':
-				this.statusRate = 10;
-				this.statusText = '待确认';
-				break;
 			case 'Confirmed':
 				this.statusRate = 50;
 				this.statusText = '已确认';
@@ -62,10 +59,6 @@ class OrderModel {
 			case 'Delivered':
 				this.statusRate = 70;
 				this.statusText = '已发货';
-				break;
-			case 'Transit':
-				this.statusRate = 80;
-				this.statusText = '转运中';
 				break;
 			case 'Received':
 				this.statusRate = 90;
@@ -83,6 +76,15 @@ class OrderModel {
 				this.statusRate = 0;
 				this.statusText = '未知';
 		}
+
+		var products = '';
+		this.customerOrders.forEach(co => {
+			co.orderProducts.forEach(op => {
+				products +=  ' ' + op.productBrand + ' ' + op.productName + ' x' + op.qty + '\n';
+			});
+		});
+		this.orderText = '【寄件人】 封丽花\n【寄件人電話】0273265819\n【訂單內容】\n' + products + '【收件人】'
+			+ this.recipient + '\n【收件地址】' + this.address + '\n【聯繫電話】' + this.phone; 
 	}
 }
 
@@ -119,7 +121,7 @@ class OrderProduct {
     templateUrl: "./src/app/components/orders/list.html",
 	styleUrls: ["./src/app/components/orders/orders.css"],
     providers: [ApiService],
-    directives: [CORE_DIRECTIVES, FORM_DIRECTIVES, ROUTER_DIRECTIVES]
+    directives: [CORE_DIRECTIVES, FORM_DIRECTIVES, ROUTER_DIRECTIVES, ClipboardDirective]
 })
 export class OrdersComponent implements OnInit {
 	data: YearGroup[] = [];
@@ -227,7 +229,6 @@ export class OrdersComponent implements OnInit {
 	//		}
 	//	});
 	//}
-
 
 	startsWith(str: string, searchString: string) {
 		return str.substr(0, searchString.length) === searchString;

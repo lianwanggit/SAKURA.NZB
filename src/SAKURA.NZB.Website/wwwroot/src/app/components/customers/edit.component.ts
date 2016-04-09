@@ -4,7 +4,7 @@ import {Component, OnInit} from "angular2/core";
 import {CORE_DIRECTIVES, FORM_DIRECTIVES} from "angular2/common";
 import {Router, RouteParams, ROUTER_DIRECTIVES} from 'angular2/router';
 import {ApiService} from "../api.service";
-import {AlphaIndexerComponent, Element} from "../../directives/alphaIndexer.component";
+import {AlphaIndexerDirective, Element} from "../../directives/alphaIndexer.directive";
 
 import '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js';
 
@@ -41,7 +41,7 @@ export class Customer {
     templateUrl: "./src/app/components/customers/edit.html",
 	styleUrls: ["./src/app/components/customers/customers.css"],
     providers: [ApiService],
-    directives: [CORE_DIRECTIVES, FORM_DIRECTIVES, ROUTER_DIRECTIVES, AlphaIndexerComponent]
+    directives: [CORE_DIRECTIVES, FORM_DIRECTIVES, ROUTER_DIRECTIVES, AlphaIndexerDirective]
 })
 export class CustomerEditComponent implements OnInit {
     elementSource: Element[];

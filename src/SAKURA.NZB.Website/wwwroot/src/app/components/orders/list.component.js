@@ -1,5 +1,5 @@
 /// <reference path="../../../../lib/TypeScript-Linq/Scripts/typings/System/Collections/Generic/List.ts" />
-System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.service", '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js'], function(exports_1) {
+System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.service", '../../directives/clipboard.directive', '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js'], function(exports_1) {
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
         var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
         if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -9,7 +9,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, common_1, router_1, api_service_1;
+    var core_1, common_1, router_1, api_service_1, clipboard_directive_1;
     var YearGroup, MonthGroup, OrderModel, CustomerOrder, OrderProduct, OrdersComponent;
     return {
         setters:[
@@ -24,6 +24,9 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
             },
             function (api_service_1_1) {
                 api_service_1 = api_service_1_1;
+            },
+            function (clipboard_directive_1_1) {
+                clipboard_directive_1 = clipboard_directive_1_1;
             },
             function (_1) {}],
         execute: function() {
@@ -69,10 +72,6 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                             this.statusRate = 0;
                             this.statusText = '已创建';
                             break;
-                        case 'ToBeConfirmed':
-                            this.statusRate = 10;
-                            this.statusText = '待确认';
-                            break;
                         case 'Confirmed':
                             this.statusRate = 50;
                             this.statusText = '已确认';
@@ -80,10 +79,6 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                         case 'Delivered':
                             this.statusRate = 70;
                             this.statusText = '已发货';
-                            break;
-                        case 'Transit':
-                            this.statusRate = 80;
-                            this.statusText = '转运中';
                             break;
                         case 'Received':
                             this.statusRate = 90;
@@ -101,6 +96,14 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                             this.statusRate = 0;
                             this.statusText = '未知';
                     }
+                    var products = '';
+                    this.customerOrders.forEach(function (co) {
+                        co.orderProducts.forEach(function (op) {
+                            products += ' ' + op.productBrand + ' ' + op.productName + ' x' + op.qty + '\n';
+                        });
+                    });
+                    this.orderText = '【寄件人】 封丽花\n【寄件人電話】0273265819\n【訂單內容】\n' + products + '【收件人】'
+                        + this.recipient + '\n【收件地址】' + this.address + '\n【聯繫電話】' + this.phone;
                 }
                 return OrderModel;
             })();
@@ -229,7 +232,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                         templateUrl: "./src/app/components/orders/list.html",
                         styleUrls: ["./src/app/components/orders/orders.css"],
                         providers: [api_service_1.ApiService],
-                        directives: [common_1.CORE_DIRECTIVES, common_1.FORM_DIRECTIVES, router_1.ROUTER_DIRECTIVES]
+                        directives: [common_1.CORE_DIRECTIVES, common_1.FORM_DIRECTIVES, router_1.ROUTER_DIRECTIVES, clipboard_directive_1.ClipboardDirective]
                     }), 
                     __metadata('design:paramtypes', [api_service_1.ApiService, router_1.Router])
                 ], OrdersComponent);

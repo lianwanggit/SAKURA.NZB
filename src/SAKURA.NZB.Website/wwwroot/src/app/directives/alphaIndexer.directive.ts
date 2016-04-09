@@ -39,7 +39,7 @@ export class Indexer {
 	styleUrls: ["./src/app/directives/alpha-indexer.css"],
     directives: [CORE_DIRECTIVES, FORM_DIRECTIVES]
 })
-export class AlphaIndexerComponent implements OnChanges {
+export class AlphaIndexerDirective implements OnChanges {
 	alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
 
 	indexerList: Indexer[] = [];
