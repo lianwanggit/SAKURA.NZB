@@ -34,7 +34,7 @@ class OrderModel {
 	strTotalProfit: string;
 	statusRate: number;
 	statusText: string;
-	orderText: string;
+	expressText: string;
 
 	constructor(public id: number, public orderTime: any, public deliveryTime: Date, public receiveTime: Date,
 		public orderState: string, public paymentState: string, public weight: number, public recipient: string, public phone: string,
@@ -47,6 +47,20 @@ class OrderModel {
 		this.totalProfit = list.Sum(co => co.totalProfit);
 		this.strTotalProfit = this.totalProfit.toFixed(2);
 
+		this.updateStatus();
+
+		var that = this;
+		var products = '';	
+		this.customerOrders.forEach(co => {
+			co.orderProducts.forEach(op => {
+				products += ' ' + op.productBrand + ' ' + op.productName + ' x' + op.qty + '\n';
+			});
+		});
+		this.expressText = '【寄件人】' + this.sender + '\n【寄件人電話】' + this.senderPhone + '\n【訂單內容】\n' + products + '【收件人】'
+			+ this.recipient + '\n【收件地址】' + this.address + '\n【聯繫電話】' + this.phone; 
+	}
+
+	updateStatus() {
 		switch (this.orderState) {
 			case 'Created':
 				this.statusRate = 0;
@@ -76,15 +90,6 @@ class OrderModel {
 				this.statusRate = 0;
 				this.statusText = '未知';
 		}
-
-		var products = '';
-		this.customerOrders.forEach(co => {
-			co.orderProducts.forEach(op => {
-				products +=  ' ' + op.productBrand + ' ' + op.productName + ' x' + op.qty + '\n';
-			});
-		});
-		this.orderText = '【寄件人】' + this.sender + '\n【寄件人電話】' + this.senderPhone + '\n【訂單內容】\n' + products + '【收件人】'
-			+ this.recipient + '\n【收件地址】' + this.address + '\n【聯繫電話】' + this.phone; 
 	}
 }
 
@@ -155,8 +160,6 @@ export class OrdersComponent implements OnInit {
 				that.loadOrders();
 			}
 		});
-
-
 	}
 
 	loadOrders() {
@@ -229,6 +232,35 @@ export class OrdersComponent implements OnInit {
 	//		}
 	//	});
 	//}
+
+	onOrderAction(orderId: string, action: string) {
+
+		var model = { orderId: orderId, action: action };
+		this.service.PostUpdateOrderStatus(JSON.stringify(model), json => {
+			if (json) {
+				var id = json.orderId;
+				var orderState = json.orderState;
+				var paymentState = json.paymentState;
+
+				this.data.forEach(yg => {
+					yg.monthGroups.forEach(mg => {
+						mg.models.forEach(om => {
+							if (om.id == id) {
+
+								if (om.orderState != orderState) {
+									om.orderState = orderState;
+									om.updateStatus();
+								}									
+								om.paymentState = paymentState;
+
+								return;
+							}
+						});
+					});
+				});
+			}
+		});
+	}
 
 	startsWith(str: string, searchString: string) {
 		return str.substr(0, searchString.length) === searchString;

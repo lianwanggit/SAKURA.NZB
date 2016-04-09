@@ -6,7 +6,7 @@
 		Confirmed,
 		Delivered,
 		Received,
-		Completed,
-		Discarded
+		Completed
+		//Discarded
     }
 }

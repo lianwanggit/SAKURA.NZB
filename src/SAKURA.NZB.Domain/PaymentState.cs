@@ -3,7 +3,7 @@
 	public enum PaymentState
     {
 		Unpaid = 0,
-		PartPaid,
+		//PartPaid,
 		Paid
     }
 }

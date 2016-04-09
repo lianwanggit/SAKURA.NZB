@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using SAKURA.NZB.Business.Configuration;
+using SAKURA.NZB.Website.Models;
 
 namespace SAKURA.NZB.Website.Controllers
 {
@@ -56,6 +57,57 @@ namespace SAKURA.NZB.Website.Controllers
 								};
 
 			return new ObjectResult(groupedModels);
+		}
+
+		[HttpPost("update-order-status")]
+		public IActionResult UpdateOrderStatus([FromBody]UpdateOrderStatusModel model)
+		{
+			var item = _context.Orders.FirstOrDefault(x => x.Id == model.OrderId);
+			if (item == null)
+			{
+				return HttpNotFound();
+			}
+
+			OrderAction oa;
+			if (!Enum.TryParse(model.Action, out oa))
+				 return HttpBadRequest();
+
+			switch (oa)
+			{
+				case OrderAction.ToConfirmed:
+					if (item.OrderState != OrderState.Created)
+						return HttpBadRequest();
+					item.OrderState = OrderState.Confirmed;
+					break;
+				case OrderAction.ToReceived:
+					if (item.OrderState != OrderState.Delivered)
+						return HttpBadRequest();
+					item.ReceiveTime = DateTimeOffset.Now;
+					item.OrderState = OrderState.Received;
+					break;
+				case OrderAction.ToCompleted:
+					if (item.OrderState != OrderState.Received || item.PaymentState != PaymentState.Paid)
+						return HttpBadRequest();
+					item.CompleteTime = DateTimeOffset.Now;
+					item.OrderState = OrderState.Completed;
+					break;
+				case OrderAction.ToPaid:
+					if (item.PaymentState != PaymentState.Unpaid)
+						return HttpBadRequest();
+					item.PayTime = DateTimeOffset.Now;
+					item.PaymentState = PaymentState.Paid;
+					break;
+				default:
+					return HttpBadRequest();
+			}
+
+			_context.SaveChanges();
+
+			return new ObjectResult(new UpdateOrderStatusResultModel {
+				OrderId = item.Id,
+				OrderState = item.OrderState.ToString(),
+				PaymentState = item.PaymentState.ToString()
+			});
 		}
 
 		private static OrderModel MapTo(Order o, string sender, string senderPhone)
@@ -115,48 +167,5 @@ namespace SAKURA.NZB.Website.Controllers
 
 			return model;
 		}
-
-	}
-
-	public class OrderModel
-	{
-		public int Id { get; set; }
-
-		public DateTime OrderTime { get; set; }
-		public DateTime? DeliveryTime { get; set; }
-		public DateTime? ReceiveTime { get; set; }
-		public string OrderState { get; set; }
-		public string PaymentState { get; set; }
-		public float? Weight { get; set; }
-		public float? Freight { get; set; }
-		public Image Waybill { get; set; }
-		public string TransitStatus { get; set; }
-		public string Description { get; set; }
-		public string Recipient { get; set; }
-		public string Phone { get; set; }
-		public string Address { get; set; }
-
-		public string Sender { get; set; }
-		public string SenderPhone { get; set; }
-
-		public List<CustomerOrderMode> CustomerOrders { get; set; }
-	}
-
-	public class CustomerOrderMode
-	{
-		public int CustomerId { get; set; }
-		public string CustomerName { get; set; }
-
-		public List<OrderProductModel> OrderProducts { get; set; }
-	}
-
-	public class OrderProductModel
-	{
-		public int ProductId { get; set; }
-		public string ProductBrand { get; set; }
-		public string ProductName { get; set; }
-		public float Cost { get; set; }
-		public float Price { get; set; }
-		public int Qty { get; set; }
 	}
 }

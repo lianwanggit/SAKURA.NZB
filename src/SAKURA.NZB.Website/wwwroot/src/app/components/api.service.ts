@@ -115,4 +115,12 @@ export class ApiService {
 	getOrders(onNext: (json: any) => void) {
         this.http.get("api/orders").map(response => response.json()).subscribe(onNext);
     }
+
+	PostUpdateOrderStatus(data: string, onNext: (json: any) => void) {
+		var headers = new Headers();
+		headers.append('Content-Type', 'application/json');
+
+		this.http.post('api/orders/update-order-status' , data, { headers: headers })
+			.map(response => response.json()).subscribe(onNext);
+	}
 }

@@ -11,6 +11,8 @@ namespace SAKURA.NZB.Domain
 		public DateTimeOffset OrderTime { get; set; }
 		public DateTimeOffset? DeliveryTime { get; set; }
 		public DateTimeOffset? ReceiveTime { get; set; }
+		public DateTimeOffset? PayTime { get; set; }
+		public DateTimeOffset? CompleteTime { get; set; }
 		public OrderState OrderState { get; set; }
 		public PaymentState PaymentState { get; set; }
 		public float? Weight { get; set; }

@@ -25,6 +25,10 @@
     font-size: 12px;
 }
 
+.dropdown-menu i {
+    margin-right: 8px;
+}
+
 .details > div:first-of-type {
     padding-bottom: 8px;
 }
