@@ -5,7 +5,7 @@ using System.Linq;
 namespace SAKURA.NZB.Business.Configuration
 {
 	public class Config
-    {
+	{
 		private readonly NZBContext _context;
 
 		public Config(NZBContext context)
@@ -16,6 +16,14 @@ namespace SAKURA.NZB.Business.Configuration
 		public string GetApiLayerAccessKey() => GetByKey(ConfigKeys.ApiLayerAccessKey);
 		public float GetFixedRateHigh() => GetFloatByKey(ConfigKeys.FixedRateHigh);
 		public float GetFixedRateLow() => GetFloatByKey(ConfigKeys.FixedRateLow);
+		public float GetCurrentRate()
+		{
+			var rate = _context.ExchangeRates.OrderByDescending(e => e.ModifiedTime).FirstOrDefault();
+			return rate?.NZDCNY ?? GetFixedRateLow();
+		}
+
+		public string GetSender() => GetByKey(ConfigKeys.Sender);
+		public string GetSenderPhone() => GetByKey(ConfigKeys.SenderPhone);
 
 		public void EnsureDefaults()
 		{
@@ -26,7 +34,7 @@ namespace SAKURA.NZB.Business.Configuration
 				Set(ConfigKeys.FixedRateHigh, Common.ExchangeRateH.ToString());
 		}
 
-		private bool Exists(string key) =>  _context.Configs.Any(c => c.Key == key);		
+		private bool Exists(string key) => _context.Configs.Any(c => c.Key == key);
 		private string GetByKey(string key) => _context.Configs.FirstOrDefault(x => x.Key == key)?.Value;
 		private float GetFloatByKey(string key) => float.Parse(_context.Configs.FirstOrDefault(x => x.Key == key)?.Value);
 

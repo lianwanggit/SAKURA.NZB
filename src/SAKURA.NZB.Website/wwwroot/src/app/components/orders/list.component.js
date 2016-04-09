@@ -49,7 +49,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                 return MonthGroup;
             })();
             OrderModel = (function () {
-                function OrderModel(id, orderTime, deliveryTime, receiveTime, orderState, paymentState, weight, recipient, phone, address, customerOrders) {
+                function OrderModel(id, orderTime, deliveryTime, receiveTime, orderState, paymentState, weight, recipient, phone, address, sender, senderPhone, customerOrders) {
                     this.id = id;
                     this.orderTime = orderTime;
                     this.deliveryTime = deliveryTime;
@@ -60,6 +60,8 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     this.recipient = recipient;
                     this.phone = phone;
                     this.address = address;
+                    this.sender = sender;
+                    this.senderPhone = senderPhone;
                     this.customerOrders = customerOrders;
                     var list = this.customerOrders.ToList();
                     this.totalCost = list.Sum(function (co) { return co.totalCost; });
@@ -102,7 +104,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                             products += ' ' + op.productBrand + ' ' + op.productName + ' x' + op.qty + '\n';
                         });
                     });
-                    this.orderText = '【寄件人】 封丽花\n【寄件人電話】0273265819\n【訂單內容】\n' + products + '【收件人】'
+                    this.orderText = '【寄件人】' + this.sender + '\n【寄件人電話】' + this.senderPhone + '\n【訂單內容】\n' + products + '【收件人】'
                         + this.recipient + '\n【收件地址】' + this.address + '\n【聯繫電話】' + this.phone;
                 }
                 return OrderModel;
@@ -179,7 +181,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                                             });
                                             customers.Add(new CustomerOrder(co.customerId, co.customerName, products.ToArray()));
                                         });
-                                        orders.Add(new OrderModel(om.id, moment(om.orderTime).format('YYYY-MM-DD'), om.deliveryTime, om.receiveTime, om.orderState, om.paymentState, om.weight, om.recipient, om.phone, om.address, customers.ToArray()));
+                                        orders.Add(new OrderModel(om.id, moment(om.orderTime).format('YYYY-MM-DD'), om.deliveryTime, om.receiveTime, om.orderState, om.paymentState, om.weight, om.recipient, om.phone, om.address, om.sender, om.senderPhone, customers.ToArray()));
                                     });
                                     monthGroups.Add(new MonthGroup(mg.month, orders.ToArray()));
                                 });

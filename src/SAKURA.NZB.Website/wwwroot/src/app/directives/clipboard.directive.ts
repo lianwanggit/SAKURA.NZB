@@ -25,7 +25,6 @@ export class ClipboardDirective {
 		});
 
 		this.clipboard.on('success', (e) => {
-			console.log(this.text);
 			this.clipboardSuccess.emit(null);
 		});
 

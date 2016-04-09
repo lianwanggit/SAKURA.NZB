@@ -33,11 +33,10 @@ namespace SAKURA.NZB.Website.Controllers.API
         [HttpGet, Route("latest")]
         public IActionResult Get(int id)
         {
-			var rate = _context.ExchangeRates.OrderByDescending(e => e.ModifiedTime).FirstOrDefault();
 			return new ObjectResult(new NzdToCnyRates {
 				FixedRateHigh = _config.GetFixedRateHigh(),
 				FixedRateLow = _config.GetFixedRateLow(),
-				CurrentRate = rate?.NZDCNY
+				CurrentRate = _config.GetCurrentRate()
 			});
 		}
     }

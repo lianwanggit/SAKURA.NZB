@@ -1,23 +1,25 @@
 using System.Linq;
 using Microsoft.AspNet.Mvc;
-using Microsoft.AspNet.Mvc.Rendering;
 using Microsoft.Data.Entity;
 using SAKURA.NZB.Data;
 using SAKURA.NZB.Domain;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using SAKURA.NZB.Business.Configuration;
 
 namespace SAKURA.NZB.Website.Controllers
 {
 	[Route("api/[controller]")]
 	public class OrdersController : Controller
 	{
-		private NZBContext _context;
+		private readonly NZBContext _context;
+		private readonly Config _config;
 
-		public OrdersController(NZBContext context)
+		public OrdersController(NZBContext context, Config config)
 		{
 			_context = context;
+			_config = config;
 		}
 
 		[HttpGet]
@@ -32,10 +34,12 @@ namespace SAKURA.NZB.Website.Controllers
 				.OrderByDescending(o => o.OrderTime)
 				.ToList();
 
+			var sender = _config.GetSender();
+			var senderPhone = _config.GetSenderPhone();
 			var models = new List<OrderModel>();
 			orders.ForEach(o =>
 			{
-				var model = MapTo(o);
+				var model = MapTo(o, sender, senderPhone);
 				models.Add(model);
 			});
 
@@ -54,7 +58,7 @@ namespace SAKURA.NZB.Website.Controllers
 			return new ObjectResult(groupedModels);
 		}
 
-		private static OrderModel MapTo(Order o)
+		private static OrderModel MapTo(Order o, string sender, string senderPhone)
 		{
 			var model = new OrderModel
 			{
@@ -72,6 +76,8 @@ namespace SAKURA.NZB.Website.Controllers
 				Recipient = o.Recipient,
 				Phone = o.Phone,
 				Address = o.Address,
+				Sender = sender,
+				SenderPhone = senderPhone,
 				CustomerOrders = new List<CustomerOrderMode>()
 			};
 
@@ -129,6 +135,9 @@ namespace SAKURA.NZB.Website.Controllers
 		public string Recipient { get; set; }
 		public string Phone { get; set; }
 		public string Address { get; set; }
+
+		public string Sender { get; set; }
+		public string SenderPhone { get; set; }
 
 		public List<CustomerOrderMode> CustomerOrders { get; set; }
 	}

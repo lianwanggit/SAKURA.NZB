@@ -38,7 +38,7 @@ class OrderModel {
 
 	constructor(public id: number, public orderTime: any, public deliveryTime: Date, public receiveTime: Date,
 		public orderState: string, public paymentState: string, public weight: number, public recipient: string, public phone: string,
-		public address: string, public customerOrders: CustomerOrder[]) {
+		public address: string, public sender: string, public senderPhone: string, public customerOrders: CustomerOrder[]) {
 
 		var list = this.customerOrders.ToList<CustomerOrder>();
 		this.totalCost = list.Sum(co => co.totalCost);
@@ -83,7 +83,7 @@ class OrderModel {
 				products +=  ' ' + op.productBrand + ' ' + op.productName + ' x' + op.qty + '\n';
 			});
 		});
-		this.orderText = '【寄件人】 封丽花\n【寄件人電話】0273265819\n【訂單內容】\n' + products + '【收件人】'
+		this.orderText = '【寄件人】' + this.sender + '\n【寄件人電話】' + this.senderPhone + '\n【訂單內容】\n' + products + '【收件人】'
 			+ this.recipient + '\n【收件地址】' + this.address + '\n【聯繫電話】' + this.phone; 
 	}
 }
@@ -182,7 +182,7 @@ export class OrdersComponent implements OnInit {
 							});
 
 							orders.Add(new OrderModel(om.id, moment(om.orderTime).format('YYYY-MM-DD'), om.deliveryTime, om.receiveTime,
-								om.orderState, om.paymentState, om.weight, om.recipient, om.phone, om.address,
+								om.orderState, om.paymentState, om.weight, om.recipient, om.phone, om.address, om.sender, om.senderPhone,
 								customers.ToArray()));
 						});
 

@@ -37,7 +37,6 @@ System.register(['angular2/core', 'clipboard'], function(exports_1) {
                         }
                     });
                     this.clipboard.on('success', function (e) {
-                        console.log(_this.text);
                         _this.clipboardSuccess.emit(null);
                     });
                     this.clipboard.on('error', function (e) {
