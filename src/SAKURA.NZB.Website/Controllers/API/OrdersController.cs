@@ -59,6 +59,60 @@ namespace SAKURA.NZB.Website.Controllers
 			return new ObjectResult(groupedModels);
 		}
 
+		[HttpGet("search/{keyword?}")]
+		public IActionResult Search(string keyword, [FromQuery]string orderState, [FromQuery]string paymentState)
+		{
+			var orders = _context.Orders
+				.Include(o => o.Products)
+					.ThenInclude(p => p.Customer)
+				.Include(o => o.Products)
+					.ThenInclude(p => p.Product)
+					.ThenInclude(p => p.Brand)
+				.Where(o => (!string.IsNullOrEmpty(orderState) && o.OrderState.ToString() == orderState)
+					|| (!string.IsNullOrEmpty(paymentState) && o.PaymentState.ToString() == paymentState)
+					|| (!string.IsNullOrEmpty(keyword) && (!string.IsNullOrEmpty(o.WaybillNumber) && o.WaybillNumber.StartsWith(keyword)
+						|| !string.IsNullOrEmpty(keyword) && o.Products.Any(p  => p.Product.Brand.Name.ToLower().StartsWith(keyword.ToLower()))
+						|| !string.IsNullOrEmpty(keyword) && o.Products.Any(p => p.Customer.NamePinYin.ToLower().StartsWith(keyword.ToLower()))))
+					|| (string.IsNullOrEmpty(keyword) && string.IsNullOrEmpty(orderState) && string.IsNullOrEmpty(paymentState)))
+				.OrderByDescending(o => o.OrderTime)
+				.ToList();
+
+			var sender = _config.GetSender();
+			var senderPhone = _config.GetSenderPhone();
+			var models = new List<OrderModel>();
+			orders.ForEach(o =>
+			{
+				var model = MapTo(o, sender, senderPhone);
+				models.Add(model);
+			});
+
+			var groupedModels = from m in models
+								group m by m.OrderTime.Year into yg
+								select
+								new
+								{
+									Year = yg.Key,
+									MonthGroups =
+										from o in yg
+										group o by o.OrderTime.ToString("MMMM", CultureInfo.InvariantCulture) into mg
+										select new { Month = mg.Key, Models = mg }
+								};
+
+			return new ObjectResult(groupedModels);
+		}
+
+		//IQueryable<Product> SearchProducts(params string[] keywords)
+		//{
+		//	var predicate = PredicateBuilder.False<Product>();
+
+		//	foreach (string keyword in keywords)
+		//	{
+		//		string temp = keyword;
+		//		predicate = predicate.Or(p => p.Description.Contains(temp));
+		//	}
+		//	return dataContext.Products.Where(predicate);
+		//}
+
 		[HttpPost("update-order-status")]
 		public IActionResult UpdateOrderStatus([FromBody]UpdateOrderStatusModel model)
 		{

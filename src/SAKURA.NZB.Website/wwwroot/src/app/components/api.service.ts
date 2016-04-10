@@ -116,6 +116,11 @@ export class ApiService {
         this.http.get("api/orders").map(response => response.json()).subscribe(onNext);
     }
 
+	getSearchOrders(keyword: string, orderState: string, paymentState: string, onNext: (json: any) => void) {
+		this.http.get("api/orders/search/" + keyword + '?orderState=' + orderState + '&paymentState=' + paymentState)
+			.map(response => response.json()).subscribe(onNext);
+	}
+
 	PostUpdateOrderStatus(data: string, onNext: (json: any) => void) {
 		var headers = new Headers();
 		headers.append('Content-Type', 'application/json');
