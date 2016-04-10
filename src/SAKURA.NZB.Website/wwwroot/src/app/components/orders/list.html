@@ -1,5 +1,39 @@
 ﻿<div class="grey-border">
-    <h2 class="page-header">Orders</h2>
+    <h2 class="page-header">
+         Orders <small>({{amount}} / {{totalAmount}})</small>
+        <button type="button" class="btn btn-info pull-right">
+            新建 <i class="fa fa-shopping-cart fa-lg"></i>
+        </button>
+    </h2>
+
+    <form class="form-inline">
+        <div class="form-group">
+            <label for="key">关键字</label>
+            <div class="input-group">
+                <input type="text" class="form-control" id="keyword" placeholder="客户姓名, 拼音或品牌" [(ngModel)]="filterText"
+                       (keyup)="onSearchByKeyword($event.target.value)" (input)="onSearchByKeyword($event.target.value)" >
+                <div class="input-group-btn">
+                    <button type="button" class="btn btn-default" aria-label="Clear" (click)="onClearFilterText()">
+                        <span class="glyphicon glyphicon-remove"></span>
+                    </button>
+                </div>
+            </div>            
+        </div>
+        <div class="form-group">
+            <label for="orderstate">订单状态</label>
+            <select id="orderstate" class="form-control" [(ngModel)]="orderState" (change)="onSearch($event.target.value, paymentState)">
+                <option value=""></option>
+                <option *ngFor="#key of orderStateKeys" value="{{key}}">{{orderStates[key]}}</option>                   
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="paymentstate">支付状态</label>
+            <select id="paymentstate" class="form-control" [(ngModel)]="paymentState" (change)="onSearch(orderState, $event.target.value)">
+                <option value=""></option>
+                <option *ngFor="#key of paymentStateKeys" value="{{key}}">{{paymentStates[key]}}</option>
+            </select>
+        </div>
+    </form>
 
     <div *ngFor="#y of data">
         <h3 class="text-center bg-cyan year-header" *ngIf="thisYear != y.year">{{y.year}}</h3>

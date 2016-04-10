@@ -10,7 +10,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
     var core_1, common_1, router_1, api_service_1, clipboard_directive_1, moment_1;
-    var YearGroup, MonthGroup, OrderModel, CustomerOrder, OrderProduct, OrderDeliveryModel, OrdersComponent;
+    var Dict, YearGroup, MonthGroup, OrderModel, CustomerOrder, OrderProduct, OrderDeliveryModel, OrdersComponent;
     return {
         setters:[
             function (core_1_1) {
@@ -33,6 +33,20 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                 moment_1 = moment_1_1;
             }],
         execute: function() {
+            Dict = (function () {
+                function Dict() {
+                    this.orderStates = {};
+                    this.paymentStates = {};
+                    this.orderStates['Created'] = '已创建';
+                    this.orderStates['Confirmed'] = '已确认';
+                    this.orderStates['Delivered'] = '已发货';
+                    this.orderStates['Received'] = '已签收';
+                    this.orderStates['Completed'] = '完成';
+                    this.paymentStates['Unpaid'] = '未支付';
+                    this.paymentStates['Paid'] = '已支付';
+                }
+                return Dict;
+            })();
             YearGroup = (function () {
                 function YearGroup(year, monthGroups) {
                     this.year = year;
@@ -55,7 +69,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                 return MonthGroup;
             })();
             OrderModel = (function () {
-                function OrderModel(id, orderTime, deliveryTime, receiveTime, orderState, paymentState, waybillNumber, weight, freight, recipient, phone, address, sender, senderPhone, exchangeRate, customerOrders) {
+                function OrderModel(id, orderTime, deliveryTime, receiveTime, orderState, paymentState, waybillNumber, weight, freight, recipient, phone, address, sender, senderPhone, exchangeRate, orderStates, customerOrders) {
                     this.id = id;
                     this.orderTime = orderTime;
                     this.deliveryTime = deliveryTime;
@@ -71,6 +85,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     this.sender = sender;
                     this.senderPhone = senderPhone;
                     this.exchangeRate = exchangeRate;
+                    this.orderStates = orderStates;
                     this.customerOrders = customerOrders;
                     this.updateSummary();
                     this.updateStatus();
@@ -91,30 +106,22 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                 });
                 OrderModel.prototype.updateStatus = function () {
                     var seed = this.paymentState == 'Paid' ? 20 : 0;
+                    this.statusText = this.orderStates[this.orderState];
                     switch (this.orderState) {
                         case 'Created':
                             this.statusRate = 0 + seed;
-                            this.statusText = '已创建';
                             break;
                         case 'Confirmed':
                             this.statusRate = 30 + seed;
-                            this.statusText = '已确认';
                             break;
                         case 'Delivered':
                             this.statusRate = 50 + seed;
-                            this.statusText = '已发货';
                             break;
                         case 'Received':
                             this.statusRate = 75 + seed;
-                            this.statusText = '已签收';
                             break;
                         case 'Completed':
                             this.statusRate = 100;
-                            this.statusText = '完成';
-                            break;
-                        case 'Discarded':
-                            this.statusRate = 0;
-                            this.statusText = '无效';
                             break;
                         default:
                             this.statusRate = 0;
@@ -177,9 +184,16 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     this.router = router;
                     this.data = [];
                     this.deliveryModel = null;
-                    //searchList: Customer[] = [];
+                    this.filteredData = [];
                     this.filterText = '';
+                    this.orderState = '';
+                    this.paymentState = '';
+                    this.orderStates = (new Dict()).orderStates;
+                    this.orderStateKeys = [];
+                    this.paymentStates = (new Dict()).paymentStates;
+                    this.paymentStateKeys = [];
                     this.totalAmount = 0;
+                    this.amount = 0;
                     this.thisYear = moment_1.default().year();
                     this._filterText = '';
                     this.colorSheet = ['bg-red', 'bg-pink', 'bg-purple', 'bg-deeppurple', 'bg-indigo', 'bg-blue', 'bg-teal', 'bg-green', 'bg-orange', 'bg-deeporange', 'bg-brown', 'bg-bluegrey'];
@@ -189,6 +203,12 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                         weight: new common_1.Control(this.deliveryModel.weight, common_1.Validators.required),
                         freight: new common_1.Control(this.deliveryModel.freight, common_1.Validators.required),
                     });
+                    for (var key in this.orderStates) {
+                        this.orderStateKeys.push(key);
+                    }
+                    for (var key in this.paymentStates) {
+                        this.paymentStateKeys.push(key);
+                    }
                 }
                 OrdersComponent.prototype.ngOnInit = function () {
                     this.get();
@@ -207,50 +227,29 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                 OrdersComponent.prototype.loadOrders = function () {
                     var that = this;
                     this.service.getOrders(function (json) {
-                        if (json) {
-                            var yearGroups = [].ToList();
-                            json.forEach(function (c) {
-                                var monthGroups = [].ToList();
-                                c.monthGroups.forEach(function (mg) {
-                                    var orders = [].ToList();
-                                    mg.models.forEach(function (om) {
-                                        var customers = [].ToList();
-                                        om.customerOrders.forEach(function (co) {
-                                            var products = [].ToList();
-                                            co.orderProducts.forEach(function (op) {
-                                                products.Add(new OrderProduct(op.productId, op.productBrand, op.productName, op.cost, op.price, op.qty, that.currentRate));
-                                            });
-                                            customers.Add(new CustomerOrder(co.customerId, co.customerName, products.ToArray()));
-                                        });
-                                        orders.Add(new OrderModel(om.id, moment_1.default(om.orderTime).format('YYYY-MM-DD'), om.deliveryTime, om.receiveTime, om.orderState, om.paymentState, om.waybillNumber, om.weight, om.freight, om.recipient, om.phone, om.address, om.sender, om.senderPhone, that.currentRate, customers.ToArray()));
-                                    });
-                                    monthGroups.Add(new MonthGroup(mg.month, orders.ToArray()));
-                                });
-                                yearGroups.Add(new YearGroup(c.year, monthGroups.ToArray()));
-                                that.data = yearGroups.ToArray();
-                            });
-                        }
+                        if (json)
+                            that.map(json, that, true);
                     });
                 };
-                //onClearFilter() {
-                //	this.onSearch('');
-                //}
-                //onSearch(value: string) {
-                //	if (this.filterText !== value)
-                //		this.filterText = value;
-                //	if (this.filterText === this._filterText)
-                //		return;
-                //	this.searchList = [];
-                //	if (/^$|^[\u4e00-\u9fa5_a-zA-Z0-9 ]+$/g.test(this.filterText)) {
-                //		this.searchList = this.customerList.ToList<Customer>()
-                //			.Where(x => this.startsWith(x.name, this.filterText) ||
-                //				this.startsWith(x.pinyin.toLowerCase(), this.filterText.toLowerCase()) ||
-                //				this.startsWith(x.tel, this.filterText))
-                //			.OrderBy(x => x.pinyin)
-                //			.ToArray();
-                //	}
-                //	this._filterText = this.filterText;
-                //}
+                OrdersComponent.prototype.onClearFilter = function () {
+                    this.onSearchByKeyword('');
+                };
+                OrdersComponent.prototype.onSearchByKeyword = function (value) {
+                    if (this.filterText !== value)
+                        this.filterText = value;
+                    if (this.filterText === this._filterText)
+                        return;
+                    if (/^$|^[\u4e00-\u9fa5_a-zA-Z0-9 ]+$/g.test(this.filterText))
+                        this.onSearch(this.orderState, this.paymentState);
+                    this._filterText = this.filterText;
+                };
+                OrdersComponent.prototype.onSearch = function (orderState, paymentState) {
+                    var that = this;
+                    this.service.getSearchOrders(this.filterText, orderState, paymentState, function (json) {
+                        if (json)
+                            that.map(json, that, false);
+                    });
+                };
                 //onEdit(cid: number) {
                 //	this.customerList.forEach(x => {
                 //		if (x.id == cid && (!this.isListViewMode || x.selected)) {
@@ -327,13 +326,37 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                         ;
                     });
                 };
-                OrdersComponent.prototype.startsWith = function (str, searchString) {
-                    return str.substr(0, searchString.length) === searchString;
+                OrdersComponent.prototype.map = function (json, that, initial) {
+                    var yearGroups = [].ToList();
+                    var orderCount = 0;
+                    json.forEach(function (c) {
+                        var monthGroups = [].ToList();
+                        c.monthGroups.forEach(function (mg) {
+                            var orders = [].ToList();
+                            mg.models.forEach(function (om) {
+                                var customers = [].ToList();
+                                om.customerOrders.forEach(function (co) {
+                                    var products = [].ToList();
+                                    co.orderProducts.forEach(function (op) {
+                                        products.Add(new OrderProduct(op.productId, op.productBrand, op.productName, op.cost, op.price, op.qty, that.currentRate));
+                                    });
+                                    customers.Add(new CustomerOrder(co.customerId, co.customerName, products.ToArray()));
+                                });
+                                orders.Add(new OrderModel(om.id, moment_1.default(om.orderTime).format('YYYY-MM-DD'), om.deliveryTime, om.receiveTime, om.orderState, om.paymentState, om.waybillNumber, om.weight, om.freight, om.recipient, om.phone, om.address, om.sender, om.senderPhone, that.currentRate, that.orderStates, customers.ToArray()));
+                                orderCount += 1;
+                            });
+                            monthGroups.Add(new MonthGroup(mg.month, orders.ToArray()));
+                        });
+                        yearGroups.Add(new YearGroup(c.year, monthGroups.ToArray()));
+                        that.data = yearGroups.ToArray();
+                    });
+                    if (initial)
+                        that.totalAmount = orderCount;
+                    that.amount = orderCount;
                 };
-                ;
                 Object.defineProperty(OrdersComponent.prototype, "diagnoise", {
                     //get amount() { return this.searchList.length; }
-                    get: function () { return JSON.stringify(this.data); },
+                    get: function () { return JSON.stringify(this.filterText + this.orderState + this.paymentState); },
                     enumerable: true,
                     configurable: true
                 });

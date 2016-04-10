@@ -70,9 +70,9 @@ namespace SAKURA.NZB.Website.Controllers
 					.ThenInclude(p => p.Brand)
 				.Where(o => (!string.IsNullOrEmpty(orderState) && o.OrderState.ToString() == orderState)
 					|| (!string.IsNullOrEmpty(paymentState) && o.PaymentState.ToString() == paymentState)
-					|| (!string.IsNullOrEmpty(keyword) && (!string.IsNullOrEmpty(o.WaybillNumber) && o.WaybillNumber.StartsWith(keyword)
-						|| !string.IsNullOrEmpty(keyword) && o.Products.Any(p  => p.Product.Brand.Name.ToLower().StartsWith(keyword.ToLower()))
-						|| !string.IsNullOrEmpty(keyword) && o.Products.Any(p => p.Customer.NamePinYin.ToLower().StartsWith(keyword.ToLower()))))
+					|| (!string.IsNullOrEmpty(keyword) && ((!string.IsNullOrEmpty(o.WaybillNumber) && o.WaybillNumber.StartsWith(keyword))
+						|| o.Products.Any(p  => p.Product.Brand.Name.ToLower().StartsWith(keyword.ToLower()))
+						|| o.Products.Any(p => p.Customer.NamePinYin.ToLower().StartsWith(keyword.ToLower()) || p.Customer.FullName.StartsWith(keyword))))
 					|| (string.IsNullOrEmpty(keyword) && string.IsNullOrEmpty(orderState) && string.IsNullOrEmpty(paymentState)))
 				.OrderByDescending(o => o.OrderTime)
 				.ToList();

@@ -10,6 +10,22 @@ import moment from 'moment';
 
 declare var $: any;
 
+class Dict {
+	orderStates = {};
+	paymentStates = {};
+
+	constructor() {
+		this.orderStates['Created'] = '已创建';
+		this.orderStates['Confirmed'] = '已确认';
+		this.orderStates['Delivered'] = '已发货';
+		this.orderStates['Received'] = '已签收';
+		this.orderStates['Completed'] = '完成';
+
+		this.paymentStates['Unpaid'] = '未支付';
+		this.paymentStates['Paid'] = '已支付';
+	}
+}
+
 class YearGroup {
 	constructor(public year: number, public monthGroups: MonthGroup[]) { }
 }
@@ -44,7 +60,8 @@ class OrderModel {
 	constructor(public id: number, public orderTime: any, public deliveryTime: Date, public receiveTime: Date,
 		public orderState: string, public paymentState: string, public waybillNumber: string, public weight: number,
 		public freight: number, public recipient: string, public phone: string, public address: string,
-		public sender: string, public senderPhone: string, public exchangeRate: number, public customerOrders: CustomerOrder[]) {
+		public sender: string, public senderPhone: string, public exchangeRate: number, public orderStates: Object,
+		public customerOrders: CustomerOrder[]) {
 
 		this.updateSummary();
 		this.updateStatus();
@@ -65,30 +82,23 @@ class OrderModel {
 
 	updateStatus() {
 		var seed = this.paymentState == 'Paid' ? 20 : 0;
+		this.statusText = this.orderStates[this.orderState];
+
 		switch (this.orderState) {
 			case 'Created':
 				this.statusRate = 0 + seed;
-				this.statusText = '已创建';
 				break;
 			case 'Confirmed':
 				this.statusRate = 30 + seed;
-				this.statusText = '已确认';
 				break;
 			case 'Delivered':
 				this.statusRate = 50 + seed;
-				this.statusText = '已发货';
 				break;
 			case 'Received':
 				this.statusRate = 75 + seed;
-				this.statusText = '已签收';
 				break;
 			case 'Completed':
 				this.statusRate = 100;
-				this.statusText = '完成';
-				break;
-			case 'Discarded':
-				this.statusRate = 0;
-				this.statusText = '无效';
 				break;
 			default:
 				this.statusRate = 0;
@@ -154,9 +164,17 @@ export class OrdersComponent implements OnInit {
 	deliveryModel: OrderDeliveryModel = null;
 	deliveryForm: ControlGroup;
 
-	//searchList: Customer[] = [];
+	filteredData: YearGroup[] = [];
 	filterText = '';
+	orderState = '';
+	paymentState = '';
+	orderStates = (new Dict()).orderStates;
+	orderStateKeys: string[] = [];
+	paymentStates = (new Dict()).paymentStates;
+	paymentStateKeys: string[] = [];
+
 	totalAmount = 0;
+	amount = 0;
 	thisYear = moment().year();
 
 	fixedRateHigh: number;
@@ -173,6 +191,13 @@ export class OrdersComponent implements OnInit {
 			weight: new Control(this.deliveryModel.weight, Validators.required),
 			freight: new Control(this.deliveryModel.freight, Validators.required),
 		});
+
+		for (var key in this.orderStates) {
+			this.orderStateKeys.push(key);
+		}
+		for (var key in this.paymentStates) {
+			this.paymentStateKeys.push(key);
+		}
 	}
 
     ngOnInit() {
@@ -197,63 +222,37 @@ export class OrdersComponent implements OnInit {
 		var that = this;
 
 		this.service.getOrders(json => {
-			if (json) {
-				var yearGroups = [].ToList<YearGroup>();
-				json.forEach(c => {
-					var monthGroups = [].ToList<MonthGroup>();
-					c.monthGroups.forEach(mg => {
-						var orders = [].ToList<OrderModel>();
-						mg.models.forEach(om => {
-							var customers = [].ToList<CustomerOrder>();
-							om.customerOrders.forEach(co => {
-								var products = [].ToList<OrderProduct>();
-								co.orderProducts.forEach(op => {
-									products.Add(new OrderProduct(op.productId, op.productBrand, op.productName, op.cost,
-										op.price, op.qty, that.currentRate));
-								});
-
-								customers.Add(new CustomerOrder(co.customerId, co.customerName, products.ToArray()));
-							});
-
-							orders.Add(new OrderModel(om.id, moment(om.orderTime).format('YYYY-MM-DD'), om.deliveryTime, om.receiveTime,
-								om.orderState, om.paymentState, om.waybillNumber, om.weight, om.freight, om.recipient, om.phone, om.address,
-								om.sender, om.senderPhone, that.currentRate, customers.ToArray()));
-						});
-
-						monthGroups.Add(new MonthGroup(mg.month, orders.ToArray()));
-					});
-
-					yearGroups.Add(new YearGroup(c.year, monthGroups.ToArray()));
-					that.data = yearGroups.ToArray();
-				});
-			}
+			if (json)
+				that.map(json, that, true);
 		});
 	}
 
-	//onClearFilter() {
-	//	this.onSearch('');
-	//}
+	onClearFilter() {
+		this.onSearchByKeyword('');
+	}
 
-	//onSearch(value: string) {
-	//	if (this.filterText !== value)
-	//		this.filterText = value;
+	onSearchByKeyword(value: string) {
+		if (this.filterText !== value)
+			this.filterText = value;
 
-	//	if (this.filterText === this._filterText)
-	//		return;
+		if (this.filterText === this._filterText)
+			return;
 
-	//	this.searchList = [];
-	//	if (/^$|^[\u4e00-\u9fa5_a-zA-Z0-9 ]+$/g.test(this.filterText)) {
-	//		this.searchList = this.customerList.ToList<Customer>()
-	//			.Where(x => this.startsWith(x.name, this.filterText) ||
-	//				this.startsWith(x.pinyin.toLowerCase(), this.filterText.toLowerCase()) ||
-	//				this.startsWith(x.tel, this.filterText))
-	//			.OrderBy(x => x.pinyin)
-	//			.ToArray();
-	//	}
 
-	//	this._filterText = this.filterText;
-	//}
+		if (/^$|^[\u4e00-\u9fa5_a-zA-Z0-9 ]+$/g.test(this.filterText))
+			this.onSearch(this.orderState, this.paymentState);
 
+		this._filterText = this.filterText;
+	}
+
+	onSearch(orderState: string, paymentState: string) {
+		var that = this;
+
+		this.service.getSearchOrders(this.filterText, orderState, paymentState, json => {
+			if (json)
+				that.map(json, that, false);
+		});
+	}
 
 	//onEdit(cid: number) {
 	//	this.customerList.forEach(x => {
@@ -308,7 +307,7 @@ export class OrdersComponent implements OnInit {
 						if (found) {
 							mg.updateSummary();
 							return;
-						}	
+						}
 					});
 				});
 			};
@@ -334,17 +333,53 @@ export class OrdersComponent implements OnInit {
 
 								return;
 							}
-						});											
+						});
 					});
 				});
 			};
 		});
 	}
 
-	startsWith(str: string, searchString: string) {
-		return str.substr(0, searchString.length) === searchString;
-	};
+	map(json: any, that: OrdersComponent, initial: boolean) {
+		var yearGroups = [].ToList<YearGroup>();
+		var orderCount = 0;
+
+		json.forEach(c => {
+			var monthGroups = [].ToList<MonthGroup>();
+			c.monthGroups.forEach(mg => {
+				var orders = [].ToList<OrderModel>();
+				mg.models.forEach(om => {
+					var customers = [].ToList<CustomerOrder>();
+					om.customerOrders.forEach(co => {
+						var products = [].ToList<OrderProduct>();
+						co.orderProducts.forEach(op => {
+							products.Add(new OrderProduct(op.productId, op.productBrand, op.productName, op.cost,
+								op.price, op.qty, that.currentRate));
+						});
+
+						customers.Add(new CustomerOrder(co.customerId, co.customerName, products.ToArray()));
+					});
+
+					orders.Add(new OrderModel(om.id, moment(om.orderTime).format('YYYY-MM-DD'), om.deliveryTime, om.receiveTime,
+						om.orderState, om.paymentState, om.waybillNumber, om.weight, om.freight, om.recipient, om.phone, om.address,
+						om.sender, om.senderPhone, that.currentRate, that.orderStates, customers.ToArray()));
+					orderCount += 1;
+				});
+
+				
+				monthGroups.Add(new MonthGroup(mg.month, orders.ToArray()));
+			});
+
+			yearGroups.Add(new YearGroup(c.year, monthGroups.ToArray()));
+			that.data = yearGroups.ToArray();
+		});
+
+		if (initial)
+			that.totalAmount = orderCount;
+
+		that.amount = orderCount;
+	}
 
 	//get amount() { return this.searchList.length; }
-	get diagnoise() { return JSON.stringify(this.data); }
+	get diagnoise() { return JSON.stringify(this.filterText + this.orderState + this.paymentState); }
 }

@@ -3,6 +3,10 @@
     background-color: #333;
 }
 
+.form-inline {
+    margin-bottom: 15px;
+}
+
 .year-header {
     margin:0;
     padding: 10px 0 20px 0;
@@ -20,6 +24,8 @@
     width: 35%;
 }
 
+.form-group,
+.form-control,
 .details,
 .dropdown-menu,
 .modal-body {
