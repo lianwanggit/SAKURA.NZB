@@ -20,6 +20,10 @@ class MonthGroup {
 	totalProfit: string
 
 	constructor(public month: string, public models: OrderModel[]) {
+		this.updateSummary();
+	}
+
+	updateSummary() {
 		var list = this.models.ToList<OrderModel>();
 		this.totalCost = (list.Sum(om => om.totalCost)).toFixed(2);
 		this.totalPrice = (list.Sum(om => om.totalPrice)).toFixed(2);
@@ -36,7 +40,6 @@ class OrderModel {
 	statusRate: number;
 	statusText: string;
 	expressText: string;
-	deliveryText: string;
 
 	constructor(public id: number, public orderTime: any, public deliveryTime: Date, public receiveTime: Date,
 		public orderState: string, public paymentState: string, public waybillNumber: string, public weight: number,
@@ -288,6 +291,7 @@ export class OrdersComponent implements OnInit {
 
 				this.data.forEach(yg => {
 					yg.monthGroups.forEach(mg => {
+						var found = false;
 						mg.models.forEach(om => {
 							if (om.id == id) {
 								om.orderState = orderState;
@@ -297,9 +301,14 @@ export class OrdersComponent implements OnInit {
 
 								om.updateSummary();
 								om.updateStatus();
-								return;
+								found = true;
 							}
 						});
+
+						if (found) {
+							mg.updateSummary();
+							return;
+						}	
 					});
 				});
 			};
@@ -322,9 +331,10 @@ export class OrdersComponent implements OnInit {
 								om.paymentState = paymentState;
 								om.orderState = orderState;
 								om.updateStatus();
+
 								return;
 							}
-						});
+						});											
 					});
 				});
 			};

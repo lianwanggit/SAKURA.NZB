@@ -44,11 +44,14 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                 function MonthGroup(month, models) {
                     this.month = month;
                     this.models = models;
+                    this.updateSummary();
+                }
+                MonthGroup.prototype.updateSummary = function () {
                     var list = this.models.ToList();
                     this.totalCost = (list.Sum(function (om) { return om.totalCost; })).toFixed(2);
                     this.totalPrice = (list.Sum(function (om) { return om.totalPrice; })).toFixed(2);
                     this.totalProfit = (list.Sum(function (om) { return om.totalProfit; })).toFixed(2);
-                }
+                };
                 return MonthGroup;
             })();
             OrderModel = (function () {
@@ -278,6 +281,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                             var freight = json.freight;
                             _this.data.forEach(function (yg) {
                                 yg.monthGroups.forEach(function (mg) {
+                                    var found = false;
                                     mg.models.forEach(function (om) {
                                         if (om.id == id) {
                                             om.orderState = orderState;
@@ -286,9 +290,13 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                                             om.freight = freight;
                                             om.updateSummary();
                                             om.updateStatus();
-                                            return;
+                                            found = true;
                                         }
                                     });
+                                    if (found) {
+                                        mg.updateSummary();
+                                        return;
+                                    }
                                 });
                             });
                         }
