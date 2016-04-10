@@ -6,8 +6,7 @@ import {Router, ROUTER_DIRECTIVES} from 'angular2/router';
 import {ApiService} from "../api.service";
 import {ClipboardDirective} from '../../directives/clipboard.directive';
 import '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js';
-
-declare var moment: any;
+import moment from 'moment';
 
 class YearGroup {
 	constructor(public year: number, public monthGroups: MonthGroup[]) { }
@@ -61,21 +60,22 @@ class OrderModel {
 	}
 
 	updateStatus() {
+		var seed = this.paymentState == 'Paid' ? 20 : 0;
 		switch (this.orderState) {
 			case 'Created':
-				this.statusRate = 0;
+				this.statusRate = 0 + seed;
 				this.statusText = '已创建';
 				break;
 			case 'Confirmed':
-				this.statusRate = 50;
+				this.statusRate = 30 + seed;
 				this.statusText = '已确认';
 				break;
 			case 'Delivered':
-				this.statusRate = 70;
+				this.statusRate = 50 + seed;
 				this.statusText = '已发货';
 				break;
 			case 'Received':
-				this.statusRate = 90;
+				this.statusRate = 80 + seed;
 				this.statusText = '已签收';
 				break;
 			case 'Completed':
@@ -246,13 +246,9 @@ export class OrdersComponent implements OnInit {
 					yg.monthGroups.forEach(mg => {
 						mg.models.forEach(om => {
 							if (om.id == id) {
-
-								if (om.orderState != orderState) {
-									om.orderState = orderState;
-									om.updateStatus();
-								}									
 								om.paymentState = paymentState;
-
+								om.orderState = orderState;								
+								om.updateStatus();
 								return;
 							}
 						});

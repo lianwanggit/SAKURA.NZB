@@ -1,5 +1,5 @@
 /// <reference path="../../../../lib/TypeScript-Linq/Scripts/typings/System/Collections/Generic/List.ts" />
-System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.service", '../../directives/clipboard.directive', '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js'], function(exports_1) {
+System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.service", '../../directives/clipboard.directive', '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js', 'moment'], function(exports_1) {
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
         var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
         if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -9,7 +9,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, common_1, router_1, api_service_1, clipboard_directive_1;
+    var core_1, common_1, router_1, api_service_1, clipboard_directive_1, moment_1;
     var YearGroup, MonthGroup, OrderModel, CustomerOrder, OrderProduct, OrdersComponent;
     return {
         setters:[
@@ -28,7 +28,10 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
             function (clipboard_directive_1_1) {
                 clipboard_directive_1 = clipboard_directive_1_1;
             },
-            function (_1) {}],
+            function (_1) {},
+            function (moment_1_1) {
+                moment_1 = moment_1_1;
+            }],
         execute: function() {
             YearGroup = (function () {
                 function YearGroup(year, monthGroups) {
@@ -81,21 +84,22 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                         + this.recipient + '\n【收件地址】' + this.address + '\n【聯繫電話】' + this.phone;
                 }
                 OrderModel.prototype.updateStatus = function () {
+                    var seed = this.paymentState == 'Paid' ? 20 : 0;
                     switch (this.orderState) {
                         case 'Created':
-                            this.statusRate = 0;
+                            this.statusRate = 0 + seed;
                             this.statusText = '已创建';
                             break;
                         case 'Confirmed':
-                            this.statusRate = 50;
+                            this.statusRate = 30 + seed;
                             this.statusText = '已确认';
                             break;
                         case 'Delivered':
-                            this.statusRate = 70;
+                            this.statusRate = 50 + seed;
                             this.statusText = '已发货';
                             break;
                         case 'Received':
-                            this.statusRate = 90;
+                            this.statusRate = 80 + seed;
                             this.statusText = '已签收';
                             break;
                         case 'Completed':
@@ -149,7 +153,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     //searchList: Customer[] = [];
                     this.filterText = '';
                     this.totalAmount = 0;
-                    this.thisYear = moment().year();
+                    this.thisYear = moment_1.default().year();
                     this._filterText = '';
                     this.colorSheet = ['bg-red', 'bg-pink', 'bg-purple', 'bg-deeppurple', 'bg-indigo', 'bg-blue', 'bg-teal', 'bg-green', 'bg-orange', 'bg-deeporange', 'bg-brown', 'bg-bluegrey'];
                 }
@@ -185,7 +189,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                                             });
                                             customers.Add(new CustomerOrder(co.customerId, co.customerName, products.ToArray()));
                                         });
-                                        orders.Add(new OrderModel(om.id, moment(om.orderTime).format('YYYY-MM-DD'), om.deliveryTime, om.receiveTime, om.orderState, om.paymentState, om.weight, om.recipient, om.phone, om.address, om.sender, om.senderPhone, customers.ToArray()));
+                                        orders.Add(new OrderModel(om.id, moment_1.default(om.orderTime).format('YYYY-MM-DD'), om.deliveryTime, om.receiveTime, om.orderState, om.paymentState, om.weight, om.recipient, om.phone, om.address, om.sender, om.senderPhone, customers.ToArray()));
                                     });
                                     monthGroups.Add(new MonthGroup(mg.month, orders.ToArray()));
                                 });
@@ -234,11 +238,9 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                                 yg.monthGroups.forEach(function (mg) {
                                     mg.models.forEach(function (om) {
                                         if (om.id == id) {
-                                            if (om.orderState != orderState) {
-                                                om.orderState = orderState;
-                                                om.updateStatus();
-                                            }
                                             om.paymentState = paymentState;
+                                            om.orderState = orderState;
+                                            om.updateStatus();
                                             return;
                                         }
                                     });
