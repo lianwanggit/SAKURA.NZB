@@ -110,6 +110,12 @@ System.register(["rxjs/Rx", "angular2/http", "angular2/core"], function(exports_
                     this.http.post('api/orders/update-order-status', data, { headers: headers })
                         .map(function (response) { return response.json(); }).subscribe(onNext);
                 };
+                ApiService.prototype.PostDeliverOrder = function (data, onNext) {
+                    var headers = new http_1.Headers();
+                    headers.append('Content-Type', 'application/json');
+                    this.http.post('api/orders/deliver', data, { headers: headers })
+                        .map(function (response) { return response.json(); }).subscribe(onNext);
+                };
                 ApiService = __decorate([
                     core_1.Injectable(), 
                     __metadata('design:paramtypes', [http_1.Http])

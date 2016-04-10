@@ -123,4 +123,12 @@ export class ApiService {
 		this.http.post('api/orders/update-order-status' , data, { headers: headers })
 			.map(response => response.json()).subscribe(onNext);
 	}
+
+	PostDeliverOrder(data: string, onNext: (json: any) => void) {
+		var headers = new Headers();
+		headers.append('Content-Type', 'application/json');
+
+		this.http.post('api/orders/deliver', data, { headers: headers })
+			.map(response => response.json()).subscribe(onNext);
+	}
 }

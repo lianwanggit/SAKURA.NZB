@@ -122,10 +122,18 @@ namespace SAKURA.NZB.Website.Controllers
 			item.WaybillNumber = model.WaybillNumber;
 			item.Weight = model.Weight;
 			item.Freight = model.Freight;
+			item.OrderState = OrderState.Delivered;
+			item.DeliveryTime = DateTimeOffset.Now;
 
 			_context.SaveChanges();
 
-			return new NoContentResult();
+			return new ObjectResult(new OrderDeliveryResultModel {
+				OrderId = item.Id,
+				WaybillNumber = item.WaybillNumber,
+				Weight = item.Weight,
+				Freight = item.Freight,
+				OrderState = item.OrderState.ToString()
+			});
 		}
 
 		private static OrderModel MapTo(Order o, string sender, string senderPhone)
@@ -138,6 +146,7 @@ namespace SAKURA.NZB.Website.Controllers
 				ReceiveTime = o.ReceiveTime?.LocalDateTime,
 				OrderState = o.OrderState.ToString(),
 				PaymentState = o.PaymentState.ToString(),
+				WaybillNumber = o.WaybillNumber,
 				Weight = o.Weight,
 				Freight = o.Freight,
 				Waybill = o.Waybill,

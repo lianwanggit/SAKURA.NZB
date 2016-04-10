@@ -21,7 +21,8 @@
 }
 
 .details,
-.dropdown-menu {
+.dropdown-menu,
+.modal-body {
     font-size: 12px;
 }
 

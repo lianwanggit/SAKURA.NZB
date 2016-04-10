@@ -13,6 +13,7 @@ namespace SAKURA.NZB.Website.Models
 		public DateTime? ReceiveTime { get; set; }
 		public string OrderState { get; set; }
 		public string PaymentState { get; set; }
+		public string WaybillNumber { get; set; }
 		public float? Weight { get; set; }
 		public float? Freight { get; set; }
 		public Image Waybill { get; set; }

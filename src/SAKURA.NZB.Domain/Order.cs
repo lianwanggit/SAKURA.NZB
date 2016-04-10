@@ -15,6 +15,7 @@ namespace SAKURA.NZB.Domain
 		public DateTimeOffset? CompleteTime { get; set; }
 		public OrderState OrderState { get; set; }
 		public PaymentState PaymentState { get; set; }
+		[StringLength(50)]
 		public string WaybillNumber { get; set; }
 		public float? Weight { get; set; }
 		[DataType(DataType.Currency)]

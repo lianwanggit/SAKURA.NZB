@@ -10,7 +10,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
     var core_1, common_1, router_1, api_service_1, clipboard_directive_1, moment_1;
-    var YearGroup, MonthGroup, OrderModel, CustomerOrder, OrderProduct, OrdersComponent;
+    var YearGroup, MonthGroup, OrderModel, CustomerOrder, OrderProduct, OrderDeliveryModel, OrdersComponent;
     return {
         setters:[
             function (core_1_1) {
@@ -45,33 +45,31 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     this.month = month;
                     this.models = models;
                     var list = this.models.ToList();
-                    this.totalCost = list.Sum(function (om) { return om.totalCost; });
-                    this.totalPrice = list.Sum(function (om) { return om.totalPrice; });
+                    this.totalCost = (list.Sum(function (om) { return om.totalCost; })).toFixed(2);
+                    this.totalPrice = (list.Sum(function (om) { return om.totalPrice; })).toFixed(2);
+                    this.totalProfit = (list.Sum(function (om) { return om.totalProfit; })).toFixed(2);
                 }
-                MonthGroup.prototype.totalProfit = function (rate) { return (this.totalPrice - this.totalCost * rate).toFixed(2); };
                 return MonthGroup;
             })();
             OrderModel = (function () {
-                function OrderModel(id, orderTime, deliveryTime, receiveTime, orderState, paymentState, weight, recipient, phone, address, sender, senderPhone, customerOrders) {
+                function OrderModel(id, orderTime, deliveryTime, receiveTime, orderState, paymentState, waybillNumber, weight, freight, recipient, phone, address, sender, senderPhone, exchangeRate, customerOrders) {
                     this.id = id;
                     this.orderTime = orderTime;
                     this.deliveryTime = deliveryTime;
                     this.receiveTime = receiveTime;
                     this.orderState = orderState;
                     this.paymentState = paymentState;
+                    this.waybillNumber = waybillNumber;
                     this.weight = weight;
+                    this.freight = freight;
                     this.recipient = recipient;
                     this.phone = phone;
                     this.address = address;
                     this.sender = sender;
                     this.senderPhone = senderPhone;
+                    this.exchangeRate = exchangeRate;
                     this.customerOrders = customerOrders;
-                    var list = this.customerOrders.ToList();
-                    this.totalCost = list.Sum(function (co) { return co.totalCost; });
-                    this.totalPrice = list.Sum(function (co) { return co.totalPrice; });
-                    this.totalQty = list.Sum(function (co) { return co.totalQty; });
-                    this.totalProfit = list.Sum(function (co) { return co.totalProfit; });
-                    this.strTotalProfit = this.totalProfit.toFixed(2);
+                    this.updateSummary();
                     this.updateStatus();
                     var that = this;
                     var products = '';
@@ -83,6 +81,11 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     this.expressText = '【寄件人】' + this.sender + '\n【寄件人電話】' + this.senderPhone + '\n【訂單內容】\n' + products + '【收件人】'
                         + this.recipient + '\n【收件地址】' + this.address + '\n【聯繫電話】' + this.phone;
                 }
+                Object.defineProperty(OrderModel.prototype, "delivered", {
+                    get: function () { return this.waybillNumber && this.weight && this.freight; },
+                    enumerable: true,
+                    configurable: true
+                });
                 OrderModel.prototype.updateStatus = function () {
                     var seed = this.paymentState == 'Paid' ? 20 : 0;
                     switch (this.orderState) {
@@ -99,7 +102,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                             this.statusText = '已发货';
                             break;
                         case 'Received':
-                            this.statusRate = 80 + seed;
+                            this.statusRate = 75 + seed;
                             this.statusText = '已签收';
                             break;
                         case 'Completed':
@@ -114,6 +117,17 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                             this.statusRate = 0;
                             this.statusText = '未知';
                     }
+                };
+                OrderModel.prototype.updateSummary = function () {
+                    var freightCost = 0;
+                    if (this.freight)
+                        freightCost = this.freight * this.exchangeRate;
+                    var list = this.customerOrders.ToList();
+                    this.totalCost = list.Sum(function (co) { return co.totalCost; });
+                    this.totalPrice = list.Sum(function (co) { return co.totalPrice; });
+                    this.totalQty = list.Sum(function (co) { return co.totalQty; });
+                    this.totalProfit = list.Sum(function (co) { return co.totalProfit; }) - freightCost;
+                    this.strTotalProfit = this.totalProfit.toFixed(2);
                 };
                 return OrderModel;
             })();
@@ -145,17 +159,33 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                 }
                 return OrderProduct;
             })();
+            OrderDeliveryModel = (function () {
+                function OrderDeliveryModel(orderId, waybillNumber, weight, freight) {
+                    this.orderId = orderId;
+                    this.waybillNumber = waybillNumber;
+                    this.weight = weight;
+                    this.freight = freight;
+                }
+                return OrderDeliveryModel;
+            })();
             OrdersComponent = (function () {
                 function OrdersComponent(service, router) {
                     this.service = service;
                     this.router = router;
                     this.data = [];
+                    this.deliveryModel = null;
                     //searchList: Customer[] = [];
                     this.filterText = '';
                     this.totalAmount = 0;
                     this.thisYear = moment_1.default().year();
                     this._filterText = '';
                     this.colorSheet = ['bg-red', 'bg-pink', 'bg-purple', 'bg-deeppurple', 'bg-indigo', 'bg-blue', 'bg-teal', 'bg-green', 'bg-orange', 'bg-deeporange', 'bg-brown', 'bg-bluegrey'];
+                    this.deliveryModel = new OrderDeliveryModel(null, '', null, null);
+                    this.deliveryForm = new common_1.ControlGroup({
+                        waybillNumber: new common_1.Control(this.deliveryModel.waybillNumber, common_1.Validators.required),
+                        weight: new common_1.Control(this.deliveryModel.weight, common_1.Validators.required),
+                        freight: new common_1.Control(this.deliveryModel.freight, common_1.Validators.required),
+                    });
                 }
                 OrdersComponent.prototype.ngOnInit = function () {
                     this.get();
@@ -189,7 +219,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                                             });
                                             customers.Add(new CustomerOrder(co.customerId, co.customerName, products.ToArray()));
                                         });
-                                        orders.Add(new OrderModel(om.id, moment_1.default(om.orderTime).format('YYYY-MM-DD'), om.deliveryTime, om.receiveTime, om.orderState, om.paymentState, om.weight, om.recipient, om.phone, om.address, om.sender, om.senderPhone, customers.ToArray()));
+                                        orders.Add(new OrderModel(om.id, moment_1.default(om.orderTime).format('YYYY-MM-DD'), om.deliveryTime, om.receiveTime, om.orderState, om.paymentState, om.waybillNumber, om.weight, om.freight, om.recipient, om.phone, om.address, om.sender, om.senderPhone, that.currentRate, customers.ToArray()));
                                     });
                                     monthGroups.Add(new MonthGroup(mg.month, orders.ToArray()));
                                 });
@@ -226,6 +256,45 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                 //		}
                 //	});
                 //}
+                OrdersComponent.prototype.onDeliverOpen = function (orderId) {
+                    this.deliveryModel = new OrderDeliveryModel(orderId, '', null, null);
+                    this.deliveryForm.controls['waybillNumber'].updateValue(this.deliveryModel.waybillNumber);
+                    this.deliveryForm.controls['weight'].updateValue(this.deliveryModel.weight);
+                    this.deliveryForm.controls['freight'].updateValue(this.deliveryModel.freight);
+                    $('#myModal').modal('show');
+                };
+                OrdersComponent.prototype.onDeliverySubmit = function () {
+                    var _this = this;
+                    $('#myModal').modal('hide');
+                    this.deliveryModel.waybillNumber = this.deliveryForm.value.waybillNumber;
+                    this.deliveryModel.weight = this.deliveryForm.value.weight;
+                    this.deliveryModel.freight = this.deliveryForm.value.freight;
+                    this.service.PostDeliverOrder(JSON.stringify(this.deliveryModel), function (json) {
+                        if (json) {
+                            var id = json.orderId;
+                            var orderState = json.orderState;
+                            var waybillNumber = json.waybillNumber;
+                            var weight = json.weight;
+                            var freight = json.freight;
+                            _this.data.forEach(function (yg) {
+                                yg.monthGroups.forEach(function (mg) {
+                                    mg.models.forEach(function (om) {
+                                        if (om.id == id) {
+                                            om.orderState = orderState;
+                                            om.waybillNumber = waybillNumber;
+                                            om.weight = weight;
+                                            om.freight = freight;
+                                            om.updateSummary();
+                                            om.updateStatus();
+                                            return;
+                                        }
+                                    });
+                                });
+                            });
+                        }
+                        ;
+                    });
+                };
                 OrdersComponent.prototype.onOrderAction = function (orderId, action) {
                     var _this = this;
                     var model = { orderId: orderId, action: action };
@@ -247,6 +316,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                                 });
                             });
                         }
+                        ;
                     });
                 };
                 OrdersComponent.prototype.startsWith = function (str, searchString) {
