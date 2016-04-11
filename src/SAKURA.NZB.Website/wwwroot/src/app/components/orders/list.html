@@ -13,7 +13,7 @@
                 <input type="text" class="form-control" id="keyword" placeholder="客户姓名, 拼音或品牌" [(ngModel)]="filterText"
                        (keyup)="onSearchByKeyword($event.target.value)" (input)="onSearchByKeyword($event.target.value)" >
                 <div class="input-group-btn">
-                    <button type="button" class="btn btn-default" aria-label="Clear" (click)="onClearFilterText()">
+                    <button type="button" class="btn btn-default" aria-label="Clear" (click)="onClearFilter()">
                         <span class="glyphicon glyphicon-remove"></span>
                     </button>
                 </div>

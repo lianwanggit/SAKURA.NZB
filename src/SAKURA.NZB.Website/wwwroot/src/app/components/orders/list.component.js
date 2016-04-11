@@ -355,7 +355,6 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     that.amount = orderCount;
                 };
                 Object.defineProperty(OrdersComponent.prototype, "diagnoise", {
-                    //get amount() { return this.searchList.length; }
                     get: function () { return JSON.stringify(this.filterText + this.orderState + this.paymentState); },
                     enumerable: true,
                     configurable: true

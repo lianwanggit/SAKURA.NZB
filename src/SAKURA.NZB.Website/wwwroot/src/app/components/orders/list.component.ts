@@ -380,6 +380,5 @@ export class OrdersComponent implements OnInit {
 		that.amount = orderCount;
 	}
 
-	//get amount() { return this.searchList.length; }
 	get diagnoise() { return JSON.stringify(this.filterText + this.orderState + this.paymentState); }
 }
