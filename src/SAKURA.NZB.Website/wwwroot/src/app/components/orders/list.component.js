@@ -329,6 +329,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                 OrdersComponent.prototype.map = function (json, that, initial) {
                     var yearGroups = [].ToList();
                     var orderCount = 0;
+                    that.data = [];
                     json.forEach(function (c) {
                         var monthGroups = [].ToList();
                         c.monthGroups.forEach(function (mg) {

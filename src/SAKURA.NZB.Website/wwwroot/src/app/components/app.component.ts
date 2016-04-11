@@ -9,6 +9,7 @@ import {ProductsComponent} from "./products/list.component";
 import {ProductBaseEditComponent} from "./products/baseEdit.component";
 import {ProductEditComponent} from "./products/edit.component";
 import {OrdersComponent} from "./orders/list.component";
+import {OrderEditComponent} from "./orders/edit.component";
 
 declare var System: any;
 import '../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js';
@@ -32,6 +33,8 @@ export class AppComponent implements OnInit {
             this.routes = [
                 { path: "/index", component: StaticComponent, name: "Index", useAsDefault: true },
 				{ path: "/orders", component: OrdersComponent, name: "订单", useAsDefault: false },
+				{ path: "/orders/add", component: OrderEditComponent, name: "OAdd", useAsDefault: false },
+				{ path: "/orders/edit/:id", component: OrderEditComponent, name: "OEdit", useAsDefault: false },
 				{ path: "/products", component: ProductsComponent, name: "产品", useAsDefault: false },
 				{ path: "/products/edit/base/:type", component: ProductBaseEditComponent, name: "PbeEdit", useAsDefault: false },
 				{ path: "/products/add", component: ProductEditComponent, name: "PAdd", useAsDefault: false },

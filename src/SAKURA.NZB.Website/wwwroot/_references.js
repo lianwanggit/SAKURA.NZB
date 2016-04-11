@@ -12,6 +12,7 @@
 /// <reference path="src/app/components/customers/edit.component.js" />
 /// <reference path="src/app/components/customers/list.component.js" />
 /// <reference path="src/app/components/mvc.component.js" />
+/// <reference path="src/app/components/orders/edit.component.js" />
 /// <reference path="src/app/components/orders/list.component.js" />
 /// <reference path="src/app/components/products/baseedit.component.js" />
 /// <reference path="src/app/components/products/baseedit.js" />

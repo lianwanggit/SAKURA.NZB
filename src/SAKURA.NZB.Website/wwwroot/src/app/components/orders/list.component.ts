@@ -315,7 +315,6 @@ export class OrdersComponent implements OnInit {
 	}
 
 	onOrderAction(orderId: string, action: string) {
-
 		var model = { orderId: orderId, action: action };
 		this.service.PostUpdateOrderStatus(JSON.stringify(model), json => {
 			if (json) {
@@ -343,6 +342,7 @@ export class OrdersComponent implements OnInit {
 	map(json: any, that: OrdersComponent, initial: boolean) {
 		var yearGroups = [].ToList<YearGroup>();
 		var orderCount = 0;
+		that.data = [];
 
 		json.forEach(c => {
 			var monthGroups = [].ToList<MonthGroup>();
