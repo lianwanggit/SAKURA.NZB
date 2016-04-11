@@ -1,3 +1,44 @@
 ﻿<div class="grey-border">
     <h2 class="page-header">{{title}}</h2>
+
+    <div>
+        <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active"><a href="#customer" aria-controls="customer" role="tab" data-toggle="tab">客户</a></li>
+            <li role="presentation"><a href="#product" aria-controls="product" role="tab" data-toggle="tab">产品</a></li>
+            <li role="presentation"><a href="#deliveryForm" aria-controls="deliveryForm" role="tab" data-toggle="tab">明细</a></li>
+            <li role="presentation"><a href="#summary" aria-controls="summary" role="tab" data-toggle="tab">利润表</a></li>
+        </ul>
+
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane fade in active" style="display:inline-block" id="customer">
+                <div id="customerIndexer" >
+                    <alpha-indexer class="pull-left " [elements]="elementSource"
+                                   (selectedId)="onElementSelected($event)"></alpha-indexer>
+
+                    <div class="pull-left">
+                        <button class="btn btn-default" type="button" data-toggle="collapse" data-target="#customerIndexer"
+                                aria-expanded="false" aria-controls="customerIndexer">
+                            <i class="fa fa-chevron-left"></i>
+                        </button>
+                    </div>
+
+                </div>
+         
+              
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="product">...esd</div>
+            <div role="tabpanel" class="tab-pane fade" id="deliveryForm">..fs.</div>
+            <div role="tabpanel" class="tab-pane fade" id="summary">df..d.</div>
+        </div>
+
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <button type="button" class="btn btn-default" [routerLink]="['订单']">返回列表</button>
+            <button type="submit" class="btn btn-success left-spacer">
+                保存 <i class="fa fa-floppy-o fa-lg"></i>
+            </button>
+        </div>
+    </div>
 </div>

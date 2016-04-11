@@ -96,6 +96,11 @@
     margin-bottom: 0;
 }
 
+.product-list th {
+    font-weight: 600;
+    color: #777;
+}
+
 .product-list th,
 .product-list td {
     padding: 0;
@@ -125,6 +130,17 @@
 
 .paid {
     color: #4caf50;
+}
+
+.tab-content {
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    padding: 10px;
+}
+
+.nav-tabs {
+    margin-bottom: 0;
 }
 
 @media (min-width: 768px) {
