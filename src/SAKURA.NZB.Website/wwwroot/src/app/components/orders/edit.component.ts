@@ -22,7 +22,10 @@ export class OrderEditComponent implements OnInit {
 	orderId: string;
 
 	elementSource: Element[];
-	selectedCustomer: Customer;
+	selectedCustomer: Customer = new Customer({
+		"id": 0, "fullName": null, "namePinYin": null, "phone1": null, "phone2": null,
+		"address": null, "address1": null, "email": null, "isIdentityUploaded": false, "level": null, "description": null
+	});
 
 	constructor(private service: ApiService, private router: Router, params: RouteParams) {
 		this.orderId = params.get("id");

@@ -38,6 +38,10 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     this.service = service;
                     this.router = router;
                     this.editMode = false;
+                    this.selectedCustomer = new edit_component_1.Customer({
+                        "id": 0, "fullName": null, "namePinYin": null, "phone1": null, "phone2": null,
+                        "address": null, "address1": null, "email": null, "isIdentityUploaded": false, "level": null, "description": null
+                    });
                     this.orderId = params.get("id");
                     if (this.orderId) {
                         this.editMode = true;

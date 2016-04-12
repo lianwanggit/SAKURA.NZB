@@ -10,21 +10,46 @@
         </ul>
 
         <div class="tab-content">
-            <div role="tabpanel" class="tab-pane fade in active" style="display:inline-block" id="customer">
-                <div id="customerIndexer" >
-                    <alpha-indexer class="pull-left " [elements]="elementSource"
-                                   (selectedId)="onElementSelected($event)"></alpha-indexer>
-
-                    <div class="pull-left">
-                        <button class="btn btn-default" type="button" data-toggle="collapse" data-target="#customerIndexer"
-                                aria-expanded="false" aria-controls="customerIndexer">
-                            <i class="fa fa-chevron-left"></i>
-                        </button>
-                    </div>
-
-                </div>
-         
-              
+            <div role="tabpanel" class="tab-pane fade in active" id="customer">
+                <table>
+                    <tr>
+                        <td>
+                            <alpha-indexer [elements]="elementSource" (selectedId)="onElementSelected($event)"></alpha-indexer>
+                        </td>
+                        <td class="customer-details">
+                            <div class="card">
+                                <div class="card-header">
+                                    收件人
+                                </div>
+                                <div class="card-block">
+                                    <h4 class="card-title">{{selectedCustomer.fullName}}</h4>
+                                    <p class="card-text">
+                                        <input type="radio" id="radio01" name="phoneRadio" checked="checked"  *ngIf="selectedCustomer.phone2 != null" />
+                                        <label for="radio01"><span></span><i class="fa fa-phone"></i> {{selectedCustomer.phone1}}</label>                                        
+                                    </p>
+                                    <p class="card-text" *ngIf="selectedCustomer.phone2 != null">
+                                        <input type="radio" id="radio02" name="phoneRadio" />
+                                        <label for="radio02"><span></span><i class="fa fa-phone"></i> {{selectedCustomer.phone2}}</label> 
+                                    </p>
+                                    <p class="text-divider" *ngIf="selectedCustomer.phone2 != null || selectedCustomer.address1 != null"></p>
+                                    <p class="card-text">
+                                        <input type="radio" id="radio03" name="addressRadio" checked="checked" *ngIf="selectedCustomer.address1 != null" />
+                                        <label for="radio03"><span></span><i class="fa fa-home"></i> {{selectedCustomer.address}}</label> 
+                                    </p>
+                                    <p class="card-text" *ngIf="selectedCustomer.address1 != null">
+                                        <input type="radio" id="radio04" name="addressRadio"/>
+                                        <label for="radio04"><span></span><i class="fa fa-home"></i> {{selectedCustomer.address1}}</label> 
+                                    </p>
+                                </div>
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item">Cras justo odio</li>
+                                    <li class="list-group-item">Dapibus ac facilisis in</li>
+                                    <li class="list-group-item">Vestibulum at eros</li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
             </div>
             <div role="tabpanel" class="tab-pane fade" id="product">...esd</div>
             <div role="tabpanel" class="tab-pane fade" id="deliveryForm">..fs.</div>

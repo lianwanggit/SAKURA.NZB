@@ -82,13 +82,13 @@ select.no-border {
     box-shadow: none;
 }
 
-    input.no-border:focus,
-    select.no-border:focus {
-        border-color: #fff;
-        outline: 0;
-        -webkit-box-shadow: none;
-        box-shadow: none;
-    }
+input.no-border:focus,
+select.no-border:focus {
+    border-color: #fff;
+    outline: 0;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
 
 .bg-default-dark {
     background-color: #d5d5d5;
