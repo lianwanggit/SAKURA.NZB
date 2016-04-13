@@ -47,6 +47,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                 }
                 return Dict;
             })();
+            exports_1("Dict", Dict);
             YearGroup = (function () {
                 function YearGroup(year, monthGroups) {
                     this.year = year;
@@ -141,6 +142,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                 };
                 return OrderModel;
             })();
+            exports_1("OrderModel", OrderModel);
             CustomerOrder = (function () {
                 function CustomerOrder(customerId, customerName, orderProducts) {
                     this.customerId = customerId;
@@ -155,6 +157,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                 }
                 return CustomerOrder;
             })();
+            exports_1("CustomerOrder", CustomerOrder);
             OrderProduct = (function () {
                 function OrderProduct(productId, productBrand, productName, cost, price, qty, exchangeRate) {
                     this.productId = productId;
@@ -169,6 +172,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                 }
                 return OrderProduct;
             })();
+            exports_1("OrderProduct", OrderProduct);
             OrderDeliveryModel = (function () {
                 function OrderDeliveryModel(orderId, waybillNumber, weight, freight) {
                     this.orderId = orderId;

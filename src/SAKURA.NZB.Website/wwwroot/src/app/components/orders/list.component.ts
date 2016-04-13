@@ -10,7 +10,7 @@ import moment from 'moment';
 
 declare var $: any;
 
-class Dict {
+export class Dict {
 	orderStates = {};
 	paymentStates = {};
 
@@ -47,7 +47,7 @@ class MonthGroup {
 	}
 }
 
-class OrderModel {
+export class OrderModel {
 	totalCost: number;
 	totalPrice: number;
 	totalQty: number;
@@ -120,7 +120,7 @@ class OrderModel {
 	}
 }
 
-class CustomerOrder {
+export class CustomerOrder {
 	totalCost: number;
 	totalPrice: number;
 	totalQty: number;
@@ -137,7 +137,7 @@ class CustomerOrder {
 	}
 }
 
-class OrderProduct {
+export class OrderProduct {
 	profit: number;
 	strProfit: string;
 

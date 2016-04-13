@@ -26,7 +26,8 @@ paths.lib = [
     './node_modules/jquery/dist/**/*.*',
     './node_modules/d3/*.*',
     './node_modules/moment/min/**/*.*',
-    './node_modules/clipboard/dist/**/*.*'
+    './node_modules/clipboard/dist/**/*.*',
+    './node_modules/ng2-bootstrap/bundles/**/*.*'
 ];
 
 paths.jsDest = paths.webroot + "js";
