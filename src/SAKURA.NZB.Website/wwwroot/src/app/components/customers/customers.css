@@ -4,22 +4,22 @@
     padding-left: 0;
 }
 
-    .customers-list li {
-        float: left;
-        width: 33%;
-        height: 90px;
-        padding: 10px;
-        font-size: 9px;
-        line-height: 1.4;
-        text-align: center;
-        background-color: #f9f9f9;
-        border: 1px solid #fff;
-    }
+.customers-list li {
+    float: left;
+    width: 33%;
+    height: 90px;
+    padding: 10px;
+    font-size: 9px;
+    line-height: 1.4;
+    text-align: center;
+    background-color: #f9f9f9;
+    border: 1px solid #fff;
+}
 
-        .customers-list li:hover {
-            background-color: #d26c6c;
-            color: #fff;
-        }
+.customers-list li:hover {
+    background-color: #d26c6c;
+    color: #fff;
+}
 
 .customers-table tr:hover,
 .customers-table-tr-selected {
@@ -54,16 +54,16 @@
     width: 50px;
 }
 
-    .customers-table th:first-child {
-        text-align: center;
-        margin: 10px 0;
-    }
+.customers-table th:first-child {
+    text-align: center;
+    margin: 10px 0;
+}
 
-    .customers-table th > i {
-        padding: 21px 0;
-        cursor: pointer;
-        cursor: hand;
-    }
+.customers-table th > i {
+    padding: 21px 0;
+    cursor: pointer;
+    cursor: hand;
+}
 
 .customers-table tr > td:first-of-type {
     min-width: 65px;
@@ -73,11 +73,18 @@
     border-right: 4px solid #4e8539;
 }
 
-.left-widget {
-    border-right: 1px solid #ccc;
-    padding-right: 15px;
-    position: relative;
-    float: left;
+td {
+    vertical-align: top;
+}
+
+table,
+table td:last-of-type {
+    width: 100%
+}
+
+.from-container {
+    border-left: 1px solid #ccc;
+    margin-left: 20px;
 }
 
 @media (min-width: 768px) {

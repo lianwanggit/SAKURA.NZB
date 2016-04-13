@@ -19,8 +19,10 @@
 }
 
 table {
-    width:180px;
+    width:160px;
     margin-bottom: 0;
+    display: block;
+    overflow-y: auto;
 
 }
 
@@ -33,21 +35,21 @@ table td:first-of-type {
     border-top: none;
 }
 
+#flat-scrollbar td:last-of-type {
+    width: 100%
+}
+
 .form-group {
     margin-bottom: 3px;
 }
 
 .list-group {
     margin-bottom: 0;
-    height: 560px;
-    overflow-y: auto;
-    display: block;
-    padding-right: 5px;
+    padding: 0 5px 0 3px;
 }
 
 .index-list {
     list-style: none;
-    overflow: hidden;
     padding-left: 0;
 }
 
@@ -56,4 +58,9 @@ table td:first-of-type {
     height: 40px;
     margin: 0 0 1px 0;
     border-radius: 0;
+}
+
+.list-group-item {
+    margin: 0 0 1px 0;
+    padding: 9px 15px;
 }

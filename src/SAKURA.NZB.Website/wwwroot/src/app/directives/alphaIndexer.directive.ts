@@ -52,6 +52,7 @@ export class AlphaIndexerDirective implements OnChanges {
 
 	@Input() elements: Element[];
 	@Input() initialSelectedId: string;
+	@Input() height = 500;
 	@Output() selectedId = new EventEmitter();
 
 	constructor() { }

@@ -1,17 +1,14 @@
-﻿<table class="table" >
-    <tr>
-        <td colspan="2">
-            <div class="form-group input-group">
-                <input type="text" class="form-control" placeholder="搜索"
-                       [(ngModel)]="filterText" (keyup)="onSearch($event.target.value)" (input)="onSearch($event.target.value)" />
-                <div class="input-group-btn">
-                    <button type="button" class="btn btn-default" aria-label="Clear" (click)="onClearFilter()">
-                        <span class="glyphicon glyphicon-remove"></span>
-                    </button>
-                </div>
-            </div>
-        </td>
-    </tr>
+﻿<div class="form-group input-group">
+    <input type="text" class="form-control" placeholder="搜索"
+           [(ngModel)]="filterText" (keyup)="onSearch($event.target.value)" (input)="onSearch($event.target.value)" />
+    <div class="input-group-btn">
+        <button type="button" class="btn btn-default" aria-label="Clear" (click)="onClearFilter()">
+            <span class="glyphicon glyphicon-remove"></span>
+        </button>
+    </div>
+</div>
+
+<table class="table" id="flat-scrollbar"  [ngStyle]="{'height': height + 'px'}">
     <tr>
         <td>
             <ul class="index-list">
@@ -23,7 +20,7 @@
             </ul>
         </td>
         <td>
-            <div class="list-group" id="flat-scrollbar">
+            <div class="list-group">
                 <button type="button" class="list-group-item" *ngFor="#e of elementList; #i = index" (click)="onClickElement(e.id)"
                         [class.active]="e.selected">
                     {{e.name}}

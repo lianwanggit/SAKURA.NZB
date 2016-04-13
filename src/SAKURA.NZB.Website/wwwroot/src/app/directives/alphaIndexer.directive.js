@@ -50,6 +50,7 @@ System.register(["angular2/core", "angular2/common", '../../../lib/TypeScript-Li
                     this._filterText = '';
                     this._indexer = '';
                     this._selectedId = '';
+                    this.height = 500;
                     this.selectedId = new core_1.EventEmitter();
                 }
                 AlphaIndexerDirective.prototype.ngOnChanges = function (changes) {
@@ -145,6 +146,10 @@ System.register(["angular2/core", "angular2/common", '../../../lib/TypeScript-Li
                     core_1.Input(), 
                     __metadata('design:type', String)
                 ], AlphaIndexerDirective.prototype, "initialSelectedId", void 0);
+                __decorate([
+                    core_1.Input(), 
+                    __metadata('design:type', Object)
+                ], AlphaIndexerDirective.prototype, "height", void 0);
                 __decorate([
                     core_1.Output(), 
                     __metadata('design:type', Object)
