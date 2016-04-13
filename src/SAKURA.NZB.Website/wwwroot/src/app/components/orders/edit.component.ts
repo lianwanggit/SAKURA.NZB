@@ -80,6 +80,15 @@ export class OrderEditComponent implements OnInit {
 		}
 	}
 
+	onRemoveExCustomer(id: string) {
+		var item = this.exCustomers.ToList<ExCustomer>().First(c => c.id.toString() == id);
+		var index = this.exCustomers.indexOf(item);
+
+		if (index >= 0)
+			this.exCustomers.splice(index, 1);
+	}
+
+
 	getCustomer(id: string) {
 		var that = this;
 
@@ -112,4 +121,10 @@ export class OrderEditComponent implements OnInit {
 	}
 
 	get title() { return this.editMode ? "编辑订单 " : "新建订单"; }
+	get customerCount() { return !this.selectedCustomer ? 0 : this.exCustomers.length + 1; }
+	get canAddExCustomer() {
+		return this.selectedExCustomer
+			&& this.selectedExCustomer.id != this.selectedCustomer.id
+			&& this.exCustomers.ToList<ExCustomer>().All(c => c.id != this.selectedExCustomer.id);
+	}
 }

@@ -89,6 +89,12 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                         this.selectedExCustomer = null;
                     }
                 };
+                OrderEditComponent.prototype.onRemoveExCustomer = function (id) {
+                    var item = this.exCustomers.ToList().First(function (c) { return c.id.toString() == id; });
+                    var index = this.exCustomers.indexOf(item);
+                    if (index >= 0)
+                        this.exCustomers.splice(index, 1);
+                };
                 OrderEditComponent.prototype.getCustomer = function (id) {
                     var that = this;
                     this.service.getCustomer(id, function (json) {
@@ -116,6 +122,21 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                 };
                 Object.defineProperty(OrderEditComponent.prototype, "title", {
                     get: function () { return this.editMode ? "编辑订单 " : "新建订单"; },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(OrderEditComponent.prototype, "customerCount", {
+                    get: function () { return !this.selectedCustomer ? 0 : this.exCustomers.length + 1; },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(OrderEditComponent.prototype, "canAddExCustomer", {
+                    get: function () {
+                        var _this = this;
+                        return this.selectedExCustomer
+                            && this.selectedExCustomer.id != this.selectedCustomer.id
+                            && this.exCustomers.ToList().All(function (c) { return c.id != _this.selectedExCustomer.id; });
+                    },
                     enumerable: true,
                     configurable: true
                 });

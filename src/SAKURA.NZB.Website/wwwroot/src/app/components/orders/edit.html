@@ -3,7 +3,7 @@
 
     <div>
         <ul class="nav nav-tabs" role="tablist">
-            <li role="presentation" class="active"><a href="#customer" aria-controls="customer" role="tab" data-toggle="tab">客户</a></li>
+            <li role="presentation" class="active"><a href="#customer" aria-controls="customer" role="tab" data-toggle="tab">客户 <span class="badge">{{customerCount}}</span></a></li>
             <li role="presentation"><a href="#product" aria-controls="product" role="tab" data-toggle="tab">产品</a></li>
             <li role="presentation"><a href="#deliveryForm" aria-controls="deliveryForm" role="tab" data-toggle="tab">明细</a></li>
             <li role="presentation"><a href="#summary" aria-controls="summary" role="tab" data-toggle="tab">利润表</a></li>
@@ -62,7 +62,7 @@
                                         <div class="input-group-btn">
                                             <button type="button" class="btn btn-default" aria-label="Clear"
                                                     (click)="onAddExCustomer()"
-                                                    [disabled]="selectedExCustomer == null || selectedExCustomer.id == selectedCustomer.id">
+                                                    [disabled]="!canAddExCustomer">
                                                 <span class="glyphicon glyphicon-plus"></span>
                                             </button>
                                         </div>
@@ -70,7 +70,8 @@
                                 </div>
 
                                 <ul class="list-group list-group-flush">
-                                    <li class="list-group-item" *ngFor="#c of exCustomers">{{c.name}}</li>
+                                    <li class="list-group-item" *ngFor="#c of exCustomers">{{c.name}} 
+                                    <i class="pull-right fa fa-remove clickable" (click)="onRemoveExCustomer(c.id)"></i></li>
                                 </ul>
                             </div>
 
