@@ -1,5 +1,5 @@
 /// <reference path="../../../../lib/TypeScript-Linq/Scripts/typings/System/Collections/Generic/List.ts" />
-System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.service", "../../directives/alphaIndexer.directive", "../customers/edit.component", "./list.component", 'ng2-bootstrap/ng2-bootstrap', '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js'], function(exports_1) {
+System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.service", "./list.component", "./orderCustomers.component", '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js'], function(exports_1) {
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
         var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
         if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -9,8 +9,8 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, common_1, router_1, api_service_1, alphaIndexer_directive_1, edit_component_1, list_component_1, ng2_bootstrap_1;
-    var ExCustomer, OrderEditComponent;
+    var core_1, common_1, router_1, api_service_1, list_component_1, orderCustomers_component_1;
+    var OrderEditComponent;
     return {
         setters:[
             function (core_1_1) {
@@ -25,27 +25,14 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
             function (api_service_1_1) {
                 api_service_1 = api_service_1_1;
             },
-            function (alphaIndexer_directive_1_1) {
-                alphaIndexer_directive_1 = alphaIndexer_directive_1_1;
-            },
-            function (edit_component_1_1) {
-                edit_component_1 = edit_component_1_1;
-            },
             function (list_component_1_1) {
                 list_component_1 = list_component_1_1;
             },
-            function (ng2_bootstrap_1_1) {
-                ng2_bootstrap_1 = ng2_bootstrap_1_1;
+            function (orderCustomers_component_1_1) {
+                orderCustomers_component_1 = orderCustomers_component_1_1;
             },
             function (_1) {}],
         execute: function() {
-            ExCustomer = (function () {
-                function ExCustomer(id, name) {
-                    this.id = id;
-                    this.name = name;
-                }
-                return ExCustomer;
-            })();
             OrderEditComponent = (function () {
                 function OrderEditComponent(service, router, params) {
                     this.service = service;
@@ -54,71 +41,15 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     this.orderStates = (new list_component_1.Dict()).orderStates;
                     this.paymentStates = (new list_component_1.Dict()).paymentStates;
                     this.customerOrders = [];
-                    this.exCustomers = [];
-                    this.allCustomers = [];
-                    this.selectedCustomer = null;
-                    this.selectedExCustomerName = '';
-                    this.selectedExCustomer = null;
                     this.orderId = params.get("id");
                     if (this.orderId) {
                         this.editMode = true;
                     }
                     this.order = new list_component_1.OrderModel(null, null, null, null, "Created", "Unpaid", null, null, null, null, null, null, null, null, null, this.orderStates, this.customerOrders);
+                    this.customerInfo = new orderCustomers_component_1.CustomerInfo(null, null, null);
                 }
                 OrderEditComponent.prototype.ngOnInit = function () {
                     var that = this;
-                    this.getCustomers();
-                };
-                OrderEditComponent.prototype.onElementSelected = function (id) {
-                    this.getCustomer(id);
-                    this.exCustomers = [];
-                };
-                OrderEditComponent.prototype.onSelectPhone = function (phone) {
-                    this.order.phone = phone;
-                };
-                OrderEditComponent.prototype.onSelectAddress = function (address) {
-                    this.order.address = address;
-                };
-                OrderEditComponent.prototype.onSelectExCustomer = function (e) {
-                    this.selectedExCustomer = e.item;
-                };
-                OrderEditComponent.prototype.onAddExCustomer = function () {
-                    if (this.selectedExCustomer) {
-                        this.exCustomers.push(new ExCustomer(this.selectedExCustomer.id, this.selectedExCustomer.name));
-                        this.selectedExCustomerName = '';
-                        this.selectedExCustomer = null;
-                    }
-                };
-                OrderEditComponent.prototype.onRemoveExCustomer = function (id) {
-                    var item = this.exCustomers.ToList().First(function (c) { return c.id.toString() == id; });
-                    var index = this.exCustomers.indexOf(item);
-                    if (index >= 0)
-                        this.exCustomers.splice(index, 1);
-                };
-                OrderEditComponent.prototype.getCustomer = function (id) {
-                    var that = this;
-                    this.service.getCustomer(id, function (json) {
-                        if (json) {
-                            that.selectedCustomer = new edit_component_1.Customer(json);
-                            that.order.recipient = that.selectedCustomer.fullName;
-                            that.order.phone = that.selectedCustomer.phone1;
-                            that.order.address = that.selectedCustomer.address;
-                        }
-                    });
-                };
-                OrderEditComponent.prototype.getCustomers = function () {
-                    var that = this;
-                    this.service.getCustomers(function (json) {
-                        if (json) {
-                            var list = [].ToList();
-                            json.forEach(function (x) {
-                                var c = new edit_component_1.Customer(x);
-                                list.Add(new alphaIndexer_directive_1.Element(c.id, c.fullName, c.namePinYin));
-                                that.allCustomers.push(new ExCustomer(c.id, c.fullName));
-                            });
-                            that.elementSource = list.ToArray();
-                        }
-                    });
                 };
                 Object.defineProperty(OrderEditComponent.prototype, "title", {
                     get: function () { return this.editMode ? "编辑订单 " : "新建订单"; },
@@ -126,27 +57,17 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     configurable: true
                 });
                 Object.defineProperty(OrderEditComponent.prototype, "customerCount", {
-                    get: function () { return !this.selectedCustomer ? 0 : this.exCustomers.length + 1; },
-                    enumerable: true,
-                    configurable: true
-                });
-                Object.defineProperty(OrderEditComponent.prototype, "canAddExCustomer", {
-                    get: function () {
-                        var _this = this;
-                        return this.selectedExCustomer
-                            && this.selectedExCustomer.id != this.selectedCustomer.id
-                            && this.exCustomers.ToList().All(function (c) { return c.id != _this.selectedExCustomer.id; });
-                    },
+                    get: function () { return this.customerInfo.customers.length; },
                     enumerable: true,
                     configurable: true
                 });
                 OrderEditComponent = __decorate([
                     core_1.Component({
-                        selector: "product-edit",
+                        selector: "order-edit",
                         templateUrl: "./src/app/components/orders/edit.html",
                         styleUrls: ["./src/app/components/orders/orders.css"],
                         providers: [api_service_1.ApiService],
-                        directives: [common_1.CORE_DIRECTIVES, common_1.FORM_DIRECTIVES, router_1.ROUTER_DIRECTIVES, alphaIndexer_directive_1.AlphaIndexerDirective, ng2_bootstrap_1.TYPEAHEAD_DIRECTIVES]
+                        directives: [common_1.CORE_DIRECTIVES, common_1.FORM_DIRECTIVES, router_1.ROUTER_DIRECTIVES, orderCustomers_component_1.OrderCustomersComponent]
                     }), 
                     __metadata('design:paramtypes', [api_service_1.ApiService, router_1.Router, router_1.RouteParams])
                 ], OrderEditComponent);
