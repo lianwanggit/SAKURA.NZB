@@ -49,18 +49,19 @@
 }
 
 .customers-table th {
+    text-align: center;
+    vertical-align:middle;
     background-color: #337ab7;
     color: #fff;
     width: 50px;
 }
 
-.customers-table th:first-child {
-    text-align: center;
-    margin: 10px 0;
+.customers-table th h3 {
+    margin: 5px 0;
 }
 
 .customers-table th > i {
-    padding: 21px 0;
+    margin: 11px 0;
     cursor: pointer;
     cursor: hand;
 }

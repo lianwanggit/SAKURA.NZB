@@ -9,6 +9,7 @@ import {ApiService} from "../api.service";
 import {Dict, OrderModel, CustomerOrder, OrderProduct} from "./list.component";
 import {SelectValidator, ValidationResult} from "../../validators/selectValidator";
 import {CustomerInfo, CustomerKvp, OrderCustomersComponent} from "./orderCustomers.component";
+import {OrderProductsComponent} from "./orderProducts.component";
 
 import '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js';
 
@@ -18,7 +19,7 @@ import '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.
     templateUrl: "./src/app/components/orders/edit.html",
 	styleUrls: ["./src/app/components/orders/orders.css"],
     providers: [ApiService],
-    directives: [CORE_DIRECTIVES, FORM_DIRECTIVES, ROUTER_DIRECTIVES, OrderCustomersComponent]
+    directives: [CORE_DIRECTIVES, FORM_DIRECTIVES, ROUTER_DIRECTIVES, OrderCustomersComponent, OrderProductsComponent]
 })
 export class OrderEditComponent implements OnInit {
 	private editMode = false;

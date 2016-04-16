@@ -1,0 +1,35 @@
+﻿<div class="form-group input-group">
+    <input type="text" class="form-control" placeholder="搜索"
+           [(ngModel)]="filterText" (keyup)="onSearch($event.target.value)" (input)="onSearch($event.target.value)" />
+    <div class="input-group-btn">
+        <button type="button" class="btn btn-default" aria-label="Clear" (click)="onClearFilter()">
+            <span class="glyphicon glyphicon-remove"></span>
+        </button>
+    </div>
+</div>
+
+<table class="table" id="flat-scrollbar" [ngStyle]="{'height': height + 'px'}">
+    <tr>
+        <td>
+            <ul class="index-list">
+                <li *ngFor="#item of brandList; #i = index">
+                    <button class="btn btn-default" (click)="onClickIndexer(item.name)" 
+                            [class.active]="item.selected"
+                            title="{{item.name}}">
+                        <span class="brand pull-left">{{item.name}}</span>
+                        <span class="badge pull-right">{{item.count}}</span>
+                    </button>
+                </li>
+            </ul>
+        </td>
+        <td>
+            <div class="list-group">
+                <button type="button" class="list-group-item" *ngFor="#e of itemList; #i = index" (click)="onClickElement(e.id)"
+                        [class.active]="e.selected"
+                        title="{{e.name}}">
+                    {{e.name}}
+                </button>
+            </div>
+        </td>
+    </tr>
+</table>

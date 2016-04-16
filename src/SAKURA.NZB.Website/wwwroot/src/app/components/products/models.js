@@ -1,4 +1,6 @@
-System.register([], function(exports_1) {
+System.register([], function(exports_1, context_1) {
+    "use strict";
+    var __moduleName = context_1 && context_1.id;
     var Category, Brand, Supplier, Quote, Product, BaseType;
     return {
         setters:[],
@@ -9,7 +11,7 @@ System.register([], function(exports_1) {
                     this.name = obj.name;
                 }
                 return Category;
-            })();
+            }());
             exports_1("Category", Category);
             Brand = (function () {
                 function Brand(obj) {
@@ -17,7 +19,7 @@ System.register([], function(exports_1) {
                     this.name = obj.name;
                 }
                 return Brand;
-            })();
+            }());
             exports_1("Brand", Brand);
             Supplier = (function () {
                 function Supplier(obj) {
@@ -27,7 +29,7 @@ System.register([], function(exports_1) {
                     this.phone = obj.phone;
                 }
                 return Supplier;
-            })();
+            }());
             exports_1("Supplier", Supplier);
             Quote = (function () {
                 function Quote(obj) {
@@ -48,7 +50,7 @@ System.register([], function(exports_1) {
                     configurable: true
                 });
                 return Quote;
-            })();
+            }());
             exports_1("Quote", Quote);
             Product = (function () {
                 function Product(obj) {
@@ -66,7 +68,7 @@ System.register([], function(exports_1) {
                     obj.quotes.forEach(function (q) { return that.quotes.push(new Quote(q)); });
                 }
                 return Product;
-            })();
+            }());
             exports_1("Product", Product);
             (function (BaseType) {
                 BaseType[BaseType["Category"] = 0] = "Category";

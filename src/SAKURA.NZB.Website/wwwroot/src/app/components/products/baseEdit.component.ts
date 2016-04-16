@@ -115,7 +115,6 @@ export class ProductBaseEditComponent implements OnInit {
 		});
 
 		this.editMode = false;
-		this.submitted = false;
 	}
 
 	onSubmit() {

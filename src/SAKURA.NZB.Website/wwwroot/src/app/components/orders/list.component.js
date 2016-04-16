@@ -1,5 +1,7 @@
 /// <reference path="../../../../lib/TypeScript-Linq/Scripts/typings/System/Collections/Generic/List.ts" />
-System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.service", '../../directives/clipboard.directive', '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js', 'moment'], function(exports_1) {
+System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.service", '../../directives/clipboard.directive', '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js', 'moment'], function(exports_1, context_1) {
+    "use strict";
+    var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
         var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
         if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -46,7 +48,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     this.paymentStates['Paid'] = '已支付';
                 }
                 return Dict;
-            })();
+            }());
             exports_1("Dict", Dict);
             YearGroup = (function () {
                 function YearGroup(year, monthGroups) {
@@ -54,7 +56,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     this.monthGroups = monthGroups;
                 }
                 return YearGroup;
-            })();
+            }());
             MonthGroup = (function () {
                 function MonthGroup(month, models) {
                     this.month = month;
@@ -68,7 +70,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     this.totalProfit = (list.Sum(function (om) { return om.totalProfit; })).toFixed(2);
                 };
                 return MonthGroup;
-            })();
+            }());
             OrderModel = (function () {
                 function OrderModel(id, orderTime, deliveryTime, receiveTime, orderState, paymentState, waybillNumber, weight, freight, recipient, phone, address, sender, senderPhone, exchangeRate, orderStates, customerOrders) {
                     this.id = id;
@@ -141,7 +143,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     this.strTotalProfit = this.totalProfit.toFixed(2);
                 };
                 return OrderModel;
-            })();
+            }());
             exports_1("OrderModel", OrderModel);
             CustomerOrder = (function () {
                 function CustomerOrder(customerId, customerName, orderProducts) {
@@ -156,7 +158,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     this.strTotalProfit = this.totalProfit.toFixed(2);
                 }
                 return CustomerOrder;
-            })();
+            }());
             exports_1("CustomerOrder", CustomerOrder);
             OrderProduct = (function () {
                 function OrderProduct(productId, productBrand, productName, cost, price, qty, exchangeRate) {
@@ -171,7 +173,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     this.strProfit = this.profit.toFixed(2);
                 }
                 return OrderProduct;
-            })();
+            }());
             exports_1("OrderProduct", OrderProduct);
             OrderDeliveryModel = (function () {
                 function OrderDeliveryModel(orderId, waybillNumber, weight, freight) {
@@ -181,7 +183,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     this.freight = freight;
                 }
                 return OrderDeliveryModel;
-            })();
+            }());
             OrdersComponent = (function () {
                 function OrdersComponent(service, router) {
                     this.service = service;
@@ -375,7 +377,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     __metadata('design:paramtypes', [api_service_1.ApiService, router_1.Router])
                 ], OrdersComponent);
                 return OrdersComponent;
-            })();
+            }());
             exports_1("OrdersComponent", OrdersComponent);
         }
     }

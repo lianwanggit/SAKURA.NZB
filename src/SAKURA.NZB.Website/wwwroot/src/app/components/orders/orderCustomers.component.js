@@ -1,4 +1,6 @@
-System.register(["angular2/core", "angular2/common", "../api.service", "../../directives/alphaIndexer.directive", "../customers/edit.component", "ng2-bootstrap/ng2-bootstrap"], function(exports_1) {
+System.register(["angular2/core", "angular2/common", "../api.service", "../../directives/alphaIndexer.directive", "../customers/edit.component", "ng2-bootstrap/ng2-bootstrap"], function(exports_1, context_1) {
+    "use strict";
+    var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
         var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
         if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -37,7 +39,7 @@ System.register(["angular2/core", "angular2/common", "../api.service", "../../di
                     this.name = name;
                 }
                 return CustomerKvp;
-            })();
+            }());
             exports_1("CustomerKvp", CustomerKvp);
             CustomerInfo = (function () {
                 function CustomerInfo(recipient, phone, address) {
@@ -52,7 +54,7 @@ System.register(["angular2/core", "angular2/common", "../api.service", "../../di
                     configurable: true
                 });
                 return CustomerInfo;
-            })();
+            }());
             exports_1("CustomerInfo", CustomerInfo);
             OrderCustomersComponent = (function () {
                 function OrderCustomersComponent(service) {
@@ -63,7 +65,6 @@ System.register(["angular2/core", "angular2/common", "../api.service", "../../di
                     this.modelChange = new core_1.EventEmitter();
                 }
                 OrderCustomersComponent.prototype.ngOnInit = function () {
-                    var that = this;
                     this.getCustomers();
                 };
                 OrderCustomersComponent.prototype.onElementSelected = function (id) {
@@ -139,7 +140,7 @@ System.register(["angular2/core", "angular2/common", "../api.service", "../../di
                     __metadata('design:paramtypes', [api_service_1.ApiService])
                 ], OrderCustomersComponent);
                 return OrderCustomersComponent;
-            })();
+            }());
             exports_1("OrderCustomersComponent", OrderCustomersComponent);
         }
     }

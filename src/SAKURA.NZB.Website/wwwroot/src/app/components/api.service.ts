@@ -39,6 +39,10 @@ export class ApiService {
 	getProduct(id: string, onNext: (json: any) => void) {
         this.http.get("api/products/" + id).map(response => response.json()).subscribe(onNext);
     }
+	
+	getProductsBrief(onNext: (json: any) => void) {
+        this.http.get("api/products/get-brief").map(response => response.json()).subscribe(onNext);
+    }
 
 	postProduct(data: string) {
 		var headers = new Headers();

@@ -1,4 +1,6 @@
-System.register(["rxjs/Rx", "angular2/http", "angular2/core"], function(exports_1) {
+System.register(["rxjs/Rx", "angular2/http", "angular2/core"], function(exports_1, context_1) {
+    "use strict";
+    var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
         var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
         if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -48,6 +50,9 @@ System.register(["rxjs/Rx", "angular2/http", "angular2/core"], function(exports_
                 };
                 ApiService.prototype.getProduct = function (id, onNext) {
                     this.http.get("api/products/" + id).map(function (response) { return response.json(); }).subscribe(onNext);
+                };
+                ApiService.prototype.getProductsBrief = function (onNext) {
+                    this.http.get("api/products/get-brief").map(function (response) { return response.json(); }).subscribe(onNext);
                 };
                 ApiService.prototype.postProduct = function (data) {
                     var headers = new http_1.Headers();
@@ -125,7 +130,7 @@ System.register(["rxjs/Rx", "angular2/http", "angular2/core"], function(exports_
                     __metadata('design:paramtypes', [http_1.Http])
                 ], ApiService);
                 return ApiService;
-            })();
+            }());
             exports_1("ApiService", ApiService);
         }
     }

@@ -1,0 +1,19 @@
+﻿.index-list button {
+    width: 135px;
+}
+
+.index-list button .brand {
+    width: 80px;
+    text-align: left;
+    white-space: nowrap; 
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.list-group-item {
+    width: 200px;
+    text-align: left;
+    white-space: nowrap; 
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

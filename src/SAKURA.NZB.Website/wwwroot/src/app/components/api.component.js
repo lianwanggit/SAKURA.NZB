@@ -1,4 +1,6 @@
-System.register(["angular2/core", "angular2/src/common/directives/core_directives", "./api.service"], function(exports_1) {
+System.register(["angular2/core", "angular2/src/common/directives/core_directives", "./api.service"], function(exports_1, context_1) {
+    "use strict";
+    var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
         var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
         if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -49,13 +51,12 @@ System.register(["angular2/core", "angular2/src/common/directives/core_directive
                         providers: [api_service_1.ApiService],
                         directives: core_directives_1.CORE_DIRECTIVES
                     }), 
-                    __metadata('design:paramtypes', [(typeof (_a = typeof api_service_1.ApiService !== 'undefined' && api_service_1.ApiService) === 'function' && _a) || Object])
+                    __metadata('design:paramtypes', [api_service_1.ApiService])
                 ], ApiComponent);
                 return ApiComponent;
-                var _a;
-            })();
+            }());
             exports_1("ApiComponent", ApiComponent);
         }
     }
 });
-//# sourceMappingURL=api.service.js.map
+//# sourceMappingURL=api.component.js.map

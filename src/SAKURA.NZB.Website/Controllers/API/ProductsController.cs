@@ -30,6 +30,15 @@ namespace SAKURA.NZB.Website.Controllers.API
 				.ToList());
 		}
 
+		[HttpGet("get-brief")]
+		public IActionResult GetBrief()
+		{
+			return new ObjectResult(_context.Products
+				.Include(p => p.Brand)				
+				.Select(p => new { Id = p.Id, Name = p.Name, Brand = p.Brand.Name })
+				.ToList());
+		}
+
 		[HttpGet("{id:int}", Name = "GetProduct")]
 		public IActionResult Get(int? id)
 		{

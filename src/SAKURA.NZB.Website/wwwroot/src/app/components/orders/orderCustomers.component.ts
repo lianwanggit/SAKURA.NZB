@@ -39,7 +39,6 @@ export class OrderCustomersComponent implements OnInit {
 	constructor(private service: ApiService) { }
 
 	ngOnInit() {
-		var that = this;
 		this.getCustomers();
 	}
 

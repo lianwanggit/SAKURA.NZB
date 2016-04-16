@@ -1,5 +1,7 @@
 /// <reference path="../../../../lib/TypeScript-Linq/Scripts/typings/System/Collections/Generic/List.ts" />
-System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.service", '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js'], function(exports_1) {
+System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.service", '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js'], function(exports_1, context_1) {
+    "use strict";
+    var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
         var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
         if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -38,7 +40,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     this.index = this.pinyin ? this.pinyin.charAt(0).toUpperCase() : 'A';
                 }
                 return Customer;
-            })();
+            }());
             exports_1("Customer", Customer);
             CustomersComponent = (function () {
                 function CustomersComponent(service, router) {
@@ -134,7 +136,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     __metadata('design:paramtypes', [api_service_1.ApiService, router_1.Router])
                 ], CustomersComponent);
                 return CustomersComponent;
-            })();
+            }());
             exports_1("CustomersComponent", CustomersComponent);
         }
     }
