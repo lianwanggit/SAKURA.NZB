@@ -60,11 +60,18 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     this.order.recipient = this.customerInfo.recipient;
                     this.order.phone = this.customerInfo.phone;
                     this.order.address = this.customerInfo.address;
-                    this.order.customerOrders = [];
+                    var coList = this.order.customerOrders.ToList();
+                    var cList = this.customerInfo.customers.ToList();
                     this.customerInfo.customers.forEach(function (c) {
-                        var co = new list_component_1.CustomerOrder(c.id, c.name, []);
-                        _this.order.customerOrders.push(co);
+                        if (coList.All(function (co) { return co.customerId != c.id; })) {
+                            var co = new list_component_1.CustomerOrder(c.id, c.name, []);
+                            _this.order.customerOrders.push(co);
+                        }
                     });
+                    for (var i = this.order.customerOrders.length; i--;) {
+                        if (cList.All(function (c) { return _this.order.customerOrders[i].customerId != c.id; }))
+                            this.order.customerOrders.splice(i, 1);
+                    }
                 };
                 Object.defineProperty(OrderEditComponent.prototype, "title", {
                     get: function () { return this.editMode ? "编辑订单 " : "新建订单"; },

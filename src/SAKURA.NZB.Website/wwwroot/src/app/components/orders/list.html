@@ -90,15 +90,15 @@
                                         <tr *ngIf="ico == 0 && imd == 0">
                                             <th>产品名</th>
                                             <th class="hidden-xs">单价</th>
-                                            <th class="hidden-xs">数量</th>
                                             <th class="hidden-xs">售价</th>
+                                            <th class="hidden-xs">数量</th>              
                                             <th>利润</th>
                                         </tr>
                                         <tr *ngFor="#op of co.orderProducts">
-                                            <td>{{op.productBrand}} {{op.productName}}</td>
-                                            <td class="hidden-xs">$ {{op.cost}}</td>
-                                            <td class="hidden-xs">{{op.qty}}</td>
+                                            <td>{{op.productBrand}} {{op.productName}}</td>                                            
+                                            <td class="hidden-xs">$ {{op.cost}}</td>                                         
                                             <td class="hidden-xs">¥ {{op.price}}</td>
+                                            <td class="hidden-xs">{{op.qty}}</td>
                                             <td>¥ {{op.strProfit}}</td>
                                         </tr>
                                         <tr class="summary" *ngIf="ico == md.customerOrders.length - 1">
@@ -110,10 +110,10 @@
                                                         <a [clipboard]="md.waybillNumber" href="http://www.flywayex.com/" target="_blank"><i class="fa fa-barcode fa-lg"></i>  {{md.waybillNumber}}</a>
                                                     </div>                                                                                                                                     
                                                 </div>
-                                            </td>
-                                            <td class="hidden-xs">$ {{md.totalCost}}</td>
-                                            <td class="hidden-xs">{{md.totalQty}}</td>
+                                            </td>                                  
+                                            <td class="hidden-xs">$ {{md.totalCost}}</td>                                 
                                             <td class="hidden-xs">¥ {{md.totalPrice}}</td>
+                                            <td class="hidden-xs">{{md.totalQty}}</td>
                                             <td>¥ {{md.strTotalProfit}}</td>
                                         </tr>
                                     </table>

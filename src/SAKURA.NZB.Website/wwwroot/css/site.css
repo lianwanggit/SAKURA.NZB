@@ -159,7 +159,7 @@ select.no-border:focus {
 
 .bg-info-light {
     color: #fff;
-    background-color: #61cadd;
+    background-color: #61cadd !important;
 }
 
 .bg-danger-dark {

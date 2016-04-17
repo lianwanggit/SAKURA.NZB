@@ -1,4 +1,4 @@
-System.register(["angular2/core", "angular2/common", "../api.service", "../../directives/brandIndexer.directive"], function(exports_1, context_1) {
+System.register(["angular2/core", "angular2/common", "../api.service", "../../directives/brandIndexer.directive", "./list.component", "../products/models"], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -10,7 +10,7 @@ System.register(["angular2/core", "angular2/common", "../api.service", "../../di
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, common_1, api_service_1, brandIndexer_directive_1;
+    var core_1, common_1, api_service_1, brandIndexer_directive_1, list_component_1, models_1;
     var OrderProductsComponent;
     return {
         setters:[
@@ -25,20 +25,54 @@ System.register(["angular2/core", "angular2/common", "../api.service", "../../di
             },
             function (brandIndexer_directive_1_1) {
                 brandIndexer_directive_1 = brandIndexer_directive_1_1;
+            },
+            function (list_component_1_1) {
+                list_component_1 = list_component_1_1;
+            },
+            function (models_1_1) {
+                models_1 = models_1_1;
             }],
         execute: function() {
             OrderProductsComponent = (function () {
                 function OrderProductsComponent(service) {
                     this.service = service;
-                    this.selectedId = '123';
+                    this.selectedCustomerId = '';
                 }
                 OrderProductsComponent.prototype.ngOnInit = function () {
                     this.getProducts();
                 };
                 OrderProductsComponent.prototype.ngOnChanges = function (changes) {
+                    if (this.customerOrders) {
+                    }
+                    console.log(JSON.stringify(changes));
                 };
                 OrderProductsComponent.prototype.onItemSelected = function (id) {
-                    this.selectedId = id;
+                    var _this = this;
+                    if (!this.customerOrders || !this.customerOrders.length)
+                        return;
+                    var coList = this.customerOrders.ToList();
+                    if (coList.All(function (co) { return co.customerId.toString() != _this.selectedCustomerId; }))
+                        this.selectedCustomerId = coList.First().customerId.toString();
+                    var co = coList.First(function (co) { return co.customerId.toString() == _this.selectedCustomerId; });
+                    var opList = co.orderProducts.ToList();
+                    var that = this;
+                    this.service.getProduct(id, function (json) {
+                        if (json) {
+                            var product = new models_1.Product(json);
+                            var op = opList.FirstOrDefault(function (p) { return p.productId == product.id; });
+                            if (!op) {
+                                var lowestCost = null;
+                                if (product.quotes.length)
+                                    lowestCost = product.quotes.ToList().Min(function (q) { return q.price; });
+                                co.orderProducts.push(new list_component_1.OrderProduct(product.id, product.brand.name, product.name, lowestCost, product.price, 1, 0));
+                            }
+                            else
+                                op.qty += 1;
+                        }
+                    });
+                };
+                OrderProductsComponent.prototype.onSelectCustomer = function (id) {
+                    this.selectedCustomerId = id;
                 };
                 OrderProductsComponent.prototype.getProducts = function () {
                     var that = this;
@@ -51,6 +85,8 @@ System.register(["angular2/core", "angular2/common", "../api.service", "../../di
                             that.itemSource = list.ToArray();
                         }
                     });
+                };
+                OrderProductsComponent.prototype.getFirstCustomer = function () {
                 };
                 Object.defineProperty(OrderProductsComponent.prototype, "data", {
                     get: function () { return JSON.stringify(this.customerOrders); },

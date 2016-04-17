@@ -51,11 +51,21 @@ export class OrderEditComponent implements OnInit {
 		this.order.phone = this.customerInfo.phone;
 		this.order.address = this.customerInfo.address;
 
-		this.order.customerOrders = [];
+		var coList = this.order.customerOrders.ToList<CustomerOrder>();
+		var cList = this.customerInfo.customers.ToList<CustomerKvp>();
+
 		this.customerInfo.customers.forEach(c => {
-			var co = new CustomerOrder(c.id, c.name, []);
-			this.order.customerOrders.push(co);
+			if (coList.All(co => co.customerId != c.id)) {
+				var co = new CustomerOrder(c.id, c.name, []);
+				this.order.customerOrders.push(co);
+			}			
 		});
+
+		for (var i = this.order.customerOrders.length; i--;) {
+			if (cList.All(c => this.order.customerOrders[i].customerId != c.id))
+				this.order.customerOrders.splice(i, 1);
+		}
+
 	}
 
 	get title() { return this.editMode ? "编辑订单 " : "新建订单"; }

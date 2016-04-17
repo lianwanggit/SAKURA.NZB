@@ -3,7 +3,21 @@
         <td>
             <brand-indexer [items]="itemSource" (selectionChanged)="onItemSelected($event)"></brand-indexer>
         </td>
-        <td class="product-details">{{data}} ---</td>
+        <td class="product-details">
+            <div class="card" *ngFor="#co of customerOrders; #ico = index">
+                <div class="card-header clickable" [ngClass]="{'bg-info-light': co.customerId == selectedCustomerId || (selectedCustomerId == '' && ico == 0)}" 
+                     (click)="onSelectCustomer(co.customerId)">
+                    <strong>{{co.customerName}}</strong>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item" *ngFor="#om of co.orderProducts; #iom = index">
+                        {{om.productBrand}} {{om.productName}}
+                    </li>
+                </ul>
+
+            </div>
+        </td>
     </tr>
 </table>
 
+{{data}}
