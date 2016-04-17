@@ -36,7 +36,6 @@ System.register(["angular2/core", "angular2/common", "../api.service", "../../di
                     this.getProducts();
                 };
                 OrderProductsComponent.prototype.ngOnChanges = function (changes) {
-                    console.log(JSON.stringify(changes));
                 };
                 OrderProductsComponent.prototype.onItemSelected = function (id) {
                     this.selectedId = id;
@@ -54,14 +53,14 @@ System.register(["angular2/core", "angular2/common", "../api.service", "../../di
                     });
                 };
                 Object.defineProperty(OrderProductsComponent.prototype, "data", {
-                    get: function () { return JSON.stringify(this.customers); },
+                    get: function () { return JSON.stringify(this.customerOrders); },
                     enumerable: true,
                     configurable: true
                 });
                 __decorate([
                     core_1.Input(), 
                     __metadata('design:type', Array)
-                ], OrderProductsComponent.prototype, "customers", void 0);
+                ], OrderProductsComponent.prototype, "customerOrders", void 0);
                 OrderProductsComponent = __decorate([
                     core_1.Component({
                         selector: "order-product",

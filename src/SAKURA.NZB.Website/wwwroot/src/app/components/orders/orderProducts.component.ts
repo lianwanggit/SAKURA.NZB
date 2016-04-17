@@ -3,7 +3,7 @@ import {CORE_DIRECTIVES, FORM_DIRECTIVES, ControlGroup, Control, Validators} fro
 
 import {ApiService} from "../api.service";
 import {BrandIndexerDirective, Item} from "../../directives/brandIndexer.directive";
-import {CustomerKvp} from "./orderCustomers.component";
+import {CustomerOrder, OrderModel} from "./list.component";
 
 @Component({
     selector: "order-product",
@@ -18,16 +18,16 @@ export class OrderProductsComponent implements OnInit, OnChanges  {
 	itemSource: Item[];
 	selectedId: string = '123';
 
-	@Input() customers: CustomerKvp[];
+	@Input() customerOrders: CustomerOrder[];
 	constructor(private service: ApiService) { }
 
 	ngOnInit() {
 		this.getProducts();
 	}
-	ngOnChanges(changes: { [propName: string]: SimpleChange }) {
-		console.log(JSON.stringify(changes));
-	}
 
+	ngOnChanges(changes: { [propName: string]: SimpleChange }) {
+		
+	}
 
 	onItemSelected(id: string) {
 		this.selectedId = id;
@@ -48,5 +48,5 @@ export class OrderProductsComponent implements OnInit, OnChanges  {
 		});
 	}
 
-	get data() { return JSON.stringify(this.customers); }
+	get data() { return JSON.stringify(this.customerOrders); }
 }

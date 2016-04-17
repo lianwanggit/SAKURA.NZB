@@ -29,7 +29,6 @@ export class OrderEditComponent implements OnInit {
 	orderStates = (new Dict()).orderStates;
 	paymentStates = (new Dict()).paymentStates;
 
-	customerOrders: CustomerOrder[] = [];
 	customerInfo: CustomerInfo; 
 
 	constructor(private service: ApiService, private router: Router, params: RouteParams) {
@@ -39,7 +38,7 @@ export class OrderEditComponent implements OnInit {
 		}
 
 		this.order = new OrderModel(null, null, null, null, "Created", "Unpaid", null, null, null, null,
-			null, null, null, null, null, this.orderStates, this.customerOrders);
+			null, null, null, null, null, this.orderStates, []);
 		this.customerInfo = new CustomerInfo(null, null, null);
 	}
 
@@ -48,7 +47,15 @@ export class OrderEditComponent implements OnInit {
 	}
 
 	onCustomersChanged(c: any) {
-		console.log(JSON.stringify(this.customerInfo));
+		this.order.recipient = this.customerInfo.recipient;
+		this.order.phone = this.customerInfo.phone;
+		this.order.address = this.customerInfo.address;
+
+		this.order.customerOrders = [];
+		this.customerInfo.customers.forEach(c => {
+			var co = new CustomerOrder(c.id, c.name, []);
+			this.order.customerOrders.push(co);
+		});
 	}
 
 	get title() { return this.editMode ? "编辑订单 " : "新建订单"; }

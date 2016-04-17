@@ -14,7 +14,7 @@
                 <order-customer [(customerInfo)]="customerInfo" (modelChange)="onCustomersChanged($event)"></order-customer>
             </div>
             <div role="tabpanel" class="tab-pane fade" id="product">
-                <order-product (customers)="customerInfo.customers"></order-product>
+                <order-product [customerOrders]="order.customerOrders"></order-product>
             </div>
             <div role="tabpanel" class="tab-pane fade" id="deliveryForm">..fs.</div>
             <div role="tabpanel" class="tab-pane fade" id="summary">df..d.</div>

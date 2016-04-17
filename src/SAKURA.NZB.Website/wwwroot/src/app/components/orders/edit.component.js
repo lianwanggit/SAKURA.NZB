@@ -45,19 +45,26 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     this.editMode = false;
                     this.orderStates = (new list_component_1.Dict()).orderStates;
                     this.paymentStates = (new list_component_1.Dict()).paymentStates;
-                    this.customerOrders = [];
                     this.orderId = params.get("id");
                     if (this.orderId) {
                         this.editMode = true;
                     }
-                    this.order = new list_component_1.OrderModel(null, null, null, null, "Created", "Unpaid", null, null, null, null, null, null, null, null, null, this.orderStates, this.customerOrders);
+                    this.order = new list_component_1.OrderModel(null, null, null, null, "Created", "Unpaid", null, null, null, null, null, null, null, null, null, this.orderStates, []);
                     this.customerInfo = new orderCustomers_component_1.CustomerInfo(null, null, null);
                 }
                 OrderEditComponent.prototype.ngOnInit = function () {
                     var that = this;
                 };
                 OrderEditComponent.prototype.onCustomersChanged = function (c) {
-                    console.log(JSON.stringify(this.customerInfo));
+                    var _this = this;
+                    this.order.recipient = this.customerInfo.recipient;
+                    this.order.phone = this.customerInfo.phone;
+                    this.order.address = this.customerInfo.address;
+                    this.order.customerOrders = [];
+                    this.customerInfo.customers.forEach(function (c) {
+                        var co = new list_component_1.CustomerOrder(c.id, c.name, []);
+                        _this.order.customerOrders.push(co);
+                    });
                 };
                 Object.defineProperty(OrderEditComponent.prototype, "title", {
                     get: function () { return this.editMode ? "编辑订单 " : "新建订单"; },
