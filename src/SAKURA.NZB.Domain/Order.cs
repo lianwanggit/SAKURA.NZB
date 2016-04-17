@@ -29,6 +29,7 @@ namespace SAKURA.NZB.Domain
 		[Required]
 		public string Recipient { get; set; }
 		[Phone]
+		[DataType(DataType.PhoneNumber)]
 		[Required]
 		public string Phone { get; set; }
 		[StringLength(100)]

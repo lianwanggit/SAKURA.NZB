@@ -11,9 +11,25 @@
 }
 
 .list-group-item {
-    width: 200px;
+    width: 210px;
+}
+
+.list-group-item .product {
+    width: 160px;
     text-align: left;
     white-space: nowrap; 
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.product-list {
+   min-width: 360px;
+}
+
+.list-group-item:hover .fa {
+    color: #5cb85c !important;
+}
+
+.input-group {
+    width: 100%;
 }

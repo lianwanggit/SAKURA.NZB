@@ -15,10 +15,12 @@ namespace SAKURA.NZB.Domain
 		public string NamePinYin { get; set; }
 
 		[Phone]
+		[DataType(DataType.PhoneNumber)]
 		[Required]
 		public string Phone1 { get; set; }
 
-		[StringLength(15)]
+		[Phone]
+		[DataType(DataType.PhoneNumber)]
 		public string Phone2 { get; set; }
 
 		[StringLength(100)]

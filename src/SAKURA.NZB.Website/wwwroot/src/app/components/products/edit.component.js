@@ -174,6 +174,20 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     enumerable: true,
                     configurable: true
                 });
+                Object.defineProperty(ProductEditComponent.prototype, "profit", {
+                    get: function () {
+                        var price = this.productForm.value.price;
+                        if (price && this.model.quotes.length > 0) {
+                            var lowQuote = this.model.quotes.ToList().Min(function (q) { return q.price; });
+                            if (lowQuote) {
+                                return (price - lowQuote * this.currentRate).toFixed(2);
+                            }
+                        }
+                        return '';
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
                 ProductEditComponent = __decorate([
                     core_1.Component({
                         selector: "product-edit",

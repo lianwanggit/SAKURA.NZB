@@ -47,6 +47,11 @@ export class OrderEditComponent implements OnInit {
 		var that = this;
 	}
 
+	onCustomersChanged(c: any) {
+		console.log(JSON.stringify(this.customerInfo));
+	}
+
 	get title() { return this.editMode ? "编辑订单 " : "新建订单"; }
 	get customerCount() { return this.customerInfo.customers.length; }
+	
 }

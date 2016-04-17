@@ -161,4 +161,16 @@ export class ProductEditComponent implements OnInit {
 
 		return false;
 	}
+
+	get profit() {
+		var price = this.productForm.value.price;
+		if (price && this.model.quotes.length > 0) {
+			var lowQuote = this.model.quotes.ToList<Quote>().Min(q => q.price);
+			if (lowQuote) {
+				return (price - lowQuote * this.currentRate).toFixed(2);
+			}
+		}
+
+		return '';
+	}
 }

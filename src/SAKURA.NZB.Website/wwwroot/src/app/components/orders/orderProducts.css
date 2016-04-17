@@ -1,2 +1,8 @@
-﻿body {
+﻿.products-container td {
+     vertical-align:top;
+}
+
+.product-details {   
+    padding-left: 20px;
+    width: 100%;
 }

@@ -18,7 +18,7 @@ namespace SAKURA.NZB.Website.Controllers.API
 		[HttpGet]
 		public IActionResult Get()
 		{
-			return new ObjectResult(_context.Brands.ToList());
+			return new ObjectResult(_context.Brands.OrderBy(b => b.Name).ToList());
 		}
 
 		[HttpGet("{id:int}", Name = "GetBrand")]

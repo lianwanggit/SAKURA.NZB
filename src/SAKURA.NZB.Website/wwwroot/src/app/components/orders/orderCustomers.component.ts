@@ -32,11 +32,18 @@ export class OrderCustomersComponent implements OnInit {
 
 	selectedExCustomerName = '';
 	allCustomers: CustomerKvp[] = [];
+	recipientGroup: ControlGroup;
 
 	@Input() customerInfo: CustomerInfo;
 	@Output() modelChange = new EventEmitter();
 
-	constructor(private service: ApiService) { }
+	constructor(private service: ApiService) {
+		this.recipientGroup = new ControlGroup({
+			recipient: new Control(null, Validators.required),
+			phone: new Control(null, Validators.required),
+			address: new Control(null, Validators.required)
+		});
+	}
 
 	ngOnInit() {
 		this.getCustomers();
@@ -48,10 +55,12 @@ export class OrderCustomersComponent implements OnInit {
 
 	onSelectPhone(phone: string) {
 		this.customerInfo.phone = phone;
+		this.onModelChanged(phone);
 	}
 
 	onSelectAddress(address: string) {
 		this.customerInfo.address = address;
+		this.onModelChanged(address)
 	}
 
 	onSelectExCustomer(e: any) {
@@ -61,15 +70,27 @@ export class OrderCustomersComponent implements OnInit {
 			return;
 
 		this.customerInfo.customers.push(e.item);
+		this.onModelChanged(e.item);
 	}
 
 	onRemoveExCustomer(id: string) {
-		for (var i = this.customerInfo.customers.length - 1; i--;) {
+		for (var i = this.customerInfo.customers.length; i--;) {
 			if (this.customerInfo.customers[i].id.toString() == id) {
 				this.customerInfo.customers.splice(i, 1);
+				this.onModelChanged(id);
 				return;
 			} 
 		}
+	}
+
+	onModelChanged(newValue: any, updateRecipient = false) {
+		if (updateRecipient) {
+			this.customerInfo.recipient = this.recipientGroup.value.recipient;
+			this.customerInfo.phone = this.recipientGroup.value.phone;
+			this.customerInfo.address = this.recipientGroup.value.address;
+		}
+		
+		this.modelChange.emit(newValue);
 	}
 
 	getCustomer(id: string) {
@@ -78,13 +99,15 @@ export class OrderCustomersComponent implements OnInit {
         this.service.getCustomer(id, json => {
             if (json) {
                 that.selectedCustomer = new Customer(json);
-				that.customerInfo.recipient = that.selectedCustomer.fullName;
-				that.customerInfo.phone = that.selectedCustomer.phone1;
-				that.customerInfo.address = that.selectedCustomer.address;
+
+				(<any>that.recipientGroup.controls['recipient']).updateValue(that.selectedCustomer.fullName);
+				(<any>that.recipientGroup.controls['phone']).updateValue(that.selectedCustomer.phone1);
+				(<any>that.recipientGroup.controls['address']).updateValue(that.selectedCustomer.address);
 
 				var kvp = new CustomerKvp(that.selectedCustomer.id, that.selectedCustomer.fullName);
-				this.customerInfo.customers = [];
+				that.customerInfo.customers = [];
 				that.customerInfo.customers.push(kvp);
+				that.onModelChanged(that.customerInfo, true);
             }
         });
 	}

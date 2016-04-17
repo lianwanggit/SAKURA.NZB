@@ -11,10 +11,10 @@
 
         <div class="tab-content">
             <div role="tabpanel" class="tab-pane fade in active" id="customer">
-                <order-customer [(customerInfo)]="customerInfo"></order-customer>
+                <order-customer [(customerInfo)]="customerInfo" (modelChange)="onCustomersChanged($event)"></order-customer>
             </div>
             <div role="tabpanel" class="tab-pane fade" id="product">
-                <order-product></order-product>
+                <order-product (customers)="customerInfo.customers"></order-product>
             </div>
             <div role="tabpanel" class="tab-pane fade" id="deliveryForm">..fs.</div>
             <div role="tabpanel" class="tab-pane fade" id="summary">df..d.</div>

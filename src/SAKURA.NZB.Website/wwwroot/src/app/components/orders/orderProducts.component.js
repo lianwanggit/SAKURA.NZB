@@ -35,6 +35,9 @@ System.register(["angular2/core", "angular2/common", "../api.service", "../../di
                 OrderProductsComponent.prototype.ngOnInit = function () {
                     this.getProducts();
                 };
+                OrderProductsComponent.prototype.ngOnChanges = function (changes) {
+                    console.log(JSON.stringify(changes));
+                };
                 OrderProductsComponent.prototype.onItemSelected = function (id) {
                     this.selectedId = id;
                 };
@@ -51,15 +54,20 @@ System.register(["angular2/core", "angular2/common", "../api.service", "../../di
                     });
                 };
                 Object.defineProperty(OrderProductsComponent.prototype, "data", {
-                    get: function () { return JSON.stringify(this.itemSource); },
+                    get: function () { return JSON.stringify(this.customers); },
                     enumerable: true,
                     configurable: true
                 });
+                __decorate([
+                    core_1.Input(), 
+                    __metadata('design:type', Array)
+                ], OrderProductsComponent.prototype, "customers", void 0);
                 OrderProductsComponent = __decorate([
                     core_1.Component({
                         selector: "order-product",
                         templateUrl: "./src/app/components/orders/orderProducts.html",
-                        styleUrls: ["./src/app/components/orders/orderProducts.css"],
+                        styleUrls: ["./src/app/components/orders/orderCustomers.css",
+                            "./src/app/components/orders/orderProducts.css"],
                         providers: [api_service_1.ApiService],
                         directives: [common_1.CORE_DIRECTIVES, common_1.FORM_DIRECTIVES, brandIndexer_directive_1.BrandIndexerDirective]
                     }), 

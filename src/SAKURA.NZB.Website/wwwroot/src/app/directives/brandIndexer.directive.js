@@ -49,7 +49,6 @@ System.register(["angular2/core", "angular2/common", '../../../lib/TypeScript-Li
                     this.filterText = '';
                     this._filterText = '';
                     this._brand = '';
-                    this._selectedId = '';
                     this.height = 500;
                     this.selectionChanged = new core_1.EventEmitter();
                 }
@@ -106,18 +105,12 @@ System.register(["angular2/core", "angular2/common", '../../../lib/TypeScript-Li
                 };
                 BrandIndexerDirective.prototype.onClickElement = function (id) {
                     var _this = this;
-                    if (this._selectedId == id)
-                        return;
                     this.items.forEach(function (x) {
                         if (x.id.toString() == id) {
-                            x.selected = true;
                             _this.selectedId = id;
                             _this.selectionChanged.emit(id);
                         }
-                        else
-                            x.selected = false;
                     });
-                    this._selectedId = id;
                 };
                 BrandIndexerDirective.prototype.clearIndexSelection = function () {
                     var _this = this;
@@ -125,13 +118,6 @@ System.register(["angular2/core", "angular2/common", '../../../lib/TypeScript-Li
                     if (index)
                         index.selected = false;
                     this._brand = '';
-                };
-                BrandIndexerDirective.prototype.clearElementSelection = function () {
-                    var _this = this;
-                    var element = this.items.ToList().FirstOrDefault(function (x) { return x.id.toString() == _this._selectedId; });
-                    if (element)
-                        element.selected = false;
-                    this._selectedId = '';
                 };
                 BrandIndexerDirective.prototype.includes = function (str, search) {
                     if (search.length > str.length) {

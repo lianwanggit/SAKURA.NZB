@@ -56,6 +56,9 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                 OrderEditComponent.prototype.ngOnInit = function () {
                     var that = this;
                 };
+                OrderEditComponent.prototype.onCustomersChanged = function (c) {
+                    console.log(JSON.stringify(this.customerInfo));
+                };
                 Object.defineProperty(OrderEditComponent.prototype, "title", {
                     get: function () { return this.editMode ? "编辑订单 " : "新建订单"; },
                     enumerable: true,

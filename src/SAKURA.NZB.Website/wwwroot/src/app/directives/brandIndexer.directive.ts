@@ -30,7 +30,6 @@ export class BrandIndexerDirective implements OnChanges {
 	filterText = '';
 	private _filterText = '';
 	private _brand = '';
-	private _selectedId = '';
 
 	@Input() items: Item[];
 	@Input() selectedId: string;
@@ -102,19 +101,13 @@ export class BrandIndexerDirective implements OnChanges {
 	}
 
 	onClickElement(id: string) {
-		if (this._selectedId == id) return;
-
 		this.items.forEach(x => {
 			if (x.id.toString() == id) {
-				x.selected = true;
 				this.selectedId = id;
 				this.selectionChanged.emit(id);
 			}
-			else
-				x.selected = false;
 		});
 
-		this._selectedId = id;
 	}
 
 	clearIndexSelection() {
@@ -122,14 +115,6 @@ export class BrandIndexerDirective implements OnChanges {
 		if (index)
 			index.selected = false;
 		this._brand = '';
-	}
-
-	clearElementSelection() {
-		var element = this.items.ToList<Item>().FirstOrDefault(x => x.id.toString() == this._selectedId);
-		if (element)
-			element.selected = false;
-
-		this._selectedId = '';
 	}
 
 	includes(str:string, search:string) {

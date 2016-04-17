@@ -63,6 +63,11 @@ System.register(["angular2/core", "angular2/common", "../api.service", "../../di
                     this.selectedExCustomerName = '';
                     this.allCustomers = [];
                     this.modelChange = new core_1.EventEmitter();
+                    this.recipientGroup = new common_1.ControlGroup({
+                        recipient: new common_1.Control(null, common_1.Validators.required),
+                        phone: new common_1.Control(null, common_1.Validators.required),
+                        address: new common_1.Control(null, common_1.Validators.required)
+                    });
                 }
                 OrderCustomersComponent.prototype.ngOnInit = function () {
                     this.getCustomers();
@@ -72,9 +77,11 @@ System.register(["angular2/core", "angular2/common", "../api.service", "../../di
                 };
                 OrderCustomersComponent.prototype.onSelectPhone = function (phone) {
                     this.customerInfo.phone = phone;
+                    this.onModelChanged(phone);
                 };
                 OrderCustomersComponent.prototype.onSelectAddress = function (address) {
                     this.customerInfo.address = address;
+                    this.onModelChanged(address);
                 };
                 OrderCustomersComponent.prototype.onSelectExCustomer = function (e) {
                     var _this = this;
@@ -82,27 +89,38 @@ System.register(["angular2/core", "angular2/common", "../api.service", "../../di
                     if (e.item.id == this.selectedCustomer.id)
                         return;
                     this.customerInfo.customers.push(e.item);
+                    this.onModelChanged(e.item);
                 };
                 OrderCustomersComponent.prototype.onRemoveExCustomer = function (id) {
-                    for (var i = this.customerInfo.customers.length - 1; i--;) {
+                    for (var i = this.customerInfo.customers.length; i--;) {
                         if (this.customerInfo.customers[i].id.toString() == id) {
                             this.customerInfo.customers.splice(i, 1);
+                            this.onModelChanged(id);
                             return;
                         }
                     }
                 };
+                OrderCustomersComponent.prototype.onModelChanged = function (newValue, updateRecipient) {
+                    if (updateRecipient === void 0) { updateRecipient = false; }
+                    if (updateRecipient) {
+                        this.customerInfo.recipient = this.recipientGroup.value.recipient;
+                        this.customerInfo.phone = this.recipientGroup.value.phone;
+                        this.customerInfo.address = this.recipientGroup.value.address;
+                    }
+                    this.modelChange.emit(newValue);
+                };
                 OrderCustomersComponent.prototype.getCustomer = function (id) {
-                    var _this = this;
                     var that = this;
                     this.service.getCustomer(id, function (json) {
                         if (json) {
                             that.selectedCustomer = new edit_component_1.Customer(json);
-                            that.customerInfo.recipient = that.selectedCustomer.fullName;
-                            that.customerInfo.phone = that.selectedCustomer.phone1;
-                            that.customerInfo.address = that.selectedCustomer.address;
+                            that.recipientGroup.controls['recipient'].updateValue(that.selectedCustomer.fullName);
+                            that.recipientGroup.controls['phone'].updateValue(that.selectedCustomer.phone1);
+                            that.recipientGroup.controls['address'].updateValue(that.selectedCustomer.address);
                             var kvp = new CustomerKvp(that.selectedCustomer.id, that.selectedCustomer.fullName);
-                            _this.customerInfo.customers = [];
+                            that.customerInfo.customers = [];
                             that.customerInfo.customers.push(kvp);
+                            that.onModelChanged(that.customerInfo, true);
                         }
                     });
                 };

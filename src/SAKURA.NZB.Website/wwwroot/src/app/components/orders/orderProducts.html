@@ -1,4 +1,9 @@
-﻿<h1> Order Products</h1>
+﻿<table class="products-container">
+    <tr>
+        <td>
+            <brand-indexer [items]="itemSource" (selectionChanged)="onItemSelected($event)"></brand-indexer>
+        </td>
+        <td class="product-details">{{data}}fdsfdsa</td>
+    </tr>
+</table>
 
-{{'sdf: ' + selectedId}}
-<brand-indexer [items]="itemSource" (selectionChanged)="onItemSelected($event)"></brand-indexer>

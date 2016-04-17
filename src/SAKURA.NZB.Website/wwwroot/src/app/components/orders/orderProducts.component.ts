@@ -1,27 +1,33 @@
-﻿import {Component, OnInit, EventEmitter, Input, Output} from "angular2/core";
+﻿import {Component, OnInit, EventEmitter, Input, Output, OnChanges} from "angular2/core";
 import {CORE_DIRECTIVES, FORM_DIRECTIVES, ControlGroup, Control, Validators} from "angular2/common";
 
 import {ApiService} from "../api.service";
 import {BrandIndexerDirective, Item} from "../../directives/brandIndexer.directive";
-import {} from "../customers/edit.component";
+import {CustomerKvp} from "./orderCustomers.component";
 
 @Component({
     selector: "order-product",
     templateUrl: "./src/app/components/orders/orderProducts.html",
-	styleUrls: ["./src/app/components/orders/orderProducts.css"],
+	styleUrls: ["./src/app/components/orders/orderCustomers.css",
+		"./src/app/components/orders/orderProducts.css"],
     providers: [ApiService],
     directives: [CORE_DIRECTIVES, FORM_DIRECTIVES, BrandIndexerDirective]
 })
 
-export class OrderProductsComponent implements OnInit {
+export class OrderProductsComponent implements OnInit, OnChanges  {
 	itemSource: Item[];
 	selectedId: string = '123';
 
+	@Input() customers: CustomerKvp[];
 	constructor(private service: ApiService) { }
 
 	ngOnInit() {
 		this.getProducts();
 	}
+	ngOnChanges(changes: { [propName: string]: SimpleChange }) {
+		console.log(JSON.stringify(changes));
+	}
+
 
 	onItemSelected(id: string) {
 		this.selectedId = id;
@@ -38,12 +44,9 @@ export class OrderProductsComponent implements OnInit {
 				});
 
 				that.itemSource = list.ToArray();
-
-
-
 			}
 		});
 	}
 
-	get data() { return JSON.stringify(this.itemSource); }
+	get data() { return JSON.stringify(this.customers); }
 }

@@ -26,7 +26,8 @@ namespace SAKURA.NZB.Website.Controllers.API
 				.Include(p => p.Quotes).ThenInclude(q => q.Supplier)
 				.Include(p => p.Images)
 				.OrderBy(p => p.CategoryId)
-				.ThenBy(p => p.BrandId)
+				.ThenBy(p => p.Brand.Name)
+				.ThenBy(p => p.Name)
 				.ToList());
 		}
 
