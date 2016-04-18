@@ -3,19 +3,13 @@ import {CORE_DIRECTIVES, FORM_DIRECTIVES, ControlGroup, Control, Validators} fro
 
 import {ApiService} from "../api.service";
 import {AlphaIndexerDirective, Element} from "../../directives/alphaIndexer.directive";
+import {CustomerOrder, OrderProduct, OrderModel} from "./list.component";
 import {Customer} from "../customers/edit.component";
 
 import {TYPEAHEAD_DIRECTIVES} from "ng2-bootstrap/ng2-bootstrap";
 
 export class CustomerKvp{
 	constructor(public id: number, public name: string) { }
-}
-
-export class CustomerInfo {
-	customers: CustomerKvp[] = [];
-	constructor(public recipient: string, public phone: string, public address: string) { }
-
-	get exCustomers() { return this.customers.length == 0 ? [] : this.customers.slice(1); }
 }
 
 @Component({
@@ -34,7 +28,7 @@ export class OrderCustomersComponent implements OnInit {
 	allCustomers: CustomerKvp[] = [];
 	recipientGroup: ControlGroup;
 
-	@Input() customerInfo: CustomerInfo;
+	@Input() orderModel: OrderModel;
 	@Output() modelChange = new EventEmitter();
 
 	constructor(private service: ApiService) {
@@ -54,12 +48,14 @@ export class OrderCustomersComponent implements OnInit {
 	}
 
 	onSelectPhone(phone: string) {
-		this.customerInfo.phone = phone;
+		this.orderModel.phone = phone;
+		(<any>this.recipientGroup.controls['phone']).updateValue(phone);
 		this.onModelChanged(phone);
 	}
 
 	onSelectAddress(address: string) {
-		this.customerInfo.address = address;
+		this.orderModel.address = address;
+		(<any>this.recipientGroup.controls['address']).updateValue(address);
 		this.onModelChanged(address)
 	}
 
@@ -69,14 +65,15 @@ export class OrderCustomersComponent implements OnInit {
 		if (e.item.id == this.selectedCustomer.id)
 			return;
 
-		this.customerInfo.customers.push(e.item);
-		this.onModelChanged(e.item);
+		var co = new CustomerOrder(e.item.id, e.item.name, []);
+		this.orderModel.customerOrders.push(co);
+		this.onModelChanged(co);
 	}
 
 	onRemoveExCustomer(id: string) {
-		for (var i = this.customerInfo.customers.length; i--;) {
-			if (this.customerInfo.customers[i].id.toString() == id) {
-				this.customerInfo.customers.splice(i, 1);
+		for (var i = this.orderModel.customerOrders.length; i--;) {
+			if (this.orderModel.customerOrders[i].customerId.toString() == id) {
+				this.orderModel.customerOrders.splice(i, 1);
 				this.onModelChanged(id);
 				return;
 			} 
@@ -85,9 +82,9 @@ export class OrderCustomersComponent implements OnInit {
 
 	onModelChanged(newValue: any, updateRecipient = false) {
 		if (updateRecipient) {
-			this.customerInfo.recipient = this.recipientGroup.value.recipient;
-			this.customerInfo.phone = this.recipientGroup.value.phone;
-			this.customerInfo.address = this.recipientGroup.value.address;
+			this.orderModel.recipient = this.recipientGroup.value.recipient;
+			this.orderModel.phone = this.recipientGroup.value.phone;
+			this.orderModel.address = this.recipientGroup.value.address;
 		}
 		
 		this.modelChange.emit(newValue);
@@ -103,11 +100,11 @@ export class OrderCustomersComponent implements OnInit {
 				(<any>that.recipientGroup.controls['recipient']).updateValue(that.selectedCustomer.fullName);
 				(<any>that.recipientGroup.controls['phone']).updateValue(that.selectedCustomer.phone1);
 				(<any>that.recipientGroup.controls['address']).updateValue(that.selectedCustomer.address);
-
-				var kvp = new CustomerKvp(that.selectedCustomer.id, that.selectedCustomer.fullName);
-				that.customerInfo.customers = [];
-				that.customerInfo.customers.push(kvp);
-				that.onModelChanged(that.customerInfo, true);
+				
+				var co = new CustomerOrder(that.selectedCustomer.id, that.selectedCustomer.fullName, []);
+				that.orderModel.customerOrders = [];
+				that.orderModel.customerOrders.push(co);
+				that.onModelChanged(co, true);
             }
         });
 	}
@@ -130,4 +127,6 @@ export class OrderCustomersComponent implements OnInit {
 			}
 		});
 	}
+
+	get exCustomers() { return this.orderModel.customerOrders.length == 0 ? [] : this.orderModel.customerOrders.slice(1); }
 }

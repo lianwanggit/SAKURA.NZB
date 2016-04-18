@@ -50,28 +50,11 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                         this.editMode = true;
                     }
                     this.order = new list_component_1.OrderModel(null, null, null, null, "Created", "Unpaid", null, null, null, null, null, null, null, null, null, this.orderStates, []);
-                    this.customerInfo = new orderCustomers_component_1.CustomerInfo(null, null, null);
                 }
                 OrderEditComponent.prototype.ngOnInit = function () {
                     var that = this;
                 };
                 OrderEditComponent.prototype.onCustomersChanged = function (c) {
-                    var _this = this;
-                    this.order.recipient = this.customerInfo.recipient;
-                    this.order.phone = this.customerInfo.phone;
-                    this.order.address = this.customerInfo.address;
-                    var coList = this.order.customerOrders.ToList();
-                    var cList = this.customerInfo.customers.ToList();
-                    this.customerInfo.customers.forEach(function (c) {
-                        if (coList.All(function (co) { return co.customerId != c.id; })) {
-                            var co = new list_component_1.CustomerOrder(c.id, c.name, []);
-                            _this.order.customerOrders.push(co);
-                        }
-                    });
-                    for (var i = this.order.customerOrders.length; i--;) {
-                        if (cList.All(function (c) { return _this.order.customerOrders[i].customerId != c.id; }))
-                            this.order.customerOrders.splice(i, 1);
-                    }
                 };
                 Object.defineProperty(OrderEditComponent.prototype, "title", {
                     get: function () { return this.editMode ? "编辑订单 " : "新建订单"; },
@@ -79,7 +62,12 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     configurable: true
                 });
                 Object.defineProperty(OrderEditComponent.prototype, "customerCount", {
-                    get: function () { return this.customerInfo.customers.length; },
+                    get: function () { return this.order.customerOrders.length; },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(OrderEditComponent.prototype, "data", {
+                    get: function () { return JSON.stringify(this.order); },
                     enumerable: true,
                     configurable: true
                 });

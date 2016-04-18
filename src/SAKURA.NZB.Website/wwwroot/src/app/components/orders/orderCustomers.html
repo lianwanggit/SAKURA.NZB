@@ -40,9 +40,9 @@
 
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">
-                        <div class="token" *ngFor="#ec of customerInfo.exCustomers">
-                            <span class="token-label" style="max-width: 620px;">{{ec.name}}</span>
-                            <a (click)="onRemoveExCustomer(ec.id)" class="close" tabindex="-1"><i class="fa fa-remove"></i></a>
+                        <div class="token" *ngFor="#ec of exCustomers">
+                            <span class="token-label" style="max-width: 620px;">{{ec.customerName}}</span>
+                            <a (click)="onRemoveExCustomer(ec.customerId)" class="close" tabindex="-1"><i class="fa fa-remove"></i></a>
                         </div>
 
                         <div class="input-group">

@@ -1,4 +1,4 @@
-System.register(["angular2/core", "angular2/common", "../api.service", "../../directives/alphaIndexer.directive", "../customers/edit.component", "ng2-bootstrap/ng2-bootstrap"], function(exports_1, context_1) {
+System.register(["angular2/core", "angular2/common", "../api.service", "../../directives/alphaIndexer.directive", "./list.component", "../customers/edit.component", "ng2-bootstrap/ng2-bootstrap"], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -10,8 +10,8 @@ System.register(["angular2/core", "angular2/common", "../api.service", "../../di
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, common_1, api_service_1, alphaIndexer_directive_1, edit_component_1, ng2_bootstrap_1;
-    var CustomerKvp, CustomerInfo, OrderCustomersComponent;
+    var core_1, common_1, api_service_1, alphaIndexer_directive_1, list_component_1, edit_component_1, ng2_bootstrap_1;
+    var CustomerKvp, OrderCustomersComponent;
     return {
         setters:[
             function (core_1_1) {
@@ -25,6 +25,9 @@ System.register(["angular2/core", "angular2/common", "../api.service", "../../di
             },
             function (alphaIndexer_directive_1_1) {
                 alphaIndexer_directive_1 = alphaIndexer_directive_1_1;
+            },
+            function (list_component_1_1) {
+                list_component_1 = list_component_1_1;
             },
             function (edit_component_1_1) {
                 edit_component_1 = edit_component_1_1;
@@ -41,21 +44,6 @@ System.register(["angular2/core", "angular2/common", "../api.service", "../../di
                 return CustomerKvp;
             }());
             exports_1("CustomerKvp", CustomerKvp);
-            CustomerInfo = (function () {
-                function CustomerInfo(recipient, phone, address) {
-                    this.recipient = recipient;
-                    this.phone = phone;
-                    this.address = address;
-                    this.customers = [];
-                }
-                Object.defineProperty(CustomerInfo.prototype, "exCustomers", {
-                    get: function () { return this.customers.length == 0 ? [] : this.customers.slice(1); },
-                    enumerable: true,
-                    configurable: true
-                });
-                return CustomerInfo;
-            }());
-            exports_1("CustomerInfo", CustomerInfo);
             OrderCustomersComponent = (function () {
                 function OrderCustomersComponent(service) {
                     this.service = service;
@@ -76,11 +64,13 @@ System.register(["angular2/core", "angular2/common", "../api.service", "../../di
                     this.getCustomer(id);
                 };
                 OrderCustomersComponent.prototype.onSelectPhone = function (phone) {
-                    this.customerInfo.phone = phone;
+                    this.orderModel.phone = phone;
+                    this.recipientGroup.controls['phone'].updateValue(phone);
                     this.onModelChanged(phone);
                 };
                 OrderCustomersComponent.prototype.onSelectAddress = function (address) {
-                    this.customerInfo.address = address;
+                    this.orderModel.address = address;
+                    this.recipientGroup.controls['address'].updateValue(address);
                     this.onModelChanged(address);
                 };
                 OrderCustomersComponent.prototype.onSelectExCustomer = function (e) {
@@ -88,13 +78,14 @@ System.register(["angular2/core", "angular2/common", "../api.service", "../../di
                     setTimeout(function (_) { return _this.selectedExCustomerName = ''; }, 300);
                     if (e.item.id == this.selectedCustomer.id)
                         return;
-                    this.customerInfo.customers.push(e.item);
-                    this.onModelChanged(e.item);
+                    var co = new list_component_1.CustomerOrder(e.item.id, e.item.name, []);
+                    this.orderModel.customerOrders.push(co);
+                    this.onModelChanged(co);
                 };
                 OrderCustomersComponent.prototype.onRemoveExCustomer = function (id) {
-                    for (var i = this.customerInfo.customers.length; i--;) {
-                        if (this.customerInfo.customers[i].id.toString() == id) {
-                            this.customerInfo.customers.splice(i, 1);
+                    for (var i = this.orderModel.customerOrders.length; i--;) {
+                        if (this.orderModel.customerOrders[i].customerId.toString() == id) {
+                            this.orderModel.customerOrders.splice(i, 1);
                             this.onModelChanged(id);
                             return;
                         }
@@ -103,9 +94,9 @@ System.register(["angular2/core", "angular2/common", "../api.service", "../../di
                 OrderCustomersComponent.prototype.onModelChanged = function (newValue, updateRecipient) {
                     if (updateRecipient === void 0) { updateRecipient = false; }
                     if (updateRecipient) {
-                        this.customerInfo.recipient = this.recipientGroup.value.recipient;
-                        this.customerInfo.phone = this.recipientGroup.value.phone;
-                        this.customerInfo.address = this.recipientGroup.value.address;
+                        this.orderModel.recipient = this.recipientGroup.value.recipient;
+                        this.orderModel.phone = this.recipientGroup.value.phone;
+                        this.orderModel.address = this.recipientGroup.value.address;
                     }
                     this.modelChange.emit(newValue);
                 };
@@ -117,10 +108,10 @@ System.register(["angular2/core", "angular2/common", "../api.service", "../../di
                             that.recipientGroup.controls['recipient'].updateValue(that.selectedCustomer.fullName);
                             that.recipientGroup.controls['phone'].updateValue(that.selectedCustomer.phone1);
                             that.recipientGroup.controls['address'].updateValue(that.selectedCustomer.address);
-                            var kvp = new CustomerKvp(that.selectedCustomer.id, that.selectedCustomer.fullName);
-                            that.customerInfo.customers = [];
-                            that.customerInfo.customers.push(kvp);
-                            that.onModelChanged(that.customerInfo, true);
+                            var co = new list_component_1.CustomerOrder(that.selectedCustomer.id, that.selectedCustomer.fullName, []);
+                            that.orderModel.customerOrders = [];
+                            that.orderModel.customerOrders.push(co);
+                            that.onModelChanged(co, true);
                         }
                     });
                 };
@@ -139,10 +130,15 @@ System.register(["angular2/core", "angular2/common", "../api.service", "../../di
                         }
                     });
                 };
+                Object.defineProperty(OrderCustomersComponent.prototype, "exCustomers", {
+                    get: function () { return this.orderModel.customerOrders.length == 0 ? [] : this.orderModel.customerOrders.slice(1); },
+                    enumerable: true,
+                    configurable: true
+                });
                 __decorate([
                     core_1.Input(), 
-                    __metadata('design:type', CustomerInfo)
-                ], OrderCustomersComponent.prototype, "customerInfo", void 0);
+                    __metadata('design:type', list_component_1.OrderModel)
+                ], OrderCustomersComponent.prototype, "orderModel", void 0);
                 __decorate([
                     core_1.Output(), 
                     __metadata('design:type', Object)
