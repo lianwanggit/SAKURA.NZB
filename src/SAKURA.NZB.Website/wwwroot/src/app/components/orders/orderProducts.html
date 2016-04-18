@@ -5,19 +5,37 @@
         </td>
         <td class="product-details">
             <div class="card" *ngFor="#co of customerOrders; #ico = index">
-                <div class="card-header clickable" [ngClass]="{'bg-info-light': co.customerId == selectedCustomerId || (selectedCustomerId == '' && ico == 0)}" 
+                <div class="card-header clickable" [ngClass]="{'bg-info-light': co.customerId == selectedCustomerId || (selectedCustomerId == '' && ico == 0)}"
                      (click)="onSelectCustomer(co.customerId)">
                     <strong>{{co.customerName}}</strong>
                 </div>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item" *ngFor="#om of co.orderProducts; #iom = index">
-                        {{om.productBrand}} {{om.productName}}
-                    </li>
-                </ul>
+                <div class="card-block">
+                    <div class="alert alert-info" role="alert" *ngIf="co.orderProducts.length == 0"><i class="fa fa-warning"></i> 请选择产品</div>
 
+                    <table class="table product-table" *ngIf="co.orderProducts.length > 0">
+                        <thead>
+                            <tr>
+                                <th width="30px">#</th>
+                                <th>产品</th>
+                                <th width="90px">单价($)</th>
+                                <th width="90px">售价(¥)</th>
+                                <th width="70px">数量</th>
+                                <th width="30px"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="#om of co.orderProducts; #iom = index">
+                                <td>{{iom + 1}}</td>
+                                <td>{{om.productBrand}} {{om.productName}}</td>
+                                <td><input class="form-control no-border" [(ngModel)]="om.cost" min="1" placeholder="NZD" step="0.01" type="number"/></td>
+                                <td><input class="form-control no-border" [(ngModel)]="om.price" min="1" placeholder="CNY" step="0.01" type="number"/></td>
+                                <td><input class="form-control no-border" [(ngModel)]="om.qty" min="1" step="1" type="number"/></td>
+                                <td (click)="onRemoveItem(co.customerId, om.productId)" class="clickable"><i class="fa fa-remove"></i></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>     
             </div>
         </td>
     </tr>
 </table>
-
-{{data}}

@@ -127,7 +127,11 @@ export class CustomerOrder {
 	totalProfit: number;
 	strTotalProfit: string;
 
-	constructor(public customerId: number, public customerName: string, public orderProducts: OrderProduct[]) {
+	constructor(public customerId: number, public customerName: string, public orderProducts: OrderProduct[]) {		
+		this.updateSummary();
+	}
+
+	updateSummary() {
 		var list = this.orderProducts.ToList<OrderProduct>();
 		this.totalCost = list.Sum(op => op.cost * op.qty);
 		this.totalPrice = list.Sum(op => op.price * op.qty);

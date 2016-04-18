@@ -48,5 +48,9 @@ export class OrderEditComponent implements OnInit {
 
 	get title() { return this.editMode ? "编辑订单 " : "新建订单"; }
 	get customerCount() { return this.order.customerOrders.length; }
+	get productCount() {
+		return this.order.customerOrders.ToList<CustomerOrder>()
+			.Sum(co => co.orderProducts.ToList<OrderProduct>().Sum(op => op.qty));
+	}
 	get data() { return JSON.stringify(this.order); }
 }

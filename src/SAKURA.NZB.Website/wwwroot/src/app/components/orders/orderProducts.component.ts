@@ -61,6 +61,18 @@ export class OrderProductsComponent implements OnInit, OnChanges {
 		});
 	}
 
+	onRemoveItem(cid: number, pid: number) {
+		var co = this.customerOrders.ToList<CustomerOrder>().FirstOrDefault(c => c.customerId == cid);
+		if (!co) return;
+
+		for (var i = co.orderProducts.length; i--;) {
+			if (co.orderProducts[i].productId == pid) {
+				co.orderProducts.splice(i, 1);
+				return;
+			}
+		}
+	}
+
 	onSelectCustomer(id: string) {
 		this.selectedCustomerId = id;
 	}
@@ -78,10 +90,6 @@ export class OrderProductsComponent implements OnInit, OnChanges {
 				that.itemSource = list.ToArray();
 			}
 		});
-	}
-
-	getFirstCustomer() {
-
 	}
 
 	get data() { return JSON.stringify(this.customerOrders); }

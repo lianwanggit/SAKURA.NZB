@@ -71,6 +71,17 @@ System.register(["angular2/core", "angular2/common", "../api.service", "../../di
                         }
                     });
                 };
+                OrderProductsComponent.prototype.onRemoveItem = function (cid, pid) {
+                    var co = this.customerOrders.ToList().FirstOrDefault(function (c) { return c.customerId == cid; });
+                    if (!co)
+                        return;
+                    for (var i = co.orderProducts.length; i--;) {
+                        if (co.orderProducts[i].productId == pid) {
+                            co.orderProducts.splice(i, 1);
+                            return;
+                        }
+                    }
+                };
                 OrderProductsComponent.prototype.onSelectCustomer = function (id) {
                     this.selectedCustomerId = id;
                 };
@@ -85,8 +96,6 @@ System.register(["angular2/core", "angular2/common", "../api.service", "../../di
                             that.itemSource = list.ToArray();
                         }
                     });
-                };
-                OrderProductsComponent.prototype.getFirstCustomer = function () {
                 };
                 Object.defineProperty(OrderProductsComponent.prototype, "data", {
                     get: function () { return JSON.stringify(this.customerOrders); },

@@ -66,6 +66,14 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     enumerable: true,
                     configurable: true
                 });
+                Object.defineProperty(OrderEditComponent.prototype, "productCount", {
+                    get: function () {
+                        return this.order.customerOrders.ToList()
+                            .Sum(function (co) { return co.orderProducts.ToList().Sum(function (op) { return op.qty; }); });
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
                 Object.defineProperty(OrderEditComponent.prototype, "data", {
                     get: function () { return JSON.stringify(this.order); },
                     enumerable: true,

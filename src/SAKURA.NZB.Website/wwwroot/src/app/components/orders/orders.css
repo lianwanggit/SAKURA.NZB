@@ -139,6 +139,10 @@
     margin-bottom: 0;
 }
 
+.right-button {
+    float: right;
+}
+
 @media (min-width: 768px) {
     .month-header table {
         width: 300px;

@@ -6,3 +6,15 @@
     padding-left: 20px;
     width: 100%;
 }
+
+.product-table {
+    width: 100%;
+    margin-bottom: 0;
+}
+
+.product-table td,
+.product-table th {
+   vertical-align: middle;
+   padding: 0;
+}
+

@@ -150,13 +150,16 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     this.customerId = customerId;
                     this.customerName = customerName;
                     this.orderProducts = orderProducts;
+                    this.updateSummary();
+                }
+                CustomerOrder.prototype.updateSummary = function () {
                     var list = this.orderProducts.ToList();
                     this.totalCost = list.Sum(function (op) { return op.cost * op.qty; });
                     this.totalPrice = list.Sum(function (op) { return op.price * op.qty; });
                     this.totalQty = list.Sum(function (op) { return op.qty; });
                     this.totalProfit = list.Sum(function (op) { return op.profit; });
                     this.strTotalProfit = this.totalProfit.toFixed(2);
-                }
+                };
                 return CustomerOrder;
             }());
             exports_1("CustomerOrder", CustomerOrder);
