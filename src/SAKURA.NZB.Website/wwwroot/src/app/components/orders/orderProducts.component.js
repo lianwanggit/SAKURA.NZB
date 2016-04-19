@@ -59,7 +59,7 @@ System.register(["angular2/core", "angular2/common", "../api.service", "../../di
                                 var lowestCost = null;
                                 if (product.quotes.length)
                                     lowestCost = product.quotes.ToList().Min(function (q) { return q.price; });
-                                co.orderProducts.push(new list_component_1.OrderProduct(product.id, product.brand.name, product.name, lowestCost, product.price, 1, 0));
+                                co.orderProducts.push(new list_component_1.OrderProduct(product.id, product.brand.name, product.name, lowestCost, product.price, 1, _this.exchangeRate));
                             }
                             else
                                 op.qty += 1;
@@ -82,9 +82,13 @@ System.register(["angular2/core", "angular2/common", "../api.service", "../../di
                 OrderProductsComponent.prototype.onSelectCustomer = function (id) {
                     this.selectedCustomerId = id;
                 };
-                OrderProductsComponent.prototype.onModelChanged = function (co) {
+                OrderProductsComponent.prototype.onModelChanged = function (co, op) {
+                    if (op === void 0) { op = null; }
+                    if (op)
+                        op.calculateProfit(this.exchangeRate);
                     co.updateSummary();
                     this.orderModel.updateSummary();
+                    this.orderModel.updateExpressText();
                 };
                 OrderProductsComponent.prototype.getProducts = function () {
                     var that = this;
@@ -117,6 +121,10 @@ System.register(["angular2/core", "angular2/common", "../api.service", "../../di
                     core_1.Input(), 
                     __metadata('design:type', list_component_1.OrderModel)
                 ], OrderProductsComponent.prototype, "orderModel", void 0);
+                __decorate([
+                    core_1.Input(), 
+                    __metadata('design:type', Number)
+                ], OrderProductsComponent.prototype, "exchangeRate", void 0);
                 OrderProductsComponent = __decorate([
                     core_1.Component({
                         selector: "order-products",

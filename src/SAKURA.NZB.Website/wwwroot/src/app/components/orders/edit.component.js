@@ -68,6 +68,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                                 that.fixedRateHigh = json.fixedRateHigh;
                                 that.fixedRateLow = json.fixedRateLow;
                                 that.currentRate = json.currentRate.toFixed(2);
+                                that.order.exchangeRate = that.currentRate;
                             }
                         });
                     }

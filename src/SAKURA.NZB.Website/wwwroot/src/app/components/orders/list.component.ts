@@ -115,7 +115,7 @@ export class OrderModel {
 		var products = '';
 		this.customerOrders.forEach(co => {
 			co.orderProducts.forEach(op => {
-				products += ' ' + op.productBrand + ' ' + op.productName + ' x' + op.qty + '\n';
+				products += '  ' + op.productBrand + ' ' + op.productName + ' x' + op.qty + '\n';
 			});
 		});
 
@@ -151,7 +151,11 @@ export class OrderProduct {
 
 	constructor(public productId: number, public productBrand: string, public productName: string, public cost: number,
 		public price: number, public qty: number, public exchangeRate: number) {
-		this.profit = (this.price - this.cost * this.exchangeRate) * this.qty;
+		this.calculateProfit(this.exchangeRate);
+	}
+
+	calculateProfit(rate: number) {
+		this.profit = (this.price - this.cost * rate) * this.qty;
 		this.strProfit = this.profit.toFixed(2);
 	}
 }

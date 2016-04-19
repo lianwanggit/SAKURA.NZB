@@ -61,6 +61,8 @@ export class OrderEditComponent implements OnInit {
 					that.fixedRateHigh = json.fixedRateHigh;
 					that.fixedRateLow = json.fixedRateLow;
 					that.currentRate = json.currentRate.toFixed(2);
+
+					that.order.exchangeRate = that.currentRate;
 				}
 			});
 		}

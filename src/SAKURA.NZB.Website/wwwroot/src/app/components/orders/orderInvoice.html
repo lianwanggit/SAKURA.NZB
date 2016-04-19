@@ -1,11 +1,13 @@
-﻿<div class="card" *ngIf="orderModel.deliverable">
+﻿<div class="alert alert-info" role="alert" *ngIf="!orderModel.deliverable"><i class="fa fa-warning"></i> 请先选择客户和产品</div>
+
+<div class="card" *ngIf="orderModel.deliverable">
     <div class="card-header">发货单</div>
     <div class="card-block">
-        <p style="white-space: pre-line" [innerHtml]="orderModel.expressText"></p>
+        <p style="white-space: pre" [innerHtml]="orderModel.expressText"></p>
     </div>
 </div>
 
-<div class="card product-list">
+<div class="card product-list" *ngIf="productList.length > 0">
     <div class="card-header">产品清单</div>
     <div class="card-block">
         <table class="table table-bordered">

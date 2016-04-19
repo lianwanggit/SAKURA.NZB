@@ -144,7 +144,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     var products = '';
                     this.customerOrders.forEach(function (co) {
                         co.orderProducts.forEach(function (op) {
-                            products += ' ' + op.productBrand + ' ' + op.productName + ' x' + op.qty + '\n';
+                            products += '  ' + op.productBrand + ' ' + op.productName + ' x' + op.qty + '\n';
                         });
                     });
                     this.expressText = '【寄件人】' + this.sender + '\n【寄件人電話】' + this.senderPhone + '\n【訂單內容】\n' + products + '【收件人】'
@@ -180,9 +180,12 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     this.price = price;
                     this.qty = qty;
                     this.exchangeRate = exchangeRate;
-                    this.profit = (this.price - this.cost * this.exchangeRate) * this.qty;
-                    this.strProfit = this.profit.toFixed(2);
+                    this.calculateProfit(this.exchangeRate);
                 }
+                OrderProduct.prototype.calculateProfit = function (rate) {
+                    this.profit = (this.price - this.cost * rate) * this.qty;
+                    this.strProfit = this.profit.toFixed(2);
+                };
                 return OrderProduct;
             }());
             exports_1("OrderProduct", OrderProduct);
