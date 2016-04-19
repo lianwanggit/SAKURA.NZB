@@ -5,7 +5,35 @@
     </div>
 </div>
 
-<div class="card">
+<div class="card product-list">
     <div class="card-header">产品清单</div>
-
+    <div class="card-block">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th width="30px">#</th>
+                    <th>产品</th>
+                    <th width="80px">单价($)</th>
+                    <th width="60px">数量</th>
+                    <th width="100px">合计($)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="#p of productList; #i = index">
+                    <td>{{i + 1}}</td>
+                    <td>{{p.name}}</td>
+                    <td>{{p.cost}}</td>
+                    <td>{{p.qty}}</td>
+                    <td>{{p.cost * p.qty}}</td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="3" class="text-right">合计</td>    
+                    <td>{{orderModel.totalQty}}</td>
+                    <td>{{orderModel.totalCost}}</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
 </div>

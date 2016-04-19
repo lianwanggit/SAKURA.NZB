@@ -1,4 +1,4 @@
-﻿import {Component, OnInit, EventEmitter, Input, Output} from "angular2/core";
+﻿import {Component, OnInit, EventEmitter, Input} from "angular2/core";
 import {CORE_DIRECTIVES, FORM_DIRECTIVES, ControlGroup, Control, Validators} from "angular2/common";
 
 import {ApiService} from "../api.service";
@@ -29,7 +29,6 @@ export class OrderCustomersComponent implements OnInit {
 	recipientGroup: ControlGroup;
 
 	@Input() orderModel: OrderModel;
-	@Output() modelChange = new EventEmitter();
 
 	constructor(private service: ApiService) {
 		this.recipientGroup = new ControlGroup({
@@ -67,14 +66,12 @@ export class OrderCustomersComponent implements OnInit {
 
 		var co = new CustomerOrder(e.item.id, e.item.name, []);
 		this.orderModel.customerOrders.push(co);
-		//this.onModelChanged(co);
 	}
 
 	onRemoveExCustomer(id: string) {
 		for (var i = this.orderModel.customerOrders.length; i--;) {
 			if (this.orderModel.customerOrders[i].customerId.toString() == id) {
 				this.orderModel.customerOrders.splice(i, 1);
-				//this.onModelChanged(id);
 				return;
 			} 
 		}
@@ -85,11 +82,9 @@ export class OrderCustomersComponent implements OnInit {
 			this.orderModel.recipient = this.recipientGroup.value.recipient;
 			this.orderModel.phone = this.recipientGroup.value.phone;
 			this.orderModel.address = this.recipientGroup.value.address;
-
-			this.orderModel.updateExpressText();
 		}
-		
-		this.modelChange.emit(newValue);
+
+		this.orderModel.updateExpressText();
 	}
 
 	getCustomer(id: string) {

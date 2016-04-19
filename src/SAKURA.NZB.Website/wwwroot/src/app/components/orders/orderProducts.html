@@ -30,9 +30,9 @@
                             <tr *ngFor="#om of co.orderProducts; #iom = index">
                                 <td>{{iom + 1}}</td>
                                 <td>{{om.productBrand}} {{om.productName}}</td>
-                                <td><input class="form-control no-border" [(ngModel)]="om.cost" min="1" placeholder="NZD" step="0.01" type="number"/></td>
-                                <td><input class="form-control no-border" [(ngModel)]="om.price" min="1" placeholder="CNY" step="0.01" type="number"/></td>
-                                <td><input class="form-control no-border" [(ngModel)]="om.qty" min="1" step="1" type="number"/></td>
+                                <td><input class="form-control no-border" [(ngModel)]="om.cost" min="1" placeholder="NZD" step="0.01" type="number" (ngModelChange)="onModelChanged(co)"/></td>
+                                <td><input class="form-control no-border" [(ngModel)]="om.price" min="1" placeholder="CNY" step="0.01" type="number" (ngModelChange)="onModelChanged(co)"/></td>
+                                <td><input class="form-control no-border" [(ngModel)]="om.qty" min="1" step="1" type="number" (ngModelChange)="onModelChanged(co)"/></td>
                                 <td (click)="onRemoveItem(co.customerId, om.productId)" class="clickable"><i class="fa fa-remove"></i></td>
                             </tr>
                         </tbody>

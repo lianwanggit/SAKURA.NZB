@@ -50,7 +50,6 @@ System.register(["angular2/core", "angular2/common", "../api.service", "../../di
                     this.selectedCustomer = null;
                     this.selectedExCustomerName = '';
                     this.allCustomers = [];
-                    this.modelChange = new core_1.EventEmitter();
                     this.recipientGroup = new common_1.ControlGroup({
                         recipient: new common_1.Control(null, common_1.Validators.required),
                         phone: new common_1.Control(null, common_1.Validators.required),
@@ -80,13 +79,11 @@ System.register(["angular2/core", "angular2/common", "../api.service", "../../di
                         return;
                     var co = new list_component_1.CustomerOrder(e.item.id, e.item.name, []);
                     this.orderModel.customerOrders.push(co);
-                    //this.onModelChanged(co);
                 };
                 OrderCustomersComponent.prototype.onRemoveExCustomer = function (id) {
                     for (var i = this.orderModel.customerOrders.length; i--;) {
                         if (this.orderModel.customerOrders[i].customerId.toString() == id) {
                             this.orderModel.customerOrders.splice(i, 1);
-                            //this.onModelChanged(id);
                             return;
                         }
                     }
@@ -97,9 +94,8 @@ System.register(["angular2/core", "angular2/common", "../api.service", "../../di
                         this.orderModel.recipient = this.recipientGroup.value.recipient;
                         this.orderModel.phone = this.recipientGroup.value.phone;
                         this.orderModel.address = this.recipientGroup.value.address;
-                        this.orderModel.updateExpressText();
                     }
-                    this.modelChange.emit(newValue);
+                    this.orderModel.updateExpressText();
                 };
                 OrderCustomersComponent.prototype.getCustomer = function (id) {
                     var that = this;
@@ -140,10 +136,6 @@ System.register(["angular2/core", "angular2/common", "../api.service", "../../di
                     core_1.Input(), 
                     __metadata('design:type', list_component_1.OrderModel)
                 ], OrderCustomersComponent.prototype, "orderModel", void 0);
-                __decorate([
-                    core_1.Output(), 
-                    __metadata('design:type', Object)
-                ], OrderCustomersComponent.prototype, "modelChange", void 0);
                 OrderCustomersComponent = __decorate([
                     core_1.Component({
                         selector: "order-customer",

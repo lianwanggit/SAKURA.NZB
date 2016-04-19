@@ -63,8 +63,7 @@ System.register(["angular2/core", "angular2/common", "../api.service", "../../di
                             }
                             else
                                 op.qty += 1;
-                            co.updateSummary();
-                            that.orderModel.updateSummary();
+                            that.onModelChanged(co);
                         }
                     });
                 };
@@ -75,14 +74,17 @@ System.register(["angular2/core", "angular2/common", "../api.service", "../../di
                     for (var i = co.orderProducts.length; i--;) {
                         if (co.orderProducts[i].productId == pid) {
                             co.orderProducts.splice(i, 1);
-                            co.updateSummary();
-                            this.orderModel.updateSummary();
+                            this.onModelChanged(co);
                             return;
                         }
                     }
                 };
                 OrderProductsComponent.prototype.onSelectCustomer = function (id) {
                     this.selectedCustomerId = id;
+                };
+                OrderProductsComponent.prototype.onModelChanged = function (co) {
+                    co.updateSummary();
+                    this.orderModel.updateSummary();
                 };
                 OrderProductsComponent.prototype.getProducts = function () {
                     var that = this;

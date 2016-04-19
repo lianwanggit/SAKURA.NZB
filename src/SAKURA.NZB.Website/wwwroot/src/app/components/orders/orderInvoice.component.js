@@ -11,7 +11,7 @@ System.register(["angular2/core", "angular2/common", "../api.service", "./list.c
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
     var core_1, common_1, api_service_1, list_component_1;
-    var SenderInfo, OrderInvoiceComponent;
+    var ProductInfo, OrderInvoiceComponent;
     return {
         setters:[
             function (core_1_1) {
@@ -27,26 +27,38 @@ System.register(["angular2/core", "angular2/common", "../api.service", "./list.c
                 list_component_1 = list_component_1_1;
             }],
         execute: function() {
-            SenderInfo = (function () {
-                function SenderInfo(sender, senderPhone) {
-                    this.sender = sender;
-                    this.senderPhone = senderPhone;
+            ProductInfo = (function () {
+                function ProductInfo(id, name, cost, qty) {
+                    this.id = id;
+                    this.name = name;
+                    this.cost = cost;
+                    this.qty = qty;
                 }
-                return SenderInfo;
+                return ProductInfo;
             }());
             OrderInvoiceComponent = (function () {
                 function OrderInvoiceComponent(service) {
                     this.service = service;
-                    this.senderInfo = new SenderInfo(null, null);
                 }
-                OrderInvoiceComponent.prototype.ngOnInit = function () {
-                    var that = this;
-                };
-                OrderInvoiceComponent.prototype.ngOnChanges = function () {
-                    if (this.orderModel) {
-                        console.log(JSON.stringify(this.orderModel));
-                    }
-                };
+                Object.defineProperty(OrderInvoiceComponent.prototype, "productList", {
+                    get: function () {
+                        if (!this.orderModel || !this.orderModel.customerOrders)
+                            return [];
+                        var list = [].ToList();
+                        this.orderModel.customerOrders.forEach(function (co) {
+                            co.orderProducts.forEach(function (op) {
+                                var p = list.FirstOrDefault(function (l) { return l.id == op.productId; });
+                                if (p)
+                                    p.qty += op.qty;
+                                else
+                                    list.Add(new ProductInfo(op.productId, op.productBrand + ' ' + op.productName, op.cost, op.qty));
+                            });
+                        });
+                        return list.ToArray();
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
                 __decorate([
                     core_1.Input(), 
                     __metadata('design:type', list_component_1.OrderModel)

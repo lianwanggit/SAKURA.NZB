@@ -51,8 +51,7 @@ export class OrderProductsComponent implements OnInit {
 				else
 					op.qty += 1;
 
-				co.updateSummary();
-				that.orderModel.updateSummary();
+				that.onModelChanged(co);
 			}
 		});
 	}
@@ -65,8 +64,7 @@ export class OrderProductsComponent implements OnInit {
 			if (co.orderProducts[i].productId == pid) {
 				co.orderProducts.splice(i, 1);
 
-				co.updateSummary();
-				this.orderModel.updateSummary();
+				this.onModelChanged(co);
 				return;
 			}
 		}
@@ -74,6 +72,11 @@ export class OrderProductsComponent implements OnInit {
 
 	onSelectCustomer(id: string) {
 		this.selectedCustomerId = id;
+	}
+
+	onModelChanged(co: CustomerOrder) {
+		co.updateSummary();
+		this.orderModel.updateSummary();
 	}
 
 	getProducts() {
