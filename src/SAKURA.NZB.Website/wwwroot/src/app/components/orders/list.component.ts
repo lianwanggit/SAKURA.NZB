@@ -65,19 +65,10 @@ export class OrderModel {
 
 		this.updateSummary();
 		this.updateStatus();
-
-		var that = this;
-		var products = '';
-		this.customerOrders.forEach(co => {
-			co.orderProducts.forEach(op => {
-				products += ' ' + op.productBrand + ' ' + op.productName + ' x' + op.qty + '\n';
-			});
-		});
-
-		this.expressText = '【寄件人】' + this.sender + '\n【寄件人電話】' + this.senderPhone + '\n【訂單內容】\n' + products + '【收件人】'
-			+ this.recipient + '\n【收件地址】' + this.address + '\n【聯繫電話】' + this.phone;
+		this.updateExpressText();
 	}
 
+	get deliverable() { return this.recipient && this.phone && this.address; }
 	get delivered() { return this.waybillNumber && this.weight && this.freight; }
 
 	updateStatus() {
@@ -117,6 +108,19 @@ export class OrderModel {
 		this.totalQty = list.Sum(co => co.totalQty);
 		this.totalProfit = list.Sum(co => co.totalProfit) - freightCost;
 		this.strTotalProfit = this.totalProfit.toFixed(2);
+	}
+
+	updateExpressText() {
+		var that = this;
+		var products = '';
+		this.customerOrders.forEach(co => {
+			co.orderProducts.forEach(op => {
+				products += ' ' + op.productBrand + ' ' + op.productName + ' x' + op.qty + '\n';
+			});
+		});
+
+		this.expressText = '【寄件人】' + this.sender + '\n【寄件人電話】' + this.senderPhone + '\n【訂單內容】\n' + products + '【收件人】'
+			+ this.recipient + '\n【收件地址】' + this.address + '\n【聯繫電話】' + this.phone;
 	}
 }
 

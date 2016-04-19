@@ -80,13 +80,13 @@ System.register(["angular2/core", "angular2/common", "../api.service", "../../di
                         return;
                     var co = new list_component_1.CustomerOrder(e.item.id, e.item.name, []);
                     this.orderModel.customerOrders.push(co);
-                    this.onModelChanged(co);
+                    //this.onModelChanged(co);
                 };
                 OrderCustomersComponent.prototype.onRemoveExCustomer = function (id) {
                     for (var i = this.orderModel.customerOrders.length; i--;) {
                         if (this.orderModel.customerOrders[i].customerId.toString() == id) {
                             this.orderModel.customerOrders.splice(i, 1);
-                            this.onModelChanged(id);
+                            //this.onModelChanged(id);
                             return;
                         }
                     }
@@ -97,6 +97,7 @@ System.register(["angular2/core", "angular2/common", "../api.service", "../../di
                         this.orderModel.recipient = this.recipientGroup.value.recipient;
                         this.orderModel.phone = this.recipientGroup.value.phone;
                         this.orderModel.address = this.recipientGroup.value.address;
+                        this.orderModel.updateExpressText();
                     }
                     this.modelChange.emit(newValue);
                 };

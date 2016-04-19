@@ -41,16 +41,11 @@ System.register(["angular2/core", "angular2/common", "../api.service", "../../di
                 OrderProductsComponent.prototype.ngOnInit = function () {
                     this.getProducts();
                 };
-                OrderProductsComponent.prototype.ngOnChanges = function (changes) {
-                    if (this.customerOrders) {
-                    }
-                    console.log(JSON.stringify(changes));
-                };
                 OrderProductsComponent.prototype.onItemSelected = function (id) {
                     var _this = this;
-                    if (!this.customerOrders || !this.customerOrders.length)
+                    if (!this.isLoaded)
                         return;
-                    var coList = this.customerOrders.ToList();
+                    var coList = this.orderModel.customerOrders.ToList();
                     if (coList.All(function (co) { return co.customerId.toString() != _this.selectedCustomerId; }))
                         this.selectedCustomerId = coList.First().customerId.toString();
                     var co = coList.First(function (co) { return co.customerId.toString() == _this.selectedCustomerId; });
@@ -68,16 +63,20 @@ System.register(["angular2/core", "angular2/common", "../api.service", "../../di
                             }
                             else
                                 op.qty += 1;
+                            co.updateSummary();
+                            that.orderModel.updateSummary();
                         }
                     });
                 };
                 OrderProductsComponent.prototype.onRemoveItem = function (cid, pid) {
-                    var co = this.customerOrders.ToList().FirstOrDefault(function (c) { return c.customerId == cid; });
+                    var co = this.orderModel.customerOrders.ToList().FirstOrDefault(function (c) { return c.customerId == cid; });
                     if (!co)
                         return;
                     for (var i = co.orderProducts.length; i--;) {
                         if (co.orderProducts[i].productId == pid) {
                             co.orderProducts.splice(i, 1);
+                            co.updateSummary();
+                            this.orderModel.updateSummary();
                             return;
                         }
                     }
@@ -97,18 +96,28 @@ System.register(["angular2/core", "angular2/common", "../api.service", "../../di
                         }
                     });
                 };
+                Object.defineProperty(OrderProductsComponent.prototype, "isLoaded", {
+                    get: function () { return this.orderModel && this.orderModel.customerOrders && this.orderModel.customerOrders.length; },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(OrderProductsComponent.prototype, "customerOrders", {
+                    get: function () { return this.isLoaded ? this.orderModel.customerOrders : []; },
+                    enumerable: true,
+                    configurable: true
+                });
                 Object.defineProperty(OrderProductsComponent.prototype, "data", {
-                    get: function () { return JSON.stringify(this.customerOrders); },
+                    get: function () { return JSON.stringify(this.orderModel.customerOrders); },
                     enumerable: true,
                     configurable: true
                 });
                 __decorate([
                     core_1.Input(), 
-                    __metadata('design:type', Array)
-                ], OrderProductsComponent.prototype, "customerOrders", void 0);
+                    __metadata('design:type', list_component_1.OrderModel)
+                ], OrderProductsComponent.prototype, "orderModel", void 0);
                 OrderProductsComponent = __decorate([
                     core_1.Component({
-                        selector: "order-product",
+                        selector: "order-products",
                         templateUrl: "./src/app/components/orders/orderProducts.html",
                         styleUrls: ["./src/app/components/orders/orderCustomers.css",
                             "./src/app/components/orders/orderProducts.css"],

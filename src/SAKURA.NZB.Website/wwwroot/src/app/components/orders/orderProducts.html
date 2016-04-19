@@ -1,11 +1,14 @@
-﻿<table class="products-container">
+﻿
+<table class="products-container">
     <tr>
         <td>
             <brand-indexer [items]="itemSource" (selectionChanged)="onItemSelected($event)"></brand-indexer>
         </td>
         <td class="product-details">
+            <div class="alert alert-info" role="alert" *ngIf="!isLoaded"><i class="fa fa-warning"></i> 请先选择一个客户</div>
+
             <div class="card" *ngFor="#co of customerOrders; #ico = index">
-                <div class="card-header clickable" [ngClass]="{'bg-info-light': co.customerId == selectedCustomerId || (selectedCustomerId == '' && ico == 0)}"
+                <div class="card-header clickable" [ngClass]="{'bg-info-light': (selectedCustomerId == '' && ico == 0) || co.customerId == selectedCustomerId }"
                      (click)="onSelectCustomer(co.customerId)">
                     <strong>{{co.customerName}}</strong>
                 </div>

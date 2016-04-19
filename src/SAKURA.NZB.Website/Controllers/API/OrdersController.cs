@@ -59,6 +59,12 @@ namespace SAKURA.NZB.Website.Controllers
 			return new ObjectResult(groupedModels);
 		}
 
+		[HttpGet("get-sender-info")]
+		public IActionResult GetSenderInfo()
+		{
+			return new ObjectResult(new { Sender = _config.GetSender(), SenderPhone = _config.GetSenderPhone() });
+		}
+
 		[HttpGet("search/{keyword?}")]
 		public IActionResult Search(string keyword, [FromQuery]string orderState, [FromQuery]string paymentState)
 		{

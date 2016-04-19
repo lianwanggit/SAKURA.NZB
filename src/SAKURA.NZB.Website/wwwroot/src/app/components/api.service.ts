@@ -120,6 +120,10 @@ export class ApiService {
         this.http.get("api/orders").map(response => response.json()).subscribe(onNext);
     }
 
+	getSenderInfo(onNext: (json: any) => void) {
+        this.http.get("api/orders/get-sender-info").map(response => response.json()).subscribe(onNext);
+    }
+
 	getSearchOrders(keyword: string, orderState: string, paymentState: string, onNext: (json: any) => void) {
 		this.http.get("api/orders/search/" + keyword + '?orderState=' + orderState + '&paymentState=' + paymentState)
 			.map(response => response.json()).subscribe(onNext);

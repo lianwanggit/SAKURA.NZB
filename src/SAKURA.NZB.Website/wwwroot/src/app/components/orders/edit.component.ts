@@ -10,6 +10,7 @@ import {Dict, OrderModel, CustomerOrder, OrderProduct} from "./list.component";
 import {SelectValidator, ValidationResult} from "../../validators/selectValidator";
 import {OrderCustomersComponent} from "./orderCustomers.component";
 import {OrderProductsComponent} from "./orderProducts.component";
+import {OrderInvoiceComponent} from "./orderInvoice.component";
 
 import '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js';
 
@@ -19,7 +20,8 @@ import '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.
     templateUrl: "./src/app/components/orders/edit.html",
 	styleUrls: ["./src/app/components/orders/orders.css"],
     providers: [ApiService],
-    directives: [CORE_DIRECTIVES, FORM_DIRECTIVES, ROUTER_DIRECTIVES, OrderCustomersComponent, OrderProductsComponent]
+    directives: [CORE_DIRECTIVES, FORM_DIRECTIVES, ROUTER_DIRECTIVES,
+		OrderCustomersComponent, OrderProductsComponent, OrderInvoiceComponent]
 })
 export class OrderEditComponent implements OnInit {
 	private editMode = false;
@@ -28,6 +30,10 @@ export class OrderEditComponent implements OnInit {
 
 	orderStates = (new Dict()).orderStates;
 	paymentStates = (new Dict()).paymentStates;
+
+	fixedRateHigh: number;
+	fixedRateLow: number;
+	currentRate: number;
 
 	constructor(private service: ApiService, private router: Router, params: RouteParams) {
 		this.orderId = params.get("id");
@@ -41,9 +47,23 @@ export class OrderEditComponent implements OnInit {
 
 	ngOnInit() {
 		var that = this;
-	}
 
-	onCustomersChanged(c: any) {
+		if (!this.editMode) {
+			this.service.getSenderInfo(json => {
+				if (json) {
+					that.order.sender = json.sender;
+					that.order.senderPhone = json.senderPhone;
+				}
+			});
+
+			this.service.getLatestExchangeRates(json => {
+				if (json) {
+					that.fixedRateHigh = json.fixedRateHigh;
+					that.fixedRateLow = json.fixedRateLow;
+					that.currentRate = json.currentRate.toFixed(2);
+				}
+			});
+		}
 	}
 
 	get title() { return this.editMode ? "编辑订单 " : "新建订单"; }

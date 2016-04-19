@@ -1,5 +1,5 @@
 /// <reference path="../../../../lib/TypeScript-Linq/Scripts/typings/System/Collections/Generic/List.ts" />
-System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.service", "./list.component", "./orderCustomers.component", "./orderProducts.component", '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js'], function(exports_1, context_1) {
+System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.service", "./list.component", "./orderCustomers.component", "./orderProducts.component", "./orderInvoice.component", '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -11,7 +11,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, common_1, router_1, api_service_1, list_component_1, orderCustomers_component_1, orderProducts_component_1;
+    var core_1, common_1, router_1, api_service_1, list_component_1, orderCustomers_component_1, orderProducts_component_1, orderInvoice_component_1;
     var OrderEditComponent;
     return {
         setters:[
@@ -36,6 +36,9 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
             function (orderProducts_component_1_1) {
                 orderProducts_component_1 = orderProducts_component_1_1;
             },
+            function (orderInvoice_component_1_1) {
+                orderInvoice_component_1 = orderInvoice_component_1_1;
+            },
             function (_1) {}],
         execute: function() {
             OrderEditComponent = (function () {
@@ -53,8 +56,21 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                 }
                 OrderEditComponent.prototype.ngOnInit = function () {
                     var that = this;
-                };
-                OrderEditComponent.prototype.onCustomersChanged = function (c) {
+                    if (!this.editMode) {
+                        this.service.getSenderInfo(function (json) {
+                            if (json) {
+                                that.order.sender = json.sender;
+                                that.order.senderPhone = json.senderPhone;
+                            }
+                        });
+                        this.service.getLatestExchangeRates(function (json) {
+                            if (json) {
+                                that.fixedRateHigh = json.fixedRateHigh;
+                                that.fixedRateLow = json.fixedRateLow;
+                                that.currentRate = json.currentRate.toFixed(2);
+                            }
+                        });
+                    }
                 };
                 Object.defineProperty(OrderEditComponent.prototype, "title", {
                     get: function () { return this.editMode ? "编辑订单 " : "新建订单"; },
@@ -85,7 +101,8 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                         templateUrl: "./src/app/components/orders/edit.html",
                         styleUrls: ["./src/app/components/orders/orders.css"],
                         providers: [api_service_1.ApiService],
-                        directives: [common_1.CORE_DIRECTIVES, common_1.FORM_DIRECTIVES, router_1.ROUTER_DIRECTIVES, orderCustomers_component_1.OrderCustomersComponent, orderProducts_component_1.OrderProductsComponent]
+                        directives: [common_1.CORE_DIRECTIVES, common_1.FORM_DIRECTIVES, router_1.ROUTER_DIRECTIVES,
+                            orderCustomers_component_1.OrderCustomersComponent, orderProducts_component_1.OrderProductsComponent, orderInvoice_component_1.OrderInvoiceComponent]
                     }), 
                     __metadata('design:paramtypes', [api_service_1.ApiService, router_1.Router, router_1.RouteParams])
                 ], OrderEditComponent);

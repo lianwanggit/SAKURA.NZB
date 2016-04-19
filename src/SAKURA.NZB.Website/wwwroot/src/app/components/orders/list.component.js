@@ -92,16 +92,13 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     this.customerOrders = customerOrders;
                     this.updateSummary();
                     this.updateStatus();
-                    var that = this;
-                    var products = '';
-                    this.customerOrders.forEach(function (co) {
-                        co.orderProducts.forEach(function (op) {
-                            products += ' ' + op.productBrand + ' ' + op.productName + ' x' + op.qty + '\n';
-                        });
-                    });
-                    this.expressText = '【寄件人】' + this.sender + '\n【寄件人電話】' + this.senderPhone + '\n【訂單內容】\n' + products + '【收件人】'
-                        + this.recipient + '\n【收件地址】' + this.address + '\n【聯繫電話】' + this.phone;
+                    this.updateExpressText();
                 }
+                Object.defineProperty(OrderModel.prototype, "deliverable", {
+                    get: function () { return this.recipient && this.phone && this.address; },
+                    enumerable: true,
+                    configurable: true
+                });
                 Object.defineProperty(OrderModel.prototype, "delivered", {
                     get: function () { return this.waybillNumber && this.weight && this.freight; },
                     enumerable: true,
@@ -141,6 +138,17 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     this.totalQty = list.Sum(function (co) { return co.totalQty; });
                     this.totalProfit = list.Sum(function (co) { return co.totalProfit; }) - freightCost;
                     this.strTotalProfit = this.totalProfit.toFixed(2);
+                };
+                OrderModel.prototype.updateExpressText = function () {
+                    var that = this;
+                    var products = '';
+                    this.customerOrders.forEach(function (co) {
+                        co.orderProducts.forEach(function (op) {
+                            products += ' ' + op.productBrand + ' ' + op.productName + ' x' + op.qty + '\n';
+                        });
+                    });
+                    this.expressText = '【寄件人】' + this.sender + '\n【寄件人電話】' + this.senderPhone + '\n【訂單內容】\n' + products + '【收件人】'
+                        + this.recipient + '\n【收件地址】' + this.address + '\n【聯繫電話】' + this.phone;
                 };
                 return OrderModel;
             }());

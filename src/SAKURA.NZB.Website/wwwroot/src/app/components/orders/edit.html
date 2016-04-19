@@ -5,7 +5,7 @@
         <ul class="nav nav-tabs" role="tablist">
             <li role="presentation" class="active"><a href="#customer" aria-controls="customer" role="tab" data-toggle="tab">客户 <span class="badge">{{customerCount}}</span></a></li>
             <li role="presentation"><a href="#product" aria-controls="product" role="tab" data-toggle="tab">产品 <span class="badge">{{productCount}}</span></a></li>
-            <li role="presentation"><a href="#deliveryForm" aria-controls="deliveryForm" role="tab" data-toggle="tab">清单</a></li>
+            <li role="presentation"><a href="#invoice" aria-controls="invoice" role="tab" data-toggle="tab">清单</a></li>
             <li role="presentation"><a href="#summary" aria-controls="summary" role="tab" data-toggle="tab">利润</a></li>            
             <li role="presentation" class="right-button">
                 <button type="submit" class="btn btn-success left-spacer">
@@ -17,13 +17,15 @@
 
         <div class="tab-content">
             <div role="tabpanel" class="tab-pane fade in active" id="customer">
-                <order-customer [(orderModel)]="order" (modelChange)="onCustomersChanged($event)"></order-customer>
+                <order-customer [(orderModel)]="order"></order-customer>
             </div>
             <div role="tabpanel" class="tab-pane fade" id="product">
-                <order-product [(customerOrders)]="order.customerOrders"></order-product>
+                <order-products [(orderModel)]="order"></order-products>
             </div>
-            <div role="tabpanel" class="tab-pane fade" id="deliveryForm">{{data}}</div>
-            <div role="tabpanel" class="tab-pane fade" id="summary">df..d.</div>
+            <div role="tabpanel" class="tab-pane fade" id="invoice">
+                <order-invoice [(orderModel)]="order"></order-invoice>
+           </div>
+            <div role="tabpanel" class="tab-pane fade" id="summary">{{data}}</div>
         </div>
 
     </div>

@@ -1,4 +1,4 @@
-﻿import {Component, OnInit, EventEmitter, Input, Output, OnChanges} from "angular2/core";
+﻿import {Component, OnInit, EventEmitter, Input, Output} from "angular2/core";
 import {CORE_DIRECTIVES, FORM_DIRECTIVES, ControlGroup, Control, Validators} from "angular2/common";
 
 import {ApiService} from "../api.service";
@@ -7,7 +7,7 @@ import {CustomerOrder, OrderProduct, OrderModel} from "./list.component";
 import {Category, Brand, Supplier, Product, Quote} from "../products/models";
 
 @Component({
-    selector: "order-product",
+    selector: "order-products",
     templateUrl: "./src/app/components/orders/orderProducts.html",
 	styleUrls: ["./src/app/components/orders/orderCustomers.css",
 		"./src/app/components/orders/orderProducts.css"],
@@ -15,29 +15,22 @@ import {Category, Brand, Supplier, Product, Quote} from "../products/models";
     directives: [CORE_DIRECTIVES, FORM_DIRECTIVES, BrandIndexerDirective]
 })
 
-export class OrderProductsComponent implements OnInit, OnChanges {
+export class OrderProductsComponent implements OnInit {
 	itemSource: Item[];
 	selectedCustomerId: string = '';
 
-	@Input() customerOrders: CustomerOrder[];
+	@Input() orderModel: OrderModel;
 	constructor(private service: ApiService) { }
 
 	ngOnInit() {
 		this.getProducts();
 	}
 
-	ngOnChanges(changes: { [propName: string]: SimpleChange }) {
-		if (this.customerOrders) {
-
-		}
-		console.log(JSON.stringify(changes));
-	}
-
 	onItemSelected(id: string) {
-		if (!this.customerOrders || !this.customerOrders.length)
+		if (!this.isLoaded)
 			return;
 
-		var coList = this.customerOrders.ToList<CustomerOrder>();
+		var coList = this.orderModel.customerOrders.ToList<CustomerOrder>();
 		if (coList.All(co => co.customerId.toString() != this.selectedCustomerId))
 			this.selectedCustomerId = coList.First().customerId.toString();
 
@@ -56,18 +49,24 @@ export class OrderProductsComponent implements OnInit, OnChanges {
 					co.orderProducts.push(new OrderProduct(product.id, product.brand.name, product.name, lowestCost, product.price, 1, 0));
 				}
 				else
-					op.qty += 1;		
+					op.qty += 1;
+
+				co.updateSummary();
+				that.orderModel.updateSummary();
 			}
 		});
 	}
 
 	onRemoveItem(cid: number, pid: number) {
-		var co = this.customerOrders.ToList<CustomerOrder>().FirstOrDefault(c => c.customerId == cid);
+		var co = this.orderModel.customerOrders.ToList<CustomerOrder>().FirstOrDefault(c => c.customerId == cid);
 		if (!co) return;
 
 		for (var i = co.orderProducts.length; i--;) {
 			if (co.orderProducts[i].productId == pid) {
 				co.orderProducts.splice(i, 1);
+
+				co.updateSummary();
+				this.orderModel.updateSummary();
 				return;
 			}
 		}
@@ -92,5 +91,7 @@ export class OrderProductsComponent implements OnInit, OnChanges {
 		});
 	}
 
-	get data() { return JSON.stringify(this.customerOrders); }
+	get isLoaded() { return this.orderModel && this.orderModel.customerOrders && this.orderModel.customerOrders.length; }
+	get customerOrders() { return this.isLoaded ? this.orderModel.customerOrders : []; }
+	get data() { return JSON.stringify(this.orderModel.customerOrders); }
 }

@@ -109,6 +109,9 @@ System.register(["rxjs/Rx", "angular2/http", "angular2/core"], function(exports_
                 ApiService.prototype.getOrders = function (onNext) {
                     this.http.get("api/orders").map(function (response) { return response.json(); }).subscribe(onNext);
                 };
+                ApiService.prototype.getSenderInfo = function (onNext) {
+                    this.http.get("api/orders/get-sender-info").map(function (response) { return response.json(); }).subscribe(onNext);
+                };
                 ApiService.prototype.getSearchOrders = function (keyword, orderState, paymentState, onNext) {
                     this.http.get("api/orders/search/" + keyword + '?orderState=' + orderState + '&paymentState=' + paymentState)
                         .map(function (response) { return response.json(); }).subscribe(onNext);

@@ -18,6 +18,11 @@
    padding: 0;
 }
 
+.product-table th {
+   font-weight: 600;
+   color: #777;
+}
+
 .product-table .no-border {
     padding:6px 10px 6px 0;
 }
