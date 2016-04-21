@@ -8,7 +8,7 @@
             <li role="presentation"><a href="#invoice" aria-controls="invoice" role="tab" data-toggle="tab">清单</a></li>
             <li role="presentation"><a href="#summary" aria-controls="summary" role="tab" data-toggle="tab">利润</a></li>            
             <li role="presentation" class="right-button">
-                <button type="submit" class="btn btn-success left-spacer">
+                <button type="submit" class="btn btn-success left-spacer" [disabled]="!validation.isValid">
                     保存 <i class="fa fa-floppy-o fa-lg"></i>
                 </button>
             </li>
@@ -17,7 +17,7 @@
 
         <div class="tab-content">
             <div role="tabpanel" class="tab-pane fade in active" id="customer">
-                <order-customer [(orderModel)]="order"></order-customer>
+                <order-customer [(orderModel)]="order" [(validation)]="validation"></order-customer>
             </div>
             <div role="tabpanel" class="tab-pane fade" id="product">
                 <order-products [(orderModel)]="order" [exchangeRate]="currentRate"></order-products>

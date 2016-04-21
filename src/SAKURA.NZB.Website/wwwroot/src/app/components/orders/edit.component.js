@@ -12,7 +12,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
     var core_1, common_1, router_1, api_service_1, list_component_1, orderCustomers_component_1, orderProducts_component_1, orderInvoice_component_1, orderSummary_component_1;
-    var OrderEditComponent;
+    var Validation, OrderEditComponent;
     return {
         setters:[
             function (core_1_1) {
@@ -44,6 +44,19 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
             },
             function (_1) {}],
         execute: function() {
+            Validation = (function () {
+                function Validation(isCustomersValid, isProductsValid) {
+                    this.isCustomersValid = isCustomersValid;
+                    this.isProductsValid = isProductsValid;
+                }
+                Object.defineProperty(Validation.prototype, "isValid", {
+                    get: function () { return this.isCustomersValid && this.isProductsValid; },
+                    enumerable: true,
+                    configurable: true
+                });
+                return Validation;
+            }());
+            exports_1("Validation", Validation);
             OrderEditComponent = (function () {
                 function OrderEditComponent(service, router, params) {
                     this.service = service;
@@ -51,6 +64,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     this.editMode = false;
                     this.orderStates = (new list_component_1.Dict()).orderStates;
                     this.paymentStates = (new list_component_1.Dict()).paymentStates;
+                    this.validation = new Validation(false, false);
                     this.orderId = params.get("id");
                     if (this.orderId) {
                         this.editMode = true;

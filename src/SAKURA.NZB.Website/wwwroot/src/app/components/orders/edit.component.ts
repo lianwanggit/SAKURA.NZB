@@ -15,6 +15,11 @@ import {OrderSummaryComponent} from "./orderSummary.component";
 
 import '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js';
 
+export class Validation {
+	constructor(public isCustomersValid: boolean, public isProductsValid: boolean) { }
+
+	get isValid() { return this.isCustomersValid && this.isProductsValid; }
+}
 
 @Component({
     selector: "order-edit",
@@ -24,6 +29,7 @@ import '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.
     directives: [CORE_DIRECTIVES, FORM_DIRECTIVES, ROUTER_DIRECTIVES,
 		OrderCustomersComponent, OrderProductsComponent, OrderInvoiceComponent, OrderSummaryComponent]
 })
+
 export class OrderEditComponent implements OnInit {
 	private editMode = false;
 	orderId: string;
@@ -35,6 +41,8 @@ export class OrderEditComponent implements OnInit {
 	fixedRateHigh: number;
 	fixedRateLow: number;
 	currentRate: number;
+
+	validation: Validation = new Validation(false, false);	
 
 	constructor(private service: ApiService, private router: Router, params: RouteParams) {
 		this.orderId = params.get("id");

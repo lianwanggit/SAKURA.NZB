@@ -1,4 +1,4 @@
-System.register(["angular2/core", "angular2/common", "../api.service", "../../directives/alphaIndexer.directive", "./list.component", "../customers/edit.component", "ng2-bootstrap/ng2-bootstrap"], function(exports_1, context_1) {
+System.register(["angular2/core", "angular2/common", "../api.service", "../../directives/alphaIndexer.directive", "./list.component", "./edit.component", "../customers/edit.component", "ng2-bootstrap/ng2-bootstrap"], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -10,7 +10,7 @@ System.register(["angular2/core", "angular2/common", "../api.service", "../../di
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, common_1, api_service_1, alphaIndexer_directive_1, list_component_1, edit_component_1, ng2_bootstrap_1;
+    var core_1, common_1, api_service_1, alphaIndexer_directive_1, list_component_1, edit_component_1, edit_component_2, ng2_bootstrap_1;
     var CustomerKvp, OrderCustomersComponent;
     return {
         setters:[
@@ -31,6 +31,9 @@ System.register(["angular2/core", "angular2/common", "../api.service", "../../di
             },
             function (edit_component_1_1) {
                 edit_component_1 = edit_component_1_1;
+            },
+            function (edit_component_2_1) {
+                edit_component_2 = edit_component_2_1;
             },
             function (ng2_bootstrap_1_1) {
                 ng2_bootstrap_1 = ng2_bootstrap_1_1;
@@ -54,6 +57,11 @@ System.register(["angular2/core", "angular2/common", "../api.service", "../../di
                         recipient: new common_1.Control(null, common_1.Validators.required),
                         phone: new common_1.Control(null, common_1.Validators.required),
                         address: new common_1.Control(null, common_1.Validators.required)
+                    });
+                    var that = this;
+                    this.recipientGroup.valueChanges.subscribe(function (data) {
+                        if (that.validation.isCustomersValid !== that.recipientGroup.valid)
+                            that.validation.isCustomersValid = that.recipientGroup.valid;
                     });
                 }
                 OrderCustomersComponent.prototype.ngOnInit = function () {
@@ -101,7 +109,7 @@ System.register(["angular2/core", "angular2/common", "../api.service", "../../di
                     var that = this;
                     this.service.getCustomer(id, function (json) {
                         if (json) {
-                            that.selectedCustomer = new edit_component_1.Customer(json);
+                            that.selectedCustomer = new edit_component_2.Customer(json);
                             that.recipientGroup.controls['recipient'].updateValue(that.selectedCustomer.fullName);
                             that.recipientGroup.controls['phone'].updateValue(that.selectedCustomer.phone1);
                             that.recipientGroup.controls['address'].updateValue(that.selectedCustomer.address);
@@ -118,7 +126,7 @@ System.register(["angular2/core", "angular2/common", "../api.service", "../../di
                         if (json) {
                             var list = [].ToList();
                             json.forEach(function (x) {
-                                var c = new edit_component_1.Customer(x);
+                                var c = new edit_component_2.Customer(x);
                                 list.Add(new alphaIndexer_directive_1.Element(c.id, c.fullName, c.namePinYin));
                                 var kvp = new CustomerKvp(c.id, c.fullName);
                                 that.allCustomers.push(kvp);
@@ -136,6 +144,10 @@ System.register(["angular2/core", "angular2/common", "../api.service", "../../di
                     core_1.Input(), 
                     __metadata('design:type', list_component_1.OrderModel)
                 ], OrderCustomersComponent.prototype, "orderModel", void 0);
+                __decorate([
+                    core_1.Input(), 
+                    __metadata('design:type', edit_component_1.Validation)
+                ], OrderCustomersComponent.prototype, "validation", void 0);
                 OrderCustomersComponent = __decorate([
                     core_1.Component({
                         selector: "order-customer",

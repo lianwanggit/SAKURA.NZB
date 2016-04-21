@@ -1,9 +1,10 @@
-﻿import {Component, OnInit, EventEmitter, Input} from "angular2/core";
+﻿import {Component, OnInit, Input} from "angular2/core";
 import {CORE_DIRECTIVES, FORM_DIRECTIVES, ControlGroup, Control, Validators} from "angular2/common";
 
 import {ApiService} from "../api.service";
 import {AlphaIndexerDirective, Element} from "../../directives/alphaIndexer.directive";
 import {CustomerOrder, OrderProduct, OrderModel} from "./list.component";
+import {Validation} from "./edit.component";
 import {Customer} from "../customers/edit.component";
 
 import {TYPEAHEAD_DIRECTIVES} from "ng2-bootstrap/ng2-bootstrap";
@@ -29,12 +30,19 @@ export class OrderCustomersComponent implements OnInit {
 	recipientGroup: ControlGroup;
 
 	@Input() orderModel: OrderModel;
+	@Input() validation: Validation;
 
 	constructor(private service: ApiService) {
 		this.recipientGroup = new ControlGroup({
 			recipient: new Control(null, Validators.required),
 			phone: new Control(null, Validators.required),
 			address: new Control(null, Validators.required)
+		});
+
+		var that = this;
+		this.recipientGroup.valueChanges.subscribe(data => {
+			if (that.validation.isCustomersValid !== that.recipientGroup.valid)
+				that.validation.isCustomersValid = that.recipientGroup.valid;		
 		});
 	}
 
