@@ -12,7 +12,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
     var core_1, common_1, router_1, api_service_1, clipboard_directive_1, moment_1;
-    var Dict, YearGroup, MonthGroup, OrderModel, CustomerOrder, OrderProduct, OrderDeliveryModel, OrdersComponent;
+    var Dict, YearGroup, MonthGroup, OrderModel, CustomerOrder, OrderProduct, OrderDeliveryModel, Product, OrdersComponent;
     function formatCurrency(num, str) {
         return num > 0 ? '+' + str : '-' + str;
     }
@@ -145,13 +145,19 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                 };
                 OrderModel.prototype.updateExpressText = function () {
                     var that = this;
-                    var products = '';
+                    var products = [].ToList();
                     this.customerOrders.forEach(function (co) {
                         co.orderProducts.forEach(function (op) {
-                            products += '  ' + op.productBrand + ' ' + op.productName + ' x' + op.qty + '\n';
+                            var p = products.FirstOrDefault(function (x) { return x.id == op.productId; });
+                            if (p)
+                                p.qty += op.qty;
+                            else
+                                products.Add(new Product(op.productId, op.productBrand + ' ' + op.productName, op.qty));
                         });
                     });
-                    this.expressText = '【寄件人】' + this.sender + '\n【寄件人電話】' + this.senderPhone + '\n【訂單內容】\n' + products + '【收件人】'
+                    var productsText = '';
+                    products.ForEach(function (e, index) { productsText += '  ' + e.name + ' x' + e.qty + '\n'; });
+                    this.expressText = '【寄件人】' + this.sender + '\n【寄件人電話】' + this.senderPhone + '\n【訂單內容】\n' + productsText + '【收件人】'
                         + this.recipient + '\n【收件地址】' + this.address + '\n【聯繫電話】' + this.phone;
                 };
                 return OrderModel;
@@ -201,6 +207,14 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     this.freight = freight;
                 }
                 return OrderDeliveryModel;
+            }());
+            Product = (function () {
+                function Product(id, name, qty) {
+                    this.id = id;
+                    this.name = name;
+                    this.qty = qty;
+                }
+                return Product;
             }());
             OrdersComponent = (function () {
                 function OrdersComponent(service, router) {
