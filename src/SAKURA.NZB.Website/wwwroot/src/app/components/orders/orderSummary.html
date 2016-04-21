@@ -1,0 +1,46 @@
+﻿<div class="alert alert-info" role="alert" *ngIf="!isLoaded"><i class="fa fa-warning"></i> 请先选择客户和产品</div>
+
+<div class="products-container" *ngIf="isLoaded">
+    <div class="card product-list" *ngIf="productList.length > 0">
+        <div class="card-header">利润明细 <span class="badge progress-bar-info pull-right">实时汇率 {{exchangeRate}}</span></div>
+        <div class="card-block">
+            <table class="table table-bordered table-hover table-condensed">
+                <thead>
+                    <tr>
+                        <th width="30px">#</th>
+                        <th>产品</th>
+                        <th width="80px">单价($)</th>
+                        <th width="80px">成本(¥)</th>
+                        <th width="80px">售价(¥)</th>
+                        <th width="60px">数量</th>
+                        <th width="80px">利润(¥)</th>
+                        <th width="80px">利润率</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="#p of productList; #i = index">
+                        <td>{{i + 1}}</td>
+                        <td>{{p.name}}</td>
+                        <td>{{p.cost}}</td>
+                        <td>{{p.costCny}}</td>
+                        <td>{{p.price}}</td>
+                        <td>{{p.qty}}</td>
+                        <td [ngClass]="{up: p.profit > 0, down: p.profit < 0}">{{p.strProfit}}</td>
+                        <td>{{(p.profit / p.costCny * 100).toFixed(2)}}%</td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="2" class="text-right">合计</td>
+                        <td>{{orderModel.totalCost}}</td>
+                        <td>{{(orderModel.totalCost * exchangeRate).toFixed(2)}}</td>
+                        <td>{{orderModel.totalPrice}}</td>                        
+                        <td>{{orderModel.totalQty}}</td>
+                        <td [ngClass]="{up: orderModel.totalProfit > 0, down: orderModel.totalProfit < 0}">{{orderModel.strTotalProfit}}</td>
+                        <td>{{(orderModel.totalProfit / (orderModel.totalCost * exchangeRate) * 100).toFixed(2)}}%</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>

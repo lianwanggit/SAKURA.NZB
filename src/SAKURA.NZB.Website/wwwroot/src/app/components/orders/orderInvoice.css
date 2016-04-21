@@ -25,3 +25,11 @@
 .product-list table tr:last-of-type td {
     border-bottom: 0;
 }
+
+.up {
+    color: green;
+}
+
+.down {
+    color: red;
+}

@@ -11,6 +11,7 @@ import {SelectValidator, ValidationResult} from "../../validators/selectValidato
 import {OrderCustomersComponent} from "./orderCustomers.component";
 import {OrderProductsComponent} from "./orderProducts.component";
 import {OrderInvoiceComponent} from "./orderInvoice.component";
+import {OrderSummaryComponent} from "./orderSummary.component";
 
 import '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js';
 
@@ -21,7 +22,7 @@ import '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.
 	styleUrls: ["./src/app/components/orders/orders.css"],
     providers: [ApiService],
     directives: [CORE_DIRECTIVES, FORM_DIRECTIVES, ROUTER_DIRECTIVES,
-		OrderCustomersComponent, OrderProductsComponent, OrderInvoiceComponent]
+		OrderCustomersComponent, OrderProductsComponent, OrderInvoiceComponent, OrderSummaryComponent]
 })
 export class OrderEditComponent implements OnInit {
 	private editMode = false;

@@ -112,8 +112,12 @@
     padding-top: 3px;
 }
 
-.summary > td:last-of-type {
+.up {
     color: green;
+}
+
+.down {
+    color: red;
 }
 
 .product-status {

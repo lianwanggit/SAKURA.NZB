@@ -13,6 +13,9 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
     };
     var core_1, common_1, router_1, api_service_1, clipboard_directive_1, moment_1;
     var Dict, YearGroup, MonthGroup, OrderModel, CustomerOrder, OrderProduct, OrderDeliveryModel, OrdersComponent;
+    function formatCurrency(num, str) {
+        return num > 0 ? '+' + str : '-' + str;
+    }
     return {
         setters:[
             function (core_1_1) {
@@ -67,7 +70,8 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     var list = this.models.ToList();
                     this.totalCost = (list.Sum(function (om) { return om.totalCost; })).toFixed(2);
                     this.totalPrice = (list.Sum(function (om) { return om.totalPrice; })).toFixed(2);
-                    this.totalProfit = (list.Sum(function (om) { return om.totalProfit; })).toFixed(2);
+                    var tp = list.Sum(function (om) { return om.totalProfit; });
+                    this.totalProfit = formatCurrency(tp, tp.toFixed(2));
                 };
                 return MonthGroup;
             }());
@@ -137,7 +141,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     this.totalPrice = list.Sum(function (co) { return co.totalPrice; });
                     this.totalQty = list.Sum(function (co) { return co.totalQty; });
                     this.totalProfit = list.Sum(function (co) { return co.totalProfit; }) - freightCost;
-                    this.strTotalProfit = this.totalProfit.toFixed(2);
+                    this.strTotalProfit = formatCurrency(this.totalProfit, this.totalProfit.toFixed(2));
                 };
                 OrderModel.prototype.updateExpressText = function () {
                     var that = this;
@@ -166,7 +170,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     this.totalPrice = list.Sum(function (op) { return op.price * op.qty; });
                     this.totalQty = list.Sum(function (op) { return op.qty; });
                     this.totalProfit = list.Sum(function (op) { return op.profit; });
-                    this.strTotalProfit = this.totalProfit.toFixed(2);
+                    this.strTotalProfit = formatCurrency(this.totalProfit, this.totalProfit.toFixed(2));
                 };
                 return CustomerOrder;
             }());
@@ -184,7 +188,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                 }
                 OrderProduct.prototype.calculateProfit = function (rate) {
                     this.profit = (this.price - this.cost * rate) * this.qty;
-                    this.strProfit = this.profit.toFixed(2);
+                    this.strProfit = formatCurrency(this.profit, this.profit.toFixed(2));
                 };
                 return OrderProduct;
             }());

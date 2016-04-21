@@ -1,0 +1,97 @@
+System.register(["angular2/core", "angular2/common", "../api.service", "./list.component"], function(exports_1, context_1) {
+    "use strict";
+    var __moduleName = context_1 && context_1.id;
+    var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+        var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+        if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+        else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+        return c > 3 && r && Object.defineProperty(target, key, r), r;
+    };
+    var __metadata = (this && this.__metadata) || function (k, v) {
+        if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+    };
+    var core_1, common_1, api_service_1, list_component_1;
+    var ProductInfo, OrderSummaryComponent;
+    return {
+        setters:[
+            function (core_1_1) {
+                core_1 = core_1_1;
+            },
+            function (common_1_1) {
+                common_1 = common_1_1;
+            },
+            function (api_service_1_1) {
+                api_service_1 = api_service_1_1;
+            },
+            function (list_component_1_1) {
+                list_component_1 = list_component_1_1;
+            }],
+        execute: function() {
+            ProductInfo = (function () {
+                function ProductInfo(id, name, cost, costCny, price, qty, profit, strProfit) {
+                    this.id = id;
+                    this.name = name;
+                    this.cost = cost;
+                    this.costCny = costCny;
+                    this.price = price;
+                    this.qty = qty;
+                    this.profit = profit;
+                    this.strProfit = strProfit;
+                }
+                return ProductInfo;
+            }());
+            OrderSummaryComponent = (function () {
+                function OrderSummaryComponent(service) {
+                    this.service = service;
+                }
+                Object.defineProperty(OrderSummaryComponent.prototype, "productList", {
+                    get: function () {
+                        var _this = this;
+                        if (!this.orderModel || !this.orderModel.customerOrders)
+                            return [];
+                        var list = [].ToList();
+                        this.orderModel.customerOrders.forEach(function (co) {
+                            co.orderProducts.forEach(function (op) {
+                                var p = list.FirstOrDefault(function (l) { return l.id == op.productId; });
+                                if (p)
+                                    p.qty += op.qty;
+                                else
+                                    list.Add(new ProductInfo(op.productId, op.productBrand + ' ' + op.productName, op.cost, (op.cost * _this.exchangeRate).toFixed(2), op.price, op.qty, op.profit, op.strProfit));
+                            });
+                        });
+                        return list.ToArray();
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(OrderSummaryComponent.prototype, "isLoaded", {
+                    get: function () { return this.orderModel && this.orderModel.customerOrders && this.orderModel.customerOrders.length; },
+                    enumerable: true,
+                    configurable: true
+                });
+                __decorate([
+                    core_1.Input(), 
+                    __metadata('design:type', list_component_1.OrderModel)
+                ], OrderSummaryComponent.prototype, "orderModel", void 0);
+                __decorate([
+                    core_1.Input(), 
+                    __metadata('design:type', Number)
+                ], OrderSummaryComponent.prototype, "exchangeRate", void 0);
+                OrderSummaryComponent = __decorate([
+                    core_1.Component({
+                        selector: "order-summary",
+                        templateUrl: "./src/app/components/orders/orderSummary.html",
+                        styleUrls: ["./src/app/components/orders/orderCustomers.css",
+                            "./src/app/components/orders/orderInvoice.css"],
+                        providers: [api_service_1.ApiService],
+                        directives: [common_1.CORE_DIRECTIVES]
+                    }), 
+                    __metadata('design:paramtypes', [api_service_1.ApiService])
+                ], OrderSummaryComponent);
+                return OrderSummaryComponent;
+            }());
+            exports_1("OrderSummaryComponent", OrderSummaryComponent);
+        }
+    }
+});
+//# sourceMappingURL=orderSummary.component.js.map

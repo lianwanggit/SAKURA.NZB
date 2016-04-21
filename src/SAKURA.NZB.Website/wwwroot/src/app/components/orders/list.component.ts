@@ -43,7 +43,9 @@ class MonthGroup {
 		var list = this.models.ToList<OrderModel>();
 		this.totalCost = (list.Sum(om => om.totalCost)).toFixed(2);
 		this.totalPrice = (list.Sum(om => om.totalPrice)).toFixed(2);
-		this.totalProfit = (list.Sum(om => om.totalProfit)).toFixed(2);
+
+		var tp = list.Sum(om => om.totalProfit);
+		this.totalProfit = formatCurrency(tp, tp.toFixed(2));
 	}
 }
 
@@ -107,7 +109,7 @@ export class OrderModel {
 		this.totalPrice = list.Sum(co => co.totalPrice);
 		this.totalQty = list.Sum(co => co.totalQty);
 		this.totalProfit = list.Sum(co => co.totalProfit) - freightCost;
-		this.strTotalProfit = this.totalProfit.toFixed(2);
+		this.strTotalProfit = formatCurrency(this.totalProfit, this.totalProfit.toFixed(2));
 	}
 
 	updateExpressText() {
@@ -141,7 +143,7 @@ export class CustomerOrder {
 		this.totalPrice = list.Sum(op => op.price * op.qty);
 		this.totalQty = list.Sum(op => op.qty);
 		this.totalProfit = list.Sum(op => op.profit);
-		this.strTotalProfit = this.totalProfit.toFixed(2);
+		this.strTotalProfit = formatCurrency(this.totalProfit, this.totalProfit.toFixed(2));
 	}
 }
 
@@ -156,8 +158,12 @@ export class OrderProduct {
 
 	calculateProfit(rate: number) {
 		this.profit = (this.price - this.cost * rate) * this.qty;
-		this.strProfit = this.profit.toFixed(2);
+		this.strProfit = formatCurrency(this.profit, this.profit.toFixed(2));
 	}
+}
+
+function formatCurrency(num: number, str: string) {
+	return num > 0 ? '+' + str : '-' + str;
 }
 
 class OrderDeliveryModel {

@@ -25,7 +25,9 @@
             <div role="tabpanel" class="tab-pane fade" id="invoice">
                 <order-invoice [(orderModel)]="order"></order-invoice>
            </div>
-            <div role="tabpanel" class="tab-pane fade" id="summary">{{data}}</div>
+            <div role="tabpanel" class="tab-pane fade" id="summary">
+                <order-summary [(orderModel)]="order" [exchangeRate]="currentRate"></order-summary>
+            </div>
         </div>
 
     </div>
