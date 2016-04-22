@@ -38,7 +38,7 @@ export class OrderInvoiceComponent {
 			});
 		});
 
-		return list.ToArray();
+		return list.OrderBy(p => p.name).ToArray();
 	}
 
 }

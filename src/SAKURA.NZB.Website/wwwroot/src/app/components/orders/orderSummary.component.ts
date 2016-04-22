@@ -47,7 +47,7 @@ export class OrderSummaryComponent {
 			});
 		});
 
-		return list.ToArray();
+		return list.OrderBy(p => p.name).ToArray();
 	}
 
 	get isLoaded() { return this.productList.length > 0; }

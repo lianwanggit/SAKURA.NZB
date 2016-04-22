@@ -54,7 +54,7 @@ System.register(["angular2/core", "angular2/common", "../api.service", "./models
                                     list.Add(new ProductInfo(op.productId, op.productBrand + ' ' + op.productName, op.cost, op.qty));
                             });
                         });
-                        return list.ToArray();
+                        return list.OrderBy(function (p) { return p.name; }).ToArray();
                     },
                     enumerable: true,
                     configurable: true
