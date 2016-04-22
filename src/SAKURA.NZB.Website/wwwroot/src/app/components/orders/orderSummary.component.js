@@ -37,6 +37,8 @@ System.register(["angular2/core", "angular2/common", "../api.service", "./models
                     this.qty = qty;
                     this.profit = profit;
                     this.strProfit = strProfit;
+                    this.profitRate = this.profit / this.costCny * 100;
+                    this.strProfitRate = models_1.formatCurrency(this.profitRate, this.profitRate.toFixed(2)) + '%';
                 }
                 return ProductInfo;
             }());
@@ -65,7 +67,17 @@ System.register(["angular2/core", "angular2/common", "../api.service", "./models
                     configurable: true
                 });
                 Object.defineProperty(OrderSummaryComponent.prototype, "isLoaded", {
-                    get: function () { return this.orderModel && this.orderModel.customerOrders && this.orderModel.customerOrders.length; },
+                    get: function () { return this.productList.length > 0; },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(OrderSummaryComponent.prototype, "totalProfitRate", {
+                    get: function () { return this.orderModel.totalProfit / (this.orderModel.totalCost * this.exchangeRate) * 100; },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(OrderSummaryComponent.prototype, "strTotalProfitRate", {
+                    get: function () { return models_1.formatCurrency(this.totalProfitRate, this.totalProfitRate.toFixed(2)) + '%'; },
                     enumerable: true,
                     configurable: true
                 });

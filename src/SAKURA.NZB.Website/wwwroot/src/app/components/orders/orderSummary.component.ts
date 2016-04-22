@@ -2,11 +2,17 @@
 import {CORE_DIRECTIVES} from "angular2/common";
 
 import {ApiService} from "../api.service";
-import {CustomerOrder, OrderProduct, OrderModel} from "./models";
+import {CustomerOrder, OrderProduct, OrderModel, formatCurrency} from "./models";
 
 class ProductInfo {
+	profitRate: number;
+	strProfitRate: string;
+
 	constructor(public id: number, public name: string, public cost: number, public costCny, public price: number, public qty: number,
 		public profit: number, public strProfit) {
+
+		this.profitRate = this.profit / this.costCny * 100;
+		this.strProfitRate = formatCurrency(this.profitRate, this.profitRate.toFixed(2)) + '%';
 	}
 }
 
@@ -44,5 +50,7 @@ export class OrderSummaryComponent {
 		return list.ToArray();
 	}
 
-	get isLoaded() { return this.orderModel && this.orderModel.customerOrders && this.orderModel.customerOrders.length; }
+	get isLoaded() { return this.productList.length > 0; }
+	get totalProfitRate() { return this.orderModel.totalProfit / (this.orderModel.totalCost * this.exchangeRate) * 100; }
+	get strTotalProfitRate() { return formatCurrency(this.totalProfitRate, this.totalProfitRate.toFixed(2)) + '%'; }
 }

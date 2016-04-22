@@ -25,8 +25,8 @@
                         <td>{{p.costCny}}</td>
                         <td>{{p.price}}</td>
                         <td>{{p.qty}}</td>
-                        <td [ngClass]="{up: p.profit > 0, down: p.profit < 0}">{{p.strProfit}}</td>
-                        <td>{{(p.profit / p.costCny * 100).toFixed(2)}}%</td>
+                        <td [ngClass]="{up: p.profit > 0, down: p.profit <= 0}">{{p.strProfit}}</td>
+                        <td [ngClass]="{up: p.profitRate > 0, down: p.profitRate <= 0}">{{p.strProfitRate}}</td>
                     </tr>
                 </tbody>
                 <tfoot>
@@ -36,8 +36,8 @@
                         <td>{{(orderModel.totalCost * exchangeRate).toFixed(2)}}</td>
                         <td>{{orderModel.totalPrice}}</td>                        
                         <td>{{orderModel.totalQty}}</td>
-                        <td [ngClass]="{up: orderModel.totalProfit > 0, down: orderModel.totalProfit < 0}">{{orderModel.strTotalProfit}}</td>
-                        <td>{{(orderModel.totalProfit / (orderModel.totalCost * exchangeRate) * 100).toFixed(2)}}%</td>
+                        <td [ngClass]="{up: orderModel.totalProfit > 0, down: orderModel.totalProfit <= 0}"><strong>{{orderModel.strTotalProfit}}</strong></td>
+                        <td [ngClass]="{up: totalProfitRate> 0, down: totalProfitRate <= 0}"><strong>{{strTotalProfitRate}}</strong></td>
                     </tr>
                 </tfoot>
             </table>
