@@ -143,6 +143,16 @@
     margin-bottom: 0;
 }
 
+.nav-tabs > li > a span {
+    background-color: #337ab7;
+}
+
+.nav-tabs > li.active > a span,
+.nav-tabs > li.active > a:focus span,
+.nav-tabs > li.active > a:hover span {
+    background-color: #555;
+}
+
 .right-button {
     float: right;
 }
