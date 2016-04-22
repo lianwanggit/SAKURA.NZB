@@ -4,27 +4,12 @@ import {Component, OnInit} from "angular2/core";
 import {CORE_DIRECTIVES, FORM_DIRECTIVES, ControlGroup, Control, Validators} from "angular2/common";
 import {Router, ROUTER_DIRECTIVES} from 'angular2/router';
 import {ApiService} from "../api.service";
+import {OrderModel, CustomerOrder, OrderProduct, Dict, formatCurrency} from "./models";
 import {ClipboardDirective} from '../../directives/clipboard.directive';
 import '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js';
 import moment from 'moment';
 
 declare var $: any;
-
-export class Dict {
-	orderStates = {};
-	paymentStates = {};
-
-	constructor() {
-		this.orderStates['Created'] = '已创建';
-		this.orderStates['Confirmed'] = '已确认';
-		this.orderStates['Delivered'] = '已发货';
-		this.orderStates['Received'] = '已签收';
-		this.orderStates['Completed'] = '完成';
-
-		this.paymentStates['Unpaid'] = '未支付';
-		this.paymentStates['Paid'] = '已支付';
-	}
-}
 
 class YearGroup {
 	constructor(public year: number, public monthGroups: MonthGroup[]) { }
@@ -49,136 +34,8 @@ class MonthGroup {
 	}
 }
 
-export class OrderModel {
-	totalCost: number;
-	totalPrice: number;
-	totalQty: number;
-	totalProfit: number;
-	strTotalProfit: string;
-	statusRate: number;
-	statusText: string;
-	expressText: string;
-
-	constructor(public id: number, public orderTime: any, public deliveryTime: Date, public receiveTime: Date,
-		public orderState: string, public paymentState: string, public waybillNumber: string, public weight: number,
-		public freight: number, public recipient: string, public phone: string, public address: string,
-		public sender: string, public senderPhone: string, public exchangeRate: number, public orderStates: Object,
-		public customerOrders: CustomerOrder[]) {
-
-		this.updateSummary();
-		this.updateStatus();
-		this.updateExpressText();
-	}
-
-	get deliverable() { return this.recipient && this.phone && this.address; }
-	get delivered() { return this.waybillNumber && this.weight && this.freight; }
-
-	updateStatus() {
-		var seed = this.paymentState == 'Paid' ? 20 : 0;
-		this.statusText = this.orderStates[this.orderState];
-
-		switch (this.orderState) {
-			case 'Created':
-				this.statusRate = 0 + seed;
-				break;
-			case 'Confirmed':
-				this.statusRate = 30 + seed;
-				break;
-			case 'Delivered':
-				this.statusRate = 50 + seed;
-				break;
-			case 'Received':
-				this.statusRate = 75 + seed;
-				break;
-			case 'Completed':
-				this.statusRate = 100;
-				break;
-			default:
-				this.statusRate = 0;
-				this.statusText = '未知';
-		}
-	}
-
-	updateSummary() {
-		var freightCost = 0;
-		if (this.freight)
-			freightCost = this.freight * this.exchangeRate;
-
-		var list = this.customerOrders.ToList<CustomerOrder>();
-		this.totalCost = list.Sum(co => co.totalCost);
-		this.totalPrice = list.Sum(co => co.totalPrice);
-		this.totalQty = list.Sum(co => co.totalQty);
-		this.totalProfit = list.Sum(co => co.totalProfit) - freightCost;
-		this.strTotalProfit = formatCurrency(this.totalProfit, this.totalProfit.toFixed(2));
-	}
-
-	updateExpressText() {
-		var that = this;
-		var products = [].ToList<Product>();
-		this.customerOrders.forEach(co => {
-			co.orderProducts.forEach(op => {
-				var p = products.FirstOrDefault(x => x.id == op.productId);
-				if (p)
-					p.qty += op.qty;
-				else
-					products.Add(new Product(op.productId, op.productBrand + ' ' + op.productName, op.qty));				
-			});
-		});
-
-		var productsText = '';
-		products.ForEach((e, index) => { productsText += '  ' + e.name + ' x' + e.qty + '\n'; });
-
-		this.expressText = '【寄件人】' + this.sender + '\n【寄件人電話】' + this.senderPhone + '\n【訂單內容】\n' + productsText + '【收件人】'
-			+ this.recipient + '\n【收件地址】' + this.address + '\n【聯繫電話】' + this.phone;
-	}
-}
-
-export class CustomerOrder {
-	totalCost: number;
-	totalPrice: number;
-	totalQty: number;
-	totalProfit: number;
-	strTotalProfit: string;
-
-	constructor(public customerId: number, public customerName: string, public orderProducts: OrderProduct[]) {		
-		this.updateSummary();
-	}
-
-	updateSummary() {
-		var list = this.orderProducts.ToList<OrderProduct>();
-		this.totalCost = list.Sum(op => op.cost * op.qty);
-		this.totalPrice = list.Sum(op => op.price * op.qty);
-		this.totalQty = list.Sum(op => op.qty);
-		this.totalProfit = list.Sum(op => op.profit);
-		this.strTotalProfit = formatCurrency(this.totalProfit, this.totalProfit.toFixed(2));
-	}
-}
-
-export class OrderProduct {
-	profit: number;
-	strProfit: string;
-
-	constructor(public productId: number, public productBrand: string, public productName: string, public cost: number,
-		public price: number, public qty: number, public exchangeRate: number) {
-		this.calculateProfit(this.exchangeRate);
-	}
-
-	calculateProfit(rate: number) {
-		this.profit = (this.price - this.cost * rate) * this.qty;
-		this.strProfit = formatCurrency(this.profit, this.profit.toFixed(2));
-	}
-}
-
-function formatCurrency(num: number, str: string) {
-	return num > 0 ? '+' + str : '-' + str;
-}
-
 class OrderDeliveryModel {
 	constructor(public orderId: number, public waybillNumber: string, public weight: number, public freight: number) { }
-}
-
-class Product {
-	constructor(public id: number, public name: string, public qty: number) { }
 }
 
 @Component({

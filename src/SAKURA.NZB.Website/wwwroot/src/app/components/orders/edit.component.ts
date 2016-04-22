@@ -6,7 +6,7 @@ import {Router, RouteParams, ROUTER_DIRECTIVES} from 'angular2/router';
 
 import {ApiService} from "../api.service";
 
-import {Dict, OrderModel, CustomerOrder, OrderProduct} from "./list.component";
+import {Dict, OrderModel, CustomerOrder, OrderProduct} from "./models";
 import {SelectValidator, ValidationResult} from "../../validators/selectValidator";
 import {OrderCustomersComponent} from "./orderCustomers.component";
 import {OrderProductsComponent} from "./orderProducts.component";
@@ -14,12 +14,6 @@ import {OrderInvoiceComponent} from "./orderInvoice.component";
 import {OrderSummaryComponent} from "./orderSummary.component";
 
 import '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js';
-
-export class Validation {
-	constructor(public isCustomersValid: boolean, public isProductsValid: boolean) { }
-
-	get isValid() { return this.isCustomersValid && this.isProductsValid; }
-}
 
 @Component({
     selector: "order-edit",
@@ -41,8 +35,6 @@ export class OrderEditComponent implements OnInit {
 	fixedRateHigh: number;
 	fixedRateLow: number;
 	currentRate: number;
-
-	validation: Validation = new Validation(false, false);	
 
 	constructor(private service: ApiService, private router: Router, params: RouteParams) {
 		this.orderId = params.get("id");

@@ -2,7 +2,7 @@
 import {CORE_DIRECTIVES} from "angular2/common";
 
 import {ApiService} from "../api.service";
-import {CustomerOrder, OrderProduct, OrderModel} from "./list.component";
+import {CustomerOrder, OrderProduct, OrderModel} from "./models";
 
 class ProductInfo {
 	constructor(public id: number, public name: string, public cost: number, public qty: number) { }

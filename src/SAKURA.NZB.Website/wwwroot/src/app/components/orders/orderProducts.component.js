@@ -1,4 +1,4 @@
-System.register(["angular2/core", "angular2/common", "../api.service", "../../directives/brandIndexer.directive", "./list.component", "../products/models"], function(exports_1, context_1) {
+System.register(["angular2/core", "angular2/common", "../api.service", "../../directives/brandIndexer.directive", "./models", "../products/models"], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -10,7 +10,7 @@ System.register(["angular2/core", "angular2/common", "../api.service", "../../di
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, common_1, api_service_1, brandIndexer_directive_1, list_component_1, models_1;
+    var core_1, common_1, api_service_1, brandIndexer_directive_1, models_1, models_2;
     var OrderProductsComponent;
     return {
         setters:[
@@ -26,11 +26,11 @@ System.register(["angular2/core", "angular2/common", "../api.service", "../../di
             function (brandIndexer_directive_1_1) {
                 brandIndexer_directive_1 = brandIndexer_directive_1_1;
             },
-            function (list_component_1_1) {
-                list_component_1 = list_component_1_1;
-            },
             function (models_1_1) {
                 models_1 = models_1_1;
+            },
+            function (models_2_1) {
+                models_2 = models_2_1;
             }],
         execute: function() {
             OrderProductsComponent = (function () {
@@ -53,13 +53,13 @@ System.register(["angular2/core", "angular2/common", "../api.service", "../../di
                     var that = this;
                     this.service.getProduct(id, function (json) {
                         if (json) {
-                            var product = new models_1.Product(json);
+                            var product = new models_2.Product(json);
                             var op = opList.FirstOrDefault(function (p) { return p.productId == product.id; });
                             if (!op) {
                                 var lowestCost = null;
                                 if (product.quotes.length)
                                     lowestCost = product.quotes.ToList().Min(function (q) { return q.price; });
-                                co.orderProducts.push(new list_component_1.OrderProduct(product.id, product.brand.name, product.name, lowestCost, product.price, 1, _this.exchangeRate));
+                                co.orderProducts.push(new models_1.OrderProduct(product.id, product.brand.name, product.name, lowestCost, product.price, 1, _this.exchangeRate));
                             }
                             else
                                 op.qty += 1;
@@ -119,7 +119,7 @@ System.register(["angular2/core", "angular2/common", "../api.service", "../../di
                 });
                 __decorate([
                     core_1.Input(), 
-                    __metadata('design:type', list_component_1.OrderModel)
+                    __metadata('design:type', models_1.OrderModel)
                 ], OrderProductsComponent.prototype, "orderModel", void 0);
                 __decorate([
                     core_1.Input(), 

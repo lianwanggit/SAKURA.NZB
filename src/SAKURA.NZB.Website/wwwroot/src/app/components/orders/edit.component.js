@@ -1,5 +1,5 @@
 /// <reference path="../../../../lib/TypeScript-Linq/Scripts/typings/System/Collections/Generic/List.ts" />
-System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.service", "./list.component", "./orderCustomers.component", "./orderProducts.component", "./orderInvoice.component", "./orderSummary.component", '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js'], function(exports_1, context_1) {
+System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.service", "./models", "./orderCustomers.component", "./orderProducts.component", "./orderInvoice.component", "./orderSummary.component", '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -11,8 +11,8 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, common_1, router_1, api_service_1, list_component_1, orderCustomers_component_1, orderProducts_component_1, orderInvoice_component_1, orderSummary_component_1;
-    var Validation, OrderEditComponent;
+    var core_1, common_1, router_1, api_service_1, models_1, orderCustomers_component_1, orderProducts_component_1, orderInvoice_component_1, orderSummary_component_1;
+    var OrderEditComponent;
     return {
         setters:[
             function (core_1_1) {
@@ -27,8 +27,8 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
             function (api_service_1_1) {
                 api_service_1 = api_service_1_1;
             },
-            function (list_component_1_1) {
-                list_component_1 = list_component_1_1;
+            function (models_1_1) {
+                models_1 = models_1_1;
             },
             function (orderCustomers_component_1_1) {
                 orderCustomers_component_1 = orderCustomers_component_1_1;
@@ -44,32 +44,18 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
             },
             function (_1) {}],
         execute: function() {
-            Validation = (function () {
-                function Validation(isCustomersValid, isProductsValid) {
-                    this.isCustomersValid = isCustomersValid;
-                    this.isProductsValid = isProductsValid;
-                }
-                Object.defineProperty(Validation.prototype, "isValid", {
-                    get: function () { return this.isCustomersValid && this.isProductsValid; },
-                    enumerable: true,
-                    configurable: true
-                });
-                return Validation;
-            }());
-            exports_1("Validation", Validation);
             OrderEditComponent = (function () {
                 function OrderEditComponent(service, router, params) {
                     this.service = service;
                     this.router = router;
                     this.editMode = false;
-                    this.orderStates = (new list_component_1.Dict()).orderStates;
-                    this.paymentStates = (new list_component_1.Dict()).paymentStates;
-                    this.validation = new Validation(false, false);
+                    this.orderStates = (new models_1.Dict()).orderStates;
+                    this.paymentStates = (new models_1.Dict()).paymentStates;
                     this.orderId = params.get("id");
                     if (this.orderId) {
                         this.editMode = true;
                     }
-                    this.order = new list_component_1.OrderModel(null, null, null, null, "Created", "Unpaid", null, null, null, null, null, null, null, null, null, this.orderStates, []);
+                    this.order = new models_1.OrderModel(null, null, null, null, "Created", "Unpaid", null, null, null, null, null, null, null, null, null, this.orderStates, []);
                 }
                 OrderEditComponent.prototype.ngOnInit = function () {
                     var that = this;

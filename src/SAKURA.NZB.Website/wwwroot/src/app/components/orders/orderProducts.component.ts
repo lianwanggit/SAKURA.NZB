@@ -3,7 +3,7 @@ import {CORE_DIRECTIVES, FORM_DIRECTIVES, ControlGroup, Control, Validators} fro
 
 import {ApiService} from "../api.service";
 import {BrandIndexerDirective, Item} from "../../directives/brandIndexer.directive";
-import {CustomerOrder, OrderProduct, OrderModel} from "./list.component";
+import {CustomerOrder, OrderProduct, OrderModel} from "./models";
 import {Category, Brand, Supplier, Product, Quote} from "../products/models";
 
 @Component({
@@ -21,6 +21,7 @@ export class OrderProductsComponent implements OnInit {
 
 	@Input() orderModel: OrderModel;
 	@Input() exchangeRate: number;
+
 	constructor(private service: ApiService) { }
 
 	ngOnInit() {

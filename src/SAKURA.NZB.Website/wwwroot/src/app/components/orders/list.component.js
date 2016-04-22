@@ -1,5 +1,5 @@
 /// <reference path="../../../../lib/TypeScript-Linq/Scripts/typings/System/Collections/Generic/List.ts" />
-System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.service", '../../directives/clipboard.directive', '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js', 'moment'], function(exports_1, context_1) {
+System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.service", "./models", '../../directives/clipboard.directive', '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js', 'moment'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -11,11 +11,8 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, common_1, router_1, api_service_1, clipboard_directive_1, moment_1;
-    var Dict, YearGroup, MonthGroup, OrderModel, CustomerOrder, OrderProduct, OrderDeliveryModel, Product, OrdersComponent;
-    function formatCurrency(num, str) {
-        return num > 0 ? '+' + str : '-' + str;
-    }
+    var core_1, common_1, router_1, api_service_1, models_1, clipboard_directive_1, moment_1;
+    var YearGroup, MonthGroup, OrderDeliveryModel, OrdersComponent;
     return {
         setters:[
             function (core_1_1) {
@@ -30,6 +27,9 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
             function (api_service_1_1) {
                 api_service_1 = api_service_1_1;
             },
+            function (models_1_1) {
+                models_1 = models_1_1;
+            },
             function (clipboard_directive_1_1) {
                 clipboard_directive_1 = clipboard_directive_1_1;
             },
@@ -38,21 +38,6 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                 moment_1 = moment_1_1;
             }],
         execute: function() {
-            Dict = (function () {
-                function Dict() {
-                    this.orderStates = {};
-                    this.paymentStates = {};
-                    this.orderStates['Created'] = '已创建';
-                    this.orderStates['Confirmed'] = '已确认';
-                    this.orderStates['Delivered'] = '已发货';
-                    this.orderStates['Received'] = '已签收';
-                    this.orderStates['Completed'] = '完成';
-                    this.paymentStates['Unpaid'] = '未支付';
-                    this.paymentStates['Paid'] = '已支付';
-                }
-                return Dict;
-            }());
-            exports_1("Dict", Dict);
             YearGroup = (function () {
                 function YearGroup(year, monthGroups) {
                     this.year = year;
@@ -71,134 +56,10 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     this.totalCost = (list.Sum(function (om) { return om.totalCost; })).toFixed(2);
                     this.totalPrice = (list.Sum(function (om) { return om.totalPrice; })).toFixed(2);
                     var tp = list.Sum(function (om) { return om.totalProfit; });
-                    this.totalProfit = formatCurrency(tp, tp.toFixed(2));
+                    this.totalProfit = models_1.formatCurrency(tp, tp.toFixed(2));
                 };
                 return MonthGroup;
             }());
-            OrderModel = (function () {
-                function OrderModel(id, orderTime, deliveryTime, receiveTime, orderState, paymentState, waybillNumber, weight, freight, recipient, phone, address, sender, senderPhone, exchangeRate, orderStates, customerOrders) {
-                    this.id = id;
-                    this.orderTime = orderTime;
-                    this.deliveryTime = deliveryTime;
-                    this.receiveTime = receiveTime;
-                    this.orderState = orderState;
-                    this.paymentState = paymentState;
-                    this.waybillNumber = waybillNumber;
-                    this.weight = weight;
-                    this.freight = freight;
-                    this.recipient = recipient;
-                    this.phone = phone;
-                    this.address = address;
-                    this.sender = sender;
-                    this.senderPhone = senderPhone;
-                    this.exchangeRate = exchangeRate;
-                    this.orderStates = orderStates;
-                    this.customerOrders = customerOrders;
-                    this.updateSummary();
-                    this.updateStatus();
-                    this.updateExpressText();
-                }
-                Object.defineProperty(OrderModel.prototype, "deliverable", {
-                    get: function () { return this.recipient && this.phone && this.address; },
-                    enumerable: true,
-                    configurable: true
-                });
-                Object.defineProperty(OrderModel.prototype, "delivered", {
-                    get: function () { return this.waybillNumber && this.weight && this.freight; },
-                    enumerable: true,
-                    configurable: true
-                });
-                OrderModel.prototype.updateStatus = function () {
-                    var seed = this.paymentState == 'Paid' ? 20 : 0;
-                    this.statusText = this.orderStates[this.orderState];
-                    switch (this.orderState) {
-                        case 'Created':
-                            this.statusRate = 0 + seed;
-                            break;
-                        case 'Confirmed':
-                            this.statusRate = 30 + seed;
-                            break;
-                        case 'Delivered':
-                            this.statusRate = 50 + seed;
-                            break;
-                        case 'Received':
-                            this.statusRate = 75 + seed;
-                            break;
-                        case 'Completed':
-                            this.statusRate = 100;
-                            break;
-                        default:
-                            this.statusRate = 0;
-                            this.statusText = '未知';
-                    }
-                };
-                OrderModel.prototype.updateSummary = function () {
-                    var freightCost = 0;
-                    if (this.freight)
-                        freightCost = this.freight * this.exchangeRate;
-                    var list = this.customerOrders.ToList();
-                    this.totalCost = list.Sum(function (co) { return co.totalCost; });
-                    this.totalPrice = list.Sum(function (co) { return co.totalPrice; });
-                    this.totalQty = list.Sum(function (co) { return co.totalQty; });
-                    this.totalProfit = list.Sum(function (co) { return co.totalProfit; }) - freightCost;
-                    this.strTotalProfit = formatCurrency(this.totalProfit, this.totalProfit.toFixed(2));
-                };
-                OrderModel.prototype.updateExpressText = function () {
-                    var that = this;
-                    var products = [].ToList();
-                    this.customerOrders.forEach(function (co) {
-                        co.orderProducts.forEach(function (op) {
-                            var p = products.FirstOrDefault(function (x) { return x.id == op.productId; });
-                            if (p)
-                                p.qty += op.qty;
-                            else
-                                products.Add(new Product(op.productId, op.productBrand + ' ' + op.productName, op.qty));
-                        });
-                    });
-                    var productsText = '';
-                    products.ForEach(function (e, index) { productsText += '  ' + e.name + ' x' + e.qty + '\n'; });
-                    this.expressText = '【寄件人】' + this.sender + '\n【寄件人電話】' + this.senderPhone + '\n【訂單內容】\n' + productsText + '【收件人】'
-                        + this.recipient + '\n【收件地址】' + this.address + '\n【聯繫電話】' + this.phone;
-                };
-                return OrderModel;
-            }());
-            exports_1("OrderModel", OrderModel);
-            CustomerOrder = (function () {
-                function CustomerOrder(customerId, customerName, orderProducts) {
-                    this.customerId = customerId;
-                    this.customerName = customerName;
-                    this.orderProducts = orderProducts;
-                    this.updateSummary();
-                }
-                CustomerOrder.prototype.updateSummary = function () {
-                    var list = this.orderProducts.ToList();
-                    this.totalCost = list.Sum(function (op) { return op.cost * op.qty; });
-                    this.totalPrice = list.Sum(function (op) { return op.price * op.qty; });
-                    this.totalQty = list.Sum(function (op) { return op.qty; });
-                    this.totalProfit = list.Sum(function (op) { return op.profit; });
-                    this.strTotalProfit = formatCurrency(this.totalProfit, this.totalProfit.toFixed(2));
-                };
-                return CustomerOrder;
-            }());
-            exports_1("CustomerOrder", CustomerOrder);
-            OrderProduct = (function () {
-                function OrderProduct(productId, productBrand, productName, cost, price, qty, exchangeRate) {
-                    this.productId = productId;
-                    this.productBrand = productBrand;
-                    this.productName = productName;
-                    this.cost = cost;
-                    this.price = price;
-                    this.qty = qty;
-                    this.exchangeRate = exchangeRate;
-                    this.calculateProfit(this.exchangeRate);
-                }
-                OrderProduct.prototype.calculateProfit = function (rate) {
-                    this.profit = (this.price - this.cost * rate) * this.qty;
-                    this.strProfit = formatCurrency(this.profit, this.profit.toFixed(2));
-                };
-                return OrderProduct;
-            }());
-            exports_1("OrderProduct", OrderProduct);
             OrderDeliveryModel = (function () {
                 function OrderDeliveryModel(orderId, waybillNumber, weight, freight) {
                     this.orderId = orderId;
@@ -207,14 +68,6 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     this.freight = freight;
                 }
                 return OrderDeliveryModel;
-            }());
-            Product = (function () {
-                function Product(id, name, qty) {
-                    this.id = id;
-                    this.name = name;
-                    this.qty = qty;
-                }
-                return Product;
             }());
             OrdersComponent = (function () {
                 function OrdersComponent(service, router) {
@@ -226,9 +79,9 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     this.filterText = '';
                     this.orderState = '';
                     this.paymentState = '';
-                    this.orderStates = (new Dict()).orderStates;
+                    this.orderStates = (new models_1.Dict()).orderStates;
                     this.orderStateKeys = [];
-                    this.paymentStates = (new Dict()).paymentStates;
+                    this.paymentStates = (new models_1.Dict()).paymentStates;
                     this.paymentStateKeys = [];
                     this.totalAmount = 0;
                     this.amount = 0;
@@ -377,11 +230,11 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                                 om.customerOrders.forEach(function (co) {
                                     var products = [].ToList();
                                     co.orderProducts.forEach(function (op) {
-                                        products.Add(new OrderProduct(op.productId, op.productBrand, op.productName, op.cost, op.price, op.qty, that.currentRate));
+                                        products.Add(new models_1.OrderProduct(op.productId, op.productBrand, op.productName, op.cost, op.price, op.qty, that.currentRate));
                                     });
-                                    customers.Add(new CustomerOrder(co.customerId, co.customerName, products.ToArray()));
+                                    customers.Add(new models_1.CustomerOrder(co.customerId, co.customerName, products.ToArray()));
                                 });
-                                orders.Add(new OrderModel(om.id, moment_1.default(om.orderTime).format('YYYY-MM-DD'), om.deliveryTime, om.receiveTime, om.orderState, om.paymentState, om.waybillNumber, om.weight, om.freight, om.recipient, om.phone, om.address, om.sender, om.senderPhone, that.currentRate, that.orderStates, customers.ToArray()));
+                                orders.Add(new models_1.OrderModel(om.id, moment_1.default(om.orderTime).format('YYYY-MM-DD'), om.deliveryTime, om.receiveTime, om.orderState, om.paymentState, om.waybillNumber, om.weight, om.freight, om.recipient, om.phone, om.address, om.sender, om.senderPhone, that.currentRate, that.orderStates, customers.ToArray()));
                                 orderCount += 1;
                             });
                             monthGroups.Add(new MonthGroup(mg.month, orders.ToArray()));

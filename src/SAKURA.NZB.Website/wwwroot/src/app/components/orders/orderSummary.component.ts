@@ -2,12 +2,11 @@
 import {CORE_DIRECTIVES} from "angular2/common";
 
 import {ApiService} from "../api.service";
-import {CustomerOrder, OrderProduct, OrderModel} from "./list.component";
+import {CustomerOrder, OrderProduct, OrderModel} from "./models";
 
 class ProductInfo {
 	constructor(public id: number, public name: string, public cost: number, public costCny, public price: number, public qty: number,
 		public profit: number, public strProfit) {
-
 	}
 }
 
@@ -44,8 +43,6 @@ export class OrderSummaryComponent {
 
 		return list.ToArray();
 	}
-
-
 
 	get isLoaded() { return this.orderModel && this.orderModel.customerOrders && this.orderModel.customerOrders.length; }
 }

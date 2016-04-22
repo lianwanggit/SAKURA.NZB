@@ -28,7 +28,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr *ngFor="#op of co.orderProducts; #iop = index">
+                            <tr *ngFor="#op of co.orderProducts; #iop = index" [ngClass]="{error: !op.isValid}">
                                 <td>{{iop + 1}}</td>
                                 <td>{{op.productBrand}} {{op.productName}}</td>
                                 <td><input class="form-control no-border" [(ngModel)]="op.cost" min="1" placeholder="NZD" step="0.01" type="number" (ngModelChange)="onModelChanged(co, op)"/></td>

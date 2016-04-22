@@ -1,4 +1,4 @@
-System.register(["angular2/core", "angular2/common", "../api.service", "./list.component"], function(exports_1, context_1) {
+System.register(["angular2/core", "angular2/common", "../api.service", "./models"], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -10,7 +10,7 @@ System.register(["angular2/core", "angular2/common", "../api.service", "./list.c
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, common_1, api_service_1, list_component_1;
+    var core_1, common_1, api_service_1, models_1;
     var ProductInfo, OrderSummaryComponent;
     return {
         setters:[
@@ -23,8 +23,8 @@ System.register(["angular2/core", "angular2/common", "../api.service", "./list.c
             function (api_service_1_1) {
                 api_service_1 = api_service_1_1;
             },
-            function (list_component_1_1) {
-                list_component_1 = list_component_1_1;
+            function (models_1_1) {
+                models_1 = models_1_1;
             }],
         execute: function() {
             ProductInfo = (function () {
@@ -71,7 +71,7 @@ System.register(["angular2/core", "angular2/common", "../api.service", "./list.c
                 });
                 __decorate([
                     core_1.Input(), 
-                    __metadata('design:type', list_component_1.OrderModel)
+                    __metadata('design:type', models_1.OrderModel)
                 ], OrderSummaryComponent.prototype, "orderModel", void 0);
                 __decorate([
                     core_1.Input(), 
