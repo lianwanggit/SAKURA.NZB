@@ -56,7 +56,7 @@ System.register(["angular2/core", "angular2/common", "../api.service", "../../di
                             var product = new models_2.Product(json);
                             var op = opList.FirstOrDefault(function (p) { return p.productId == product.id; });
                             if (!op) {
-                                var lowestCost = null;
+                                var lowestCost = 0;
                                 if (product.quotes.length)
                                     lowestCost = product.quotes.ToList().Min(function (q) { return q.price; });
                                 co.orderProducts.push(new models_1.OrderProduct(product.id, product.brand.name, product.name, lowestCost, product.price, 1, _this.exchangeRate));

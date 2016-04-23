@@ -181,7 +181,11 @@ System.register([], function(exports_1, context_1) {
                     this.strProfit = formatCurrency(this.profit, this.profit.toFixed(2));
                 };
                 Object.defineProperty(OrderProduct.prototype, "isValid", {
-                    get: function () { return this.cost >= 0 && this.price >= 0 && this.qty > 0; },
+                    get: function () {
+                        return !isNaN(this.cost) && this.cost > 0
+                            && !isNaN(this.price) && this.price >= 0
+                            && !isNaN(this.qty) && this.qty > 0;
+                    },
                     enumerable: true,
                     configurable: true
                 });

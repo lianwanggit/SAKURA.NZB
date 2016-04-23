@@ -139,7 +139,11 @@ export class OrderProduct {
 		this.strProfit = formatCurrency(this.profit, this.profit.toFixed(2));
 	}
 
-	get isValid() { return this.cost >= 0 && this.price >= 0 && this.qty > 0; }
+	get isValid() {
+		return !isNaN(this.cost) && this.cost > 0
+			&& !isNaN(this.price) && this.price >= 0
+			&& !isNaN(this.qty) && this.qty > 0;
+	}
 }
 
 export class Product {
