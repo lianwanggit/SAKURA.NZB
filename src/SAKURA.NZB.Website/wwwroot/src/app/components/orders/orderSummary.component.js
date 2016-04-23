@@ -37,7 +37,7 @@ System.register(["angular2/core", "angular2/common", "../api.service", "./models
                     this.qty = qty;
                     this.profit = profit;
                     this.strProfit = strProfit;
-                    this.profitRate = this.profit / this.costCny * 100;
+                    this.profitRate = this.profit / (this.costCny * this.qty) * 100;
                     this.strProfitRate = models_1.formatCurrency(this.profitRate, this.profitRate.toFixed(2)) + '%';
                 }
                 return ProductInfo;

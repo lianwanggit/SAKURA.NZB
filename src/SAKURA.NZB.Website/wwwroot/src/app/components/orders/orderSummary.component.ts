@@ -11,7 +11,7 @@ class ProductInfo {
 	constructor(public id: number, public name: string, public cost: number, public costCny, public price: number, public qty: number,
 		public profit: number, public strProfit) {
 
-		this.profitRate = this.profit / this.costCny * 100;
+		this.profitRate = this.profit / (this.costCny * this.qty) * 100;
 		this.strProfitRate = formatCurrency(this.profitRate, this.profitRate.toFixed(2)) + '%';
 	}
 }
