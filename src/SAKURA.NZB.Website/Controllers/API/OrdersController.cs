@@ -264,7 +264,8 @@ namespace SAKURA.NZB.Website.Controllers
 					Price = o.Price,
 					Qty = o.Qty,
 					ProductId = o.ProductId,
-					CustomerId = o.CustomerId
+					CustomerId = o.CustomerId,
+					Purchased = o.Purchased
 				});
 			}
 			_context.SaveChanges();
@@ -359,6 +360,7 @@ namespace SAKURA.NZB.Website.Controllers
 							Cost = op.Cost,
 							Price = op.Price,
 							Qty = op.Qty,
+							Purchased = op.Purchased,
 							ProductId = op.ProductId,
 							CustomerId = co.CustomerId
 						});
@@ -368,8 +370,9 @@ namespace SAKURA.NZB.Website.Controllers
 						p.Cost = op.Cost;
 						p.Price = op.Price;
 						p.Qty = op.Qty;
+						p.Purchased = op.Purchased;
 						p.ProductId = op.ProductId;
-						p.CustomerId = co.CustomerId;
+						p.CustomerId = co.CustomerId;						
 					}
 
 				}

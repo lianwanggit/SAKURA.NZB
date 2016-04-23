@@ -45,5 +45,6 @@ namespace SAKURA.NZB.Website.Models
 		public float Cost { get; set; }
 		public float Price { get; set; }
 		public int Qty { get; set; }
+		public bool Purchased { get; set; }
 	}
 }

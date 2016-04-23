@@ -18,5 +18,6 @@ namespace SAKURA.NZB.Domain
 		[Range(1, 100)]
 		public int Qty { get; set; }
 		public int OrderId { get; set; }
+		public bool Purchased { get; set; }
 	}
 }
