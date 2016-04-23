@@ -1,23 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNet.Mvc;
+﻿using Microsoft.AspNet.Mvc;
+using SAKURA.NZB.Business.Configuration;
 
 namespace SAKURA.NZB.Website.Controllers
 {
-    public class HomeController : Controller
+	public class HomeController : Controller
     {
-        public IActionResult Index()
+		private Config _config;
+
+		public HomeController(Config config)
+		{
+			_config = config;
+		}
+
+		public IActionResult Index()
         {
-            return View();
+			ViewData["CurrencyRate"] = _config.GetCurrentRate();
+			return View();
         }
 
         public IActionResult Contact()
         {
-            ViewData["Message"] = "Your contact page.";
-
-
             return View();
         }
 
