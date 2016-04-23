@@ -2,7 +2,7 @@
 
 <div class="products-container" *ngIf="isLoaded">
     <div class="card product-list" *ngIf="productList.length > 0">
-        <div class="card-header">利润明细 <span class="badge progress-bar-info pull-right">实时汇率 {{exchangeRate}}</span></div>
+        <div class="card-header">利润明细</div>
         <div class="card-block">
             <table class="table table-bordered table-hover table-condensed">
                 <thead>
@@ -30,6 +30,15 @@
                     </tr>
                 </tbody>
                 <tfoot>
+                    <tr *ngIf="orderModel.freight > 0" class="active">
+                        <td colspan="2" class="text-right">重量: {{orderModel.weight}} <span class="left-spacer">运费</span></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td class="down">-{{(orderModel.freight * exchangeRate).toFixed(2)}}</td>
+                        <td></td>
+                    </tr>
                     <tr>
                         <td colspan="2" class="text-right">合计</td>
                         <td>{{orderModel.totalCost}}</td>

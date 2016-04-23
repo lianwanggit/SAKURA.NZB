@@ -106,6 +106,7 @@ export class OrderEditComponent implements OnInit {
 					that.order.orderState = json.orderState;
 					that.order.paymentState = json.paymentState;
 					that.order.waybillNumber = json.waybillNumber;
+					that.order.weight = json.weight;
 					that.order.freight = json.freight;
 					that.order.recipient = json.recipient;
 					that.order.phone = json.phone;

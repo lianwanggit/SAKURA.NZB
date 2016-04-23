@@ -113,6 +113,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                                 that.order.orderState = json.orderState;
                                 that.order.paymentState = json.paymentState;
                                 that.order.waybillNumber = json.waybillNumber;
+                                that.order.weight = json.weight;
                                 that.order.freight = json.freight;
                                 that.order.recipient = json.recipient;
                                 that.order.phone = json.phone;
