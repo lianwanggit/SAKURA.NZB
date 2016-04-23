@@ -107,7 +107,13 @@ System.register(["angular2/core", "angular2/common", "../api.service", "../../di
                     this.service.getCustomer(id, function (json) {
                         if (json) {
                             that.selectedCustomer = new edit_component_1.Customer(json);
-                            if (that.orderModel.id == 0) {
+                            if (that.orderModel.id != 0 && that.orderModel.customerOrders.length
+                                && that.orderModel.customerOrders[0].customerId.toString() == id) {
+                                that.recipientGroup.controls['recipient'].updateValue(that.orderModel.recipient);
+                                that.recipientGroup.controls['phone'].updateValue(that.orderModel.phone);
+                                that.recipientGroup.controls['address'].updateValue(that.orderModel.address);
+                            }
+                            else {
                                 that.recipientGroup.controls['recipient'].updateValue(that.selectedCustomer.fullName);
                                 that.recipientGroup.controls['phone'].updateValue(that.selectedCustomer.phone1);
                                 that.recipientGroup.controls['address'].updateValue(that.selectedCustomer.address);
@@ -115,11 +121,6 @@ System.register(["angular2/core", "angular2/common", "../api.service", "../../di
                                 that.orderModel.customerOrders = [];
                                 that.orderModel.customerOrders.push(co);
                                 that.onModelChanged(co, true);
-                            }
-                            else {
-                                that.recipientGroup.controls['recipient'].updateValue(that.orderModel.recipient);
-                                that.recipientGroup.controls['phone'].updateValue(that.orderModel.phone);
-                                that.recipientGroup.controls['address'].updateValue(that.orderModel.address);
                             }
                         }
                     });

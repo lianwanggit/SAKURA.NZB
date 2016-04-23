@@ -136,6 +136,14 @@ System.register(["rxjs/Rx", "angular2/http", "angular2/core"], function(exports_
                     headers.append('Content-Type', 'application/json');
                     return this.http.post('api/orders', data, { headers: headers });
                 };
+                ApiService.prototype.putOrder = function (id, data) {
+                    var headers = new http_1.Headers();
+                    headers.append('Content-Type', 'application/json');
+                    return this.http.put('api/orders/' + id, data, { headers: headers });
+                };
+                ApiService.prototype.deleteOrder = function (id) {
+                    this.http.delete('api/orders/' + id);
+                };
                 ApiService = __decorate([
                     core_1.Injectable(), 
                     __metadata('design:paramtypes', [http_1.Http])

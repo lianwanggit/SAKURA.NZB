@@ -99,8 +99,14 @@ export class OrderCustomersComponent implements OnInit {
         this.service.getCustomer(id, json => {
             if (json) {
                 that.selectedCustomer = new Customer(json);
-
-				if (that.orderModel.id == 0) {
+				
+				if (that.orderModel.id != 0 && that.orderModel.customerOrders.length
+					&& that.orderModel.customerOrders[0].customerId.toString() == id) {
+					(<any>that.recipientGroup.controls['recipient']).updateValue(that.orderModel.recipient);
+					(<any>that.recipientGroup.controls['phone']).updateValue(that.orderModel.phone);
+					(<any>that.recipientGroup.controls['address']).updateValue(that.orderModel.address);
+				}
+				else {				
 					(<any>that.recipientGroup.controls['recipient']).updateValue(that.selectedCustomer.fullName);
 					(<any>that.recipientGroup.controls['phone']).updateValue(that.selectedCustomer.phone1);
 					(<any>that.recipientGroup.controls['address']).updateValue(that.selectedCustomer.address);
@@ -109,11 +115,6 @@ export class OrderCustomersComponent implements OnInit {
 					that.orderModel.customerOrders = [];
 					that.orderModel.customerOrders.push(co);
 					that.onModelChanged(co, true);
-				}
-				else {
-					(<any>that.recipientGroup.controls['recipient']).updateValue(that.orderModel.recipient);
-					(<any>that.recipientGroup.controls['phone']).updateValue(that.orderModel.phone);
-					(<any>that.recipientGroup.controls['address']).updateValue(that.orderModel.address);
 				}
             }
         });

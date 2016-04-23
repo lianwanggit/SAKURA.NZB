@@ -220,6 +220,69 @@ namespace SAKURA.NZB.Website.Controllers
 			});
 		}
 
+		[HttpPut("{id:int}")]
+		public IActionResult Put(int? id, [FromBody]OrderModel model)
+		{
+			if (model == null || model.Id != id)
+				return HttpBadRequest();
+
+			if (!Validate(model))
+				return HttpBadRequest();
+
+			var item = _context.Orders.Include(o => o.Products).FirstOrDefault(x => x.Id == id);
+			if (item == null)
+			{
+				return HttpNotFound();
+			}
+
+			var order = Map(model);
+
+			item.Id = order.Id;
+			item.OrderTime = order.OrderTime;
+			item.DeliveryTime = order.DeliveryTime;
+			item.ReceiveTime = order.ReceiveTime;
+			item.OrderState = order.OrderState;
+			item.PaymentState = order.PaymentState;
+			item.WaybillNumber = order.WaybillNumber;
+			item.Weight = order.Weight;
+			item.Freight = order.Freight;
+			item.Waybill = order.Waybill;
+			item.TransitStatus = order.TransitStatus;
+			item.Description = order.Description;
+			item.Recipient = order.Recipient;
+			item.Phone = order.Phone;
+			item.Address = order.Address;
+
+			item.Products.Clear();
+			_context.SaveChanges();
+
+			foreach (var o in order.Products)
+			{
+				item.Products.Add(new OrderProduct
+				{
+					Cost = o.Cost,
+					Price = o.Price,
+					Qty = o.Qty,
+					ProductId = o.ProductId,
+					CustomerId = o.CustomerId
+				});
+			}
+			_context.SaveChanges();
+
+			return new NoContentResult();
+		}
+
+		[HttpDelete("{id}")]
+		public void Delete(int id)
+		{
+			var item = _context.Orders.Include(o => o.Products).FirstOrDefault(x => x.Id == id);
+			if (item != null)
+			{
+				_context.Orders.Remove(item);
+				_context.SaveChanges();
+			}
+		}
+
 		private bool Validate(OrderModel model)
 		{
 			if (string.IsNullOrEmpty(model.Recipient) || string.IsNullOrEmpty(model.Phone) || string.IsNullOrEmpty(model.Address))

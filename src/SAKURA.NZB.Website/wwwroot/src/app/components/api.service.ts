@@ -155,4 +155,15 @@ export class ApiService {
 
 		return this.http.post('api/orders', data, { headers: headers });
     }
+
+	putOrder(id: string, data: string) {
+		var headers = new Headers();
+		headers.append('Content-Type', 'application/json');
+
+		return this.http.put('api/orders/' + id, data, { headers: headers });
+    }
+
+	deleteOrder(id: string) {
+		this.http.delete('api/orders/' + id);
+	}
 }

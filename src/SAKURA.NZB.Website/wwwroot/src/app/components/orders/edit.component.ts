@@ -64,7 +64,14 @@ export class OrderEditComponent implements OnInit {
 	onSave() {
 		var data = map(this.order);
 		if (!this.editMode) {
+			data.orderTime = new Date();
 			this.service.postOrder(JSON.stringify(data, this.emptyStringToNull))
+				.subscribe(response => {
+					this.router.navigate(['订单']);
+				});
+		}
+		else {
+			this.service.putOrder(this.orderId, JSON.stringify(data, this.emptyStringToNull))
 				.subscribe(response => {
 					this.router.navigate(['订单']);
 				});
