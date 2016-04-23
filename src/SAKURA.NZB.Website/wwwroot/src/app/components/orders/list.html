@@ -1,6 +1,6 @@
 ﻿<div class="grey-border">
     <h2 class="page-header">
-         Orders <small>({{amount}} / {{totalAmount}})</small>
+        Orders <small>({{amount}} / {{totalAmount}})</small>
         <button type="button" class="btn btn-info pull-right" [routerLink]="['OAdd']">
             新建 <i class="fa fa-shopping-cart fa-lg"></i>
         </button>
@@ -11,19 +11,19 @@
             <label for="key">关键字</label>
             <div class="input-group">
                 <input type="text" class="form-control" id="keyword" placeholder="客户姓名, 拼音或品牌" [(ngModel)]="filterText"
-                       (keyup)="onSearchByKeyword($event.target.value)" (input)="onSearchByKeyword($event.target.value)" >
+                       (keyup)="onSearchByKeyword($event.target.value)" (input)="onSearchByKeyword($event.target.value)">
                 <div class="input-group-btn">
                     <button type="button" class="btn btn-default" aria-label="Clear" (click)="onClearFilter()">
                         <span class="glyphicon glyphicon-remove"></span>
                     </button>
                 </div>
-            </div>            
+            </div>
         </div>
         <div class="form-group">
             <label for="orderstate">订单状态</label>
             <select id="orderstate" class="form-control" [(ngModel)]="orderState" (change)="onSearch($event.target.value, paymentState)">
                 <option value=""></option>
-                <option *ngFor="#key of orderStateKeys" value="{{key}}">{{orderStates[key]}}</option>                   
+                <option *ngFor="#key of orderStateKeys" value="{{key}}">{{orderStates[key]}}</option>
             </select>
         </div>
         <div class="form-group">
@@ -91,12 +91,12 @@
                                             <th>产品名</th>
                                             <th class="hidden-xs">单价($)</th>
                                             <th class="hidden-xs">售价(¥)</th>
-                                            <th class="hidden-xs">数量</th>              
+                                            <th class="hidden-xs">数量</th>
                                             <th>利润(¥)</th>
                                         </tr>
                                         <tr *ngFor="#op of co.orderProducts">
-                                            <td>{{op.productBrand}} {{op.productName}}</td>                                            
-                                            <td class="hidden-xs">{{op.cost}}</td>                                         
+                                            <td>{{op.productBrand}} {{op.productName}}</td>
+                                            <td class="hidden-xs">{{op.cost}}</td>
                                             <td class="hidden-xs">{{op.price}}</td>
                                             <td class="hidden-xs">{{op.qty}}</td>
                                             <td [ngClass]="{up: op.profit > 0, down: op.profit < 0}">{{op.strProfit}}</td>
@@ -105,13 +105,13 @@
                                             <td>
                                                 <div *ngIf="md.delivered" class="row">
                                                     <div class="col-xs-12 col-sm-6 col-md-3"><i class="fa fa-balance-scale fa-lg"></i> {{md.weight}} kg</div>
-                                                    <div class="col-xs-12 col-sm-6 col-md-3"><i class="fa fa-dollar fa-lg"></i> {{md.freight}}</div>  
+                                                    <div class="col-xs-12 col-sm-6 col-md-3"><i class="fa fa-dollar fa-lg"></i> {{md.freight}}</div>
                                                     <div class="col-xs-12 col-sm-12 col-md-6">
                                                         <a [clipboard]="md.waybillNumber" href="http://www.flywayex.com/" target="_blank"><i class="fa fa-barcode fa-lg"></i>  {{md.waybillNumber}}</a>
-                                                    </div>                                                                                                                                     
+                                                    </div>
                                                 </div>
-                                            </td>                                  
-                                            <td class="hidden-xs">{{md.totalCost}}</td>                                 
+                                            </td>
+                                            <td class="hidden-xs">{{md.totalCost}}</td>
                                             <td class="hidden-xs">{{md.totalPrice}}</td>
                                             <td class="hidden-xs">{{md.totalQty}}</td>
                                             <td [ngClass]="{up: md.totalProfit > 0, down: md.totalProfit < 0}"><strong>{{md.strTotalProfit}}</strong></td>
@@ -153,7 +153,11 @@
                     <div class="form-group">
                         <label class="col-md-2" for="waybillNumber">运单号</label>
                         <div class="col-md-10">
-                            <input id="waybillNumber" type="text" class="form-control" maxlength="100" ngControl="waybillNumber" #wbnumber="ngForm" />
+                            <div class="input-group">
+                                <input id="waybillNumber" type="text" class="form-control" maxlength="100" ngControl="waybillNumber" #wbnumber="ngForm" />
+                                <div class="input-group-addon"><i class="fa fa-barcode fa-lg"></i></div>
+                            </div>
+
                             <div [hidden]="wbnumber.valid || wbnumber.pristine" class="alert alert-danger">
                                 运单号不能为空
                             </div>
@@ -164,8 +168,9 @@
                         <label class="col-md-2" for="waybillNumber">货品重量</label>
                         <div class="col-md-10">
                             <div class="input-group">
-                                <input id="weight" type="number" class="form-control" min="1" step="0.01" ngControl="weight" #weight="ngForm" />
-                                <div class="input-group-addon">kg</div>
+                                <input id="weight" type="number" class="form-control" min="1" step="0.01" ngControl="weight" #weight="ngForm"
+                                       (keyup)="onInputWeight($event.target.value)" />
+                                <div class="input-group-addon"><i class="fa fa-balance-scale fa-lg"></i></div>
                             </div>
 
                             <div [hidden]="weight.valid || weight.pristine" class="alert alert-danger">
@@ -177,7 +182,11 @@
                     <div class="form-group">
                         <label class="col-md-2" for="freight">运费</label>
                         <div class="col-md-10">
-                            <input id="freight" type="number" class="form-control" min="1" step="0.01" ngControl="freight" #freight="ngForm" placeholder="NZD" />
+                            <div class="input-group">
+                                <input id="freight" type="number" class="form-control" min="1" step="0.01" ngControl="freight" #freight="ngForm" placeholder="NZD" />
+                                <div class="input-group-addon"><i class="fa fa-dollar fa-lg"></i></div>
+                            </div>
+
                             <div [hidden]="freight.valid || freight.pristine" class="alert alert-danger">
                                 运费不能为空
                             </div>

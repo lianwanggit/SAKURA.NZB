@@ -141,20 +141,15 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                             that.map(json, that, false);
                     });
                 };
-                //onEdit(cid: number) {
-                //	this.customerList.forEach(x => {
-                //		if (x.id == cid && (!this.isListViewMode || x.selected)) {
-                //			this.router.navigate(['CEdit', { id: cid }]);
-                //			return;
-                //		}
-                //	});
-                //}
                 OrdersComponent.prototype.onDeliverOpen = function (orderId) {
                     this.deliveryModel = new OrderDeliveryModel(orderId, '', null, null);
                     this.deliveryForm.controls['waybillNumber'].updateValue(this.deliveryModel.waybillNumber);
                     this.deliveryForm.controls['weight'].updateValue(this.deliveryModel.weight);
                     this.deliveryForm.controls['freight'].updateValue(this.deliveryModel.freight);
                     $('#myModal').modal('show');
+                };
+                OrdersComponent.prototype.onInputWeight = function (weight) {
+                    this.deliveryForm.controls['freight'].updateValue((weight * 7).toFixed(2));
                 };
                 OrdersComponent.prototype.onDeliverySubmit = function () {
                     var _this = this;
@@ -246,11 +241,6 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                         that.totalAmount = orderCount;
                     that.amount = orderCount;
                 };
-                Object.defineProperty(OrdersComponent.prototype, "diagnoise", {
-                    get: function () { return JSON.stringify(this.filterText + this.orderState + this.paymentState); },
-                    enumerable: true,
-                    configurable: true
-                });
                 OrdersComponent = __decorate([
                     core_1.Component({
                         selector: "customers",

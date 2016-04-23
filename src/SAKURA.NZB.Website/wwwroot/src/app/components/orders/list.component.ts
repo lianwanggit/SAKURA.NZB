@@ -140,15 +140,6 @@ export class OrdersComponent implements OnInit {
 		});
 	}
 
-	//onEdit(cid: number) {
-	//	this.customerList.forEach(x => {
-	//		if (x.id == cid && (!this.isListViewMode || x.selected)) {
-	//			this.router.navigate(['CEdit', { id: cid }]);
-	//			return;
-	//		}
-	//	});
-	//}
-
 	onDeliverOpen(orderId: number) {
 		this.deliveryModel = new OrderDeliveryModel(orderId, '', null, null);
 
@@ -157,6 +148,10 @@ export class OrdersComponent implements OnInit {
 		(<any>this.deliveryForm.controls['freight']).updateValue(this.deliveryModel.freight);
 
 		$('#myModal').modal('show');
+	}
+
+	onInputWeight(weight: number) {
+		(<any>this.deliveryForm.controls['freight']).updateValue((weight * 7).toFixed(2));
 	}
 
 	onDeliverySubmit() {
@@ -265,6 +260,4 @@ export class OrdersComponent implements OnInit {
 
 		that.amount = orderCount;
 	}
-
-	get diagnoise() { return JSON.stringify(this.filterText + this.orderState + this.paymentState); }
 }
