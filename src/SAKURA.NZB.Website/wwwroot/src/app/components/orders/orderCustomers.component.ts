@@ -100,14 +100,21 @@ export class OrderCustomersComponent implements OnInit {
             if (json) {
                 that.selectedCustomer = new Customer(json);
 
-				(<any>that.recipientGroup.controls['recipient']).updateValue(that.selectedCustomer.fullName);
-				(<any>that.recipientGroup.controls['phone']).updateValue(that.selectedCustomer.phone1);
-				(<any>that.recipientGroup.controls['address']).updateValue(that.selectedCustomer.address);
-				
-				var co = new CustomerOrder(that.selectedCustomer.id, that.selectedCustomer.fullName, []);
-				that.orderModel.customerOrders = [];
-				that.orderModel.customerOrders.push(co);
-				that.onModelChanged(co, true);
+				if (that.orderModel.id == 0) {
+					(<any>that.recipientGroup.controls['recipient']).updateValue(that.selectedCustomer.fullName);
+					(<any>that.recipientGroup.controls['phone']).updateValue(that.selectedCustomer.phone1);
+					(<any>that.recipientGroup.controls['address']).updateValue(that.selectedCustomer.address);
+
+					var co = new CustomerOrder(that.selectedCustomer.id, that.selectedCustomer.fullName, []);
+					that.orderModel.customerOrders = [];
+					that.orderModel.customerOrders.push(co);
+					that.onModelChanged(co, true);
+				}
+				else {
+					(<any>that.recipientGroup.controls['recipient']).updateValue(that.orderModel.recipient);
+					(<any>that.recipientGroup.controls['phone']).updateValue(that.orderModel.phone);
+					(<any>that.recipientGroup.controls['address']).updateValue(that.orderModel.address);
+				}
             }
         });
 	}
@@ -131,5 +138,6 @@ export class OrderCustomersComponent implements OnInit {
 		});
 	}
 
+	get customerId() { return this.orderModel.customerOrders.length ? this.orderModel.customerOrders[0].customerId : ''; }
 	get exCustomers() { return this.orderModel.customerOrders.length == 0 ? [] : this.orderModel.customerOrders.slice(1); }
 }

@@ -59,22 +59,15 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                 }
                 OrderEditComponent.prototype.ngOnInit = function () {
                     var that = this;
-                    if (!this.editMode) {
-                        this.service.getSenderInfo(function (json) {
-                            if (json) {
-                                that.order.sender = json.sender;
-                                that.order.senderPhone = json.senderPhone;
-                            }
-                        });
-                        this.service.getLatestExchangeRates(function (json) {
-                            if (json) {
-                                that.fixedRateHigh = json.fixedRateHigh;
-                                that.fixedRateLow = json.fixedRateLow;
-                                that.currentRate = json.currentRate.toFixed(2);
-                                that.order.exchangeRate = that.currentRate;
-                            }
-                        });
-                    }
+                    this.service.getLatestExchangeRates(function (json) {
+                        if (json) {
+                            that.fixedRateHigh = json.fixedRateHigh;
+                            that.fixedRateLow = json.fixedRateLow;
+                            that.currentRate = json.currentRate.toFixed(2);
+                            that.order.exchangeRate = that.currentRate;
+                            that.loadData();
+                        }
+                    });
                 };
                 OrderEditComponent.prototype.onSave = function () {
                     var _this = this;
@@ -83,6 +76,49 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                         this.service.postOrder(JSON.stringify(data, this.emptyStringToNull))
                             .subscribe(function (response) {
                             _this.router.navigate(['订单']);
+                        });
+                    }
+                };
+                OrderEditComponent.prototype.loadData = function () {
+                    var that = this;
+                    if (!this.editMode) {
+                        this.service.getSenderInfo(function (json) {
+                            if (json) {
+                                that.order.sender = json.sender;
+                                that.order.senderPhone = json.senderPhone;
+                            }
+                        });
+                    }
+                    else {
+                        this.service.getOrder(this.orderId, function (json) {
+                            if (json) {
+                                that.order.id = json.id;
+                                that.order.orderTime = json.orderTime;
+                                that.order.deliveryTime = json.deliveryTime;
+                                that.order.receiveTime = json.receiveTime;
+                                that.order.orderState = json.orderState;
+                                that.order.paymentState = json.paymentState;
+                                that.order.waybillNumber = json.waybillNumber;
+                                that.order.freight = json.freight;
+                                that.order.recipient = json.recipient;
+                                that.order.phone = json.phone;
+                                that.order.address = json.address;
+                                that.order.sender = json.sender;
+                                that.order.senderPhone = json.senderPhone;
+                                json.customerOrders.forEach(function (co) {
+                                    var c = new models_1.CustomerOrder(co.customerId, co.customerName, []);
+                                    co.orderProducts.forEach(function (op) {
+                                        var p = new models_1.OrderProduct(op.productId, op.productBrand, op.productName, op.cost, op.price, op.qty, that.currentRate);
+                                        p.calculateProfit(that.currentRate);
+                                        c.orderProducts.push(p);
+                                    });
+                                    c.updateSummary();
+                                    that.order.customerOrders.push(c);
+                                });
+                                that.order.updateSummary();
+                                that.order.updateStatus();
+                                that.order.updateExpressText();
+                            }
                         });
                     }
                 };

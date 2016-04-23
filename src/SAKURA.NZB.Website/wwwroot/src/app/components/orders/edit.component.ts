@@ -49,24 +49,16 @@ export class OrderEditComponent implements OnInit {
 	ngOnInit() {
 		var that = this;
 
-		if (!this.editMode) {
-			this.service.getSenderInfo(json => {
-				if (json) {
-					that.order.sender = json.sender;
-					that.order.senderPhone = json.senderPhone;
-				}
-			});
+		this.service.getLatestExchangeRates(json => {
+			if (json) {
+				that.fixedRateHigh = json.fixedRateHigh;
+				that.fixedRateLow = json.fixedRateLow;
+				that.currentRate = json.currentRate.toFixed(2);
 
-			this.service.getLatestExchangeRates(json => {
-				if (json) {
-					that.fixedRateHigh = json.fixedRateHigh;
-					that.fixedRateLow = json.fixedRateLow;
-					that.currentRate = json.currentRate.toFixed(2);
-
-					that.order.exchangeRate = that.currentRate;
-				}
-			});
-		}
+				that.order.exchangeRate = that.currentRate;
+				that.loadData();
+			}
+		});
 	}
 
 	onSave() {
@@ -76,6 +68,56 @@ export class OrderEditComponent implements OnInit {
 				.subscribe(response => {
 					this.router.navigate(['订单']);
 				});
+		}
+	}
+
+	loadData() {
+		var that = this;
+
+		if (!this.editMode) {
+			this.service.getSenderInfo(json => {
+				if (json) {
+					that.order.sender = json.sender;
+					that.order.senderPhone = json.senderPhone;
+				}
+			});
+		}
+		else {
+			this.service.getOrder(this.orderId, json => {
+				if (json) {
+					that.order.id = json.id;
+					that.order.orderTime = json.orderTime;
+					that.order.deliveryTime = json.deliveryTime;
+					that.order.receiveTime = json.receiveTime;
+					that.order.orderState = json.orderState;
+					that.order.paymentState = json.paymentState;
+					that.order.waybillNumber = json.waybillNumber;
+					that.order.freight = json.freight;
+					that.order.recipient = json.recipient;
+					that.order.phone = json.phone;
+					that.order.address = json.address;
+					that.order.sender = json.sender;
+					that.order.senderPhone = json.senderPhone;
+
+					json.customerOrders.forEach(co => {
+						var c = new CustomerOrder(co.customerId, co.customerName, []);
+						co.orderProducts.forEach(op => {
+							var p = new OrderProduct(op.productId, op.productBrand, op.productName,
+								op.cost, op.price, op.qty, that.currentRate);
+
+							p.calculateProfit(that.currentRate);
+							c.orderProducts.push(p);
+						});
+
+						c.updateSummary();
+						that.order.customerOrders.push(c);
+					});
+
+					that.order.updateSummary();
+					that.order.updateStatus();
+					that.order.updateExpressText();
+				}
+			});
 		}
 	}
 
@@ -89,5 +131,4 @@ export class OrderEditComponent implements OnInit {
 		return this.order.customerOrders.ToList<CustomerOrder>()
 			.Sum(co => co.orderProducts.ToList<OrderProduct>().Sum(op => op.qty));
 	}
-
 }
