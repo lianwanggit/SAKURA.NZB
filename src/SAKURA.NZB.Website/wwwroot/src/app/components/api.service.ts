@@ -164,6 +164,6 @@ export class ApiService {
     }
 
 	deleteOrder(id: string) {
-		this.http.delete('api/orders/' + id);
+		return this.http.delete('api/orders/' + id);
 	}
 }

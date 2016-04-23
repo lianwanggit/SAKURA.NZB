@@ -86,6 +86,13 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                         });
                     }
                 };
+                OrderEditComponent.prototype.onDelete = function () {
+                    var _this = this;
+                    this.service.deleteOrder(this.orderId)
+                        .subscribe(function (response) {
+                        _this.router.navigate(['订单']);
+                    });
+                };
                 OrderEditComponent.prototype.loadData = function () {
                     var that = this;
                     if (!this.editMode) {

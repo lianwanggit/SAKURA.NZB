@@ -78,6 +78,13 @@ export class OrderEditComponent implements OnInit {
 		}
 	}
 
+	onDelete() {
+		this.service.deleteOrder(this.orderId)
+			.subscribe(response => {
+				this.router.navigate(['订单']);
+			});
+	}
+
 	loadData() {
 		var that = this;
 
