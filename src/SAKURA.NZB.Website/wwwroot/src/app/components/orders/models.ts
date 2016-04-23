@@ -66,15 +66,15 @@ export class OrderModel {
 	}
 
 	updateSummary() {
-		var freightCost = 0;
-		if (this.freight)
-			freightCost = this.freight * this.exchangeRate;
+		//var freightCost = 0;
+		//if (this.freight)
+		//	freightCost = this.freight * this.exchangeRate;
 
 		var list = this.customerOrders.ToList<CustomerOrder>();
-		this.totalCost = list.Sum(co => co.totalCost);
+		this.totalCost = list.Sum(co => co.totalCost) + this.freight;
 		this.totalPrice = list.Sum(co => co.totalPrice);
 		this.totalQty = list.Sum(co => co.totalQty);
-		this.totalProfit = list.Sum(co => co.totalProfit) - freightCost;
+		this.totalProfit = this.totalPrice - this.totalCost * this.exchangeRate;
 		this.strTotalProfit = formatCurrency(this.totalProfit, this.totalProfit.toFixed(2));
 	}
 

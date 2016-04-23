@@ -31,8 +31,9 @@
                 </tbody>
                 <tfoot>
                     <tr *ngIf="orderModel.freight > 0" class="active">
-                        <td colspan="2" class="text-right">重量: {{orderModel.weight}} <span class="left-spacer">运费</span></td>
                         <td></td>
+                        <td>运费 - 重量: {{orderModel.weight}} kg</td>
+                        <td>{{orderModel.freight}}</td>
                         <td></td>
                         <td></td>
                         <td></td>
@@ -41,7 +42,7 @@
                     </tr>
                     <tr>
                         <td colspan="2" class="text-right">合计</td>
-                        <td>{{orderModel.totalCost}}</td>
+                        <td>{{(orderModel.totalCost).toFixed(2)}}</td>
                         <td>{{(orderModel.totalCost * exchangeRate).toFixed(2)}}</td>
                         <td>{{orderModel.totalPrice}}</td>                        
                         <td>{{orderModel.totalQty}}</td>

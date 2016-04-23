@@ -102,14 +102,14 @@ System.register([], function(exports_1, context_1) {
                     }
                 };
                 OrderModel.prototype.updateSummary = function () {
-                    var freightCost = 0;
-                    if (this.freight)
-                        freightCost = this.freight * this.exchangeRate;
+                    //var freightCost = 0;
+                    //if (this.freight)
+                    //	freightCost = this.freight * this.exchangeRate;
                     var list = this.customerOrders.ToList();
-                    this.totalCost = list.Sum(function (co) { return co.totalCost; });
+                    this.totalCost = list.Sum(function (co) { return co.totalCost; }) + this.freight;
                     this.totalPrice = list.Sum(function (co) { return co.totalPrice; });
                     this.totalQty = list.Sum(function (co) { return co.totalQty; });
-                    this.totalProfit = list.Sum(function (co) { return co.totalProfit; }) - freightCost;
+                    this.totalProfit = this.totalPrice - this.totalCost * this.exchangeRate;
                     this.strTotalProfit = formatCurrency(this.totalProfit, this.totalProfit.toFixed(2));
                 };
                 OrderModel.prototype.updateExpressText = function () {
