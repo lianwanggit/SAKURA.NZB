@@ -6,7 +6,7 @@ import {Router, RouteParams, ROUTER_DIRECTIVES} from 'angular2/router';
 
 import {ApiService} from "../api.service";
 
-import {Dict, OrderModel, CustomerOrder, OrderProduct} from "./models";
+import {Dict, OrderModel, CustomerOrder, OrderProduct, map} from "./models";
 import {SelectValidator, ValidationResult} from "../../validators/selectValidator";
 import {OrderCustomersComponent} from "./orderCustomers.component";
 import {OrderProductsComponent} from "./orderProducts.component";
@@ -42,7 +42,7 @@ export class OrderEditComponent implements OnInit {
 			this.editMode = true;
 		}
 
-		this.order = new OrderModel(null, null, null, null, "Created", "Unpaid", null, null, null, null,
+		this.order = new OrderModel(0, null, null, null, "Created", "Unpaid", null, null, null, null,
 			null, null, null, null, null, this.orderStates, []);
 	}
 
@@ -69,11 +69,25 @@ export class OrderEditComponent implements OnInit {
 		}
 	}
 
+	onSave() {
+		var data = map(this.order);
+		if (!this.editMode) {
+			this.service.postOrder(JSON.stringify(data, this.emptyStringToNull))
+				.subscribe(response => {
+					this.router.navigate(['订单']);
+				});
+		}
+	}
+
+	emptyStringToNull(key: string, value: string) {
+		return value === "" ? null : value;
+	}
+
 	get title() { return this.editMode ? "编辑订单 " : "新建订单"; }
 	get customerCount() { return this.order.customerOrders.length; }
 	get productCount() {
 		return this.order.customerOrders.ToList<CustomerOrder>()
 			.Sum(co => co.orderProducts.ToList<OrderProduct>().Sum(op => op.qty));
 	}
-	get data() { return JSON.stringify(this.order); }
+
 }

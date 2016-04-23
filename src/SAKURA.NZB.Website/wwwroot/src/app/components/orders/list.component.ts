@@ -166,7 +166,7 @@ export class OrdersComponent implements OnInit {
 		this.deliveryModel.weight = this.deliveryForm.value.weight;
 		this.deliveryModel.freight = this.deliveryForm.value.freight;
 
-		this.service.PostDeliverOrder(JSON.stringify(this.deliveryModel), json => {
+		this.service.postDeliverOrder(JSON.stringify(this.deliveryModel), json => {
 			if (json) {
 				var id = json.orderId;
 				var orderState = json.orderState;
@@ -202,7 +202,7 @@ export class OrdersComponent implements OnInit {
 
 	onOrderAction(orderId: string, action: string) {
 		var model = { orderId: orderId, action: action };
-		this.service.PostUpdateOrderStatus(JSON.stringify(model), json => {
+		this.service.postUpdateOrderStatus(JSON.stringify(model), json => {
 			if (json) {
 				var id = json.orderId;
 				var orderState = json.orderState;

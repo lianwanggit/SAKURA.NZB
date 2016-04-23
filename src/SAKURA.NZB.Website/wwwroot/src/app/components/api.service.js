@@ -116,17 +116,22 @@ System.register(["rxjs/Rx", "angular2/http", "angular2/core"], function(exports_
                     this.http.get("api/orders/search/" + keyword + '?orderState=' + orderState + '&paymentState=' + paymentState)
                         .map(function (response) { return response.json(); }).subscribe(onNext);
                 };
-                ApiService.prototype.PostUpdateOrderStatus = function (data, onNext) {
+                ApiService.prototype.postUpdateOrderStatus = function (data, onNext) {
                     var headers = new http_1.Headers();
                     headers.append('Content-Type', 'application/json');
                     this.http.post('api/orders/update-order-status', data, { headers: headers })
                         .map(function (response) { return response.json(); }).subscribe(onNext);
                 };
-                ApiService.prototype.PostDeliverOrder = function (data, onNext) {
+                ApiService.prototype.postDeliverOrder = function (data, onNext) {
                     var headers = new http_1.Headers();
                     headers.append('Content-Type', 'application/json');
                     this.http.post('api/orders/deliver', data, { headers: headers })
                         .map(function (response) { return response.json(); }).subscribe(onNext);
+                };
+                ApiService.prototype.postOrder = function (data) {
+                    var headers = new http_1.Headers();
+                    headers.append('Content-Type', 'application/json');
+                    return this.http.post('api/orders', data, { headers: headers });
                 };
                 ApiService = __decorate([
                     core_1.Injectable(), 

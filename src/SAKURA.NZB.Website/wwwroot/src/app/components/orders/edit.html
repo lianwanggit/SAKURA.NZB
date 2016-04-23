@@ -8,7 +8,7 @@
             <li role="presentation"><a href="#invoice" aria-controls="invoice" role="tab" data-toggle="tab"><i class="fa fa-file-text"></i> 清单</a></li>
             <li role="presentation"><a href="#summary" aria-controls="summary" role="tab" data-toggle="tab"><i class="fa fa-money"></i> 利润</a></li>            
             <li role="presentation" class="right-button">
-                <button type="submit" class="btn btn-success left-spacer" [disabled]="!order.isValid">
+                <button type="submit" class="btn btn-success left-spacer" [disabled]="!order.isValid" (click)="onSave()">
                     保存 <i class="fa fa-floppy-o fa-lg"></i>
                 </button>
             </li>

@@ -129,7 +129,7 @@ export class ApiService {
 			.map(response => response.json()).subscribe(onNext);
 	}
 
-	PostUpdateOrderStatus(data: string, onNext: (json: any) => void) {
+	postUpdateOrderStatus(data: string, onNext: (json: any) => void) {
 		var headers = new Headers();
 		headers.append('Content-Type', 'application/json');
 
@@ -137,11 +137,18 @@ export class ApiService {
 			.map(response => response.json()).subscribe(onNext);
 	}
 
-	PostDeliverOrder(data: string, onNext: (json: any) => void) {
+	postDeliverOrder(data: string, onNext: (json: any) => void) {
 		var headers = new Headers();
 		headers.append('Content-Type', 'application/json');
 
 		this.http.post('api/orders/deliver', data, { headers: headers })
 			.map(response => response.json()).subscribe(onNext);
 	}
+
+	postOrder(data: string) {
+		var headers = new Headers();
+		headers.append('Content-Type', 'application/json');
+
+		return this.http.post('api/orders', data, { headers: headers });
+    }
 }

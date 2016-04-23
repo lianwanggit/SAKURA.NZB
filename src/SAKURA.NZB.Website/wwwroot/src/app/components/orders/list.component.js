@@ -162,7 +162,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     this.deliveryModel.waybillNumber = this.deliveryForm.value.waybillNumber;
                     this.deliveryModel.weight = this.deliveryForm.value.weight;
                     this.deliveryModel.freight = this.deliveryForm.value.freight;
-                    this.service.PostDeliverOrder(JSON.stringify(this.deliveryModel), function (json) {
+                    this.service.postDeliverOrder(JSON.stringify(this.deliveryModel), function (json) {
                         if (json) {
                             var id = json.orderId;
                             var orderState = json.orderState;
@@ -196,7 +196,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                 OrdersComponent.prototype.onOrderAction = function (orderId, action) {
                     var _this = this;
                     var model = { orderId: orderId, action: action };
-                    this.service.PostUpdateOrderStatus(JSON.stringify(model), function (json) {
+                    this.service.postUpdateOrderStatus(JSON.stringify(model), function (json) {
                         if (json) {
                             var id = json.orderId;
                             var orderState = json.orderState;

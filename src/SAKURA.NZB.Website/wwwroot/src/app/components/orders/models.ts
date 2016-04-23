@@ -139,11 +139,33 @@ export class OrderProduct {
 		this.strProfit = formatCurrency(this.profit, this.profit.toFixed(2));
 	}
 
-	get isValid() { return this.cost > 0 && this.price >= 0 && this.qty > 0; }
+	get isValid() { return this.cost >= 0 && this.price >= 0 && this.qty > 0; }
 }
 
 export class Product {
 	constructor(public id: number, public name: string, public qty: number) { }
+}
+
+export function map(order: OrderModel) {
+	var o = {
+		id: order.id, orderTime: new Date(), deliveryTime: order.deliveryTime, receiveTime: order.receiveTime,
+		orderState: order.orderState, paymentState: order.paymentState, waybillNumber: order.waybillNumber, weight: order.weight,
+		freight: order.freight, waybill: null, transitStatus: null, description: null, recipient: order.recipient,
+		phone: order.phone, address: order.address, sender: order.sender, senderPhone: order.senderPhone, customerOrders: []
+	};
+
+	order.customerOrders.forEach(co => {
+		var c = { customerId: co.customerId, customerName: co.customerName, orderProducts: [] };	
+		co.orderProducts.forEach(op => {
+			c.orderProducts.push({
+				productId: op.productId, productBrand: op.productBrand, productName: op.productName, cost: op.cost, price: op.price, qty: op.qty
+			});
+		});
+
+		o.customerOrders.push(c);
+	});
+
+	return o;
 }
 
 export function formatCurrency(num: number, str: string) {

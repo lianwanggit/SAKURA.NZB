@@ -2,6 +2,25 @@ System.register([], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var Dict, OrderModel, CustomerOrder, OrderProduct, Product;
+    function map(order) {
+        var o = {
+            id: order.id, orderTime: new Date(), deliveryTime: order.deliveryTime, receiveTime: order.receiveTime,
+            orderState: order.orderState, paymentState: order.paymentState, waybillNumber: order.waybillNumber, weight: order.weight,
+            freight: order.freight, waybill: null, transitStatus: null, description: null, recipient: order.recipient,
+            phone: order.phone, address: order.address, sender: order.sender, senderPhone: order.senderPhone, customerOrders: []
+        };
+        order.customerOrders.forEach(function (co) {
+            var c = { customerId: co.customerId, customerName: co.customerName, orderProducts: [] };
+            co.orderProducts.forEach(function (op) {
+                c.orderProducts.push({
+                    productId: op.productId, productBrand: op.productBrand, productName: op.productName, cost: op.cost, price: op.price, qty: op.qty
+                });
+            });
+            o.customerOrders.push(c);
+        });
+        return o;
+    }
+    exports_1("map", map);
     function formatCurrency(num, str) {
         return num > 0 ? '+' + str : str;
     }
@@ -162,7 +181,7 @@ System.register([], function(exports_1, context_1) {
                     this.strProfit = formatCurrency(this.profit, this.profit.toFixed(2));
                 };
                 Object.defineProperty(OrderProduct.prototype, "isValid", {
-                    get: function () { return this.cost > 0 && this.price >= 0 && this.qty > 0; },
+                    get: function () { return this.cost >= 0 && this.price >= 0 && this.qty > 0; },
                     enumerable: true,
                     configurable: true
                 });

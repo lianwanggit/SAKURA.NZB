@@ -15,12 +15,14 @@ namespace SAKURA.NZB.Website.Controllers
 	public class OrdersController : Controller
 	{
 		private readonly NZBContext _context;
-		private readonly Config _config;
+		private readonly string _sender;
+		private readonly string _senderPhone;
 
 		public OrdersController(NZBContext context, Config config)
 		{
 			_context = context;
-			_config = config;
+			_sender = config.GetSender();
+			_senderPhone = config.GetSenderPhone();
 		}
 
 		[HttpGet]
@@ -35,12 +37,10 @@ namespace SAKURA.NZB.Website.Controllers
 				.OrderByDescending(o => o.OrderTime)
 				.ToList();
 
-			var sender = _config.GetSender();
-			var senderPhone = _config.GetSenderPhone();
 			var models = new List<OrderModel>();
 			orders.ForEach(o =>
 			{
-				var model = MapTo(o, sender, senderPhone);
+				var model = MapTo(o, _sender, _senderPhone);
 				models.Add(model);
 			});
 
@@ -62,7 +62,7 @@ namespace SAKURA.NZB.Website.Controllers
 		[HttpGet("get-sender-info")]
 		public IActionResult GetSenderInfo()
 		{
-			return new ObjectResult(new { Sender = _config.GetSender(), SenderPhone = _config.GetSenderPhone() });
+			return new ObjectResult(new { Sender = _sender, SenderPhone = _senderPhone });
 		}
 
 		[HttpGet("search/{keyword?}")]
@@ -85,12 +85,10 @@ namespace SAKURA.NZB.Website.Controllers
 				.OrderByDescending(o => o.OrderTime)
 				.ToList();
 
-			var sender = _config.GetSender();
-			var senderPhone = _config.GetSenderPhone();
 			var models = new List<OrderModel>();
 			orders.ForEach(o =>
 			{
-				var model = MapTo(o, sender, senderPhone);
+				var model = MapTo(o, _sender, _senderPhone);
 				models.Add(model);
 			});
 
@@ -109,17 +107,26 @@ namespace SAKURA.NZB.Website.Controllers
 			return new ObjectResult(groupedModels);
 		}
 
-		//IQueryable<Product> SearchProducts(params string[] keywords)
-		//{
-		//	var predicate = PredicateBuilder.False<Product>();
+		[HttpGet("{id:int}", Name = "GetOrder")]
+		public IActionResult Get(int? id)
+		{
+			if (id == null)
+				return HttpNotFound();
 
-		//	foreach (string keyword in keywords)
-		//	{
-		//		string temp = keyword;
-		//		predicate = predicate.Or(p => p.Description.Contains(temp));
-		//	}
-		//	return dataContext.Products.Where(predicate);
-		//}
+			var item = _context.Orders
+				.Include(o => o.Products)
+					.ThenInclude(p => p.Customer)
+				.Include(o => o.Products)
+					.ThenInclude(p => p.Product)
+					.ThenInclude(p => p.Brand)
+				.Where(o => o.Id == id)
+				.Single();
+
+			if (item == null)
+				return HttpNotFound();
+
+			return new ObjectResult(MapTo(item, _sender, _senderPhone));
+		}
 
 		[HttpPost("update-order-status")]
 		public IActionResult UpdateOrderStatus([FromBody]UpdateOrderStatusModel model)
@@ -172,6 +179,21 @@ namespace SAKURA.NZB.Website.Controllers
 			});
 		}
 
+		[HttpPost]
+		public IActionResult Post([FromBody]OrderModel model)
+		{
+			if (model == null)
+				return HttpBadRequest();
+
+			if (!Validate(model))
+				return HttpBadRequest();
+
+			_context.Orders.Add(Map(model));
+			_context.SaveChanges();
+
+			return CreatedAtRoute("GetOrder", new { controller = "Orders", id = model.Id }, model);
+		}
+
 		[HttpPost("deliver")]
 		public IActionResult Deliver([FromBody]OrderDeliveryModel model)
 		{
@@ -196,6 +218,101 @@ namespace SAKURA.NZB.Website.Controllers
 				Freight = item.Freight,
 				OrderState = item.OrderState.ToString()
 			});
+		}
+
+		private bool Validate(OrderModel model)
+		{
+			if (string.IsNullOrEmpty(model.Recipient) || string.IsNullOrEmpty(model.Phone) || string.IsNullOrEmpty(model.Address))
+				return false;
+
+			if (model.CustomerOrders.Count == 0) return false;
+			for (var i = 0; i < model.CustomerOrders.Count; i++)
+			{
+				var co = model.CustomerOrders[i];
+				if (_context.Customers.All(c => c.Id != co.CustomerId)) return false;
+
+				if (co.OrderProducts.Count == 0) return false;
+				for (var j = 0; j < co.OrderProducts.Count; j++)
+				{
+					var op = co.OrderProducts[j];
+					if (_context.Products.All(p => p.Id != op.ProductId)) return false;
+					if (op.Cost < 0 || op.Price < 0 || op.Qty < 1) return false;
+				}
+			}
+
+			return true;
+		}
+
+
+		static Func<string, OrderState> StringToOrderState = (str) => 
+		{
+			OrderState state;
+			if (Enum.TryParse(str, out state))
+				return state;
+			return OrderState.Created;
+		};
+
+		static Func<string, PaymentState> StringToPaymentState = (str) =>
+		{
+			PaymentState state;
+			if (Enum.TryParse(str, out state))
+				return state;
+			return PaymentState.Unpaid;
+		};
+
+		static Func<DateTime?, DateTimeOffset?> NullableDateTimeToOffset = (dt) => { return dt.HasValue ? DateTime.SpecifyKind(dt.Value, DateTimeKind.Local) : (DateTimeOffset?)null; };
+
+		private static Order Map(OrderModel model)
+		{			
+			var order = new Order
+			{
+				Id = model.Id,
+				OrderTime = DateTime.SpecifyKind(model.OrderTime, DateTimeKind.Local),
+				DeliveryTime = NullableDateTimeToOffset(model.DeliveryTime),
+				ReceiveTime = NullableDateTimeToOffset(model.ReceiveTime),
+				OrderState = StringToOrderState(model.OrderState),
+				PaymentState = StringToPaymentState(model.PaymentState),
+				WaybillNumber = model.WaybillNumber,
+				Weight = model.Weight,
+				Freight = model.Freight,
+				Waybill = model.Waybill,
+				TransitStatus = model.TransitStatus,
+				Description = model.Description,
+				Recipient = model.Recipient,
+				Phone = model.Phone,
+				Address = model.Address,
+				Products = new List<OrderProduct>()
+			};
+
+			foreach (var co in model.CustomerOrders)
+			{
+				foreach (var op in co.OrderProducts)
+				{
+					var p = order.Products.FirstOrDefault(x => x.ProductId == op.ProductId && x.CustomerId == co.CustomerId);
+					if (p == null)
+					{
+						order.Products.Add(new OrderProduct
+						{
+							Cost = op.Cost,
+							Price = op.Price,
+							Qty = op.Qty,
+							ProductId = op.ProductId,
+							CustomerId = co.CustomerId
+						});
+					}
+					else
+					{
+						p.Cost = op.Cost;
+						p.Price = op.Price;
+						p.Qty = op.Qty;
+						p.ProductId = op.ProductId;
+						p.CustomerId = co.CustomerId;
+					}
+
+				}
+			}
+
+			return order;
 		}
 
 		private static OrderModel MapTo(Order o, string sender, string senderPhone)
