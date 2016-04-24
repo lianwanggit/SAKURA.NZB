@@ -29,6 +29,7 @@ export class OrderCustomersComponent implements OnInit {
 	recipientGroup: ControlGroup;
 
 	@Input() orderModel: OrderModel;
+	@Input() viewMode: boolean;
 
 	constructor(private service: ApiService) {
 		this.recipientGroup = new ControlGroup({

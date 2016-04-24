@@ -1,12 +1,14 @@
-﻿
+﻿.customers-container,
+.customer-details {
+    width: 100%;
+}
 
 .customers-container td {
      vertical-align:top;
 }
 
-.customer-details {   
-    padding-left: 20px;
-    width: 100%;
+.splitter {
+   padding-left: 20px;
 }
 
 .card-block label {

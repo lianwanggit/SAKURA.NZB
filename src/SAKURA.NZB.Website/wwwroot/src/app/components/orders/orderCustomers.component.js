@@ -154,6 +154,10 @@ System.register(["angular2/core", "angular2/common", "../api.service", "../../di
                     core_1.Input(), 
                     __metadata('design:type', models_1.OrderModel)
                 ], OrderCustomersComponent.prototype, "orderModel", void 0);
+                __decorate([
+                    core_1.Input(), 
+                    __metadata('design:type', Boolean)
+                ], OrderCustomersComponent.prototype, "viewMode", void 0);
                 OrderCustomersComponent = __decorate([
                     core_1.Component({
                         selector: "order-customer",

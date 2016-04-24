@@ -7,13 +7,13 @@
             <li role="presentation"><a href="#product" aria-controls="product" role="tab" data-toggle="tab"><i class="fa fa-shopping-bag"></i> 产品 <span class="badge">{{productCount}}</span></a></li>
             <li role="presentation"><a href="#invoice" aria-controls="invoice" role="tab" data-toggle="tab"><i class="fa fa-file-text"></i> 清单</a></li>
             <li role="presentation"><a href="#summary" aria-controls="summary" role="tab" data-toggle="tab"><i class="fa fa-money"></i> 利润</a></li> 
-            <li role="presentation" class="right-button">
+            <li role="presentation" class="right-button" *ngIf="!viewMode">
                 <button type="submit" class="btn btn-success left-spacer" [disabled]="!order.isValid" (click)="onSave()">
                     保存 <i class="fa fa-floppy-o fa-lg"></i>
                 </button>
             </li> 
-            <li role="presentation" class="right-button">
-                <button type="submit" class="btn btn-danger left-spacer" *ngIf="editMode" data-toggle="modal" data-target="#myModal">
+            <li role="presentation" class="right-button" *ngIf="editMode && !viewMode">
+                <button type="submit" class="btn btn-danger left-spacer"  data-toggle="modal" data-target="#myModal">
                     删除 <i class="fa fa-trash fa-lg"></i>
                 </button>
             </li>          
@@ -22,7 +22,7 @@
 
         <div class="tab-content">
             <div role="tabpanel" class="tab-pane fade in active" id="customer">
-                <order-customer [(orderModel)]="order"></order-customer>
+                <order-customer [(orderModel)]="order" [viewMode]="viewMode"></order-customer>
             </div>
             <div role="tabpanel" class="tab-pane fade" id="product">
                 <order-products [(orderModel)]="order" [exchangeRate]="currentRate"></order-products>

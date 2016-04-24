@@ -45,13 +45,15 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
             function (_1) {}],
         execute: function() {
             OrderEditComponent = (function () {
-                function OrderEditComponent(service, router, params) {
+                function OrderEditComponent(service, router, params, data) {
                     this.service = service;
                     this.router = router;
                     this.editMode = false;
+                    this.viewMode = false;
                     this.orderStates = (new models_1.Dict()).orderStates;
                     this.paymentStates = (new models_1.Dict()).paymentStates;
                     this.orderId = params.get("id");
+                    this.viewMode = data.get("readonly") == true;
                     if (this.orderId) {
                         this.editMode = true;
                     }
@@ -168,7 +170,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                             orderCustomers_component_1.OrderCustomersComponent, orderProducts_component_1.OrderProductsComponent, orderInvoice_component_1.OrderInvoiceComponent, orderSummary_component_1.OrderSummaryComponent],
                         encapsulation: core_1.ViewEncapsulation.None
                     }), 
-                    __metadata('design:paramtypes', [api_service_1.ApiService, router_1.Router, router_1.RouteParams])
+                    __metadata('design:paramtypes', [api_service_1.ApiService, router_1.Router, router_1.RouteParams, router_1.RouteData])
                 ], OrderEditComponent);
                 return OrderEditComponent;
             }());

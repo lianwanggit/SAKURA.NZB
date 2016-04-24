@@ -63,7 +63,8 @@
                                     <span class="caret"></span>
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu2">
-                                    <li><a [routerLink]="['OEdit', { id: md.id }]"><i class="fa fa-edit"></i>编辑</a></li>
+                                    <li><a [routerLink]="['OView', { id: md.id }]"><i class="fa fa-folder-open-o"></i>查看</a></li>
+                                    <li *ngIf="md.orderState != 'Completed'"><a [routerLink]="['OEdit', { id: md.id }]"><i class="fa fa-edit"></i>编辑</a></li>
                                     <li *ngIf="md.orderState == 'Created'"><a (click)="onOrderAction(md.id, 'ToConfirmed')"><i class="fa fa-check-square-o"></i>确认订单</a></li>
                                     <li *ngIf="md.orderState == 'Confirmed'"><a (click)="onDeliverOpen(md.id)"><i class="fa fa-truck"></i>发货</a></li>
                                     <li *ngIf="md.orderState == 'Delivered'"><a (click)="onOrderAction(md.id, 'ToReceived')"><i class="fa fa-hand-peace-o"></i>客户签收</a></li>

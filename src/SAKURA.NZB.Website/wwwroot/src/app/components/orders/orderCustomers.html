@@ -1,11 +1,10 @@
 ﻿<table class="customers-container">
     <tr>
-        <td>
+        <td [class.hidden]="viewMode">
             <alpha-indexer [elements]="elementSource" (selectedId)="onElementSelected($event)" [initialSelectedId]="customerId"></alpha-indexer>
         </td>
-        <td class="customer-details">
-
-            <div class="alert alert-info" role="alert" *ngIf="selectedCustomer == null"><i class="fa fa-warning"></i> 请选择至少一个客户</div>
+        <td class="customer-details" [ngClass]="{splitter: !viewMode}">
+            <div class="alert alert-info" role="alert" *ngIf="!viewMode && selectedCustomer == null"><i class="fa fa-warning"></i> 请选择至少一个客户</div>
 
             <div class="card" *ngIf="selectedCustomer != null">
                 <div class="card-header">
@@ -15,44 +14,44 @@
                 <div class="card-block">
                     <h4 class="card-title">{{selectedCustomer.fullName}}</h4>
                     <p class="card-text">
-                        <input type="radio" id="radio01" name="phoneRadio" checked="checked" *ngIf="selectedCustomer.phone2 != null"
+                        <input type="radio" id="radio01" name="phoneRadio" checked="checked" *ngIf="!viewMode && selectedCustomer.phone2 != null"
                                (click)="onSelectPhone(selectedCustomer.phone1)" />
                         <label for="radio01"><span></span><i class="fa fa-phone"></i> {{selectedCustomer.phone1}}</label>
                     </p>
                     <p class="card-text" *ngIf="selectedCustomer.phone2 != null">
-                        <input type="radio" id="radio02" name="phoneRadio"
+                        <input type="radio" id="radio02" name="phoneRadio" *ngIf="!viewMode"
                                (click)="onSelectPhone(selectedCustomer.phone2)" />
                         <label for="radio02"><span></span><i class="fa fa-phone"></i> {{selectedCustomer.phone2}}</label>
                     </p>
                     <p class="text-divider" *ngIf="selectedCustomer.phone2 != null || selectedCustomer.address1 != null"></p>
                     <p class="card-text">
-                        <input type="radio" id="radio03" name="addressRadio" checked="checked" *ngIf="selectedCustomer.address1 != null"
+                        <input type="radio" id="radio03" name="addressRadio" checked="checked" *ngIf="!viewMode && selectedCustomer.address1 != null"
                                (click)="onSelectAddress(selectedCustomer.address)" />
                         <label for="radio03"><span></span><i class="fa fa-home"></i> {{selectedCustomer.address}}</label>
                     </p>
                     <p class="card-text" *ngIf="selectedCustomer.address1 != null">
-                        <input type="radio" id="radio04" name="addressRadio"
+                        <input type="radio" id="radio04" name="addressRadio" *ngIf="!viewMode"
                                (click)="onSelectAddress(selectedCustomer.address1)" />
                         <label for="radio04"><span></span><i class="fa fa-home"></i> {{selectedCustomer.address1}}</label>
                     </p>
 
                 </div>
 
-                <ul class="list-group list-group-flush">
+                <ul class="list-group list-group-flush" *ngIf="!viewMode || exCustomers.length">
                     <li class="list-group-item">
                         <div class="token" *ngFor="#ec of exCustomers">
                             <span class="token-label" style="max-width: 620px;">{{ec.customerName}}</span>
-                            <a (click)="onRemoveExCustomer(ec.customerId)" class="close" tabindex="-1"><i class="fa fa-remove"></i></a>
+                            <a (click)="onRemoveExCustomer(ec.customerId)" class="close" tabindex="-1" *ngIf="!viewMode"><i class="fa fa-remove"></i></a>
                         </div>
 
-                        <div class="input-group">
+                        <div class="input-group" *ngIf="!viewMode">
                             <span class="input-group-addon">附加客户</span>
                             <input id="exCustomer" class="form-control"
                                    [(ngModel)]="selectedExCustomerName"
                                    [typeahead]="allCustomers"
                                    (typeaheadOnSelect)="onSelectExCustomer($event)"
                                    [typeaheadOptionField]="'name'"/>
-                        </div>              
+                        </div>
                     </li>
                 </ul>
             </div>
@@ -62,31 +61,40 @@
                     <div class="form-group">
                         <label for="inputRecipient" class="col-sm-2 control-label">收件人</label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" id="inputRecipient" maxlength="10" required ngControl="recipient" #recipient="ngForm" 
-                                    (ngModelChange)="onModelChanged($event, true)">
-                            <div [hidden]="recipient.valid || recipient.pristine" class="alert alert-danger">
-                                收件人不能为空
+                            <div *ngIf="!viewMode">
+                                <input type="text" class="form-control" id="inputRecipient" maxlength="10" required ngControl="recipient" #recipient="ngForm"
+                                       (ngModelChange)="onModelChanged($event, true)">
+                                <div [hidden]="recipient.valid || recipient.pristine" class="alert alert-danger">
+                                    收件人不能为空
+                                </div>
                             </div>
+                            <label class="control-label" *ngIf="viewMode">{{orderModel.recipient}}</label>
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="inputPhone" class="col-sm-2 control-label">电话</label>
                         <div class="col-sm-10">
-                            <input type="tel" class="form-control" id="inputPhone" required ngControl="phone" #phone="ngForm" 
-                                    (ngModelChange)="onModelChanged($event, true)">
-                            <div [hidden]="phone.valid || phone.pristine" class="alert alert-danger">
-                                收件人电话不能为空
+                            <div *ngIf="!viewMode">
+                                <input type="tel" class="form-control" id="inputPhone" required ngControl="phone" #phone="ngForm"
+                                       (ngModelChange)="onModelChanged($event, true)">
+                                <div [hidden]="phone.valid || phone.pristine" class="alert alert-danger">
+                                    收件人电话不能为空
+                                </div>
                             </div>
+                            <label class="control-label" *ngIf="viewMode">{{orderModel.phone}}</label>
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="inputAddress" class="col-sm-2 control-label">地址</label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" id="inputAddress"  maxlength="100" required ngControl="address" #address="ngForm" 
-                                    (ngModelChange)="onModelChanged($event, true)">
-                            <div [hidden]="address.valid || address.pristine" class="alert alert-danger">
-                                收件人地址不能为空
+                            <div *ngIf="!viewMode">
+                                <input type="text" class="form-control" id="inputAddress" maxlength="100" required ngControl="address" #address="ngForm"
+                                       (ngModelChange)="onModelChanged($event, true)">
+                                <div [hidden]="address.valid || address.pristine" class="alert alert-danger">
+                                    收件人地址不能为空
+                                </div>
                             </div>
+                            <label class="control-label" *ngIf="viewMode">{{orderModel.address}}</label>
                         </div>
                     </div>
                 </form>

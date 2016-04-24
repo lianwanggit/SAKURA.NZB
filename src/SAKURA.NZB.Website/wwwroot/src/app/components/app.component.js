@@ -61,6 +61,7 @@ System.register(["angular2/core", "angular2/router", "./static.component", "./cu
                             { path: "/orders", component: list_component_3.OrdersComponent, name: "订单", useAsDefault: false },
                             { path: "/orders/add", component: edit_component_3.OrderEditComponent, name: "OAdd", useAsDefault: false },
                             { path: "/orders/edit/:id", component: edit_component_3.OrderEditComponent, name: "OEdit", useAsDefault: false },
+                            { path: "/orders/view/:id", component: edit_component_3.OrderEditComponent, name: "OView", data: { readonly: true }, useAsDefault: false },
                             { path: "/products", component: list_component_2.ProductsComponent, name: "产品", useAsDefault: false },
                             { path: "/products/edit/base/:type", component: baseEdit_component_1.ProductBaseEditComponent, name: "PbeEdit", useAsDefault: false },
                             { path: "/products/add", component: edit_component_2.ProductEditComponent, name: "PAdd", useAsDefault: false },

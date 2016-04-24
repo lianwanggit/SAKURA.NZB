@@ -2,7 +2,7 @@
 
 import {Component, OnInit, ViewEncapsulation} from "angular2/core";
 import {CORE_DIRECTIVES, FORM_DIRECTIVES, ControlGroup, Control, Validators} from "angular2/common";
-import {Router, RouteParams, ROUTER_DIRECTIVES} from 'angular2/router';
+import {Router, RouteParams, ROUTER_DIRECTIVES, RouteData} from 'angular2/router';
 
 import {ApiService} from "../api.service";
 
@@ -27,6 +27,7 @@ import '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.
 
 export class OrderEditComponent implements OnInit {
 	private editMode = false;
+	private viewMode = false;
 	orderId: string;
 	order: OrderModel;
 
@@ -37,8 +38,10 @@ export class OrderEditComponent implements OnInit {
 	fixedRateLow: number;
 	currentRate: number;
 
-	constructor(private service: ApiService, private router: Router, params: RouteParams) {
+	constructor(private service: ApiService, private router: Router, params: RouteParams, data: RouteData) {
 		this.orderId = params.get("id");
+		this.viewMode = data.get("readonly") == true;
+
 		if (this.orderId) {
 			this.editMode = true;
 		}
