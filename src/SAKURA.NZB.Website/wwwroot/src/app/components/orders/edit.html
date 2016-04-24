@@ -12,7 +12,7 @@
                     保存 <i class="fa fa-floppy-o fa-lg"></i>
                 </button>
             </li> 
-            <li role="presentation" class="right-button" *ngIf="editMode && !viewMode">
+            <li role="presentation" class="right-button" *ngIf="editMode">
                 <button type="submit" class="btn btn-danger left-spacer"  data-toggle="modal" data-target="#myModal">
                     删除 <i class="fa fa-trash fa-lg"></i>
                 </button>
@@ -28,7 +28,7 @@
                 <order-products [(orderModel)]="order" [viewMode]="viewMode" [exchangeRate]="currentRate"></order-products>
             </div>
             <div role="tabpanel" class="tab-pane fade" id="invoice">
-                <order-invoice [(orderModel)]="order"></order-invoice>
+                <order-invoice [(orderModel)]="order" [viewMode]="viewMode"></order-invoice>
            </div>
             <div role="tabpanel" class="tab-pane fade" id="summary">
                 <order-summary [(orderModel)]="order" [exchangeRate]="currentRate"></order-summary>

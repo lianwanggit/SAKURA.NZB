@@ -21,11 +21,14 @@ class ProductInfo {
 
 export class OrderInvoiceComponent {
 	@Input() orderModel: OrderModel;
+	@Input() viewMode: boolean;
 	totalCost: string;
 
 	constructor(private service: ApiService) { }
 
 	onPurchasedChanged(id: string) {
+		if (this.viewMode) return;
+
 		this.orderModel.customerOrders.forEach(co => {
 			co.orderProducts.forEach(op => {
 				if (op.productId.toString() == id) {

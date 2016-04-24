@@ -43,6 +43,8 @@ System.register(["angular2/core", "angular2/common", "../api.service", "./models
                     this.service = service;
                 }
                 OrderInvoiceComponent.prototype.onPurchasedChanged = function (id) {
+                    if (this.viewMode)
+                        return;
                     this.orderModel.customerOrders.forEach(function (co) {
                         co.orderProducts.forEach(function (op) {
                             if (op.productId.toString() == id) {
@@ -76,6 +78,10 @@ System.register(["angular2/core", "angular2/common", "../api.service", "./models
                     core_1.Input(), 
                     __metadata('design:type', models_1.OrderModel)
                 ], OrderInvoiceComponent.prototype, "orderModel", void 0);
+                __decorate([
+                    core_1.Input(), 
+                    __metadata('design:type', Boolean)
+                ], OrderInvoiceComponent.prototype, "viewMode", void 0);
                 OrderInvoiceComponent = __decorate([
                     core_1.Component({
                         selector: "order-invoice",
