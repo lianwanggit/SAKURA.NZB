@@ -2,12 +2,10 @@
 
 <table class="products-container" *ngIf="isLoaded">
     <tr>
-        <td>
+        <td *ngIf="!viewMode">
             <brand-indexer [items]="itemSource" (selectionChanged)="onItemSelected($event)"></brand-indexer>
         </td>
-        <td class="product-details">
-
-
+        <td class="product-details" [ngClass]="{splitter: !viewMode}">
             <div class="card" *ngFor="#co of customerOrders; #ico = index">
                 <div class="card-header clickable" [ngClass]="{'bg-info-light': (selectedCustomerId == '' && ico == 0) || co.customerId == selectedCustomerId }"
                      (click)="onSelectCustomer(co.customerId)">
@@ -24,17 +22,20 @@
                                 <th width="80px">单价($)</th>
                                 <th width="80px">售价(¥)</th>
                                 <th width="60px">数量</th>
-                                <th width="30px"></th>
+                                <th width="30px" *ngIf="!viewMode"></th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr *ngFor="#op of co.orderProducts; #iop = index" [ngClass]="{error: !op.isValid}">
                                 <td>{{iop + 1}}</td>
                                 <td>{{op.productBrand}} {{op.productName}}</td>
-                                <td><input class="form-control no-border" [(ngModel)]="op.cost" min="1" placeholder="NZD" step="0.01" type="number" (ngModelChange)="onModelChanged(co, op)"/></td>
-                                <td><input class="form-control no-border" [(ngModel)]="op.price" min="1" placeholder="CNY" step="0.01" type="number" (ngModelChange)="onModelChanged(co, op)"/></td>
-                                <td><input class="form-control no-border" [(ngModel)]="op.qty" min="1" step="1" type="number" (ngModelChange)="onModelChanged(co, op)"/></td>
-                                <td (click)="onRemoveItem(co.customerId, op.productId)" class="clickable"><i class="fa fa-remove"></i></td>
+                                <td><input class="form-control no-border" [(ngModel)]="op.cost" min="1" placeholder="NZD" step="0.01" type="number" 
+                                           [readonly]="viewMode" (ngModelChange)="onModelChanged(co, op)"/></td>
+                                <td><input class="form-control no-border" [(ngModel)]="op.price" min="1" placeholder="CNY" step="0.01" type="number" 
+                                           [readonly]="viewMode" (ngModelChange)="onModelChanged(co, op)"/></td>
+                                <td><input class="form-control no-border" [(ngModel)]="op.qty" min="1" step="1" type="number" 
+                                           [readonly]="viewMode" (ngModelChange)="onModelChanged(co, op)"/></td>
+                                <td *ngIf="!viewMode" (click)="onRemoveItem(co.customerId, op.productId)" class="clickable"><i class="fa fa-remove"></i></td>
                             </tr>
                         </tbody>
                     </table>

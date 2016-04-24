@@ -20,6 +20,7 @@ export class OrderProductsComponent implements OnInit {
 
 	@Input() orderModel: OrderModel;
 	@Input() exchangeRate: number;
+	@Input() viewMode: boolean;
 
 	constructor(private service: ApiService) { }
 

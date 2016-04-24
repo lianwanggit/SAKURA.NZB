@@ -25,7 +25,7 @@
                 <order-customer [(orderModel)]="order" [viewMode]="viewMode"></order-customer>
             </div>
             <div role="tabpanel" class="tab-pane fade" id="product">
-                <order-products [(orderModel)]="order" [exchangeRate]="currentRate"></order-products>
+                <order-products [(orderModel)]="order" [viewMode]="viewMode" [exchangeRate]="currentRate"></order-products>
             </div>
             <div role="tabpanel" class="tab-pane fade" id="invoice">
                 <order-invoice [(orderModel)]="order"></order-invoice>

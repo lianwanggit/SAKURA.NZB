@@ -120,6 +120,10 @@ System.register(["angular2/core", "angular2/common", "../api.service", "../../di
                     core_1.Input(), 
                     __metadata('design:type', Number)
                 ], OrderProductsComponent.prototype, "exchangeRate", void 0);
+                __decorate([
+                    core_1.Input(), 
+                    __metadata('design:type', Boolean)
+                ], OrderProductsComponent.prototype, "viewMode", void 0);
                 OrderProductsComponent = __decorate([
                     core_1.Component({
                         selector: "order-products",

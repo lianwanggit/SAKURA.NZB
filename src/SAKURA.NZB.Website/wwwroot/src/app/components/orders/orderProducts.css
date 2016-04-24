@@ -1,10 +1,14 @@
-﻿.products-container td {
+﻿.products-container,
+.product-details {
+    width: 100%;
+}
+
+.products-container td {
      vertical-align:top;
 }
 
-.product-details {   
-    padding-left: 20px;
-    width: 100%;
+.splitter {
+   padding-left: 20px;
 }
 
 .product-table {
@@ -30,5 +34,11 @@
 .error,
 .error .form-control {
     color: #d9534f !important;
+}
+
+.form-control[disabled], 
+.form-control[readonly], 
+fieldset[disabled] .form-control {
+    background-color: #fff;
 }
 
