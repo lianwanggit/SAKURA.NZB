@@ -1,10 +1,10 @@
 ﻿import {Component, OnInit} from "angular2/core";
 
 @Component({
-    selector: "static",
-    templateUrl: "./src/app/components/static.html"
+    selector: "dashboard",
+    templateUrl: "./src/app/components/dashboard.html"
 })
-export class StaticComponent implements OnInit {
+export class DashboardComponent implements OnInit {
     message: string;
 
     constructor() { }

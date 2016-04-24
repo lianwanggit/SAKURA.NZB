@@ -11,30 +11,30 @@ System.register(["angular2/core"], function(exports_1, context_1) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
     var core_1;
-    var StaticComponent;
+    var DashboardComponent;
     return {
         setters:[
             function (core_1_1) {
                 core_1 = core_1_1;
             }],
         execute: function() {
-            StaticComponent = (function () {
-                function StaticComponent() {
+            DashboardComponent = (function () {
+                function DashboardComponent() {
                 }
-                StaticComponent.prototype.ngOnInit = function () {
+                DashboardComponent.prototype.ngOnInit = function () {
                     this.message = "The 'static.html' was used as the Angular2 'templateUrl'. There is a 'message' property bound to the <blockqoute> element.";
                 };
-                StaticComponent = __decorate([
+                DashboardComponent = __decorate([
                     core_1.Component({
-                        selector: "static",
-                        templateUrl: "./src/app/components/static.html"
+                        selector: "dashboard",
+                        templateUrl: "./src/app/components/dashboard.html"
                     }), 
                     __metadata('design:paramtypes', [])
-                ], StaticComponent);
-                return StaticComponent;
+                ], DashboardComponent);
+                return DashboardComponent;
             }());
-            exports_1("StaticComponent", StaticComponent);
+            exports_1("DashboardComponent", DashboardComponent);
         }
     }
 });
-//# sourceMappingURL=static.component.js.map
+//# sourceMappingURL=dashboard.component.js.map

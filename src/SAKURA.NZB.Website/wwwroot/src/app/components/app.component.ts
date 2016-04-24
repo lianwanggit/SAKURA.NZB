@@ -2,7 +2,7 @@
 
 import {Component, OnInit} from "angular2/core";
 import {AsyncRoute, Router, RouteDefinition, RouteConfig, Location, ROUTER_DIRECTIVES} from "angular2/router";
-import {StaticComponent} from "./static.component";
+import {DashboardComponent} from "./dashboard.component";
 import {CustomersComponent} from "./customers/list.component";
 import {CustomerEditComponent} from "./customers/edit.component";
 import {ProductsComponent} from "./products/list.component";
@@ -31,7 +31,7 @@ export class AppComponent implements OnInit {
     ngOnInit() {
         if (this.routes === null) {
             this.routes = [
-                { path: "/index", component: StaticComponent, name: "Index", useAsDefault: true },
+                { path: "/index", component: DashboardComponent, name: "首页", useAsDefault: true },
 				{ path: "/orders", component: OrdersComponent, name: "订单", useAsDefault: false },
 				{ path: "/orders/add", component: OrderEditComponent, name: "OAdd", useAsDefault: false },
 				{ path: "/orders/edit/:id", component: OrderEditComponent, name: "OEdit", useAsDefault: false },
@@ -44,16 +44,16 @@ export class AppComponent implements OnInit {
 				{ path: "/customers/add", component: CustomerEditComponent, name: "CAdd", useAsDefault: false },
 				{ path: "/customers/edit/:id", component: CustomerEditComponent, name: "CEdit", useAsDefault: false },
 
-                new AsyncRoute({
-                    path: "/sub",
-                    name: "Sub",
-                    loader: () => System.import("src/app/components/mvc.component").then(c => c["MvcComponent"])
-                }),
-                new AsyncRoute({
-                    path: "/numbers",
-                    name: "Numbers",
-                    loader: () => System.import("src/app/components/api.component").then(c => c["ApiComponent"])
-                })
+                //new AsyncRoute({
+                //    path: "/sub",
+                //    name: "Sub",
+                //    loader: () => System.import("src/app/components/mvc.component").then(c => c["MvcComponent"])
+                //}),
+                //new AsyncRoute({
+                //    path: "/numbers",
+                //    name: "Numbers",
+                //    loader: () => System.import("src/app/components/api.component").then(c => c["ApiComponent"])
+                //})
             ];
 
             this.router.config(this.routes);
