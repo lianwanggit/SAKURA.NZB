@@ -28,11 +28,13 @@ System.register(["angular2/core", "angular2/common", "../api.service", "./models
             }],
         execute: function() {
             ProductInfo = (function () {
-                function ProductInfo(id, name, cost, qty) {
+                function ProductInfo(id, name, cost, qty, purchased) {
                     this.id = id;
                     this.name = name;
                     this.cost = cost;
                     this.qty = qty;
+                    this.purchased = purchased;
+                    this.totalCost = this.purchased ? 0 : this.cost * this.qty;
                 }
                 return ProductInfo;
             }());
@@ -40,6 +42,16 @@ System.register(["angular2/core", "angular2/common", "../api.service", "./models
                 function OrderInvoiceComponent(service) {
                     this.service = service;
                 }
+                OrderInvoiceComponent.prototype.onPurchasedChanged = function (id) {
+                    this.orderModel.customerOrders.forEach(function (co) {
+                        co.orderProducts.forEach(function (op) {
+                            if (op.productId.toString() == id) {
+                                op.purchased = !op.purchased;
+                                return;
+                            }
+                        });
+                    });
+                };
                 Object.defineProperty(OrderInvoiceComponent.prototype, "productList", {
                     get: function () {
                         if (!this.orderModel || !this.orderModel.customerOrders)
@@ -51,9 +63,10 @@ System.register(["angular2/core", "angular2/common", "../api.service", "./models
                                 if (p)
                                     p.qty += op.qty;
                                 else
-                                    list.Add(new ProductInfo(op.productId, op.productBrand + ' ' + op.productName, op.cost, op.qty));
+                                    list.Add(new ProductInfo(op.productId, op.productBrand + ' ' + op.productName, op.cost, op.qty, op.purchased));
                             });
                         });
+                        this.totalCost = (list.Sum(function (p) { return p.totalCost; }) + this.orderModel.freight).toFixed(2);
                         return list.OrderBy(function (p) { return p.name; }).ToArray();
                     },
                     enumerable: true,

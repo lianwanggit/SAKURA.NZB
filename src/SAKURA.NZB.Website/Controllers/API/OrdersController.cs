@@ -414,7 +414,8 @@ namespace SAKURA.NZB.Website.Controllers
 					ProductName = p.Product.Name,
 					Cost = p.Cost,
 					Price = p.Price,
-					Qty = p.Qty
+					Qty = p.Qty,
+					Purchased = p.Purchased
 				};
 
 				var customer = model.CustomerOrders.FirstOrDefault(c => c.CustomerId == p.CustomerId);

@@ -13,7 +13,7 @@ System.register([], function(exports_1, context_1) {
             var c = { customerId: co.customerId, customerName: co.customerName, orderProducts: [] };
             co.orderProducts.forEach(function (op) {
                 c.orderProducts.push({
-                    productId: op.productId, productBrand: op.productBrand, productName: op.productName, cost: op.cost, price: op.price, qty: op.qty
+                    productId: op.productId, productBrand: op.productBrand, productName: op.productName, cost: op.cost, price: op.price, qty: op.qty, purchased: op.purchased
                 });
             });
             o.customerOrders.push(c);
@@ -166,13 +166,14 @@ System.register([], function(exports_1, context_1) {
             }());
             exports_1("CustomerOrder", CustomerOrder);
             OrderProduct = (function () {
-                function OrderProduct(productId, productBrand, productName, cost, price, qty, exchangeRate) {
+                function OrderProduct(productId, productBrand, productName, cost, price, qty, purchased, exchangeRate) {
                     this.productId = productId;
                     this.productBrand = productBrand;
                     this.productName = productName;
                     this.cost = cost;
                     this.price = price;
                     this.qty = qty;
+                    this.purchased = purchased;
                     this.exchangeRate = exchangeRate;
                     this.calculateProfit(this.exchangeRate);
                 }

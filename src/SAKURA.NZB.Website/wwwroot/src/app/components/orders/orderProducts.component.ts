@@ -48,7 +48,7 @@ export class OrderProductsComponent implements OnInit {
 					var lowestCost = 0; 
 					if (product.quotes.length)
 						lowestCost = product.quotes.ToList<Quote>().Min(q => q.price);
-					co.orderProducts.push(new OrderProduct(product.id, product.brand.name, product.name, lowestCost, product.price, 1, this.exchangeRate));
+					co.orderProducts.push(new OrderProduct(product.id, product.brand.name, product.name, lowestCost, product.price, 1, false, this.exchangeRate));
 				}
 				else
 					op.qty += 1;
@@ -102,5 +102,4 @@ export class OrderProductsComponent implements OnInit {
 
 	get isLoaded() { return this.orderModel && this.orderModel.customerOrders && this.orderModel.customerOrders.length; }
 	get customerOrders() { return this.isLoaded ? this.orderModel.customerOrders : []; }
-	get data() { return JSON.stringify(this.orderModel.customerOrders); }
 }

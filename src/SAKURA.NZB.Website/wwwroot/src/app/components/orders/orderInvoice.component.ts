@@ -5,7 +5,10 @@ import {ApiService} from "../api.service";
 import {CustomerOrder, OrderProduct, OrderModel} from "./models";
 
 class ProductInfo {
-	constructor(public id: number, public name: string, public cost: number, public qty: number) { }
+	totalCost: number;
+	constructor(public id: number, public name: string, public cost: number, public qty: number, public purchased: boolean) {
+		this.totalCost = this.purchased ? 0 : this.cost * this.qty;
+	}
 }
 
 @Component({
@@ -19,8 +22,20 @@ class ProductInfo {
 
 export class OrderInvoiceComponent {
 	@Input() orderModel: OrderModel;
+	totalCost: string;
 
 	constructor(private service: ApiService) { }
+
+	onPurchasedChanged(id: string) {
+		this.orderModel.customerOrders.forEach(co => {
+			co.orderProducts.forEach(op => {
+				if (op.productId.toString() == id) {
+					op.purchased = !op.purchased;
+					return;
+				}
+			});
+		});
+	}
 
 	get productList() {
 		if (!this.orderModel || !this.orderModel.customerOrders)
@@ -34,11 +49,11 @@ export class OrderInvoiceComponent {
 					p.qty += op.qty;
 				else
 					list.Add(new ProductInfo(op.productId, op.productBrand + ' ' + op.productName,
-						op.cost, op.qty));
+						op.cost, op.qty, op.purchased));
 			});
 		});
 
+		this.totalCost = (list.Sum(p => p.totalCost) + this.orderModel.freight).toFixed(2);
 		return list.OrderBy(p => p.name).ToArray();
 	}
-
 }

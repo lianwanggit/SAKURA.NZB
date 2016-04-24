@@ -225,7 +225,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                                 om.customerOrders.forEach(function (co) {
                                     var products = [].ToList();
                                     co.orderProducts.forEach(function (op) {
-                                        products.Add(new models_1.OrderProduct(op.productId, op.productBrand, op.productName, op.cost, op.price, op.qty, that.currentRate));
+                                        products.Add(new models_1.OrderProduct(op.productId, op.productBrand, op.productName, op.cost, op.price, op.qty, op.purchased, that.currentRate));
                                     });
                                     customers.Add(new models_1.CustomerOrder(co.customerId, co.customerName, products.ToArray()));
                                 });

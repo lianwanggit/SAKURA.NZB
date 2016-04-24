@@ -59,7 +59,7 @@ System.register(["angular2/core", "angular2/common", "../api.service", "../../di
                                 var lowestCost = 0;
                                 if (product.quotes.length)
                                     lowestCost = product.quotes.ToList().Min(function (q) { return q.price; });
-                                co.orderProducts.push(new models_1.OrderProduct(product.id, product.brand.name, product.name, lowestCost, product.price, 1, _this.exchangeRate));
+                                co.orderProducts.push(new models_1.OrderProduct(product.id, product.brand.name, product.name, lowestCost, product.price, 1, false, _this.exchangeRate));
                             }
                             else
                                 op.qty += 1;
@@ -109,11 +109,6 @@ System.register(["angular2/core", "angular2/common", "../api.service", "../../di
                 });
                 Object.defineProperty(OrderProductsComponent.prototype, "customerOrders", {
                     get: function () { return this.isLoaded ? this.orderModel.customerOrders : []; },
-                    enumerable: true,
-                    configurable: true
-                });
-                Object.defineProperty(OrderProductsComponent.prototype, "data", {
-                    get: function () { return JSON.stringify(this.orderModel.customerOrders); },
                     enumerable: true,
                     configurable: true
                 });

@@ -123,7 +123,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                                 json.customerOrders.forEach(function (co) {
                                     var c = new models_1.CustomerOrder(co.customerId, co.customerName, []);
                                     co.orderProducts.forEach(function (op) {
-                                        var p = new models_1.OrderProduct(op.productId, op.productBrand, op.productName, op.cost, op.price, op.qty, that.currentRate);
+                                        var p = new models_1.OrderProduct(op.productId, op.productBrand, op.productName, op.cost, op.price, op.qty, op.purchased, that.currentRate);
                                         p.calculateProfit(that.currentRate);
                                         c.orderProducts.push(p);
                                     });

@@ -235,7 +235,7 @@ export class OrdersComponent implements OnInit {
 						var products = [].ToList<OrderProduct>();
 						co.orderProducts.forEach(op => {
 							products.Add(new OrderProduct(op.productId, op.productBrand, op.productName, op.cost,
-								op.price, op.qty, that.currentRate));
+								op.price, op.qty, op.purchased, that.currentRate));
 						});
 
 						customers.Add(new CustomerOrder(co.customerId, co.customerName, products.ToArray()));

@@ -118,7 +118,7 @@ export class OrderEditComponent implements OnInit {
 						var c = new CustomerOrder(co.customerId, co.customerName, []);
 						co.orderProducts.forEach(op => {
 							var p = new OrderProduct(op.productId, op.productBrand, op.productName,
-								op.cost, op.price, op.qty, that.currentRate);
+								op.cost, op.price, op.qty, op.purchased, that.currentRate);
 
 							p.calculateProfit(that.currentRate);
 							c.orderProducts.push(p);

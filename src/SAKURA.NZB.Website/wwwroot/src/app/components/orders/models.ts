@@ -130,7 +130,7 @@ export class OrderProduct {
 	strProfit: string;
 
 	constructor(public productId: number, public productBrand: string, public productName: string, public cost: number,
-		public price: number, public qty: number, public exchangeRate: number) {
+		public price: number, public qty: number, public purchased: boolean, public exchangeRate: number) {
 		this.calculateProfit(this.exchangeRate);
 	}
 
@@ -162,7 +162,7 @@ export function map(order: OrderModel) {
 		var c = { customerId: co.customerId, customerName: co.customerName, orderProducts: [] };	
 		co.orderProducts.forEach(op => {
 			c.orderProducts.push({
-				productId: op.productId, productBrand: op.productBrand, productName: op.productName, cost: op.cost, price: op.price, qty: op.qty
+				productId: op.productId, productBrand: op.productBrand, productName: op.productName, cost: op.cost, price: op.price, qty: op.qty, purchased: op.purchased
 			});
 		});
 
