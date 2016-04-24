@@ -27,8 +27,7 @@ System.register(["angular2/core"], function(exports_1, context_1) {
                 DashboardComponent = __decorate([
                     core_1.Component({
                         selector: "dashboard",
-                        templateUrl: "./src/app/components/dashboard.html",
-                        styleUrls: ["./src/app/components/dashboard.css"]
+                        templateUrl: "./src/app/components/static.html"
                     }), 
                     __metadata('design:paramtypes', [])
                 ], DashboardComponent);
@@ -38,4 +37,4 @@ System.register(["angular2/core"], function(exports_1, context_1) {
         }
     }
 });
-//# sourceMappingURL=dashboard.component.js.map
+//# sourceMappingURL=static.component.js.map

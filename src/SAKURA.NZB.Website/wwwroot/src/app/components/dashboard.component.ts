@@ -2,7 +2,8 @@
 
 @Component({
     selector: "dashboard",
-    templateUrl: "./src/app/components/dashboard.html"
+    templateUrl: "./src/app/components/dashboard.html",
+	styleUrls: ["./src/app/components/dashboard.css"]
 })
 export class DashboardComponent implements OnInit {
     message: string;

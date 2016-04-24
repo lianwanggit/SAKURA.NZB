@@ -1,0 +1,68 @@
+﻿.widget-content-orange {
+    padding: 8px; 
+    border-color: rgb(255, 87, 34);
+    color: rgb(255, 255, 255);
+    background-color: rgb(255, 87, 34);
+    font-family: 'Roboto', sans-serif;
+    width: 100%;
+    display:table
+}
+
+.widget:hover {
+    box-shadow: 0 7px 8px -4px rgba(0,0,0,.2),0 12px 17px 2px rgba(0,0,0,.14),0 5px 22px 4px rgba(0,0,0,.12);
+}
+
+.shadow {
+    box-shadow: 0 2px 4px -1px rgba(0,0,0,.2),0 4px 5px 0 rgba(0,0,0,.14),0 1px 10px 0 rgba(0,0,0,.12);
+}
+
+.table-cell {
+    display:table-cell;
+    vertical-align: middle;
+}
+
+.scope {
+    padding: 8px;
+}
+
+.margin-left-10 {
+    margin-left: 10px!important;
+}
+
+.margin-bottom-0 {
+    margin-bottom: 0!important;
+}
+
+.margin-top-0 {
+    margin-top: 0!important;
+}
+
+.text-ellipsis {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    max-width: 100%;
+}
+.font-weight-100 {
+    font-weight: 100!important;
+}
+.md-display-3 {
+    font-size: 56px;
+    font-weight: 400;
+    letter-spacing: -.005em;
+    line-height: 56px;
+}
+
+.md-body-2 {
+    font-weight: 500;
+    line-height: 24px;
+    text-align: right;
+}
+
+.opacity-50 {
+    opacity: .5!important;
+}
+
+.opacity-60 {
+    opacity: .6!important;
+}
