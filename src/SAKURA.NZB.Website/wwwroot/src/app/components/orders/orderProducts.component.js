@@ -124,8 +124,7 @@ System.register(["angular2/core", "angular2/common", "../api.service", "../../di
                     core_1.Component({
                         selector: "order-products",
                         templateUrl: "./src/app/components/orders/orderProducts.html",
-                        styleUrls: ["./src/app/components/orders/orderCustomers.css",
-                            "./src/app/components/orders/orderProducts.css"],
+                        styleUrls: ["./src/app/components/orders/orderProducts.css"],
                         providers: [api_service_1.ApiService],
                         directives: [common_1.CORE_DIRECTIVES, common_1.FORM_DIRECTIVES, brandIndexer_directive_1.BrandIndexerDirective]
                     }), 

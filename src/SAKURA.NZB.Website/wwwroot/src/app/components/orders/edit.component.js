@@ -162,10 +162,11 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     core_1.Component({
                         selector: "order-edit",
                         templateUrl: "./src/app/components/orders/edit.html",
-                        styleUrls: ["./src/app/components/orders/orders.css"],
+                        styleUrls: ["./src/app/components/orders/edit.css"],
                         providers: [api_service_1.ApiService],
                         directives: [common_1.CORE_DIRECTIVES, common_1.FORM_DIRECTIVES, router_1.ROUTER_DIRECTIVES,
-                            orderCustomers_component_1.OrderCustomersComponent, orderProducts_component_1.OrderProductsComponent, orderInvoice_component_1.OrderInvoiceComponent, orderSummary_component_1.OrderSummaryComponent]
+                            orderCustomers_component_1.OrderCustomersComponent, orderProducts_component_1.OrderProductsComponent, orderInvoice_component_1.OrderInvoiceComponent, orderSummary_component_1.OrderSummaryComponent],
+                        encapsulation: core_1.ViewEncapsulation.None
                     }), 
                     __metadata('design:paramtypes', [api_service_1.ApiService, router_1.Router, router_1.RouteParams])
                 ], OrderEditComponent);

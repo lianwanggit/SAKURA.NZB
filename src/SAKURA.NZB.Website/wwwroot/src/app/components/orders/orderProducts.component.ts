@@ -9,8 +9,7 @@ import {Category, Brand, Supplier, Product, Quote} from "../products/models";
 @Component({
     selector: "order-products",
     templateUrl: "./src/app/components/orders/orderProducts.html",
-	styleUrls: ["./src/app/components/orders/orderCustomers.css",
-		"./src/app/components/orders/orderProducts.css"],
+	styleUrls: ["./src/app/components/orders/orderProducts.css"],
     providers: [ApiService],
     directives: [CORE_DIRECTIVES, FORM_DIRECTIVES, BrandIndexerDirective]
 })

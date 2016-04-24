@@ -80,8 +80,7 @@ System.register(["angular2/core", "angular2/common", "../api.service", "./models
                     core_1.Component({
                         selector: "order-invoice",
                         templateUrl: "./src/app/components/orders/orderInvoice.html",
-                        styleUrls: ["./src/app/components/orders/orderCustomers.css",
-                            "./src/app/components/orders/orderInvoice.css"],
+                        styleUrls: ["./src/app/components/orders/orderInvoice.css"],
                         providers: [api_service_1.ApiService],
                         directives: [common_1.CORE_DIRECTIVES]
                     }), 

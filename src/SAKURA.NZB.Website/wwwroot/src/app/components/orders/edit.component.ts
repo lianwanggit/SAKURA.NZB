@@ -1,6 +1,6 @@
 ﻿/// <reference path="../../../../lib/TypeScript-Linq/Scripts/typings/System/Collections/Generic/List.ts" />
 
-import {Component, OnInit} from "angular2/core";
+import {Component, OnInit, ViewEncapsulation} from "angular2/core";
 import {CORE_DIRECTIVES, FORM_DIRECTIVES, ControlGroup, Control, Validators} from "angular2/common";
 import {Router, RouteParams, ROUTER_DIRECTIVES} from 'angular2/router';
 
@@ -18,10 +18,11 @@ import '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.
 @Component({
     selector: "order-edit",
     templateUrl: "./src/app/components/orders/edit.html",
-	styleUrls: ["./src/app/components/orders/orders.css"],
+	styleUrls: ["./src/app/components/orders/edit.css"],
     providers: [ApiService],
     directives: [CORE_DIRECTIVES, FORM_DIRECTIVES, ROUTER_DIRECTIVES,
-		OrderCustomersComponent, OrderProductsComponent, OrderInvoiceComponent, OrderSummaryComponent]
+		OrderCustomersComponent, OrderProductsComponent, OrderInvoiceComponent, OrderSummaryComponent],
+	encapsulation: ViewEncapsulation.None
 })
 
 export class OrderEditComponent implements OnInit {

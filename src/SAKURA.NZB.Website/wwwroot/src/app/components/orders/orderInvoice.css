@@ -33,12 +33,3 @@
 .down {
     color: red;
 }
-
-
-label > input[type="checkbox"]:checked + span::after {
-    font-family: 'FontAwesome';
-	content: '\f00c';
-	color: white;
-	position: absolute;
-	left: 3px;
-}

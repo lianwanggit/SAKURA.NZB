@@ -14,8 +14,7 @@ class ProductInfo {
 @Component({
     selector: "order-invoice",
     templateUrl: "./src/app/components/orders/orderInvoice.html",
-	styleUrls: ["./src/app/components/orders/orderCustomers.css",
-		"./src/app/components/orders/orderInvoice.css"],
+	styleUrls: ["./src/app/components/orders/orderInvoice.css"],
 	providers: [ApiService],
     directives: [CORE_DIRECTIVES]
 })

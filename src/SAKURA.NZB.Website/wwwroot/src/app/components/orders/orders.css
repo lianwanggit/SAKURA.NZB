@@ -120,43 +120,6 @@
     color: red;
 }
 
-.product-status {
-    padding-left: 0;
-}
-
-.unpaid {
-    color: #aaa;
-}
-
-.paid {
-    color: #4caf50;
-}
-
-.tab-content {
-    /*border-left: 1px solid #ddd;
-    border-right: 1px solid #ddd;
-    border-bottom: 1px solid #ddd;*/
-    padding-top: 10px;
-}
-
-.nav-tabs {
-    margin-bottom: 0;
-}
-
-.nav-tabs > li > a span {
-    background-color: #337ab7;
-}
-
-.nav-tabs > li.active > a span,
-.nav-tabs > li.active > a:focus span,
-.nav-tabs > li.active > a:hover span {
-    background-color: #555;
-}
-
-.right-button {
-    float: right;
-}
-
 @media (min-width: 768px) {
     .month-header table {
         width: 300px;
