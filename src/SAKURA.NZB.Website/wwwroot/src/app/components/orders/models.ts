@@ -66,10 +66,6 @@ export class OrderModel {
 	}
 
 	updateSummary() {
-		//var freightCost = 0;
-		//if (this.freight)
-		//	freightCost = this.freight * this.exchangeRate;
-
 		var list = this.customerOrders.ToList<CustomerOrder>();
 		this.totalCost = list.Sum(co => co.totalCost) + this.freight;
 		this.totalPrice = list.Sum(co => co.totalPrice);
@@ -92,7 +88,7 @@ export class OrderModel {
 		});
 
 		var productsText = '';
-		products.ForEach((e, index) => { productsText += '  ' + e.name + ' x' + e.qty + '\n'; });
+		products.OrderBy(p => p.name).ForEach((e, index) => { productsText += '  ' + e.name + ' x' + e.qty + '\n'; });
 
 		this.expressText = '【寄件人】' + this.sender + '\n【寄件人電話】' + this.senderPhone + '\n【訂單內容】\n' + productsText + '【收件人】'
 			+ this.recipient + '\n【收件地址】' + this.address + '\n【聯繫電話】' + this.phone;

@@ -102,9 +102,6 @@ System.register([], function(exports_1, context_1) {
                     }
                 };
                 OrderModel.prototype.updateSummary = function () {
-                    //var freightCost = 0;
-                    //if (this.freight)
-                    //	freightCost = this.freight * this.exchangeRate;
                     var list = this.customerOrders.ToList();
                     this.totalCost = list.Sum(function (co) { return co.totalCost; }) + this.freight;
                     this.totalPrice = list.Sum(function (co) { return co.totalPrice; });
@@ -125,7 +122,7 @@ System.register([], function(exports_1, context_1) {
                         });
                     });
                     var productsText = '';
-                    products.ForEach(function (e, index) { productsText += '  ' + e.name + ' x' + e.qty + '\n'; });
+                    products.OrderBy(function (p) { return p.name; }).ForEach(function (e, index) { productsText += '  ' + e.name + ' x' + e.qty + '\n'; });
                     this.expressText = '【寄件人】' + this.sender + '\n【寄件人電話】' + this.senderPhone + '\n【訂單內容】\n' + productsText + '【收件人】'
                         + this.recipient + '\n【收件地址】' + this.address + '\n【聯繫電話】' + this.phone;
                 };
