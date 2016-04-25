@@ -50,13 +50,24 @@ export class DashboardComponent implements OnInit {
     }
 
 	// lineChart
-	private lineChartData: Array<any> = [ [], [], []];
+	private lineChartData: Array<any> = [[], [], []];
 	private lineChartLabels: Array<any> = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 	private lineChartSeries: Array<any> = ['成本 (NZD)', '收入 (CNY)', '利润 (CNY)'];
 	private lineChartOptions: any = {
 		animation: false,
 		responsive: true,
-		multiTooltipTemplate: '<%if (datasetLabel){%><%=datasetLabel %>: <%}%><%= value %>'
+		multiTooltipTemplate: '<%if (datasetLabel){%><%=datasetLabel %>: <%}%><%= value %>',
+		pointDotRadius: 6,
+		scaleOverride: true,
+
+		// ** Required if scaleOverride is true **
+		// Number - The number of steps in a hard coded scale
+		scaleSteps: 10,
+		// Number - The value jump in the hard coded scale
+		scaleStepWidth: 500,
+		// Number - The scale starting value
+		scaleStartValue: 0,
+		maintainAspectRatio: false,
 	};
 	private lineChartColours: Array<any> = [
 		{ // grey
