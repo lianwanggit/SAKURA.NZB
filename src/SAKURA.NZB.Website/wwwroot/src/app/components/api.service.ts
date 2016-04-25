@@ -170,4 +170,8 @@ export class ApiService {
 	getDashboardSummary(onNext: (json: any) => void) {	
 		this.http.get("api/dashboard/summary").map(response => response.json()).subscribe(onNext);
 	}
+
+	getDashboardAnnualSales(onNext: (json: any) => void) {
+		this.http.get("api/dashboard/annual-sales").map(response => response.json()).subscribe(onNext);
+	}
 }

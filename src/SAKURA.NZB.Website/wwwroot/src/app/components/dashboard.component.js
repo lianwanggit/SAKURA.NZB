@@ -40,13 +40,10 @@ System.register(["angular2/core", 'angular2/common', "./api.service", 'ng2-chart
                 function DashboardComponent(service) {
                     this.service = service;
                     this.summary = new Summary(0, 0, 0, 0);
-                    this.lineChartData = [
-                        [65, 59, 80, 81, 56, 55, 40],
-                        [28, 48, 40, 19, 86, 27, 90],
-                        [18, 48, 77, 9, 100, 27, 40]
-                    ];
-                    this.lineChartLabels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
-                    this.lineChartSeries = ['Series A', 'Series B', 'Series C'];
+                    // lineChart
+                    this.lineChartData = [[], [], []];
+                    this.lineChartLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                    this.lineChartSeries = ['成本 (NZD)', '收入 (CNY)', '利润 (CNY)'];
                     this.lineChartOptions = {
                         animation: false,
                         responsive: true,
@@ -82,18 +79,31 @@ System.register(["angular2/core", 'angular2/common', "./api.service", 'ng2-chart
                     this.lineChartType = 'Line';
                 }
                 DashboardComponent.prototype.ngOnInit = function () {
+                    var _this = this;
                     var that = this;
                     this.service.getDashboardSummary(function (json) {
                         if (json) {
                             that.summary = new Summary(json.customerCount, json.brandCount, json.productCount, json.orderCount);
                         }
                     });
+                    this.service.getDashboardAnnualSales(function (json) {
+                        if (json) {
+                            var series = [].ToList();
+                            var data1 = [].ToList();
+                            var data2 = [].ToList();
+                            var data3 = [].ToList();
+                            json.forEach(function (x) {
+                                series.Add(x.monthName);
+                                data1.Add(x.cost);
+                                data2.Add(x.income);
+                                data3.Add(x.profit);
+                            });
+                            _this.lineChartData = [data1.ToArray(), data2.ToArray(), data3.ToArray()];
+                        }
+                    });
                 };
                 // events
                 DashboardComponent.prototype.chartClicked = function (e) {
-                    console.log(e);
-                };
-                DashboardComponent.prototype.chartHovered = function (e) {
                     console.log(e);
                 };
                 DashboardComponent = __decorate([

@@ -28,16 +28,31 @@ export class DashboardComponent implements OnInit {
 				that.summary = new Summary(json.customerCount, json.brandCount, json.productCount, json.orderCount);
 			}
 		});
+
+		this.service.getDashboardAnnualSales(json => {
+			if (json) {
+
+				var series = [].ToList<string>();
+				var data1 = [].ToList<number>();
+				var data2 = [].ToList<number>();
+				var data3 = [].ToList<number>();
+
+				json.forEach(x => {
+					series.Add(x.monthName);
+					data1.Add(x.cost);
+					data2.Add(x.income);
+					data3.Add(x.profit);
+				});
+
+				this.lineChartData = [data1.ToArray(), data2.ToArray(), data3.ToArray()];
+			}
+		});
     }
 
 	// lineChart
-	private lineChartData: Array<any> = [
-		[65, 59, 80, 81, 56, 55, 40],
-		[28, 48, 40, 19, 86, 27, 90],
-		[18, 48, 77, 9, 100, 27, 40]
-	];
-	private lineChartLabels: Array<any> = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
-	private lineChartSeries: Array<any> = ['Series A', 'Series B', 'Series C'];
+	private lineChartData: Array<any> = [ [], [], []];
+	private lineChartLabels: Array<any> = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+	private lineChartSeries: Array<any> = ['成本 (NZD)', '收入 (CNY)', '利润 (CNY)'];
 	private lineChartOptions: any = {
 		animation: false,
 		responsive: true,
