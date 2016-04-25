@@ -1,11 +1,33 @@
-﻿.widget-content-orange {
+﻿.widget-content {
     padding: 8px; 
+    font-family: 'Roboto', sans-serif;
+    width: 100%;
+    display:table;
+    margin-bottom: 15px;
+}
+
+.orange {
     border-color: rgb(255, 87, 34);
     color: rgb(255, 255, 255);
     background-color: rgb(255, 87, 34);
-    font-family: 'Roboto', sans-serif;
-    width: 100%;
-    display:table
+}
+
+.light-blue {
+    border-color: rgb(0, 188, 212);
+    color: rgb(255, 255, 255);
+    background-color: rgb(0, 188, 212);
+}
+
+.blue {
+    border-color: rgb(63, 81, 181);
+    color: rgba(255, 255, 255, 0.870588);
+    background-color: rgb(63, 81, 181);
+}
+
+.green {
+    border-color: rgb(0, 150, 136);
+    color: rgb(255, 255, 255);
+    background-color: rgb(0, 150, 136);
 }
 
 .widget:hover {

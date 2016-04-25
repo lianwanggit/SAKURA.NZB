@@ -144,6 +144,9 @@ System.register(["rxjs/Rx", "angular2/http", "angular2/core"], function(exports_
                 ApiService.prototype.deleteOrder = function (id) {
                     return this.http.delete('api/orders/' + id);
                 };
+                ApiService.prototype.getDashboardSummary = function (onNext) {
+                    this.http.get("api/dashboard/summary").map(function (response) { return response.json(); }).subscribe(onNext);
+                };
                 ApiService = __decorate([
                     core_1.Injectable(), 
                     __metadata('design:paramtypes', [http_1.Http])

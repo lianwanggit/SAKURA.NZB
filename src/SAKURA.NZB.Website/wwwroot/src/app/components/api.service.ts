@@ -166,4 +166,8 @@ export class ApiService {
 	deleteOrder(id: string) {
 		return this.http.delete('api/orders/' + id);
 	}
+
+	getDashboardSummary(onNext: (json: any) => void) {	
+		this.http.get("api/dashboard/summary").map(response => response.json()).subscribe(onNext);
+	}
 }
