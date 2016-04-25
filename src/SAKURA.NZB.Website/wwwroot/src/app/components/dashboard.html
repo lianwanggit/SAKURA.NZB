@@ -49,16 +49,12 @@
     </div>
 </div>
 
-<div class="row">
-    <base-chart class="chart"
-                [data]="lineChartData"
-                [labels]="lineChartLabels"
-                [options]="lineChartOptions"
-                [series]="lineChartSeries"
-                [colours]="lineChartColours"
-                [legend]="lineChartLegend"
-                [chartType]="lineChartType"
-                (chartHover)="chartHovered($event)"
-                (chartClick)="chartClicked($event)"></base-chart>
-
-</div>
+<base-chart class="chart"
+            [data]="lineChartData"
+            [labels]="lineChartLabels"
+            [options]="lineChartOptions"
+            [series]="lineChartSeries"
+            [colours]="lineChartColours"
+            [legend]="lineChartLegend"
+            [chartType]="lineChartType"
+            (chartClick)="chartClicked($event)"></base-chart>

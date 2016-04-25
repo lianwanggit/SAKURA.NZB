@@ -18,7 +18,19 @@ class Summary {
 
 export class DashboardComponent implements OnInit {
     summary: Summary = new Summary(0, 0, 0, 0);
+    constructor(private service: ApiService) { }
 
+    ngOnInit() {
+		var that = this;
+
+        this.service.getDashboardSummary(json => {
+			if (json) {
+				that.summary = new Summary(json.customerCount, json.brandCount, json.productCount, json.orderCount);
+			}
+		});
+    }
+
+	// lineChart
 	private lineChartData: Array<any> = [
 		[65, 59, 80, 81, 56, 55, 40],
 		[28, 48, 40, 19, 86, 27, 90],
@@ -57,28 +69,11 @@ export class DashboardComponent implements OnInit {
 			pointHighlightStroke: 'rgba(148,159,177,0.8)'
 		}
 	];
-
 	private lineChartLegend: boolean = true;
 	private lineChartType: string = 'Line';
 
-    constructor(private service: ApiService) { }
-
-    ngOnInit() {
-		var that = this;
-
-        this.service.getDashboardSummary(json => {
-			if (json) {
-				that.summary = new Summary(json.customerCount, json.brandCount, json.productCount, json.orderCount);
-			}
-		});
-    }
-
 	// events
 	chartClicked(e: any) {
-		console.log(e);
-	}
-
-	chartHovered(e: any) {
 		console.log(e);
 	}
 }
