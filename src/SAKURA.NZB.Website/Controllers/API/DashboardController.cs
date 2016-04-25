@@ -37,7 +37,6 @@ namespace SAKURA.NZB.Website.Controllers.API
 		public IActionResult GetAnnualSales()
 		{
 			var result = new List<MonthSale>(); ;
-
 			foreach (var o in _context.Orders.Include(o => o.Products).Where(o => o.OrderTime.Year == DateTime.Now.Year))
 			{
 				var month = o.OrderTime.Month;
@@ -57,6 +56,7 @@ namespace SAKURA.NZB.Website.Controllers.API
 				var sale = result.FirstOrDefault(s => s.Month == month);
 				if (sale != null)
 				{
+					sale.Count += 1;
 					sale.Cost += cost;
 					sale.Income += income;
 					sale.Profit += profit;
@@ -66,6 +66,7 @@ namespace SAKURA.NZB.Website.Controllers.API
 					result.Add(new MonthSale {
 						Month = month,
 						MonthName = monthName,
+						Count = 1,
 						Cost = cost,
 						Income = income,
 						Profit = profit
@@ -73,7 +74,18 @@ namespace SAKURA.NZB.Website.Controllers.API
 				}
 			}
 
-			return new ObjectResult(result.OrderBy(s => s.Month));						
+			//return new ObjectResult(result.OrderBy(s => s.Month));
+
+			var r = Enumerable.Range(1, 12).Select(i => new MonthSale {
+				Month = i,
+				MonthName = (new DateTime(DateTime.Now.Year, i, 1)).ToString("MMM", CultureInfo.InvariantCulture),
+				Count = new Random(i).Next(10, 100),
+				Cost = new Random(i).Next(500, 1000) + (new Random(i).Next(10, 100)) / 100F,
+				Income = new Random(i).Next(1000, 5000) + (new Random(i).Next(10, 100)) / 100F,
+				Profit = new Random(i).Next(200, 1000) + (new Random(i).Next(10, 100)) / 100F
+			});
+
+			return new ObjectResult(r);
 		}
 	}
 
@@ -81,6 +93,7 @@ namespace SAKURA.NZB.Website.Controllers.API
 	{
 		public int Month { get; set; }
 		public string MonthName { get; set; }
+		public int Count { get; set; }
 		public float Cost { get; set; }
 		public float Income { get; set; }
 		public float Profit { get; set; }

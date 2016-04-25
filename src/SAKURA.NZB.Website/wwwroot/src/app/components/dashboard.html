@@ -4,7 +4,7 @@
             <div class="scope table-cell">
                 <i class="fa fa-optin-monster fa-4x opacity-50 margin-left-10"></i>
             </div>
-            
+
             <div class="scope pull-right">
                 <p class="md-display-3 font-weight-100 text-ellipsis margin-bottom-0">{{summary.customerCount}}</p>
                 <p class="md-body-2 margin-bottom-0 opacity-60">客户</p>
@@ -49,6 +49,16 @@
     </div>
 </div>
 
-<div>
+<div class="row">
+    <base-chart class="chart"
+                [data]="lineChartData"
+                [labels]="lineChartLabels"
+                [options]="lineChartOptions"
+                [series]="lineChartSeries"
+                [colours]="lineChartColours"
+                [legend]="lineChartLegend"
+                [chartType]="lineChartType"
+                (chartHover)="chartHovered($event)"
+                (chartClick)="chartClicked($event)"></base-chart>
 
 </div>

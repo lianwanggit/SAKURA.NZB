@@ -1020,9 +1020,9 @@ System.registerDynamic("ng2-bootstrap/components/datepicker/daypicker", ["angula
       var date;
       while (i < n) {
         date = new Date(current.getTime());
-        this.datePicker.fixTimeZone(date);
+        date = this.datePicker.fixTimeZone(date);
         dates[i++] = date;
-        current.setDate(current.getDate() + 1);
+        current = new Date(current.getFullYear(), current.getMonth(), current.getDate() + 1);
       }
       return dates;
     };
@@ -1091,7 +1091,7 @@ System.registerDynamic("ng2-bootstrap/components/datepicker/monthpicker", ["angu
         var date;
         for (var i = 0; i < 12; i++) {
           date = new Date(year, i, 1);
-          this.fixTimeZone(date);
+          date = this.fixTimeZone(date);
           months[i] = this.createDateObject(date, this.formatMonth);
           months[i].uid = this.uniqueId + '-' + i;
         }
@@ -1275,8 +1275,7 @@ System.registerDynamic("ng2-bootstrap/components/datepicker/datepicker-inner", [
     };
     DatePickerInner.prototype.createDateObject = function(date, format) {
       var dateObject = {};
-      dateObject.date = date;
-      dateObject.date.setHours(0, 0, 0, 0);
+      dateObject.date = new Date(date.getFullYear(), date.getMonth(), date.getDate());
       dateObject.label = this.dateFilter(date, format);
       dateObject.selected = this.compare(date, this.selectedDate) === 0;
       dateObject.disabled = this.isDisabled(date);
@@ -1293,14 +1292,14 @@ System.registerDynamic("ng2-bootstrap/components/datepicker/datepicker-inner", [
     };
     DatePickerInner.prototype.fixTimeZone = function(date) {
       var hours = date.getHours();
-      date.setHours(hours === 23 ? hours + 2 : 0);
+      return new Date(date.getFullYear(), date.getMonth(), date.getDate(), hours === 23 ? hours + 2 : 0);
     };
     DatePickerInner.prototype.select = function(date) {
       if (this.datepickerMode === this.minMode) {
         if (!this.activeDate) {
           this.activeDate = new Date(0, 0, 0, 0, 0, 0, 0);
         }
-        this.activeDate.setFullYear(date.getFullYear(), date.getMonth(), date.getDate());
+        this.activeDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
       } else {
         this.activeDate = date;
         this.datepickerMode = this.modes[this.modes.indexOf(this.datepickerMode) - 1];
@@ -1323,7 +1322,7 @@ System.registerDynamic("ng2-bootstrap/components/datepicker/datepicker-inner", [
       if (expectedStep) {
         var year = this.activeDate.getFullYear() + direction * (expectedStep.years || 0);
         var month = this.activeDate.getMonth() + direction * (expectedStep.months || 0);
-        this.activeDate.setFullYear(year, month, 1);
+        this.activeDate = new Date(year, month, 1);
         this.refreshView();
       }
     };
@@ -1425,7 +1424,7 @@ System.registerDynamic("ng2-bootstrap/components/datepicker/yearpicker", ["angul
         for (var i = 0,
             start = self.getStartingYear(this.activeDate.getFullYear()); i < this.yearRange; i++) {
           date = new Date(start + i, 0, 1);
-          this.fixTimeZone(date);
+          date = this.fixTimeZone(date);
           years[i] = this.createDateObject(date, this.formatYear);
           years[i].uid = this.uniqueId + '-' + i;
         }
@@ -3242,7 +3241,6 @@ System.registerDynamic("ng2-bootstrap/components/tooltip/tooltip-container.compo
       this.classMap[options.placement] = true;
     }
     TooltipContainer.prototype.ngAfterViewInit = function() {
-      var _this = this;
       var p = position_1.positionService.positionElements(this.hostEl.nativeElement, this.element.nativeElement.children[0], this.placement, this.appendToBody);
       this.top = p.top + 'px';
       this.left = p.left + 'px';
@@ -3250,9 +3248,7 @@ System.registerDynamic("ng2-bootstrap/components/tooltip/tooltip-container.compo
       if (this.animation) {
         this.classMap.fade = true;
       }
-      setTimeout(function() {
-        return _this.cdr.markForCheck();
-      });
+      this.cdr.detectChanges();
     };
     TooltipContainer = __decorate([core_1.Component({
       selector: 'tooltip-container',
@@ -3321,6 +3317,7 @@ System.registerDynamic("ng2-bootstrap/components/typeahead/typeahead.directive",
       this.typeaheadSingleWords = true;
       this.typeaheadWordDelimiters = ' ';
       this.typeaheadPhraseDelimiters = '\'"';
+      this.isTypeaheadOptionsListActive = false;
       this._matches = [];
       this.placement = 'bottom-left';
       this.cd = cd;
@@ -3361,11 +3358,27 @@ System.registerDynamic("ng2-bootstrap/components/typeahead/typeahead.directive",
       }
     };
     Typeahead.prototype.onBlur = function() {
-      this.hide();
+      console.log('blur');
+      if (this.container && !this.container.isFocused) {
+        console.log('blur hide');
+        this.hide();
+      }
     };
     Typeahead.prototype.onKeydown = function(e) {
-      if (this.container && e.keyCode === 13) {
+      if (!this.container) {
+        return;
+      }
+      if (e.keyCode === 13) {
         e.preventDefault();
+        return;
+      }
+      if (e.shiftKey && e.keyCode === 9) {
+        this.hide();
+        return;
+      }
+      if (!e.shiftKey && e.keyCode === 9) {
+        this.container.selectActiveMatch();
+        return;
       }
     };
     Typeahead.prototype.ngOnInit = function() {
@@ -3403,10 +3416,11 @@ System.registerDynamic("ng2-bootstrap/components/typeahead/typeahead.directive",
     Typeahead.prototype.show = function(matches) {
       var _this = this;
       var options = new typeahead_options_class_1.TypeaheadOptions({
+        typeaheadRef: this,
         placement: this.placement,
         animation: false
       });
-      var binding = core_1.Injector.resolve([new core_1.Provider(typeahead_options_class_1.TypeaheadOptions, {useValue: options})]);
+      var binding = core_1.Injector.resolve([core_1.provide(typeahead_options_class_1.TypeaheadOptions, {useValue: options})]);
       this.popup = this.loader.loadNextToLocation(typeahead_container_component_1.TypeaheadContainer, this.element, binding).then(function(componentRef) {
         componentRef.instance.position(_this.element);
         _this.container = componentRef.instance;
@@ -4453,9 +4467,10 @@ System.registerDynamic("ng2-bootstrap/components/typeahead/typeahead-container.c
   var typeahead_options_class_1 = $__require('./typeahead-options.class');
   var position_1 = $__require('../position');
   var ng2_bootstrap_config_1 = $__require('../ng2-bootstrap-config');
-  var TEMPLATE = (_a = {}, _a[ng2_bootstrap_config_1.Ng2BootstrapTheme.BS4] = "\n  <div class=\"dropdown-menu\"\n      [ngStyle]=\"{top: top, left: left, display: display}\"\n      style=\"display: block\">\n      <a href=\"#\"\n         *ngFor=\"#match of matches\"\n         class=\"dropdown-item\"\n         (click)=\"selectMatch(match, $event)\"\n         (mouseenter)=\"selectActive(match)\"\n         [class.active]=\"isActive(match)\"\n         [innerHtml]=\"hightlight(match, query)\"></a>\n  </div>\n  ", _a[ng2_bootstrap_config_1.Ng2BootstrapTheme.BS3] = "\n  <ul class=\"dropdown-menu\"\n      [ngStyle]=\"{top: top, left: left, display: display}\"\n      style=\"display: block\">\n    <li *ngFor=\"#match of matches\"\n        [class.active]=\"isActive(match)\"\n        (mouseenter)=\"selectActive(match)\">\n        <a href=\"#\" (click)=\"selectMatch(match, $event)\" tabindex=\"-1\" [innerHtml]=\"hightlight(match, query)\"></a>\n    </li>\n  </ul>\n  ", _a);
+  var TEMPLATE = (_a = {}, _a[ng2_bootstrap_config_1.Ng2BootstrapTheme.BS4] = "\n  <div class=\"dropdown-menu\"\n       style=\"display: block\"\n      [ngStyle]=\"{top: top, left: left, display: display}\"\n      (mouseleave)=\"focusLost()\">\n      <a href=\"#\"\n         *ngFor=\"#match of matches\"\n         class=\"dropdown-item\"\n         (click)=\"selectMatch(match, $event)\"\n         (mouseenter)=\"selectActive(match)\"\n         [class.active]=\"isActive(match)\"\n         [innerHtml]=\"hightlight(match, query)\"></a>\n  </div>\n  ", _a[ng2_bootstrap_config_1.Ng2BootstrapTheme.BS3] = "\n  <ul class=\"dropdown-menu\"\n      style=\"display: block\"\n      [ngStyle]=\"{top: top, left: left, display: display}\"\n      (mouseleave)=\"focusLost()\">\n    <li *ngFor=\"#match of matches\"\n        [class.active]=\"isActive(match)\"\n        (mouseenter)=\"selectActive(match)\">\n        <a href=\"#\" (click)=\"selectMatch(match, $event)\" tabindex=\"-1\" [innerHtml]=\"hightlight(match, query)\"></a>\n    </li>\n  </ul>\n  ", _a);
   var TypeaheadContainer = (function() {
     function TypeaheadContainer(element, options) {
+      this.isFocused = false;
       this._matches = [];
       this.element = element;
       Object.assign(this, options);
@@ -4500,6 +4515,7 @@ System.registerDynamic("ng2-bootstrap/components/typeahead/typeahead-container.c
       this._active = this.matches[index + 1 > this.matches.length - 1 ? 0 : index + 1];
     };
     TypeaheadContainer.prototype.selectActive = function(value) {
+      this.isFocused = true;
       this._active = value;
     };
     TypeaheadContainer.prototype.hightlight = function(item, query) {
@@ -4540,6 +4556,9 @@ System.registerDynamic("ng2-bootstrap/components/typeahead/typeahead-container.c
       this.parent.changeModel(value);
       this.parent.typeaheadOnSelect.emit({item: value});
       return false;
+    };
+    TypeaheadContainer.prototype.focusLost = function() {
+      this.isFocused = false;
     };
     TypeaheadContainer = __decorate([core_1.Component({
       selector: 'typeahead-container',

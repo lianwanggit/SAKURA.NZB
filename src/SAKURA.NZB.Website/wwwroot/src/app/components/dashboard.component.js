@@ -1,4 +1,4 @@
-System.register(["angular2/core", "./api.service"], function(exports_1, context_1) {
+System.register(["angular2/core", 'angular2/common', "./api.service", 'ng2-charts/ng2-charts'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -10,15 +10,21 @@ System.register(["angular2/core", "./api.service"], function(exports_1, context_
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, api_service_1;
+    var core_1, common_1, api_service_1, ng2_charts_1;
     var Summary, DashboardComponent;
     return {
         setters:[
             function (core_1_1) {
                 core_1 = core_1_1;
             },
+            function (common_1_1) {
+                common_1 = common_1_1;
+            },
             function (api_service_1_1) {
                 api_service_1 = api_service_1_1;
+            },
+            function (ng2_charts_1_1) {
+                ng2_charts_1 = ng2_charts_1_1;
             }],
         execute: function() {
             Summary = (function () {
@@ -34,6 +40,46 @@ System.register(["angular2/core", "./api.service"], function(exports_1, context_
                 function DashboardComponent(service) {
                     this.service = service;
                     this.summary = new Summary(0, 0, 0, 0);
+                    this.lineChartData = [
+                        [65, 59, 80, 81, 56, 55, 40],
+                        [28, 48, 40, 19, 86, 27, 90],
+                        [18, 48, 77, 9, 100, 27, 40]
+                    ];
+                    this.lineChartLabels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
+                    this.lineChartSeries = ['Series A', 'Series B', 'Series C'];
+                    this.lineChartOptions = {
+                        animation: false,
+                        responsive: true,
+                        multiTooltipTemplate: '<%if (datasetLabel){%><%=datasetLabel %>: <%}%><%= value %>'
+                    };
+                    this.lineChartColours = [
+                        {
+                            fillColor: 'rgba(148,159,177,0.2)',
+                            strokeColor: 'rgba(148,159,177,1)',
+                            pointColor: 'rgba(148,159,177,1)',
+                            pointStrokeColor: '#fff',
+                            pointHighlightFill: '#fff',
+                            pointHighlightStroke: 'rgba(148,159,177,0.8)'
+                        },
+                        {
+                            fillColor: 'rgba(77,83,96,0.2)',
+                            strokeColor: 'rgba(77,83,96,1)',
+                            pointColor: 'rgba(77,83,96,1)',
+                            pointStrokeColor: '#fff',
+                            pointHighlightFill: '#fff',
+                            pointHighlightStroke: 'rgba(77,83,96,1)'
+                        },
+                        {
+                            fillColor: 'rgba(148,159,177,0.2)',
+                            strokeColor: 'rgba(148,159,177,1)',
+                            pointColor: 'rgba(148,159,177,1)',
+                            pointStrokeColor: '#fff',
+                            pointHighlightFill: '#fff',
+                            pointHighlightStroke: 'rgba(148,159,177,0.8)'
+                        }
+                    ];
+                    this.lineChartLegend = true;
+                    this.lineChartType = 'Line';
                 }
                 DashboardComponent.prototype.ngOnInit = function () {
                     var that = this;
@@ -43,12 +89,20 @@ System.register(["angular2/core", "./api.service"], function(exports_1, context_
                         }
                     });
                 };
+                // events
+                DashboardComponent.prototype.chartClicked = function (e) {
+                    console.log(e);
+                };
+                DashboardComponent.prototype.chartHovered = function (e) {
+                    console.log(e);
+                };
                 DashboardComponent = __decorate([
                     core_1.Component({
                         selector: "dashboard",
                         templateUrl: "./src/app/components/dashboard.html",
                         styleUrls: ["./src/app/components/dashboard.css"],
-                        providers: [api_service_1.ApiService]
+                        providers: [api_service_1.ApiService],
+                        directives: [ng2_charts_1.CHART_DIRECTIVES, common_1.NgClass, common_1.CORE_DIRECTIVES, common_1.FORM_DIRECTIVES]
                     }), 
                     __metadata('design:paramtypes', [api_service_1.ApiService])
                 ], DashboardComponent);
