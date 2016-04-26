@@ -50,6 +50,7 @@ System.register(["angular2/core", "angular2/common", "../api.service", "../../di
                     this.selectedCustomer = null;
                     this.selectedExCustomerName = '';
                     this.allCustomers = [];
+                    this.isOrderTimeValid = true;
                     this.recipientGroup = new common_1.ControlGroup({
                         recipient: new common_1.Control(null, common_1.Validators.required),
                         phone: new common_1.Control(null, common_1.Validators.required),
@@ -63,6 +64,9 @@ System.register(["angular2/core", "angular2/common", "../api.service", "../../di
                 }
                 OrderCustomersComponent.prototype.ngOnInit = function () {
                     this.getCustomers();
+                };
+                OrderCustomersComponent.prototype.ngAfterViewInit = function () {
+                    this.initialiseDatePicker();
                 };
                 OrderCustomersComponent.prototype.onElementSelected = function (id) {
                     this.getCustomer(id);
@@ -102,6 +106,37 @@ System.register(["angular2/core", "angular2/common", "../api.service", "../../di
                     }
                     this.orderModel.updateExpressText();
                 };
+                OrderCustomersComponent.prototype.initialiseDatePicker = function () {
+                    var that = this;
+                    var today = moment().startOf('day');
+                    var lastYear = moment().add(-1, 'y').endOf('day');
+                    jQuery('#orderDate').datetimepicker({
+                        locale: 'en-nz',
+                        format: 'L',
+                        minDate: lastYear,
+                        maxDate: today,
+                        ignoreReadonly: true,
+                        allowInputToggle: true
+                    });
+                    jQuery('#orderDate').data("DateTimePicker").showTodayButton(true);
+                    jQuery('#orderDate').data("DateTimePicker").showClear(true);
+                    jQuery('#orderDate').data("DateTimePicker").showClose(true);
+                    jQuery('#orderDate').data("DateTimePicker").defaultDate(today);
+                    jQuery('#orderDate').on("dp.change", function (e) {
+                        if (!e.date) {
+                            that.isOrderTimeValid = false;
+                            that.orderModel.orderTime = null;
+                        }
+                        else {
+                            that.isOrderTimeValid = true;
+                            that.orderModel.orderTime = e.date.toDate();
+                        }
+                        that.orderModel.isCustomersValid = that.orderModel.isCustomersValid && that.isOrderTimeValid;
+                    });
+                    if (this.viewMode) {
+                        jQuery('#orderDate').data("DateTimePicker").disable();
+                    }
+                };
                 OrderCustomersComponent.prototype.getCustomer = function (id) {
                     var that = this;
                     this.service.getCustomer(id, function (json) {
@@ -121,6 +156,9 @@ System.register(["angular2/core", "angular2/common", "../api.service", "../../di
                                 that.orderModel.customerOrders = [];
                                 that.orderModel.customerOrders.push(co);
                                 that.onModelChanged(co, true);
+                            }
+                            if (that.orderModel.orderTime) {
+                                jQuery('#orderDate').data("DateTimePicker").date(moment(that.orderModel.orderTime));
                             }
                         }
                     });

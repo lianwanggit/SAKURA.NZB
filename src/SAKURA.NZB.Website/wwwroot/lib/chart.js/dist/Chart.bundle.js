@@ -1,432 +1,4 @@
-/*!
- * Chart.js
- * http://chartjs.org/
- * Version: 2.0.2
- *
- * Copyright 2016 Nick Downie
- * Released under the MIT license
- * https://github.com/nnnick/Chart.js/blob/master/LICENSE.md
- */
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-/* MIT license */
-
-var convert = require("color-convert"),
-  string = require("color-string");
-
-var Color = function(obj) {
-  if (obj instanceof Color) return obj;
-  if (!(this instanceof Color)) return new Color(obj);
-
-  this.values = {
-    rgb: [0, 0, 0],
-    hsl: [0, 0, 0],
-    hsv: [0, 0, 0],
-    hwb: [0, 0, 0],
-    cmyk: [0, 0, 0, 0],
-    alpha: 1
-  }
-
-  // parse Color() argument
-  if (typeof obj == "string") {
-    var vals = string.getRgba(obj);
-    if (vals) {
-      this.setValues("rgb", vals);
-    } else if (vals = string.getHsla(obj)) {
-      this.setValues("hsl", vals);
-    } else if (vals = string.getHwb(obj)) {
-      this.setValues("hwb", vals);
-    } else {
-      throw new Error("Unable to parse color from string \"" + obj + "\"");
-    }
-  } else if (typeof obj == "object") {
-    var vals = obj;
-    if (vals["r"] !== undefined || vals["red"] !== undefined) {
-      this.setValues("rgb", vals)
-    } else if (vals["l"] !== undefined || vals["lightness"] !== undefined) {
-      this.setValues("hsl", vals)
-    } else if (vals["v"] !== undefined || vals["value"] !== undefined) {
-      this.setValues("hsv", vals)
-    } else if (vals["w"] !== undefined || vals["whiteness"] !== undefined) {
-      this.setValues("hwb", vals)
-    } else if (vals["c"] !== undefined || vals["cyan"] !== undefined) {
-      this.setValues("cmyk", vals)
-    } else {
-      throw new Error("Unable to parse color from object " + JSON.stringify(obj));
-    }
-  }
-}
-
-Color.prototype = {
-  rgb: function(vals) {
-    return this.setSpace("rgb", arguments);
-  },
-  hsl: function(vals) {
-    return this.setSpace("hsl", arguments);
-  },
-  hsv: function(vals) {
-    return this.setSpace("hsv", arguments);
-  },
-  hwb: function(vals) {
-    return this.setSpace("hwb", arguments);
-  },
-  cmyk: function(vals) {
-    return this.setSpace("cmyk", arguments);
-  },
-
-  rgbArray: function() {
-    return this.values.rgb;
-  },
-  hslArray: function() {
-    return this.values.hsl;
-  },
-  hsvArray: function() {
-    return this.values.hsv;
-  },
-  hwbArray: function() {
-    if (this.values.alpha !== 1) {
-      return this.values.hwb.concat([this.values.alpha])
-    }
-    return this.values.hwb;
-  },
-  cmykArray: function() {
-    return this.values.cmyk;
-  },
-  rgbaArray: function() {
-    var rgb = this.values.rgb;
-    return rgb.concat([this.values.alpha]);
-  },
-  hslaArray: function() {
-    var hsl = this.values.hsl;
-    return hsl.concat([this.values.alpha]);
-  },
-  alpha: function(val) {
-    if (val === undefined) {
-      return this.values.alpha;
-    }
-    this.setValues("alpha", val);
-    return this;
-  },
-
-  red: function(val) {
-    return this.setChannel("rgb", 0, val);
-  },
-  green: function(val) {
-    return this.setChannel("rgb", 1, val);
-  },
-  blue: function(val) {
-    return this.setChannel("rgb", 2, val);
-  },
-  hue: function(val) {
-    return this.setChannel("hsl", 0, val);
-  },
-  saturation: function(val) {
-    return this.setChannel("hsl", 1, val);
-  },
-  lightness: function(val) {
-    return this.setChannel("hsl", 2, val);
-  },
-  saturationv: function(val) {
-    return this.setChannel("hsv", 1, val);
-  },
-  whiteness: function(val) {
-    return this.setChannel("hwb", 1, val);
-  },
-  blackness: function(val) {
-    return this.setChannel("hwb", 2, val);
-  },
-  value: function(val) {
-    return this.setChannel("hsv", 2, val);
-  },
-  cyan: function(val) {
-    return this.setChannel("cmyk", 0, val);
-  },
-  magenta: function(val) {
-    return this.setChannel("cmyk", 1, val);
-  },
-  yellow: function(val) {
-    return this.setChannel("cmyk", 2, val);
-  },
-  black: function(val) {
-    return this.setChannel("cmyk", 3, val);
-  },
-
-  hexString: function() {
-    return string.hexString(this.values.rgb);
-  },
-  rgbString: function() {
-    return string.rgbString(this.values.rgb, this.values.alpha);
-  },
-  rgbaString: function() {
-    return string.rgbaString(this.values.rgb, this.values.alpha);
-  },
-  percentString: function() {
-    return string.percentString(this.values.rgb, this.values.alpha);
-  },
-  hslString: function() {
-    return string.hslString(this.values.hsl, this.values.alpha);
-  },
-  hslaString: function() {
-    return string.hslaString(this.values.hsl, this.values.alpha);
-  },
-  hwbString: function() {
-    return string.hwbString(this.values.hwb, this.values.alpha);
-  },
-  keyword: function() {
-    return string.keyword(this.values.rgb, this.values.alpha);
-  },
-
-  rgbNumber: function() {
-    return (this.values.rgb[0] << 16) | (this.values.rgb[1] << 8) | this.values.rgb[2];
-  },
-
-  luminosity: function() {
-    // http://www.w3.org/TR/WCAG20/#relativeluminancedef
-    var rgb = this.values.rgb;
-    var lum = [];
-    for (var i = 0; i < rgb.length; i++) {
-      var chan = rgb[i] / 255;
-      lum[i] = (chan <= 0.03928) ? chan / 12.92 : Math.pow(((chan + 0.055) / 1.055), 2.4)
-    }
-    return 0.2126 * lum[0] + 0.7152 * lum[1] + 0.0722 * lum[2];
-  },
-
-  contrast: function(color2) {
-    // http://www.w3.org/TR/WCAG20/#contrast-ratiodef
-    var lum1 = this.luminosity();
-    var lum2 = color2.luminosity();
-    if (lum1 > lum2) {
-      return (lum1 + 0.05) / (lum2 + 0.05)
-    };
-    return (lum2 + 0.05) / (lum1 + 0.05);
-  },
-
-  level: function(color2) {
-    var contrastRatio = this.contrast(color2);
-    return (contrastRatio >= 7.1) ? 'AAA' : (contrastRatio >= 4.5) ? 'AA' : '';
-  },
-
-  dark: function() {
-    // YIQ equation from http://24ways.org/2010/calculating-color-contrast
-    var rgb = this.values.rgb,
-      yiq = (rgb[0] * 299 + rgb[1] * 587 + rgb[2] * 114) / 1000;
-    return yiq < 128;
-  },
-
-  light: function() {
-    return !this.dark();
-  },
-
-  negate: function() {
-    var rgb = []
-    for (var i = 0; i < 3; i++) {
-      rgb[i] = 255 - this.values.rgb[i];
-    }
-    this.setValues("rgb", rgb);
-    return this;
-  },
-
-  lighten: function(ratio) {
-    this.values.hsl[2] += this.values.hsl[2] * ratio;
-    this.setValues("hsl", this.values.hsl);
-    return this;
-  },
-
-  darken: function(ratio) {
-    this.values.hsl[2] -= this.values.hsl[2] * ratio;
-    this.setValues("hsl", this.values.hsl);
-    return this;
-  },
-
-  saturate: function(ratio) {
-    this.values.hsl[1] += this.values.hsl[1] * ratio;
-    this.setValues("hsl", this.values.hsl);
-    return this;
-  },
-
-  desaturate: function(ratio) {
-    this.values.hsl[1] -= this.values.hsl[1] * ratio;
-    this.setValues("hsl", this.values.hsl);
-    return this;
-  },
-
-  whiten: function(ratio) {
-    this.values.hwb[1] += this.values.hwb[1] * ratio;
-    this.setValues("hwb", this.values.hwb);
-    return this;
-  },
-
-  blacken: function(ratio) {
-    this.values.hwb[2] += this.values.hwb[2] * ratio;
-    this.setValues("hwb", this.values.hwb);
-    return this;
-  },
-
-  greyscale: function() {
-    var rgb = this.values.rgb;
-    // http://en.wikipedia.org/wiki/Grayscale#Converting_color_to_grayscale
-    var val = rgb[0] * 0.3 + rgb[1] * 0.59 + rgb[2] * 0.11;
-    this.setValues("rgb", [val, val, val]);
-    return this;
-  },
-
-  clearer: function(ratio) {
-    this.setValues("alpha", this.values.alpha - (this.values.alpha * ratio));
-    return this;
-  },
-
-  opaquer: function(ratio) {
-    this.setValues("alpha", this.values.alpha + (this.values.alpha * ratio));
-    return this;
-  },
-
-  rotate: function(degrees) {
-    var hue = this.values.hsl[0];
-    hue = (hue + degrees) % 360;
-    hue = hue < 0 ? 360 + hue : hue;
-    this.values.hsl[0] = hue;
-    this.setValues("hsl", this.values.hsl);
-    return this;
-  },
-
-  mix: function(color2, weight) {
-    weight = 1 - (weight == null ? 0.5 : weight);
-
-    // algorithm from Sass's mix(). Ratio of first color in mix is
-    // determined by the alphas of both colors and the weight
-    var t1 = weight * 2 - 1,
-      d = this.alpha() - color2.alpha();
-
-    var weight1 = (((t1 * d == -1) ? t1 : (t1 + d) / (1 + t1 * d)) + 1) / 2;
-    var weight2 = 1 - weight1;
-
-    var rgb = this.rgbArray();
-    var rgb2 = color2.rgbArray();
-
-    for (var i = 0; i < rgb.length; i++) {
-      rgb[i] = rgb[i] * weight1 + rgb2[i] * weight2;
-    }
-    this.setValues("rgb", rgb);
-
-    var alpha = this.alpha() * weight + color2.alpha() * (1 - weight);
-    this.setValues("alpha", alpha);
-
-    return this;
-  },
-
-  toJSON: function() {
-    return this.rgb();
-  },
-
-  clone: function() {
-    return new Color(this.rgb());
-  }
-}
-
-
-Color.prototype.getValues = function(space) {
-  var vals = {};
-  for (var i = 0; i < space.length; i++) {
-    vals[space.charAt(i)] = this.values[space][i];
-  }
-  if (this.values.alpha != 1) {
-    vals["a"] = this.values.alpha;
-  }
-  // {r: 255, g: 255, b: 255, a: 0.4}
-  return vals;
-}
-
-Color.prototype.setValues = function(space, vals) {
-  var spaces = {
-    "rgb": ["red", "green", "blue"],
-    "hsl": ["hue", "saturation", "lightness"],
-    "hsv": ["hue", "saturation", "value"],
-    "hwb": ["hue", "whiteness", "blackness"],
-    "cmyk": ["cyan", "magenta", "yellow", "black"]
-  };
-
-  var maxes = {
-    "rgb": [255, 255, 255],
-    "hsl": [360, 100, 100],
-    "hsv": [360, 100, 100],
-    "hwb": [360, 100, 100],
-    "cmyk": [100, 100, 100, 100]
-  };
-
-  var alpha = 1;
-  if (space == "alpha") {
-    alpha = vals;
-  } else if (vals.length) {
-    // [10, 10, 10]
-    this.values[space] = vals.slice(0, space.length);
-    alpha = vals[space.length];
-  } else if (vals[space.charAt(0)] !== undefined) {
-    // {r: 10, g: 10, b: 10}
-    for (var i = 0; i < space.length; i++) {
-      this.values[space][i] = vals[space.charAt(i)];
-    }
-    alpha = vals.a;
-  } else if (vals[spaces[space][0]] !== undefined) {
-    // {red: 10, green: 10, blue: 10}
-    var chans = spaces[space];
-    for (var i = 0; i < space.length; i++) {
-      this.values[space][i] = vals[chans[i]];
-    }
-    alpha = vals.alpha;
-  }
-  this.values.alpha = Math.max(0, Math.min(1, (alpha !== undefined ? alpha : this.values.alpha)));
-  if (space == "alpha") {
-    return;
-  }
-
-  // cap values of the space prior converting all values
-  for (var i = 0; i < space.length; i++) {
-    var capped = Math.max(0, Math.min(maxes[space][i], this.values[space][i]));
-    this.values[space][i] = Math.round(capped);
-  }
-
-  // convert to all the other color spaces
-  for (var sname in spaces) {
-    if (sname != space) {
-      this.values[sname] = convert[space][sname](this.values[space])
-    }
-
-    // cap values
-    for (var i = 0; i < sname.length; i++) {
-      var capped = Math.max(0, Math.min(maxes[sname][i], this.values[sname][i]));
-      this.values[sname][i] = Math.round(capped);
-    }
-  }
-  return true;
-}
-
-Color.prototype.setSpace = function(space, args) {
-  var vals = args[0];
-  if (vals === undefined) {
-    // color.rgb()
-    return this.getValues(space);
-  }
-  // color.rgb(10, 10, 10)
-  if (typeof vals == "number") {
-    vals = Array.prototype.slice.call(args);
-  }
-  this.setValues(space, vals);
-  return this;
-}
-
-Color.prototype.setChannel = function(space, index, val) {
-  if (val === undefined) {
-    // color.red()
-    return this.values[space][index];
-  }
-  // color.red(100)
-  this.values[space][index] = val;
-  this.setValues(space, this.values[space]);
-  return this;
-}
-
-window.Color = module.exports = Color
-
-},{"color-convert":3,"color-string":5}],2:[function(require,module,exports){
 /* MIT license */
 
 module.exports = {
@@ -1126,7 +698,7 @@ for (var key in cssKeywords) {
   reverseKeywords[JSON.stringify(cssKeywords[key])] = key;
 }
 
-},{}],3:[function(require,module,exports){
+},{}],2:[function(require,module,exports){
 var conversions = require("./conversions");
 
 var convert = function() {
@@ -1219,158 +791,7 @@ Converter.prototype.getValues = function(space) {
 });
 
 module.exports = convert;
-},{"./conversions":2}],4:[function(require,module,exports){
-module.exports = {
-	"aliceblue": [240, 248, 255],
-	"antiquewhite": [250, 235, 215],
-	"aqua": [0, 255, 255],
-	"aquamarine": [127, 255, 212],
-	"azure": [240, 255, 255],
-	"beige": [245, 245, 220],
-	"bisque": [255, 228, 196],
-	"black": [0, 0, 0],
-	"blanchedalmond": [255, 235, 205],
-	"blue": [0, 0, 255],
-	"blueviolet": [138, 43, 226],
-	"brown": [165, 42, 42],
-	"burlywood": [222, 184, 135],
-	"cadetblue": [95, 158, 160],
-	"chartreuse": [127, 255, 0],
-	"chocolate": [210, 105, 30],
-	"coral": [255, 127, 80],
-	"cornflowerblue": [100, 149, 237],
-	"cornsilk": [255, 248, 220],
-	"crimson": [220, 20, 60],
-	"cyan": [0, 255, 255],
-	"darkblue": [0, 0, 139],
-	"darkcyan": [0, 139, 139],
-	"darkgoldenrod": [184, 134, 11],
-	"darkgray": [169, 169, 169],
-	"darkgreen": [0, 100, 0],
-	"darkgrey": [169, 169, 169],
-	"darkkhaki": [189, 183, 107],
-	"darkmagenta": [139, 0, 139],
-	"darkolivegreen": [85, 107, 47],
-	"darkorange": [255, 140, 0],
-	"darkorchid": [153, 50, 204],
-	"darkred": [139, 0, 0],
-	"darksalmon": [233, 150, 122],
-	"darkseagreen": [143, 188, 143],
-	"darkslateblue": [72, 61, 139],
-	"darkslategray": [47, 79, 79],
-	"darkslategrey": [47, 79, 79],
-	"darkturquoise": [0, 206, 209],
-	"darkviolet": [148, 0, 211],
-	"deeppink": [255, 20, 147],
-	"deepskyblue": [0, 191, 255],
-	"dimgray": [105, 105, 105],
-	"dimgrey": [105, 105, 105],
-	"dodgerblue": [30, 144, 255],
-	"firebrick": [178, 34, 34],
-	"floralwhite": [255, 250, 240],
-	"forestgreen": [34, 139, 34],
-	"fuchsia": [255, 0, 255],
-	"gainsboro": [220, 220, 220],
-	"ghostwhite": [248, 248, 255],
-	"gold": [255, 215, 0],
-	"goldenrod": [218, 165, 32],
-	"gray": [128, 128, 128],
-	"green": [0, 128, 0],
-	"greenyellow": [173, 255, 47],
-	"grey": [128, 128, 128],
-	"honeydew": [240, 255, 240],
-	"hotpink": [255, 105, 180],
-	"indianred": [205, 92, 92],
-	"indigo": [75, 0, 130],
-	"ivory": [255, 255, 240],
-	"khaki": [240, 230, 140],
-	"lavender": [230, 230, 250],
-	"lavenderblush": [255, 240, 245],
-	"lawngreen": [124, 252, 0],
-	"lemonchiffon": [255, 250, 205],
-	"lightblue": [173, 216, 230],
-	"lightcoral": [240, 128, 128],
-	"lightcyan": [224, 255, 255],
-	"lightgoldenrodyellow": [250, 250, 210],
-	"lightgray": [211, 211, 211],
-	"lightgreen": [144, 238, 144],
-	"lightgrey": [211, 211, 211],
-	"lightpink": [255, 182, 193],
-	"lightsalmon": [255, 160, 122],
-	"lightseagreen": [32, 178, 170],
-	"lightskyblue": [135, 206, 250],
-	"lightslategray": [119, 136, 153],
-	"lightslategrey": [119, 136, 153],
-	"lightsteelblue": [176, 196, 222],
-	"lightyellow": [255, 255, 224],
-	"lime": [0, 255, 0],
-	"limegreen": [50, 205, 50],
-	"linen": [250, 240, 230],
-	"magenta": [255, 0, 255],
-	"maroon": [128, 0, 0],
-	"mediumaquamarine": [102, 205, 170],
-	"mediumblue": [0, 0, 205],
-	"mediumorchid": [186, 85, 211],
-	"mediumpurple": [147, 112, 219],
-	"mediumseagreen": [60, 179, 113],
-	"mediumslateblue": [123, 104, 238],
-	"mediumspringgreen": [0, 250, 154],
-	"mediumturquoise": [72, 209, 204],
-	"mediumvioletred": [199, 21, 133],
-	"midnightblue": [25, 25, 112],
-	"mintcream": [245, 255, 250],
-	"mistyrose": [255, 228, 225],
-	"moccasin": [255, 228, 181],
-	"navajowhite": [255, 222, 173],
-	"navy": [0, 0, 128],
-	"oldlace": [253, 245, 230],
-	"olive": [128, 128, 0],
-	"olivedrab": [107, 142, 35],
-	"orange": [255, 165, 0],
-	"orangered": [255, 69, 0],
-	"orchid": [218, 112, 214],
-	"palegoldenrod": [238, 232, 170],
-	"palegreen": [152, 251, 152],
-	"paleturquoise": [175, 238, 238],
-	"palevioletred": [219, 112, 147],
-	"papayawhip": [255, 239, 213],
-	"peachpuff": [255, 218, 185],
-	"peru": [205, 133, 63],
-	"pink": [255, 192, 203],
-	"plum": [221, 160, 221],
-	"powderblue": [176, 224, 230],
-	"purple": [128, 0, 128],
-	"rebeccapurple": [102, 51, 153],
-	"red": [255, 0, 0],
-	"rosybrown": [188, 143, 143],
-	"royalblue": [65, 105, 225],
-	"saddlebrown": [139, 69, 19],
-	"salmon": [250, 128, 114],
-	"sandybrown": [244, 164, 96],
-	"seagreen": [46, 139, 87],
-	"seashell": [255, 245, 238],
-	"sienna": [160, 82, 45],
-	"silver": [192, 192, 192],
-	"skyblue": [135, 206, 235],
-	"slateblue": [106, 90, 205],
-	"slategray": [112, 128, 144],
-	"slategrey": [112, 128, 144],
-	"snow": [255, 250, 250],
-	"springgreen": [0, 255, 127],
-	"steelblue": [70, 130, 180],
-	"tan": [210, 180, 140],
-	"teal": [0, 128, 128],
-	"thistle": [216, 191, 216],
-	"tomato": [255, 99, 71],
-	"turquoise": [64, 224, 208],
-	"violet": [238, 130, 238],
-	"wheat": [245, 222, 179],
-	"white": [255, 255, 255],
-	"whitesmoke": [245, 245, 245],
-	"yellow": [255, 255, 0],
-	"yellowgreen": [154, 205, 50]
-};
-},{}],5:[function(require,module,exports){
+},{"./conversions":1}],3:[function(require,module,exports){
 /* MIT license */
 var colorNames = require('color-name');
 
@@ -1593,14 +1014,584 @@ for (var name in colorNames) {
    reverseNames[colorNames[name]] = name;
 }
 
-},{"color-name":4}],6:[function(require,module,exports){
+},{"color-name":4}],4:[function(require,module,exports){
+module.exports = {
+	"aliceblue": [240, 248, 255],
+	"antiquewhite": [250, 235, 215],
+	"aqua": [0, 255, 255],
+	"aquamarine": [127, 255, 212],
+	"azure": [240, 255, 255],
+	"beige": [245, 245, 220],
+	"bisque": [255, 228, 196],
+	"black": [0, 0, 0],
+	"blanchedalmond": [255, 235, 205],
+	"blue": [0, 0, 255],
+	"blueviolet": [138, 43, 226],
+	"brown": [165, 42, 42],
+	"burlywood": [222, 184, 135],
+	"cadetblue": [95, 158, 160],
+	"chartreuse": [127, 255, 0],
+	"chocolate": [210, 105, 30],
+	"coral": [255, 127, 80],
+	"cornflowerblue": [100, 149, 237],
+	"cornsilk": [255, 248, 220],
+	"crimson": [220, 20, 60],
+	"cyan": [0, 255, 255],
+	"darkblue": [0, 0, 139],
+	"darkcyan": [0, 139, 139],
+	"darkgoldenrod": [184, 134, 11],
+	"darkgray": [169, 169, 169],
+	"darkgreen": [0, 100, 0],
+	"darkgrey": [169, 169, 169],
+	"darkkhaki": [189, 183, 107],
+	"darkmagenta": [139, 0, 139],
+	"darkolivegreen": [85, 107, 47],
+	"darkorange": [255, 140, 0],
+	"darkorchid": [153, 50, 204],
+	"darkred": [139, 0, 0],
+	"darksalmon": [233, 150, 122],
+	"darkseagreen": [143, 188, 143],
+	"darkslateblue": [72, 61, 139],
+	"darkslategray": [47, 79, 79],
+	"darkslategrey": [47, 79, 79],
+	"darkturquoise": [0, 206, 209],
+	"darkviolet": [148, 0, 211],
+	"deeppink": [255, 20, 147],
+	"deepskyblue": [0, 191, 255],
+	"dimgray": [105, 105, 105],
+	"dimgrey": [105, 105, 105],
+	"dodgerblue": [30, 144, 255],
+	"firebrick": [178, 34, 34],
+	"floralwhite": [255, 250, 240],
+	"forestgreen": [34, 139, 34],
+	"fuchsia": [255, 0, 255],
+	"gainsboro": [220, 220, 220],
+	"ghostwhite": [248, 248, 255],
+	"gold": [255, 215, 0],
+	"goldenrod": [218, 165, 32],
+	"gray": [128, 128, 128],
+	"green": [0, 128, 0],
+	"greenyellow": [173, 255, 47],
+	"grey": [128, 128, 128],
+	"honeydew": [240, 255, 240],
+	"hotpink": [255, 105, 180],
+	"indianred": [205, 92, 92],
+	"indigo": [75, 0, 130],
+	"ivory": [255, 255, 240],
+	"khaki": [240, 230, 140],
+	"lavender": [230, 230, 250],
+	"lavenderblush": [255, 240, 245],
+	"lawngreen": [124, 252, 0],
+	"lemonchiffon": [255, 250, 205],
+	"lightblue": [173, 216, 230],
+	"lightcoral": [240, 128, 128],
+	"lightcyan": [224, 255, 255],
+	"lightgoldenrodyellow": [250, 250, 210],
+	"lightgray": [211, 211, 211],
+	"lightgreen": [144, 238, 144],
+	"lightgrey": [211, 211, 211],
+	"lightpink": [255, 182, 193],
+	"lightsalmon": [255, 160, 122],
+	"lightseagreen": [32, 178, 170],
+	"lightskyblue": [135, 206, 250],
+	"lightslategray": [119, 136, 153],
+	"lightslategrey": [119, 136, 153],
+	"lightsteelblue": [176, 196, 222],
+	"lightyellow": [255, 255, 224],
+	"lime": [0, 255, 0],
+	"limegreen": [50, 205, 50],
+	"linen": [250, 240, 230],
+	"magenta": [255, 0, 255],
+	"maroon": [128, 0, 0],
+	"mediumaquamarine": [102, 205, 170],
+	"mediumblue": [0, 0, 205],
+	"mediumorchid": [186, 85, 211],
+	"mediumpurple": [147, 112, 219],
+	"mediumseagreen": [60, 179, 113],
+	"mediumslateblue": [123, 104, 238],
+	"mediumspringgreen": [0, 250, 154],
+	"mediumturquoise": [72, 209, 204],
+	"mediumvioletred": [199, 21, 133],
+	"midnightblue": [25, 25, 112],
+	"mintcream": [245, 255, 250],
+	"mistyrose": [255, 228, 225],
+	"moccasin": [255, 228, 181],
+	"navajowhite": [255, 222, 173],
+	"navy": [0, 0, 128],
+	"oldlace": [253, 245, 230],
+	"olive": [128, 128, 0],
+	"olivedrab": [107, 142, 35],
+	"orange": [255, 165, 0],
+	"orangered": [255, 69, 0],
+	"orchid": [218, 112, 214],
+	"palegoldenrod": [238, 232, 170],
+	"palegreen": [152, 251, 152],
+	"paleturquoise": [175, 238, 238],
+	"palevioletred": [219, 112, 147],
+	"papayawhip": [255, 239, 213],
+	"peachpuff": [255, 218, 185],
+	"peru": [205, 133, 63],
+	"pink": [255, 192, 203],
+	"plum": [221, 160, 221],
+	"powderblue": [176, 224, 230],
+	"purple": [128, 0, 128],
+	"rebeccapurple": [102, 51, 153],
+	"red": [255, 0, 0],
+	"rosybrown": [188, 143, 143],
+	"royalblue": [65, 105, 225],
+	"saddlebrown": [139, 69, 19],
+	"salmon": [250, 128, 114],
+	"sandybrown": [244, 164, 96],
+	"seagreen": [46, 139, 87],
+	"seashell": [255, 245, 238],
+	"sienna": [160, 82, 45],
+	"silver": [192, 192, 192],
+	"skyblue": [135, 206, 235],
+	"slateblue": [106, 90, 205],
+	"slategray": [112, 128, 144],
+	"slategrey": [112, 128, 144],
+	"snow": [255, 250, 250],
+	"springgreen": [0, 255, 127],
+	"steelblue": [70, 130, 180],
+	"tan": [210, 180, 140],
+	"teal": [0, 128, 128],
+	"thistle": [216, 191, 216],
+	"tomato": [255, 99, 71],
+	"turquoise": [64, 224, 208],
+	"violet": [238, 130, 238],
+	"wheat": [245, 222, 179],
+	"white": [255, 255, 255],
+	"whitesmoke": [245, 245, 245],
+	"yellow": [255, 255, 0],
+	"yellowgreen": [154, 205, 50]
+};
+},{}],5:[function(require,module,exports){
+/* MIT license */
+
+var convert = require("color-convert"),
+  string = require("color-string");
+
+var Color = function(obj) {
+  if (obj instanceof Color) return obj;
+  if (!(this instanceof Color)) return new Color(obj);
+
+  this.values = {
+    rgb: [0, 0, 0],
+    hsl: [0, 0, 0],
+    hsv: [0, 0, 0],
+    hwb: [0, 0, 0],
+    cmyk: [0, 0, 0, 0],
+    alpha: 1
+  }
+
+  // parse Color() argument
+  if (typeof obj == "string") {
+    var vals = string.getRgba(obj);
+    if (vals) {
+      this.setValues("rgb", vals);
+    } else if (vals = string.getHsla(obj)) {
+      this.setValues("hsl", vals);
+    } else if (vals = string.getHwb(obj)) {
+      this.setValues("hwb", vals);
+    } else {
+      throw new Error("Unable to parse color from string \"" + obj + "\"");
+    }
+  } else if (typeof obj == "object") {
+    var vals = obj;
+    if (vals["r"] !== undefined || vals["red"] !== undefined) {
+      this.setValues("rgb", vals)
+    } else if (vals["l"] !== undefined || vals["lightness"] !== undefined) {
+      this.setValues("hsl", vals)
+    } else if (vals["v"] !== undefined || vals["value"] !== undefined) {
+      this.setValues("hsv", vals)
+    } else if (vals["w"] !== undefined || vals["whiteness"] !== undefined) {
+      this.setValues("hwb", vals)
+    } else if (vals["c"] !== undefined || vals["cyan"] !== undefined) {
+      this.setValues("cmyk", vals)
+    } else {
+      throw new Error("Unable to parse color from object " + JSON.stringify(obj));
+    }
+  }
+}
+
+Color.prototype = {
+  rgb: function(vals) {
+    return this.setSpace("rgb", arguments);
+  },
+  hsl: function(vals) {
+    return this.setSpace("hsl", arguments);
+  },
+  hsv: function(vals) {
+    return this.setSpace("hsv", arguments);
+  },
+  hwb: function(vals) {
+    return this.setSpace("hwb", arguments);
+  },
+  cmyk: function(vals) {
+    return this.setSpace("cmyk", arguments);
+  },
+
+  rgbArray: function() {
+    return this.values.rgb;
+  },
+  hslArray: function() {
+    return this.values.hsl;
+  },
+  hsvArray: function() {
+    return this.values.hsv;
+  },
+  hwbArray: function() {
+    if (this.values.alpha !== 1) {
+      return this.values.hwb.concat([this.values.alpha])
+    }
+    return this.values.hwb;
+  },
+  cmykArray: function() {
+    return this.values.cmyk;
+  },
+  rgbaArray: function() {
+    var rgb = this.values.rgb;
+    return rgb.concat([this.values.alpha]);
+  },
+  hslaArray: function() {
+    var hsl = this.values.hsl;
+    return hsl.concat([this.values.alpha]);
+  },
+  alpha: function(val) {
+    if (val === undefined) {
+      return this.values.alpha;
+    }
+    this.setValues("alpha", val);
+    return this;
+  },
+
+  red: function(val) {
+    return this.setChannel("rgb", 0, val);
+  },
+  green: function(val) {
+    return this.setChannel("rgb", 1, val);
+  },
+  blue: function(val) {
+    return this.setChannel("rgb", 2, val);
+  },
+  hue: function(val) {
+    return this.setChannel("hsl", 0, val);
+  },
+  saturation: function(val) {
+    return this.setChannel("hsl", 1, val);
+  },
+  lightness: function(val) {
+    return this.setChannel("hsl", 2, val);
+  },
+  saturationv: function(val) {
+    return this.setChannel("hsv", 1, val);
+  },
+  whiteness: function(val) {
+    return this.setChannel("hwb", 1, val);
+  },
+  blackness: function(val) {
+    return this.setChannel("hwb", 2, val);
+  },
+  value: function(val) {
+    return this.setChannel("hsv", 2, val);
+  },
+  cyan: function(val) {
+    return this.setChannel("cmyk", 0, val);
+  },
+  magenta: function(val) {
+    return this.setChannel("cmyk", 1, val);
+  },
+  yellow: function(val) {
+    return this.setChannel("cmyk", 2, val);
+  },
+  black: function(val) {
+    return this.setChannel("cmyk", 3, val);
+  },
+
+  hexString: function() {
+    return string.hexString(this.values.rgb);
+  },
+  rgbString: function() {
+    return string.rgbString(this.values.rgb, this.values.alpha);
+  },
+  rgbaString: function() {
+    return string.rgbaString(this.values.rgb, this.values.alpha);
+  },
+  percentString: function() {
+    return string.percentString(this.values.rgb, this.values.alpha);
+  },
+  hslString: function() {
+    return string.hslString(this.values.hsl, this.values.alpha);
+  },
+  hslaString: function() {
+    return string.hslaString(this.values.hsl, this.values.alpha);
+  },
+  hwbString: function() {
+    return string.hwbString(this.values.hwb, this.values.alpha);
+  },
+  keyword: function() {
+    return string.keyword(this.values.rgb, this.values.alpha);
+  },
+
+  rgbNumber: function() {
+    return (this.values.rgb[0] << 16) | (this.values.rgb[1] << 8) | this.values.rgb[2];
+  },
+
+  luminosity: function() {
+    // http://www.w3.org/TR/WCAG20/#relativeluminancedef
+    var rgb = this.values.rgb;
+    var lum = [];
+    for (var i = 0; i < rgb.length; i++) {
+      var chan = rgb[i] / 255;
+      lum[i] = (chan <= 0.03928) ? chan / 12.92 : Math.pow(((chan + 0.055) / 1.055), 2.4)
+    }
+    return 0.2126 * lum[0] + 0.7152 * lum[1] + 0.0722 * lum[2];
+  },
+
+  contrast: function(color2) {
+    // http://www.w3.org/TR/WCAG20/#contrast-ratiodef
+    var lum1 = this.luminosity();
+    var lum2 = color2.luminosity();
+    if (lum1 > lum2) {
+      return (lum1 + 0.05) / (lum2 + 0.05)
+    };
+    return (lum2 + 0.05) / (lum1 + 0.05);
+  },
+
+  level: function(color2) {
+    var contrastRatio = this.contrast(color2);
+    return (contrastRatio >= 7.1) ? 'AAA' : (contrastRatio >= 4.5) ? 'AA' : '';
+  },
+
+  dark: function() {
+    // YIQ equation from http://24ways.org/2010/calculating-color-contrast
+    var rgb = this.values.rgb,
+      yiq = (rgb[0] * 299 + rgb[1] * 587 + rgb[2] * 114) / 1000;
+    return yiq < 128;
+  },
+
+  light: function() {
+    return !this.dark();
+  },
+
+  negate: function() {
+    var rgb = []
+    for (var i = 0; i < 3; i++) {
+      rgb[i] = 255 - this.values.rgb[i];
+    }
+    this.setValues("rgb", rgb);
+    return this;
+  },
+
+  lighten: function(ratio) {
+    this.values.hsl[2] += this.values.hsl[2] * ratio;
+    this.setValues("hsl", this.values.hsl);
+    return this;
+  },
+
+  darken: function(ratio) {
+    this.values.hsl[2] -= this.values.hsl[2] * ratio;
+    this.setValues("hsl", this.values.hsl);
+    return this;
+  },
+
+  saturate: function(ratio) {
+    this.values.hsl[1] += this.values.hsl[1] * ratio;
+    this.setValues("hsl", this.values.hsl);
+    return this;
+  },
+
+  desaturate: function(ratio) {
+    this.values.hsl[1] -= this.values.hsl[1] * ratio;
+    this.setValues("hsl", this.values.hsl);
+    return this;
+  },
+
+  whiten: function(ratio) {
+    this.values.hwb[1] += this.values.hwb[1] * ratio;
+    this.setValues("hwb", this.values.hwb);
+    return this;
+  },
+
+  blacken: function(ratio) {
+    this.values.hwb[2] += this.values.hwb[2] * ratio;
+    this.setValues("hwb", this.values.hwb);
+    return this;
+  },
+
+  greyscale: function() {
+    var rgb = this.values.rgb;
+    // http://en.wikipedia.org/wiki/Grayscale#Converting_color_to_grayscale
+    var val = rgb[0] * 0.3 + rgb[1] * 0.59 + rgb[2] * 0.11;
+    this.setValues("rgb", [val, val, val]);
+    return this;
+  },
+
+  clearer: function(ratio) {
+    this.setValues("alpha", this.values.alpha - (this.values.alpha * ratio));
+    return this;
+  },
+
+  opaquer: function(ratio) {
+    this.setValues("alpha", this.values.alpha + (this.values.alpha * ratio));
+    return this;
+  },
+
+  rotate: function(degrees) {
+    var hue = this.values.hsl[0];
+    hue = (hue + degrees) % 360;
+    hue = hue < 0 ? 360 + hue : hue;
+    this.values.hsl[0] = hue;
+    this.setValues("hsl", this.values.hsl);
+    return this;
+  },
+
+  mix: function(color2, weight) {
+    weight = 1 - (weight == null ? 0.5 : weight);
+
+    // algorithm from Sass's mix(). Ratio of first color in mix is
+    // determined by the alphas of both colors and the weight
+    var t1 = weight * 2 - 1,
+      d = this.alpha() - color2.alpha();
+
+    var weight1 = (((t1 * d == -1) ? t1 : (t1 + d) / (1 + t1 * d)) + 1) / 2;
+    var weight2 = 1 - weight1;
+
+    var rgb = this.rgbArray();
+    var rgb2 = color2.rgbArray();
+
+    for (var i = 0; i < rgb.length; i++) {
+      rgb[i] = rgb[i] * weight1 + rgb2[i] * weight2;
+    }
+    this.setValues("rgb", rgb);
+
+    var alpha = this.alpha() * weight + color2.alpha() * (1 - weight);
+    this.setValues("alpha", alpha);
+
+    return this;
+  },
+
+  toJSON: function() {
+    return this.rgb();
+  },
+
+  clone: function() {
+    return new Color(this.rgb());
+  }
+}
+
+
+Color.prototype.getValues = function(space) {
+  var vals = {};
+  for (var i = 0; i < space.length; i++) {
+    vals[space.charAt(i)] = this.values[space][i];
+  }
+  if (this.values.alpha != 1) {
+    vals["a"] = this.values.alpha;
+  }
+  // {r: 255, g: 255, b: 255, a: 0.4}
+  return vals;
+}
+
+Color.prototype.setValues = function(space, vals) {
+  var spaces = {
+    "rgb": ["red", "green", "blue"],
+    "hsl": ["hue", "saturation", "lightness"],
+    "hsv": ["hue", "saturation", "value"],
+    "hwb": ["hue", "whiteness", "blackness"],
+    "cmyk": ["cyan", "magenta", "yellow", "black"]
+  };
+
+  var maxes = {
+    "rgb": [255, 255, 255],
+    "hsl": [360, 100, 100],
+    "hsv": [360, 100, 100],
+    "hwb": [360, 100, 100],
+    "cmyk": [100, 100, 100, 100]
+  };
+
+  var alpha = 1;
+  if (space == "alpha") {
+    alpha = vals;
+  } else if (vals.length) {
+    // [10, 10, 10]
+    this.values[space] = vals.slice(0, space.length);
+    alpha = vals[space.length];
+  } else if (vals[space.charAt(0)] !== undefined) {
+    // {r: 10, g: 10, b: 10}
+    for (var i = 0; i < space.length; i++) {
+      this.values[space][i] = vals[space.charAt(i)];
+    }
+    alpha = vals.a;
+  } else if (vals[spaces[space][0]] !== undefined) {
+    // {red: 10, green: 10, blue: 10}
+    var chans = spaces[space];
+    for (var i = 0; i < space.length; i++) {
+      this.values[space][i] = vals[chans[i]];
+    }
+    alpha = vals.alpha;
+  }
+  this.values.alpha = Math.max(0, Math.min(1, (alpha !== undefined ? alpha : this.values.alpha)));
+  if (space == "alpha") {
+    return;
+  }
+
+  // cap values of the space prior converting all values
+  for (var i = 0; i < space.length; i++) {
+    var capped = Math.max(0, Math.min(maxes[space][i], this.values[space][i]));
+    this.values[space][i] = Math.round(capped);
+  }
+
+  // convert to all the other color spaces
+  for (var sname in spaces) {
+    if (sname != space) {
+      this.values[sname] = convert[space][sname](this.values[space])
+    }
+
+    // cap values
+    for (var i = 0; i < sname.length; i++) {
+      var capped = Math.max(0, Math.min(maxes[sname][i], this.values[sname][i]));
+      this.values[sname][i] = Math.round(capped);
+    }
+  }
+  return true;
+}
+
+Color.prototype.setSpace = function(space, args) {
+  var vals = args[0];
+  if (vals === undefined) {
+    // color.rgb()
+    return this.getValues(space);
+  }
+  // color.rgb(10, 10, 10)
+  if (typeof vals == "number") {
+    vals = Array.prototype.slice.call(args);
+  }
+  this.setValues(space, vals);
+  return this;
+}
+
+Color.prototype.setChannel = function(space, index, val) {
+  if (val === undefined) {
+    // color.red()
+    return this.values[space][index];
+  }
+  // color.red(100)
+  this.values[space][index] = val;
+  this.setValues(space, this.values[space]);
+  return this;
+}
+
+window.Color = module.exports = Color
+
+},{"color-convert":2,"color-string":3}],6:[function(require,module,exports){
 //! moment.js
-//! version : 2.11.2
+//! version : 2.10.6
 //! authors : Tim Wood, Iskren Chernev, Moment.js contributors
 //! license : MIT
 //! momentjs.com
 
-;(function (global, factory) {
+(function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
     typeof define === 'function' && define.amd ? define(factory) :
     global.moment = factory()
@@ -1717,45 +1708,39 @@ for (var name in colorNames) {
         return m;
     }
 
-    function isUndefined(input) {
-        return input === void 0;
-    }
-
-    // Plugins that add properties should also add the key here (null value),
-    // so we can properly clone ourselves.
     var momentProperties = utils_hooks__hooks.momentProperties = [];
 
     function copyConfig(to, from) {
         var i, prop, val;
 
-        if (!isUndefined(from._isAMomentObject)) {
+        if (typeof from._isAMomentObject !== 'undefined') {
             to._isAMomentObject = from._isAMomentObject;
         }
-        if (!isUndefined(from._i)) {
+        if (typeof from._i !== 'undefined') {
             to._i = from._i;
         }
-        if (!isUndefined(from._f)) {
+        if (typeof from._f !== 'undefined') {
             to._f = from._f;
         }
-        if (!isUndefined(from._l)) {
+        if (typeof from._l !== 'undefined') {
             to._l = from._l;
         }
-        if (!isUndefined(from._strict)) {
+        if (typeof from._strict !== 'undefined') {
             to._strict = from._strict;
         }
-        if (!isUndefined(from._tzm)) {
+        if (typeof from._tzm !== 'undefined') {
             to._tzm = from._tzm;
         }
-        if (!isUndefined(from._isUTC)) {
+        if (typeof from._isUTC !== 'undefined') {
             to._isUTC = from._isUTC;
         }
-        if (!isUndefined(from._offset)) {
+        if (typeof from._offset !== 'undefined') {
             to._offset = from._offset;
         }
-        if (!isUndefined(from._pf)) {
+        if (typeof from._pf !== 'undefined') {
             to._pf = getParsingFlags(from);
         }
-        if (!isUndefined(from._locale)) {
+        if (typeof from._locale !== 'undefined') {
             to._locale = from._locale;
         }
 
@@ -1763,7 +1748,7 @@ for (var name in colorNames) {
             for (i in momentProperties) {
                 prop = momentProperties[i];
                 val = from[prop];
-                if (!isUndefined(val)) {
+                if (typeof val !== 'undefined') {
                     to[prop] = val;
                 }
             }
@@ -1810,7 +1795,6 @@ for (var name in colorNames) {
         return value;
     }
 
-    // compare two arrays, return the number of differences
     function compareArrays(array1, array2, dontConvert) {
         var len = Math.min(array1.length, array2.length),
             lengthDiff = Math.abs(array1.length - array2.length),
@@ -1828,7 +1812,6 @@ for (var name in colorNames) {
     function Locale() {
     }
 
-    // internal storage for locale config files
     var locales = {};
     var globalLocale;
 
@@ -1866,7 +1849,7 @@ for (var name in colorNames) {
     function loadLocale(name) {
         var oldLocale = null;
         // TODO: Find a better way to register and load all the locales in Node
-        if (!locales[name] && (typeof module !== 'undefined') &&
+        if (!locales[name] && typeof module !== 'undefined' &&
                 module && module.exports) {
             try {
                 oldLocale = globalLocale._abbr;
@@ -1885,7 +1868,7 @@ for (var name in colorNames) {
     function locale_locales__getSetGlobalLocale (key, values) {
         var data;
         if (key) {
-            if (isUndefined(values)) {
+            if (typeof values === 'undefined') {
                 data = locale_locales__getLocale(key);
             }
             else {
@@ -1970,10 +1953,6 @@ for (var name in colorNames) {
         return normalizedInput;
     }
 
-    function isFunction(input) {
-        return input instanceof Function || Object.prototype.toString.call(input) === '[object Function]';
-    }
-
     function makeGetSet (unit, keepTime) {
         return function (value) {
             if (value != null) {
@@ -1987,14 +1966,11 @@ for (var name in colorNames) {
     }
 
     function get_set__get (mom, unit) {
-        return mom.isValid() ?
-            mom._d['get' + (mom._isUTC ? 'UTC' : '') + unit]() : NaN;
+        return mom._d['get' + (mom._isUTC ? 'UTC' : '') + unit]();
     }
 
     function get_set__set (mom, unit, value) {
-        if (mom.isValid()) {
-            mom._d['set' + (mom._isUTC ? 'UTC' : '') + unit](value);
-        }
+        return mom._d['set' + (mom._isUTC ? 'UTC' : '') + unit](value);
     }
 
     // MOMENTS
@@ -2007,7 +1983,7 @@ for (var name in colorNames) {
             }
         } else {
             units = normalizeUnits(units);
-            if (isFunction(this[units])) {
+            if (typeof this[units] === 'function') {
                 return this[units](value);
             }
         }
@@ -2022,7 +1998,7 @@ for (var name in colorNames) {
             Math.pow(10, Math.max(0, zerosToFill)).toString().substr(1) + absNumber;
     }
 
-    var formattingTokens = /(\[[^\[]*\])|(\\)?([Hh]mm(ss)?|Mo|MM?M?M?|Do|DDDo|DD?D?D?|ddd?d?|do?|w[o|w]?|W[o|W]?|Qo?|YYYYYY|YYYYY|YYYY|YY|gg(ggg?)?|GG(GGG?)?|e|E|a|A|hh?|HH?|mm?|ss?|S{1,9}|x|X|zz?|ZZ?|.)/g;
+    var formattingTokens = /(\[[^\[]*\])|(\\)?(Mo|MM?M?M?|Do|DDDo|DD?D?D?|ddd?d?|do?|w[o|w]?|W[o|W]?|Q|YYYYYY|YYYYY|YYYY|YY|gg(ggg?)?|GG(GGG?)?|e|E|a|A|hh?|HH?|mm?|ss?|S{1,9}|x|X|zz?|ZZ?|.)/g;
 
     var localFormattingTokens = /(\[[^\[]*\])|(\\)?(LTS|LT|LL?L?L?|l{1,4})/g;
 
@@ -2118,8 +2094,6 @@ for (var name in colorNames) {
     var match4         = /\d{4}/;         //    0000 - 9999
     var match6         = /[+-]?\d{6}/;    // -999999 - 999999
     var match1to2      = /\d\d?/;         //       0 - 99
-    var match3to4      = /\d\d\d\d?/;     //     999 - 9999
-    var match5to6      = /\d\d\d\d\d\d?/; //   99999 - 999999
     var match1to3      = /\d{1,3}/;       //       0 - 999
     var match1to4      = /\d{1,4}/;       //       0 - 9999
     var match1to6      = /[+-]?\d{1,6}/;  // -999999 - 999999
@@ -2128,19 +2102,23 @@ for (var name in colorNames) {
     var matchSigned    = /[+-]?\d+/;      //    -inf - inf
 
     var matchOffset    = /Z|[+-]\d\d:?\d\d/gi; // +00:00 -00:00 +0000 -0000 or Z
-    var matchShortOffset = /Z|[+-]\d\d(?::?\d\d)?/gi; // +00 -00 +00:00 -00:00 +0000 -0000 or Z
 
     var matchTimestamp = /[+-]?\d+(\.\d{1,3})?/; // 123456789 123456789.123
 
     // any word (or two) characters or numbers including two/three word month in arabic.
-    // includes scottish gaelic two word and hyphenated months
     var matchWord = /[0-9]*['a-z\u00A0-\u05FF\u0700-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+|[\u0600-\u06FF\/]+(\s*?[\u0600-\u06FF]+){1,2}/i;
-
 
     var regexes = {};
 
+    function isFunction (sth) {
+        // https://github.com/moment/moment/issues/2325
+        return typeof sth === 'function' &&
+            Object.prototype.toString.call(sth) === '[object Function]';
+    }
+
+
     function addRegexToken (token, regex, strictRegex) {
-        regexes[token] = isFunction(regex) ? regex : function (isStrict, localeData) {
+        regexes[token] = isFunction(regex) ? regex : function (isStrict) {
             return (isStrict && strictRegex) ? strictRegex : regex;
         };
     }
@@ -2155,13 +2133,9 @@ for (var name in colorNames) {
 
     // Code from http://stackoverflow.com/questions/3561493/is-there-a-regexp-escape-function-in-javascript
     function unescapeFormat(s) {
-        return regexEscape(s.replace('\\', '').replace(/\\(\[)|\\(\])|\[([^\]\[]*)\]|\\(.)/g, function (matched, p1, p2, p3, p4) {
+        return s.replace('\\', '').replace(/\\(\[)|\\(\])|\[([^\]\[]*)\]|\\(.)/g, function (matched, p1, p2, p3, p4) {
             return p1 || p2 || p3 || p4;
-        }));
-    }
-
-    function regexEscape(s) {
-        return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+        }).replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
     }
 
     var tokens = {};
@@ -2201,8 +2175,6 @@ for (var name in colorNames) {
     var MINUTE = 4;
     var SECOND = 5;
     var MILLISECOND = 6;
-    var WEEK = 7;
-    var WEEKDAY = 8;
 
     function daysInMonth(year, month) {
         return new Date(Date.UTC(year, month + 1, 0)).getUTCDate();
@@ -2230,12 +2202,8 @@ for (var name in colorNames) {
 
     addRegexToken('M',    match1to2);
     addRegexToken('MM',   match1to2, match2);
-    addRegexToken('MMM',  function (isStrict, locale) {
-        return locale.monthsShortRegex(isStrict);
-    });
-    addRegexToken('MMMM', function (isStrict, locale) {
-        return locale.monthsRegex(isStrict);
-    });
+    addRegexToken('MMM',  matchWord);
+    addRegexToken('MMMM', matchWord);
 
     addParseToken(['M', 'MM'], function (input, array) {
         array[MONTH] = toInt(input) - 1;
@@ -2253,17 +2221,14 @@ for (var name in colorNames) {
 
     // LOCALES
 
-    var MONTHS_IN_FORMAT = /D[oD]?(\[[^\[\]]*\]|\s+)+MMMM?/;
     var defaultLocaleMonths = 'January_February_March_April_May_June_July_August_September_October_November_December'.split('_');
-    function localeMonths (m, format) {
-        return isArray(this._months) ? this._months[m.month()] :
-            this._months[MONTHS_IN_FORMAT.test(format) ? 'format' : 'standalone'][m.month()];
+    function localeMonths (m) {
+        return this._months[m.month()];
     }
 
     var defaultLocaleMonthsShort = 'Jan_Feb_Mar_Apr_May_Jun_Jul_Aug_Sep_Oct_Nov_Dec'.split('_');
-    function localeMonthsShort (m, format) {
-        return isArray(this._monthsShort) ? this._monthsShort[m.month()] :
-            this._monthsShort[MONTHS_IN_FORMAT.test(format) ? 'format' : 'standalone'][m.month()];
+    function localeMonthsShort (m) {
+        return this._monthsShort[m.month()];
     }
 
     function localeMonthsParse (monthName, format, strict) {
@@ -2302,11 +2267,6 @@ for (var name in colorNames) {
     function setMonth (mom, value) {
         var dayOfMonth;
 
-        if (!mom.isValid()) {
-            // No op
-            return mom;
-        }
-
         // TODO: Move this out of here!
         if (typeof value === 'string') {
             value = mom.localeData().monthsParse(value);
@@ -2335,72 +2295,6 @@ for (var name in colorNames) {
         return daysInMonth(this.year(), this.month());
     }
 
-    var defaultMonthsShortRegex = matchWord;
-    function monthsShortRegex (isStrict) {
-        if (this._monthsParseExact) {
-            if (!hasOwnProp(this, '_monthsRegex')) {
-                computeMonthsParse.call(this);
-            }
-            if (isStrict) {
-                return this._monthsShortStrictRegex;
-            } else {
-                return this._monthsShortRegex;
-            }
-        } else {
-            return this._monthsShortStrictRegex && isStrict ?
-                this._monthsShortStrictRegex : this._monthsShortRegex;
-        }
-    }
-
-    var defaultMonthsRegex = matchWord;
-    function monthsRegex (isStrict) {
-        if (this._monthsParseExact) {
-            if (!hasOwnProp(this, '_monthsRegex')) {
-                computeMonthsParse.call(this);
-            }
-            if (isStrict) {
-                return this._monthsStrictRegex;
-            } else {
-                return this._monthsRegex;
-            }
-        } else {
-            return this._monthsStrictRegex && isStrict ?
-                this._monthsStrictRegex : this._monthsRegex;
-        }
-    }
-
-    function computeMonthsParse () {
-        function cmpLenRev(a, b) {
-            return b.length - a.length;
-        }
-
-        var shortPieces = [], longPieces = [], mixedPieces = [],
-            i, mom;
-        for (i = 0; i < 12; i++) {
-            // make the regex if we don't have it already
-            mom = create_utc__createUTC([2000, i]);
-            shortPieces.push(this.monthsShort(mom, ''));
-            longPieces.push(this.months(mom, ''));
-            mixedPieces.push(this.months(mom, ''));
-            mixedPieces.push(this.monthsShort(mom, ''));
-        }
-        // Sorting makes sure if one month (or abbr) is a prefix of another it
-        // will match the longer piece.
-        shortPieces.sort(cmpLenRev);
-        longPieces.sort(cmpLenRev);
-        mixedPieces.sort(cmpLenRev);
-        for (i = 0; i < 12; i++) {
-            shortPieces[i] = regexEscape(shortPieces[i]);
-            longPieces[i] = regexEscape(longPieces[i]);
-            mixedPieces[i] = regexEscape(mixedPieces[i]);
-        }
-
-        this._monthsRegex = new RegExp('^(' + mixedPieces.join('|') + ')', 'i');
-        this._monthsShortRegex = this._monthsRegex;
-        this._monthsStrictRegex = new RegExp('^(' + longPieces.join('|') + ')$', 'i');
-        this._monthsShortStrictRegex = new RegExp('^(' + shortPieces.join('|') + ')$', 'i');
-    }
-
     function checkOverflow (m) {
         var overflow;
         var a = m._a;
@@ -2418,12 +2312,6 @@ for (var name in colorNames) {
             if (getParsingFlags(m)._overflowDayOfYear && (overflow < YEAR || overflow > DATE)) {
                 overflow = DATE;
             }
-            if (getParsingFlags(m)._overflowWeeks && overflow === -1) {
-                overflow = WEEK;
-            }
-            if (getParsingFlags(m)._overflowWeekday && overflow === -1) {
-                overflow = WEEKDAY;
-            }
 
             getParsingFlags(m).overflow = overflow;
         }
@@ -2432,8 +2320,7 @@ for (var name in colorNames) {
     }
 
     function warn(msg) {
-        if (utils_hooks__hooks.suppressDeprecationWarnings === false &&
-                (typeof console !==  'undefined') && console.warn) {
+        if (utils_hooks__hooks.suppressDeprecationWarnings === false && typeof console !== 'undefined' && console.warn) {
             console.warn('Deprecation warning: ' + msg);
         }
     }
@@ -2443,7 +2330,7 @@ for (var name in colorNames) {
 
         return extend(function () {
             if (firstTime) {
-                warn(msg + '\nArguments: ' + Array.prototype.slice.call(arguments).join(', ') + '\n' + (new Error()).stack);
+                warn(msg + '\n' + (new Error()).stack);
                 firstTime = false;
             }
             return fn.apply(this, arguments);
@@ -2461,39 +2348,22 @@ for (var name in colorNames) {
 
     utils_hooks__hooks.suppressDeprecationWarnings = false;
 
-    // iso 8601 regex
-    // 0000-00-00 0000-W00 or 0000-W00-0 + T + 00 or 00:00 or 00:00:00 or 00:00:00.000 + +00:00 or +0000 or +00)
-    var extendedIsoRegex = /^\s*((?:[+-]\d{6}|\d{4})-(?:\d\d-\d\d|W\d\d-\d|W\d\d|\d\d\d|\d\d))(?:(T| )(\d\d(?::\d\d(?::\d\d(?:[.,]\d+)?)?)?)([\+\-]\d\d(?::?\d\d)?|\s*Z)?)?/;
-    var basicIsoRegex = /^\s*((?:[+-]\d{6}|\d{4})(?:\d\d\d\d|W\d\d\d|W\d\d|\d\d\d|\d\d))(?:(T| )(\d\d(?:\d\d(?:\d\d(?:[.,]\d+)?)?)?)([\+\-]\d\d(?::?\d\d)?|\s*Z)?)?/;
-
-    var tzRegex = /Z|[+-]\d\d(?::?\d\d)?/;
+    var from_string__isoRegex = /^\s*(?:[+-]\d{6}|\d{4})-(?:(\d\d-\d\d)|(W\d\d$)|(W\d\d-\d)|(\d\d\d))((T| )(\d\d(:\d\d(:\d\d(\.\d+)?)?)?)?([\+\-]\d\d(?::?\d\d)?|\s*Z)?)?$/;
 
     var isoDates = [
-        ['YYYYYY-MM-DD', /[+-]\d{6}-\d\d-\d\d/],
-        ['YYYY-MM-DD', /\d{4}-\d\d-\d\d/],
-        ['GGGG-[W]WW-E', /\d{4}-W\d\d-\d/],
-        ['GGGG-[W]WW', /\d{4}-W\d\d/, false],
-        ['YYYY-DDD', /\d{4}-\d{3}/],
-        ['YYYY-MM', /\d{4}-\d\d/, false],
-        ['YYYYYYMMDD', /[+-]\d{10}/],
-        ['YYYYMMDD', /\d{8}/],
-        // YYYYMM is NOT allowed by the standard
-        ['GGGG[W]WWE', /\d{4}W\d{3}/],
-        ['GGGG[W]WW', /\d{4}W\d{2}/, false],
-        ['YYYYDDD', /\d{7}/]
+        ['YYYYYY-MM-DD', /[+-]\d{6}-\d{2}-\d{2}/],
+        ['YYYY-MM-DD', /\d{4}-\d{2}-\d{2}/],
+        ['GGGG-[W]WW-E', /\d{4}-W\d{2}-\d/],
+        ['GGGG-[W]WW', /\d{4}-W\d{2}/],
+        ['YYYY-DDD', /\d{4}-\d{3}/]
     ];
 
     // iso time formats and regexes
     var isoTimes = [
-        ['HH:mm:ss.SSSS', /\d\d:\d\d:\d\d\.\d+/],
-        ['HH:mm:ss,SSSS', /\d\d:\d\d:\d\d,\d+/],
-        ['HH:mm:ss', /\d\d:\d\d:\d\d/],
-        ['HH:mm', /\d\d:\d\d/],
-        ['HHmmss.SSSS', /\d\d\d\d\d\d\.\d+/],
-        ['HHmmss,SSSS', /\d\d\d\d\d\d,\d+/],
-        ['HHmmss', /\d\d\d\d\d\d/],
-        ['HHmm', /\d\d\d\d/],
-        ['HH', /\d\d/]
+        ['HH:mm:ss.SSSS', /(T| )\d\d:\d\d:\d\d\.\d+/],
+        ['HH:mm:ss', /(T| )\d\d:\d\d:\d\d/],
+        ['HH:mm', /(T| )\d\d:\d\d/],
+        ['HH', /(T| )\d\d/]
     ];
 
     var aspNetJsonRegex = /^\/?Date\((\-?\d+)/i;
@@ -2502,49 +2372,26 @@ for (var name in colorNames) {
     function configFromISO(config) {
         var i, l,
             string = config._i,
-            match = extendedIsoRegex.exec(string) || basicIsoRegex.exec(string),
-            allowTime, dateFormat, timeFormat, tzFormat;
+            match = from_string__isoRegex.exec(string);
 
         if (match) {
             getParsingFlags(config).iso = true;
-
             for (i = 0, l = isoDates.length; i < l; i++) {
-                if (isoDates[i][1].exec(match[1])) {
-                    dateFormat = isoDates[i][0];
-                    allowTime = isoDates[i][2] !== false;
+                if (isoDates[i][1].exec(string)) {
+                    config._f = isoDates[i][0];
                     break;
                 }
             }
-            if (dateFormat == null) {
-                config._isValid = false;
-                return;
-            }
-            if (match[3]) {
-                for (i = 0, l = isoTimes.length; i < l; i++) {
-                    if (isoTimes[i][1].exec(match[3])) {
-                        // match[2] should be 'T' or space
-                        timeFormat = (match[2] || ' ') + isoTimes[i][0];
-                        break;
-                    }
-                }
-                if (timeFormat == null) {
-                    config._isValid = false;
-                    return;
+            for (i = 0, l = isoTimes.length; i < l; i++) {
+                if (isoTimes[i][1].exec(string)) {
+                    // match[6] should be 'T' or space
+                    config._f += (match[6] || ' ') + isoTimes[i][0];
+                    break;
                 }
             }
-            if (!allowTime && timeFormat != null) {
-                config._isValid = false;
-                return;
+            if (string.match(matchOffset)) {
+                config._f += 'Z';
             }
-            if (match[4]) {
-                if (tzRegex.exec(match[4])) {
-                    tzFormat = 'Z';
-                } else {
-                    config._isValid = false;
-                    return;
-                }
-            }
-            config._f = dateFormat + (timeFormat || '') + (tzFormat || '');
             configFromStringAndFormat(config);
         } else {
             config._isValid = false;
@@ -2582,8 +2429,8 @@ for (var name in colorNames) {
         //http://stackoverflow.com/questions/181348/instantiating-a-javascript-object-by-calling-prototype-constructor-apply
         var date = new Date(y, m, d, h, M, s, ms);
 
-        //the date constructor remaps years 0-99 to 1900-1999
-        if (y < 100 && y >= 0 && isFinite(date.getFullYear())) {
+        //the date constructor doesn't accept years < 1970
+        if (y < 1970) {
             date.setFullYear(y);
         }
         return date;
@@ -2591,20 +2438,11 @@ for (var name in colorNames) {
 
     function createUTCDate (y) {
         var date = new Date(Date.UTC.apply(null, arguments));
-
-        //the Date.UTC function remaps years 0-99 to 1900-1999
-        if (y < 100 && y >= 0 && isFinite(date.getUTCFullYear())) {
+        if (y < 1970) {
             date.setUTCFullYear(y);
         }
         return date;
     }
-
-    // FORMATTING
-
-    addFormatToken('Y', 0, 0, function () {
-        var y = this.year();
-        return y <= 9999 ? '' + y : '+' + y;
-    });
 
     addFormatToken(0, ['YY', 2], 0, function () {
         return this.year() % 100;
@@ -2633,9 +2471,6 @@ for (var name in colorNames) {
     addParseToken('YY', function (input, array) {
         array[YEAR] = utils_hooks__hooks.parseTwoDigitYear(input);
     });
-    addParseToken('Y', function (input, array) {
-        array[YEAR] = parseInt(input, 10);
-    });
 
     // HELPERS
 
@@ -2661,66 +2496,124 @@ for (var name in colorNames) {
         return isLeapYear(this.year());
     }
 
-    // start-of-first-week - start-of-year
-    function firstWeekOffset(year, dow, doy) {
-        var // first-week day -- which january is always in the first week (4 for iso, 1 for other)
-            fwd = 7 + dow - doy,
-            // first-week day local weekday -- which local weekday is fwd
-            fwdlw = (7 + createUTCDate(year, 0, fwd).getUTCDay() - dow) % 7;
+    addFormatToken('w', ['ww', 2], 'wo', 'week');
+    addFormatToken('W', ['WW', 2], 'Wo', 'isoWeek');
 
-        return -fwdlw + fwd - 1;
+    // ALIASES
+
+    addUnitAlias('week', 'w');
+    addUnitAlias('isoWeek', 'W');
+
+    // PARSING
+
+    addRegexToken('w',  match1to2);
+    addRegexToken('ww', match1to2, match2);
+    addRegexToken('W',  match1to2);
+    addRegexToken('WW', match1to2, match2);
+
+    addWeekParseToken(['w', 'ww', 'W', 'WW'], function (input, week, config, token) {
+        week[token.substr(0, 1)] = toInt(input);
+    });
+
+    // HELPERS
+
+    // firstDayOfWeek       0 = sun, 6 = sat
+    //                      the day of the week that starts the week
+    //                      (usually sunday or monday)
+    // firstDayOfWeekOfYear 0 = sun, 6 = sat
+    //                      the first week is the week that contains the first
+    //                      of this day of the week
+    //                      (eg. ISO weeks use thursday (4))
+    function weekOfYear(mom, firstDayOfWeek, firstDayOfWeekOfYear) {
+        var end = firstDayOfWeekOfYear - firstDayOfWeek,
+            daysToDayOfWeek = firstDayOfWeekOfYear - mom.day(),
+            adjustedMoment;
+
+
+        if (daysToDayOfWeek > end) {
+            daysToDayOfWeek -= 7;
+        }
+
+        if (daysToDayOfWeek < end - 7) {
+            daysToDayOfWeek += 7;
+        }
+
+        adjustedMoment = local__createLocal(mom).add(daysToDayOfWeek, 'd');
+        return {
+            week: Math.ceil(adjustedMoment.dayOfYear() / 7),
+            year: adjustedMoment.year()
+        };
     }
+
+    // LOCALES
+
+    function localeWeek (mom) {
+        return weekOfYear(mom, this._week.dow, this._week.doy).week;
+    }
+
+    var defaultLocaleWeek = {
+        dow : 0, // Sunday is the first day of the week.
+        doy : 6  // The week that contains Jan 1st is the first week of the year.
+    };
+
+    function localeFirstDayOfWeek () {
+        return this._week.dow;
+    }
+
+    function localeFirstDayOfYear () {
+        return this._week.doy;
+    }
+
+    // MOMENTS
+
+    function getSetWeek (input) {
+        var week = this.localeData().week(this);
+        return input == null ? week : this.add((input - week) * 7, 'd');
+    }
+
+    function getSetISOWeek (input) {
+        var week = weekOfYear(this, 1, 4).week;
+        return input == null ? week : this.add((input - week) * 7, 'd');
+    }
+
+    addFormatToken('DDD', ['DDDD', 3], 'DDDo', 'dayOfYear');
+
+    // ALIASES
+
+    addUnitAlias('dayOfYear', 'DDD');
+
+    // PARSING
+
+    addRegexToken('DDD',  match1to3);
+    addRegexToken('DDDD', match3);
+    addParseToken(['DDD', 'DDDD'], function (input, array, config) {
+        config._dayOfYear = toInt(input);
+    });
+
+    // HELPERS
 
     //http://en.wikipedia.org/wiki/ISO_week_date#Calculating_a_date_given_the_year.2C_week_number_and_weekday
-    function dayOfYearFromWeeks(year, week, weekday, dow, doy) {
-        var localWeekday = (7 + weekday - dow) % 7,
-            weekOffset = firstWeekOffset(year, dow, doy),
-            dayOfYear = 1 + 7 * (week - 1) + localWeekday + weekOffset,
-            resYear, resDayOfYear;
-
-        if (dayOfYear <= 0) {
-            resYear = year - 1;
-            resDayOfYear = daysInYear(resYear) + dayOfYear;
-        } else if (dayOfYear > daysInYear(year)) {
-            resYear = year + 1;
-            resDayOfYear = dayOfYear - daysInYear(year);
-        } else {
-            resYear = year;
-            resDayOfYear = dayOfYear;
+    function dayOfYearFromWeeks(year, week, weekday, firstDayOfWeekOfYear, firstDayOfWeek) {
+        var week1Jan = 6 + firstDayOfWeek - firstDayOfWeekOfYear, janX = createUTCDate(year, 0, 1 + week1Jan), d = janX.getUTCDay(), dayOfYear;
+        if (d < firstDayOfWeek) {
+            d += 7;
         }
 
+        weekday = weekday != null ? 1 * weekday : firstDayOfWeek;
+
+        dayOfYear = 1 + week1Jan + 7 * (week - 1) - d + weekday;
+
         return {
-            year: resYear,
-            dayOfYear: resDayOfYear
+            year: dayOfYear > 0 ? year : year - 1,
+            dayOfYear: dayOfYear > 0 ?  dayOfYear : daysInYear(year - 1) + dayOfYear
         };
     }
 
-    function weekOfYear(mom, dow, doy) {
-        var weekOffset = firstWeekOffset(mom.year(), dow, doy),
-            week = Math.floor((mom.dayOfYear() - weekOffset - 1) / 7) + 1,
-            resWeek, resYear;
+    // MOMENTS
 
-        if (week < 1) {
-            resYear = mom.year() - 1;
-            resWeek = week + weeksInYear(resYear, dow, doy);
-        } else if (week > weeksInYear(mom.year(), dow, doy)) {
-            resWeek = week - weeksInYear(mom.year(), dow, doy);
-            resYear = mom.year() + 1;
-        } else {
-            resYear = mom.year();
-            resWeek = week;
-        }
-
-        return {
-            week: resWeek,
-            year: resYear
-        };
-    }
-
-    function weeksInYear(year, dow, doy) {
-        var weekOffset = firstWeekOffset(year, dow, doy),
-            weekOffsetNext = firstWeekOffset(year + 1, dow, doy);
-        return (daysInYear(year) - weekOffset + weekOffsetNext) / 7;
+    function getSetDayOfYear (input) {
+        var dayOfYear = Math.round((this.clone().startOf('day') - this.clone().startOf('year')) / 864e5) + 1;
+        return input == null ? dayOfYear : this.add((input - dayOfYear), 'd');
     }
 
     // Pick the first defined of two or three arguments.
@@ -2735,12 +2628,11 @@ for (var name in colorNames) {
     }
 
     function currentDateArray(config) {
-        // hooks is actually the exported moment object
-        var nowValue = new Date(utils_hooks__hooks.now());
+        var now = new Date();
         if (config._useUTC) {
-            return [nowValue.getUTCFullYear(), nowValue.getUTCMonth(), nowValue.getUTCDate()];
+            return [now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()];
         }
-        return [nowValue.getFullYear(), nowValue.getMonth(), nowValue.getDate()];
+        return [now.getFullYear(), now.getMonth(), now.getDate()];
     }
 
     // convert an array to a date.
@@ -2810,7 +2702,7 @@ for (var name in colorNames) {
     }
 
     function dayOfYearFromWeekInfo(config) {
-        var w, weekYear, week, weekday, dow, doy, temp, weekdayOverflow;
+        var w, weekYear, week, weekday, dow, doy, temp;
 
         w = config._w;
         if (w.GG != null || w.W != null || w.E != null) {
@@ -2824,9 +2716,6 @@ for (var name in colorNames) {
             weekYear = defaults(w.GG, config._a[YEAR], weekOfYear(local__createLocal(), 1, 4).year);
             week = defaults(w.W, 1);
             weekday = defaults(w.E, 1);
-            if (weekday < 1 || weekday > 7) {
-                weekdayOverflow = true;
-            }
         } else {
             dow = config._locale._week.dow;
             doy = config._locale._week.doy;
@@ -2837,32 +2726,23 @@ for (var name in colorNames) {
             if (w.d != null) {
                 // weekday -- low day numbers are considered next week
                 weekday = w.d;
-                if (weekday < 0 || weekday > 6) {
-                    weekdayOverflow = true;
+                if (weekday < dow) {
+                    ++week;
                 }
             } else if (w.e != null) {
                 // local weekday -- counting starts from begining of week
                 weekday = w.e + dow;
-                if (w.e < 0 || w.e > 6) {
-                    weekdayOverflow = true;
-                }
             } else {
                 // default to begining of week
                 weekday = dow;
             }
         }
-        if (week < 1 || week > weeksInYear(weekYear, dow, doy)) {
-            getParsingFlags(config)._overflowWeeks = true;
-        } else if (weekdayOverflow != null) {
-            getParsingFlags(config)._overflowWeekday = true;
-        } else {
-            temp = dayOfYearFromWeeks(weekYear, week, weekday, dow, doy);
-            config._a[YEAR] = temp.year;
-            config._dayOfYear = temp.dayOfYear;
-        }
+        temp = dayOfYearFromWeeks(weekYear, week, weekday, doy, dow);
+
+        config._a[YEAR] = temp.year;
+        config._dayOfYear = temp.dayOfYear;
     }
 
-    // constant that refers to the ISO standard
     utils_hooks__hooks.ISO_8601 = function () {};
 
     // date from string and format string
@@ -2887,8 +2767,6 @@ for (var name in colorNames) {
         for (i = 0; i < tokens.length; i++) {
             token = tokens[i];
             parsedInput = (string.match(getParseRegexForToken(token, config)) || [])[0];
-            // console.log('token', token, 'parsedInput', parsedInput,
-            //         'regex', getParseRegexForToken(token, config));
             if (parsedInput) {
                 skipped = string.substr(0, string.indexOf(parsedInput));
                 if (skipped.length > 0) {
@@ -2957,7 +2835,6 @@ for (var name in colorNames) {
         }
     }
 
-    // date from string and array of format strings
     function configFromStringAndArray(config) {
         var tempConfig,
             bestMoment,
@@ -3008,9 +2885,7 @@ for (var name in colorNames) {
         }
 
         var i = normalizeObjectUnits(config._i);
-        config._a = map([i.year, i.month, i.day || i.date, i.hour, i.minute, i.second, i.millisecond], function (obj) {
-            return obj && parseInt(obj, 10);
-        });
+        config._a = [i.year, i.month, i.day || i.date, i.hour, i.minute, i.second, i.millisecond];
 
         configFromArray(config);
     }
@@ -3052,17 +2927,13 @@ for (var name in colorNames) {
             configFromInput(config);
         }
 
-        if (!valid__isValid(config)) {
-            config._d = null;
-        }
-
         return config;
     }
 
     function configFromInput(config) {
         var input = config._i;
         if (input === undefined) {
-            config._d = new Date(utils_hooks__hooks.now());
+            config._d = new Date();
         } else if (isDate(input)) {
             config._d = new Date(+input);
         } else if (typeof input === 'string') {
@@ -3109,11 +2980,7 @@ for (var name in colorNames) {
          'moment().min is deprecated, use moment.min instead. https://github.com/moment/moment/issues/1548',
          function () {
              var other = local__createLocal.apply(null, arguments);
-             if (this.isValid() && other.isValid()) {
-                 return other < this ? this : other;
-             } else {
-                 return valid__createInvalid();
-             }
+             return other < this ? this : other;
          }
      );
 
@@ -3121,11 +2988,7 @@ for (var name in colorNames) {
         'moment().max is deprecated, use moment.max instead. https://github.com/moment/moment/issues/1548',
         function () {
             var other = local__createLocal.apply(null, arguments);
-            if (this.isValid() && other.isValid()) {
-                return other > this ? this : other;
-            } else {
-                return valid__createInvalid();
-            }
+            return other > this ? this : other;
         }
     );
 
@@ -3163,10 +3026,6 @@ for (var name in colorNames) {
 
         return pickBy('isAfter', args);
     }
-
-    var now = function () {
-        return Date.now ? Date.now() : +(new Date());
-    };
 
     function Duration (duration) {
         var normalizedInput = normalizeObjectUnits(duration),
@@ -3207,8 +3066,6 @@ for (var name in colorNames) {
         return obj instanceof Duration;
     }
 
-    // FORMATTING
-
     function offset (token, separator) {
         addFormatToken(token, 0, 0, function () {
             var offset = this.utcOffset();
@@ -3226,11 +3083,11 @@ for (var name in colorNames) {
 
     // PARSING
 
-    addRegexToken('Z',  matchShortOffset);
-    addRegexToken('ZZ', matchShortOffset);
+    addRegexToken('Z',  matchOffset);
+    addRegexToken('ZZ', matchOffset);
     addParseToken(['Z', 'ZZ'], function (input, array, config) {
         config._useUTC = true;
-        config._tzm = offsetFromString(matchShortOffset, input);
+        config._tzm = offsetFromString(input);
     });
 
     // HELPERS
@@ -3240,8 +3097,8 @@ for (var name in colorNames) {
     // '-1530'  > ['-15', '30']
     var chunkOffset = /([\+\-]|\d\d)/gi;
 
-    function offsetFromString(matcher, string) {
-        var matches = ((string || '').match(matcher) || []);
+    function offsetFromString(string) {
+        var matches = ((string || '').match(matchOffset) || []);
         var chunk   = matches[matches.length - 1] || [];
         var parts   = (chunk + '').match(chunkOffset) || ['-', 0, 0];
         var minutes = +(parts[1] * 60) + toInt(parts[2]);
@@ -3291,13 +3148,11 @@ for (var name in colorNames) {
     function getSetOffset (input, keepLocalTime) {
         var offset = this._offset || 0,
             localAdjust;
-        if (!this.isValid()) {
-            return input != null ? this : NaN;
-        }
         if (input != null) {
             if (typeof input === 'string') {
-                input = offsetFromString(matchShortOffset, input);
-            } else if (Math.abs(input) < 16) {
+                input = offsetFromString(input);
+            }
+            if (Math.abs(input) < 16) {
                 input = input * 60;
             }
             if (!this._isUTC && keepLocalTime) {
@@ -3357,15 +3212,12 @@ for (var name in colorNames) {
         if (this._tzm) {
             this.utcOffset(this._tzm);
         } else if (typeof this._i === 'string') {
-            this.utcOffset(offsetFromString(matchOffset, this._i));
+            this.utcOffset(offsetFromString(this._i));
         }
         return this;
     }
 
     function hasAlignedHourOffset (input) {
-        if (!this.isValid()) {
-            return false;
-        }
         input = input ? local__createLocal(input).utcOffset() : 0;
 
         return (this.utcOffset() - input) % 60 === 0;
@@ -3379,7 +3231,7 @@ for (var name in colorNames) {
     }
 
     function isDaylightSavingTimeShifted () {
-        if (!isUndefined(this._isDSTShifted)) {
+        if (typeof this._isDSTShifted !== 'undefined') {
             return this._isDSTShifted;
         }
 
@@ -3400,23 +3252,22 @@ for (var name in colorNames) {
     }
 
     function isLocal () {
-        return this.isValid() ? !this._isUTC : false;
+        return !this._isUTC;
     }
 
     function isUtcOffset () {
-        return this.isValid() ? this._isUTC : false;
+        return this._isUTC;
     }
 
     function isUtc () {
-        return this.isValid() ? this._isUTC && this._offset === 0 : false;
+        return this._isUTC && this._offset === 0;
     }
 
-    // ASP.NET json date format regex
-    var aspNetRegex = /^(\-)?(?:(\d*)[. ])?(\d+)\:(\d+)(?:\:(\d+)\.?(\d{3})?\d*)?$/;
+    var aspNetRegex = /(\-)?(?:(\d*)\.)?(\d+)\:(\d+)(?:\:(\d+)\.?(\d{3})?)?/;
 
     // from http://docs.closure-library.googlecode.com/git/closure_goog_date_date.js.source.html
     // somewhat more in line with 4.4.3.2 2004 spec, but allows decimal anywhere
-    var isoRegex = /^(-)?P(?:(?:([0-9,.]*)Y)?(?:([0-9,.]*)M)?(?:([0-9,.]*)D)?(?:T(?:([0-9,.]*)H)?(?:([0-9,.]*)M)?(?:([0-9,.]*)S)?)?|([0-9,.]*)W)$/;
+    var create__isoRegex = /^(-)?P(?:(?:([0-9,.]*)Y)?(?:([0-9,.]*)M)?(?:([0-9,.]*)D)?(?:T(?:([0-9,.]*)H)?(?:([0-9,.]*)M)?(?:([0-9,.]*)S)?)?|([0-9,.]*)W)$/;
 
     function create__createDuration (input, key) {
         var duration = input,
@@ -3449,7 +3300,7 @@ for (var name in colorNames) {
                 s  : toInt(match[SECOND])      * sign,
                 ms : toInt(match[MILLISECOND]) * sign
             };
-        } else if (!!(match = isoRegex.exec(input))) {
+        } else if (!!(match = create__isoRegex.exec(input))) {
             sign = (match[1] === '-') ? -1 : 1;
             duration = {
                 y : parseIso(match[2], sign),
@@ -3506,10 +3357,6 @@ for (var name in colorNames) {
 
     function momentsDifference(base, other) {
         var res;
-        if (!(base.isValid() && other.isValid())) {
-            return {milliseconds: 0, months: 0};
-        }
-
         other = cloneWithOffset(other, base);
         if (base.isBefore(other)) {
             res = positiveMomentsDifference(base, other);
@@ -3522,7 +3369,6 @@ for (var name in colorNames) {
         return res;
     }
 
-    // TODO: remove 'name' arg after deprecation is removed
     function createAdder(direction, name) {
         return function (val, period) {
             var dur, tmp;
@@ -3543,12 +3389,6 @@ for (var name in colorNames) {
         var milliseconds = duration._milliseconds,
             days = duration._days,
             months = duration._months;
-
-        if (!mom.isValid()) {
-            // No op
-            return;
-        }
-
         updateOffset = updateOffset == null ? true : updateOffset;
 
         if (milliseconds) {
@@ -3580,10 +3420,7 @@ for (var name in colorNames) {
                 diff < 1 ? 'sameDay' :
                 diff < 2 ? 'nextDay' :
                 diff < 7 ? 'nextWeek' : 'sameElse';
-
-        var output = formats && (isFunction(formats[format]) ? formats[format]() : formats[format]);
-
-        return this.format(output || this.localeData().calendar(format, this, local__createLocal(now)));
+        return this.format(formats && formats[format] || this.localeData().calendar(format, this, local__createLocal(now)));
     }
 
     function clone () {
@@ -3591,28 +3428,26 @@ for (var name in colorNames) {
     }
 
     function isAfter (input, units) {
-        var localInput = isMoment(input) ? input : local__createLocal(input);
-        if (!(this.isValid() && localInput.isValid())) {
-            return false;
-        }
-        units = normalizeUnits(!isUndefined(units) ? units : 'millisecond');
+        var inputMs;
+        units = normalizeUnits(typeof units !== 'undefined' ? units : 'millisecond');
         if (units === 'millisecond') {
-            return +this > +localInput;
+            input = isMoment(input) ? input : local__createLocal(input);
+            return +this > +input;
         } else {
-            return +localInput < +this.clone().startOf(units);
+            inputMs = isMoment(input) ? +input : +local__createLocal(input);
+            return inputMs < +this.clone().startOf(units);
         }
     }
 
     function isBefore (input, units) {
-        var localInput = isMoment(input) ? input : local__createLocal(input);
-        if (!(this.isValid() && localInput.isValid())) {
-            return false;
-        }
-        units = normalizeUnits(!isUndefined(units) ? units : 'millisecond');
+        var inputMs;
+        units = normalizeUnits(typeof units !== 'undefined' ? units : 'millisecond');
         if (units === 'millisecond') {
-            return +this < +localInput;
+            input = isMoment(input) ? input : local__createLocal(input);
+            return +this < +input;
         } else {
-            return +this.clone().endOf(units) < +localInput;
+            inputMs = isMoment(input) ? +input : +local__createLocal(input);
+            return +this.clone().endOf(units) < inputMs;
         }
     }
 
@@ -3621,44 +3456,21 @@ for (var name in colorNames) {
     }
 
     function isSame (input, units) {
-        var localInput = isMoment(input) ? input : local__createLocal(input),
-            inputMs;
-        if (!(this.isValid() && localInput.isValid())) {
-            return false;
-        }
+        var inputMs;
         units = normalizeUnits(units || 'millisecond');
         if (units === 'millisecond') {
-            return +this === +localInput;
+            input = isMoment(input) ? input : local__createLocal(input);
+            return +this === +input;
         } else {
-            inputMs = +localInput;
+            inputMs = +local__createLocal(input);
             return +(this.clone().startOf(units)) <= inputMs && inputMs <= +(this.clone().endOf(units));
         }
     }
 
-    function isSameOrAfter (input, units) {
-        return this.isSame(input, units) || this.isAfter(input,units);
-    }
-
-    function isSameOrBefore (input, units) {
-        return this.isSame(input, units) || this.isBefore(input,units);
-    }
-
     function diff (input, units, asFloat) {
-        var that,
-            zoneDelta,
+        var that = cloneWithOffset(input, this),
+            zoneDelta = (that.utcOffset() - this.utcOffset()) * 6e4,
             delta, output;
-
-        if (!this.isValid()) {
-            return NaN;
-        }
-
-        that = cloneWithOffset(input, this);
-
-        if (!that.isValid()) {
-            return NaN;
-        }
-
-        zoneDelta = (that.utcOffset() - this.utcOffset()) * 6e4;
 
         units = normalizeUnits(units);
 
@@ -3710,7 +3522,7 @@ for (var name in colorNames) {
     function moment_format__toISOString () {
         var m = this.clone().utc();
         if (0 < m.year() && m.year() <= 9999) {
-            if (isFunction(Date.prototype.toISOString)) {
+            if ('function' === typeof Date.prototype.toISOString) {
                 // native implementation is ~50x faster, use it when we can
                 return this.toDate().toISOString();
             } else {
@@ -3727,13 +3539,10 @@ for (var name in colorNames) {
     }
 
     function from (time, withoutSuffix) {
-        if (this.isValid() &&
-                ((isMoment(time) && time.isValid()) ||
-                 local__createLocal(time).isValid())) {
-            return create__createDuration({to: this, from: time}).locale(this.locale()).humanize(!withoutSuffix);
-        } else {
+        if (!this.isValid()) {
             return this.localeData().invalidDate();
         }
+        return create__createDuration({to: this, from: time}).locale(this.locale()).humanize(!withoutSuffix);
     }
 
     function fromNow (withoutSuffix) {
@@ -3741,22 +3550,16 @@ for (var name in colorNames) {
     }
 
     function to (time, withoutSuffix) {
-        if (this.isValid() &&
-                ((isMoment(time) && time.isValid()) ||
-                 local__createLocal(time).isValid())) {
-            return create__createDuration({from: this, to: time}).locale(this.locale()).humanize(!withoutSuffix);
-        } else {
+        if (!this.isValid()) {
             return this.localeData().invalidDate();
         }
+        return create__createDuration({from: this, to: time}).locale(this.locale()).humanize(!withoutSuffix);
     }
 
     function toNow (withoutSuffix) {
         return this.to(local__createLocal(), withoutSuffix);
     }
 
-    // If passed a locale key, it will set the locale for this
-    // instance.  Otherwise, it will return the locale configuration
-    // variables for this instance.
     function locale (key) {
         var newLocaleData;
 
@@ -3867,11 +3670,6 @@ for (var name in colorNames) {
         };
     }
 
-    function toJSON () {
-        // JSON.stringify(new Date(NaN)) === 'null'
-        return this.isValid() ? this.toISOString() : 'null';
-    }
-
     function moment_valid__isValid () {
         return valid__isValid(this);
     }
@@ -3883,18 +3681,6 @@ for (var name in colorNames) {
     function invalidAt () {
         return getParsingFlags(this).overflow;
     }
-
-    function creationData() {
-        return {
-            input: this._i,
-            format: this._f,
-            locale: this._locale,
-            isUTC: this._isUTC,
-            strict: this._strict
-        };
-    }
-
-    // FORMATTING
 
     addFormatToken(0, ['gg', 2], 0, function () {
         return this.weekYear() % 100;
@@ -3937,20 +3723,22 @@ for (var name in colorNames) {
         week[token] = utils_hooks__hooks.parseTwoDigitYear(input);
     });
 
+    // HELPERS
+
+    function weeksInYear(year, dow, doy) {
+        return weekOfYear(local__createLocal([year, 11, 31 + dow - doy]), dow, doy).week;
+    }
+
     // MOMENTS
 
     function getSetWeekYear (input) {
-        return getSetWeekYearHelper.call(this,
-                input,
-                this.week(),
-                this.weekday(),
-                this.localeData()._week.dow,
-                this.localeData()._week.doy);
+        var year = weekOfYear(this, this.localeData()._week.dow, this.localeData()._week.doy).year;
+        return input == null ? year : this.add((input - year), 'y');
     }
 
     function getSetISOWeekYear (input) {
-        return getSetWeekYearHelper.call(this,
-                input, this.isoWeek(), this.isoWeekday(), 1, 4);
+        var year = weekOfYear(this, 1, 4).year;
+        return input == null ? year : this.add((input - year), 'y');
     }
 
     function getISOWeeksInYear () {
@@ -3962,33 +3750,7 @@ for (var name in colorNames) {
         return weeksInYear(this.year(), weekInfo.dow, weekInfo.doy);
     }
 
-    function getSetWeekYearHelper(input, week, weekday, dow, doy) {
-        var weeksTarget;
-        if (input == null) {
-            return weekOfYear(this, dow, doy).year;
-        } else {
-            weeksTarget = weeksInYear(input, dow, doy);
-            if (week > weeksTarget) {
-                week = weeksTarget;
-            }
-            return setWeekAll.call(this, input, week, weekday, dow, doy);
-        }
-    }
-
-    function setWeekAll(weekYear, week, weekday, dow, doy) {
-        var dayOfYearData = dayOfYearFromWeeks(weekYear, week, weekday, dow, doy),
-            date = createUTCDate(dayOfYearData.year, 0, dayOfYearData.dayOfYear);
-
-        // console.log("got", weekYear, week, weekday, "set", date.toISOString());
-        this.year(date.getUTCFullYear());
-        this.month(date.getUTCMonth());
-        this.date(date.getUTCDate());
-        return this;
-    }
-
-    // FORMATTING
-
-    addFormatToken('Q', 0, 'Qo', 'quarter');
+    addFormatToken('Q', 0, 0, 'quarter');
 
     // ALIASES
 
@@ -4006,62 +3768,6 @@ for (var name in colorNames) {
     function getSetQuarter (input) {
         return input == null ? Math.ceil((this.month() + 1) / 3) : this.month((input - 1) * 3 + this.month() % 3);
     }
-
-    // FORMATTING
-
-    addFormatToken('w', ['ww', 2], 'wo', 'week');
-    addFormatToken('W', ['WW', 2], 'Wo', 'isoWeek');
-
-    // ALIASES
-
-    addUnitAlias('week', 'w');
-    addUnitAlias('isoWeek', 'W');
-
-    // PARSING
-
-    addRegexToken('w',  match1to2);
-    addRegexToken('ww', match1to2, match2);
-    addRegexToken('W',  match1to2);
-    addRegexToken('WW', match1to2, match2);
-
-    addWeekParseToken(['w', 'ww', 'W', 'WW'], function (input, week, config, token) {
-        week[token.substr(0, 1)] = toInt(input);
-    });
-
-    // HELPERS
-
-    // LOCALES
-
-    function localeWeek (mom) {
-        return weekOfYear(mom, this._week.dow, this._week.doy).week;
-    }
-
-    var defaultLocaleWeek = {
-        dow : 0, // Sunday is the first day of the week.
-        doy : 6  // The week that contains Jan 1st is the first week of the year.
-    };
-
-    function localeFirstDayOfWeek () {
-        return this._week.dow;
-    }
-
-    function localeFirstDayOfYear () {
-        return this._week.doy;
-    }
-
-    // MOMENTS
-
-    function getSetWeek (input) {
-        var week = this.localeData().week(this);
-        return input == null ? week : this.add((input - week) * 7, 'd');
-    }
-
-    function getSetISOWeek (input) {
-        var week = weekOfYear(this, 1, 4).week;
-        return input == null ? week : this.add((input - week) * 7, 'd');
-    }
-
-    // FORMATTING
 
     addFormatToken('D', ['DD', 2], 'Do', 'date');
 
@@ -4085,8 +3791,6 @@ for (var name in colorNames) {
     // MOMENTS
 
     var getSetDayOfMonth = makeGetSet('Date', true);
-
-    // FORMATTING
 
     addFormatToken('d', 0, 'do', 'day');
 
@@ -4120,8 +3824,8 @@ for (var name in colorNames) {
     addRegexToken('ddd',  matchWord);
     addRegexToken('dddd', matchWord);
 
-    addWeekParseToken(['dd', 'ddd', 'dddd'], function (input, week, config, token) {
-        var weekday = config._locale.weekdaysParse(input, token, config._strict);
+    addWeekParseToken(['dd', 'ddd', 'dddd'], function (input, week, config) {
+        var weekday = config._locale.weekdaysParse(input);
         // if we didn't get a weekday name, mark the date as invalid
         if (weekday != null) {
             week.d = weekday;
@@ -4156,9 +3860,8 @@ for (var name in colorNames) {
     // LOCALES
 
     var defaultLocaleWeekdays = 'Sunday_Monday_Tuesday_Wednesday_Thursday_Friday_Saturday'.split('_');
-    function localeWeekdays (m, format) {
-        return isArray(this._weekdays) ? this._weekdays[m.day()] :
-            this._weekdays[this._weekdays.isFormat.test(format) ? 'format' : 'standalone'][m.day()];
+    function localeWeekdays (m) {
+        return this._weekdays[m.day()];
     }
 
     var defaultLocaleWeekdaysShort = 'Sun_Mon_Tue_Wed_Thu_Fri_Sat'.split('_');
@@ -4171,37 +3874,20 @@ for (var name in colorNames) {
         return this._weekdaysMin[m.day()];
     }
 
-    function localeWeekdaysParse (weekdayName, format, strict) {
+    function localeWeekdaysParse (weekdayName) {
         var i, mom, regex;
 
-        if (!this._weekdaysParse) {
-            this._weekdaysParse = [];
-            this._minWeekdaysParse = [];
-            this._shortWeekdaysParse = [];
-            this._fullWeekdaysParse = [];
-        }
+        this._weekdaysParse = this._weekdaysParse || [];
 
         for (i = 0; i < 7; i++) {
             // make the regex if we don't have it already
-
-            mom = local__createLocal([2000, 1]).day(i);
-            if (strict && !this._fullWeekdaysParse[i]) {
-                this._fullWeekdaysParse[i] = new RegExp('^' + this.weekdays(mom, '').replace('.', '\.?') + '$', 'i');
-                this._shortWeekdaysParse[i] = new RegExp('^' + this.weekdaysShort(mom, '').replace('.', '\.?') + '$', 'i');
-                this._minWeekdaysParse[i] = new RegExp('^' + this.weekdaysMin(mom, '').replace('.', '\.?') + '$', 'i');
-            }
             if (!this._weekdaysParse[i]) {
+                mom = local__createLocal([2000, 1]).day(i);
                 regex = '^' + this.weekdays(mom, '') + '|^' + this.weekdaysShort(mom, '') + '|^' + this.weekdaysMin(mom, '');
                 this._weekdaysParse[i] = new RegExp(regex.replace('.', ''), 'i');
             }
             // test the regex
-            if (strict && format === 'dddd' && this._fullWeekdaysParse[i].test(weekdayName)) {
-                return i;
-            } else if (strict && format === 'ddd' && this._shortWeekdaysParse[i].test(weekdayName)) {
-                return i;
-            } else if (strict && format === 'dd' && this._minWeekdaysParse[i].test(weekdayName)) {
-                return i;
-            } else if (!strict && this._weekdaysParse[i].test(weekdayName)) {
+            if (this._weekdaysParse[i].test(weekdayName)) {
                 return i;
             }
         }
@@ -4210,9 +3896,6 @@ for (var name in colorNames) {
     // MOMENTS
 
     function getSetDayOfWeek (input) {
-        if (!this.isValid()) {
-            return input != null ? this : NaN;
-        }
         var day = this._isUTC ? this._d.getUTCDay() : this._d.getDay();
         if (input != null) {
             input = parseWeekday(input, this.localeData());
@@ -4223,73 +3906,20 @@ for (var name in colorNames) {
     }
 
     function getSetLocaleDayOfWeek (input) {
-        if (!this.isValid()) {
-            return input != null ? this : NaN;
-        }
         var weekday = (this.day() + 7 - this.localeData()._week.dow) % 7;
         return input == null ? weekday : this.add(input - weekday, 'd');
     }
 
     function getSetISODayOfWeek (input) {
-        if (!this.isValid()) {
-            return input != null ? this : NaN;
-        }
         // behaves the same as moment#day except
         // as a getter, returns 7 instead of 0 (1-7 range instead of 0-6)
         // as a setter, sunday should belong to the previous week.
         return input == null ? this.day() || 7 : this.day(this.day() % 7 ? input : input - 7);
     }
 
-    // FORMATTING
-
-    addFormatToken('DDD', ['DDDD', 3], 'DDDo', 'dayOfYear');
-
-    // ALIASES
-
-    addUnitAlias('dayOfYear', 'DDD');
-
-    // PARSING
-
-    addRegexToken('DDD',  match1to3);
-    addRegexToken('DDDD', match3);
-    addParseToken(['DDD', 'DDDD'], function (input, array, config) {
-        config._dayOfYear = toInt(input);
-    });
-
-    // HELPERS
-
-    // MOMENTS
-
-    function getSetDayOfYear (input) {
-        var dayOfYear = Math.round((this.clone().startOf('day') - this.clone().startOf('year')) / 864e5) + 1;
-        return input == null ? dayOfYear : this.add((input - dayOfYear), 'd');
-    }
-
-    // FORMATTING
-
-    function hFormat() {
-        return this.hours() % 12 || 12;
-    }
-
     addFormatToken('H', ['HH', 2], 0, 'hour');
-    addFormatToken('h', ['hh', 2], 0, hFormat);
-
-    addFormatToken('hmm', 0, 0, function () {
-        return '' + hFormat.apply(this) + zeroFill(this.minutes(), 2);
-    });
-
-    addFormatToken('hmmss', 0, 0, function () {
-        return '' + hFormat.apply(this) + zeroFill(this.minutes(), 2) +
-            zeroFill(this.seconds(), 2);
-    });
-
-    addFormatToken('Hmm', 0, 0, function () {
-        return '' + this.hours() + zeroFill(this.minutes(), 2);
-    });
-
-    addFormatToken('Hmmss', 0, 0, function () {
-        return '' + this.hours() + zeroFill(this.minutes(), 2) +
-            zeroFill(this.seconds(), 2);
+    addFormatToken('h', ['hh', 2], 0, function () {
+        return this.hours() % 12 || 12;
     });
 
     function meridiem (token, lowercase) {
@@ -4318,11 +3948,6 @@ for (var name in colorNames) {
     addRegexToken('HH', match1to2, match2);
     addRegexToken('hh', match1to2, match2);
 
-    addRegexToken('hmm', match3to4);
-    addRegexToken('hmmss', match5to6);
-    addRegexToken('Hmm', match3to4);
-    addRegexToken('Hmmss', match5to6);
-
     addParseToken(['H', 'HH'], HOUR);
     addParseToken(['a', 'A'], function (input, array, config) {
         config._isPm = config._locale.isPM(input);
@@ -4331,32 +3956,6 @@ for (var name in colorNames) {
     addParseToken(['h', 'hh'], function (input, array, config) {
         array[HOUR] = toInt(input);
         getParsingFlags(config).bigHour = true;
-    });
-    addParseToken('hmm', function (input, array, config) {
-        var pos = input.length - 2;
-        array[HOUR] = toInt(input.substr(0, pos));
-        array[MINUTE] = toInt(input.substr(pos));
-        getParsingFlags(config).bigHour = true;
-    });
-    addParseToken('hmmss', function (input, array, config) {
-        var pos1 = input.length - 4;
-        var pos2 = input.length - 2;
-        array[HOUR] = toInt(input.substr(0, pos1));
-        array[MINUTE] = toInt(input.substr(pos1, 2));
-        array[SECOND] = toInt(input.substr(pos2));
-        getParsingFlags(config).bigHour = true;
-    });
-    addParseToken('Hmm', function (input, array, config) {
-        var pos = input.length - 2;
-        array[HOUR] = toInt(input.substr(0, pos));
-        array[MINUTE] = toInt(input.substr(pos));
-    });
-    addParseToken('Hmmss', function (input, array, config) {
-        var pos1 = input.length - 4;
-        var pos2 = input.length - 2;
-        array[HOUR] = toInt(input.substr(0, pos1));
-        array[MINUTE] = toInt(input.substr(pos1, 2));
-        array[SECOND] = toInt(input.substr(pos2));
     });
 
     // LOCALES
@@ -4385,8 +3984,6 @@ for (var name in colorNames) {
     // this rule.
     var getSetHour = makeGetSet('Hours', true);
 
-    // FORMATTING
-
     addFormatToken('m', ['mm', 2], 0, 'minute');
 
     // ALIASES
@@ -4403,8 +4000,6 @@ for (var name in colorNames) {
 
     var getSetMinute = makeGetSet('Minutes', false);
 
-    // FORMATTING
-
     addFormatToken('s', ['ss', 2], 0, 'second');
 
     // ALIASES
@@ -4420,8 +4015,6 @@ for (var name in colorNames) {
     // MOMENTS
 
     var getSetSecond = makeGetSet('Seconds', false);
-
-    // FORMATTING
 
     addFormatToken('S', 0, 0, function () {
         return ~~(this.millisecond() / 100);
@@ -4478,8 +4071,6 @@ for (var name in colorNames) {
 
     var getSetMillisecond = makeGetSet('Milliseconds', false);
 
-    // FORMATTING
-
     addFormatToken('z',  0, 0, 'zoneAbbr');
     addFormatToken('zz', 0, 0, 'zoneName');
 
@@ -4495,43 +4086,40 @@ for (var name in colorNames) {
 
     var momentPrototype__proto = Moment.prototype;
 
-    momentPrototype__proto.add               = add_subtract__add;
-    momentPrototype__proto.calendar          = moment_calendar__calendar;
-    momentPrototype__proto.clone             = clone;
-    momentPrototype__proto.diff              = diff;
-    momentPrototype__proto.endOf             = endOf;
-    momentPrototype__proto.format            = format;
-    momentPrototype__proto.from              = from;
-    momentPrototype__proto.fromNow           = fromNow;
-    momentPrototype__proto.to                = to;
-    momentPrototype__proto.toNow             = toNow;
-    momentPrototype__proto.get               = getSet;
-    momentPrototype__proto.invalidAt         = invalidAt;
-    momentPrototype__proto.isAfter           = isAfter;
-    momentPrototype__proto.isBefore          = isBefore;
-    momentPrototype__proto.isBetween         = isBetween;
-    momentPrototype__proto.isSame            = isSame;
-    momentPrototype__proto.isSameOrAfter     = isSameOrAfter;
-    momentPrototype__proto.isSameOrBefore    = isSameOrBefore;
-    momentPrototype__proto.isValid           = moment_valid__isValid;
-    momentPrototype__proto.lang              = lang;
-    momentPrototype__proto.locale            = locale;
-    momentPrototype__proto.localeData        = localeData;
-    momentPrototype__proto.max               = prototypeMax;
-    momentPrototype__proto.min               = prototypeMin;
-    momentPrototype__proto.parsingFlags      = parsingFlags;
-    momentPrototype__proto.set               = getSet;
-    momentPrototype__proto.startOf           = startOf;
-    momentPrototype__proto.subtract          = add_subtract__subtract;
-    momentPrototype__proto.toArray           = toArray;
-    momentPrototype__proto.toObject          = toObject;
-    momentPrototype__proto.toDate            = toDate;
-    momentPrototype__proto.toISOString       = moment_format__toISOString;
-    momentPrototype__proto.toJSON            = toJSON;
-    momentPrototype__proto.toString          = toString;
-    momentPrototype__proto.unix              = unix;
-    momentPrototype__proto.valueOf           = to_type__valueOf;
-    momentPrototype__proto.creationData      = creationData;
+    momentPrototype__proto.add          = add_subtract__add;
+    momentPrototype__proto.calendar     = moment_calendar__calendar;
+    momentPrototype__proto.clone        = clone;
+    momentPrototype__proto.diff         = diff;
+    momentPrototype__proto.endOf        = endOf;
+    momentPrototype__proto.format       = format;
+    momentPrototype__proto.from         = from;
+    momentPrototype__proto.fromNow      = fromNow;
+    momentPrototype__proto.to           = to;
+    momentPrototype__proto.toNow        = toNow;
+    momentPrototype__proto.get          = getSet;
+    momentPrototype__proto.invalidAt    = invalidAt;
+    momentPrototype__proto.isAfter      = isAfter;
+    momentPrototype__proto.isBefore     = isBefore;
+    momentPrototype__proto.isBetween    = isBetween;
+    momentPrototype__proto.isSame       = isSame;
+    momentPrototype__proto.isValid      = moment_valid__isValid;
+    momentPrototype__proto.lang         = lang;
+    momentPrototype__proto.locale       = locale;
+    momentPrototype__proto.localeData   = localeData;
+    momentPrototype__proto.max          = prototypeMax;
+    momentPrototype__proto.min          = prototypeMin;
+    momentPrototype__proto.parsingFlags = parsingFlags;
+    momentPrototype__proto.set          = getSet;
+    momentPrototype__proto.startOf      = startOf;
+    momentPrototype__proto.subtract     = add_subtract__subtract;
+    momentPrototype__proto.toArray      = toArray;
+    momentPrototype__proto.toObject     = toObject;
+    momentPrototype__proto.toDate       = toDate;
+    momentPrototype__proto.toISOString  = moment_format__toISOString;
+    momentPrototype__proto.toJSON       = moment_format__toISOString;
+    momentPrototype__proto.toString     = toString;
+    momentPrototype__proto.unix         = unix;
+    momentPrototype__proto.valueOf      = to_type__valueOf;
 
     // Year
     momentPrototype__proto.year       = getSetYear;
@@ -4617,7 +4205,7 @@ for (var name in colorNames) {
 
     function locale_calendar__calendar (key, mom, now) {
         var output = this._calendar[key];
-        return isFunction(output) ? output.call(mom, now) : output;
+        return typeof output === 'function' ? output.call(mom, now) : output;
     }
 
     var defaultLongDateFormat = {
@@ -4679,21 +4267,21 @@ for (var name in colorNames) {
 
     function relative__relativeTime (number, withoutSuffix, string, isFuture) {
         var output = this._relativeTime[string];
-        return (isFunction(output)) ?
+        return (typeof output === 'function') ?
             output(number, withoutSuffix, string, isFuture) :
             output.replace(/%d/i, number);
     }
 
     function pastFuture (diff, output) {
         var format = this._relativeTime[diff > 0 ? 'future' : 'past'];
-        return isFunction(format) ? format(output) : format.replace(/%s/i, output);
+        return typeof format === 'function' ? format(output) : format.replace(/%s/i, output);
     }
 
     function locale_set__set (config) {
         var prop, i;
         for (i in config) {
             prop = config[i];
-            if (isFunction(prop)) {
+            if (typeof prop === 'function') {
                 this[i] = prop;
             } else {
                 this['_' + i] = prop;
@@ -4723,15 +4311,11 @@ for (var name in colorNames) {
     prototype__proto.set             = locale_set__set;
 
     // Month
-    prototype__proto.months            =        localeMonths;
-    prototype__proto._months           = defaultLocaleMonths;
-    prototype__proto.monthsShort       =        localeMonthsShort;
-    prototype__proto._monthsShort      = defaultLocaleMonthsShort;
-    prototype__proto.monthsParse       =        localeMonthsParse;
-    prototype__proto._monthsRegex      = defaultMonthsRegex;
-    prototype__proto.monthsRegex       = monthsRegex;
-    prototype__proto._monthsShortRegex = defaultMonthsShortRegex;
-    prototype__proto.monthsShortRegex  = monthsShortRegex;
+    prototype__proto.months       =        localeMonths;
+    prototype__proto._months      = defaultLocaleMonths;
+    prototype__proto.monthsShort  =        localeMonthsShort;
+    prototype__proto._monthsShort = defaultLocaleMonthsShort;
+    prototype__proto.monthsParse  =        localeMonthsParse;
 
     // Week
     prototype__proto.week = localeWeek;
@@ -5019,15 +4603,15 @@ for (var name in colorNames) {
         var years    = round(duration.as('y'));
 
         var a = seconds < thresholds.s && ['s', seconds]  ||
-                minutes <= 1           && ['m']           ||
+                minutes === 1          && ['m']           ||
                 minutes < thresholds.m && ['mm', minutes] ||
-                hours   <= 1           && ['h']           ||
+                hours   === 1          && ['h']           ||
                 hours   < thresholds.h && ['hh', hours]   ||
-                days    <= 1           && ['d']           ||
+                days    === 1          && ['d']           ||
                 days    < thresholds.d && ['dd', days]    ||
-                months  <= 1           && ['M']           ||
+                months  === 1          && ['M']           ||
                 months  < thresholds.M && ['MM', months]  ||
-                years   <= 1           && ['y']           || ['yy', years];
+                years   === 1          && ['y']           || ['yy', years];
 
         a[2] = withoutSuffix;
         a[3] = +posNegDuration > 0;
@@ -5148,8 +4732,6 @@ for (var name in colorNames) {
 
     // Side effect imports
 
-    // FORMATTING
-
     addFormatToken('X', 0, 0, 'unix');
     addFormatToken('x', 0, 0, 'valueOf');
 
@@ -5167,14 +4749,13 @@ for (var name in colorNames) {
     // Side effect imports
 
 
-    utils_hooks__hooks.version = '2.11.2';
+    utils_hooks__hooks.version = '2.10.6';
 
     setHookCallback(local__createLocal);
 
     utils_hooks__hooks.fn                    = momentPrototype;
     utils_hooks__hooks.min                   = min;
     utils_hooks__hooks.max                   = max;
-    utils_hooks__hooks.now                   = now;
     utils_hooks__hooks.utc                   = create_utc__createUTC;
     utils_hooks__hooks.unix                  = moment__createUnix;
     utils_hooks__hooks.months                = lists__listMonths;
@@ -5193,7 +4774,6 @@ for (var name in colorNames) {
     utils_hooks__hooks.weekdaysShort         = lists__listWeekdaysShort;
     utils_hooks__hooks.normalizeUnits        = normalizeUnits;
     utils_hooks__hooks.relativeTimeThreshold = duration_humanize__getSetRelativeTimeThreshold;
-    utils_hooks__hooks.prototype             = momentPrototype;
 
     var _moment = utils_hooks__hooks;
 
@@ -5201,6 +4781,17 @@ for (var name in colorNames) {
 
 }));
 },{}],7:[function(require,module,exports){
+/*!
+ * Chart.js
+ * http://chartjs.org/
+ * Version: 2.0.2
+ *
+ * Copyright 2015 Nick Downie
+ * Released under the MIT license
+ * https://github.com/nnnick/Chart.js/blob/master/LICENSE.md
+ */
+
+
 var Chart = require('./core/core.js')();
 
 require('./core/core.helpers')(Chart);
@@ -5210,7 +4801,6 @@ require('./core/core.controller')(Chart);
 require('./core/core.datasetController')(Chart);
 require('./core/core.layoutService')(Chart);
 require('./core/core.legend')(Chart);
-require('./core/core.plugin.js')(Chart);
 require('./core/core.scale')(Chart);
 require('./core/core.scaleService')(Chart);
 require('./core/core.title')(Chart);
@@ -5244,7 +4834,7 @@ require('./charts/Chart.Scatter')(Chart);
 
 window.Chart = module.exports = Chart;
 
-},{"./charts/Chart.Bar":8,"./charts/Chart.Bubble":9,"./charts/Chart.Doughnut":10,"./charts/Chart.Line":11,"./charts/Chart.PolarArea":12,"./charts/Chart.Radar":13,"./charts/Chart.Scatter":14,"./controllers/controller.bar":15,"./controllers/controller.bubble":16,"./controllers/controller.doughnut":17,"./controllers/controller.line":18,"./controllers/controller.polarArea":19,"./controllers/controller.radar":20,"./core/core.animation":21,"./core/core.controller":22,"./core/core.datasetController":23,"./core/core.element":24,"./core/core.helpers":25,"./core/core.js":26,"./core/core.layoutService":27,"./core/core.legend":28,"./core/core.plugin.js":29,"./core/core.scale":30,"./core/core.scaleService":31,"./core/core.title":32,"./core/core.tooltip":33,"./elements/element.arc":34,"./elements/element.line":35,"./elements/element.point":36,"./elements/element.rectangle":37,"./scales/scale.category":38,"./scales/scale.linear":39,"./scales/scale.logarithmic":40,"./scales/scale.radialLinear":41,"./scales/scale.time":42}],8:[function(require,module,exports){
+},{"./charts/Chart.Bar":8,"./charts/Chart.Bubble":9,"./charts/Chart.Doughnut":10,"./charts/Chart.Line":11,"./charts/Chart.PolarArea":12,"./charts/Chart.Radar":13,"./charts/Chart.Scatter":14,"./controllers/controller.bar":15,"./controllers/controller.bubble":16,"./controllers/controller.doughnut":17,"./controllers/controller.line":18,"./controllers/controller.polarArea":19,"./controllers/controller.radar":20,"./core/core.animation":21,"./core/core.controller":22,"./core/core.datasetController":23,"./core/core.element":24,"./core/core.helpers":25,"./core/core.js":26,"./core/core.layoutService":27,"./core/core.legend":28,"./core/core.scale":29,"./core/core.scaleService":30,"./core/core.title":31,"./core/core.tooltip":32,"./elements/element.arc":33,"./elements/element.line":34,"./elements/element.point":35,"./elements/element.rectangle":36,"./scales/scale.category":37,"./scales/scale.linear":38,"./scales/scale.logarithmic":39,"./scales/scale.radialLinear":40,"./scales/scale.time":41}],8:[function(require,module,exports){
 "use strict";
 
 module.exports = function(Chart) {
@@ -5558,12 +5148,6 @@ module.exports = function(Chart) {
 			var categoryWidth = tickWidth * xScale.options.categoryPercentage;
 			var categorySpacing = (tickWidth - (tickWidth * xScale.options.categoryPercentage)) / 2;
 			var fullBarWidth = categoryWidth / datasetCount;
-			
-			if (xScale.ticks.length !== this.chart.data.labels.length) {
-			    var perc = xScale.ticks.length / this.chart.data.labels.length;
-			    fullBarWidth = fullBarWidth * perc;
-			}
-			
 			var barWidth = fullBarWidth * xScale.options.barPercentage;
 			var barSpacing = fullBarWidth - (fullBarWidth * xScale.options.barPercentage);
 
@@ -5878,11 +5462,11 @@ module.exports = function(Chart) {
 
 			if (chart.data.datasets.length) {
 				for (var i = 0; i < chart.data.datasets[0].data.length; ++i) {
-					text.push('<li><span style="background-color:' + chart.data.datasets[0].backgroundColor[i] + '"></span>');
+					text.push('<li><span style="background-color:' + chart.data.datasets[0].backgroundColor[i] + '">');
 					if (chart.data.labels[i]) {
 						text.push(chart.data.labels[i]);
 					}
-					text.push('</li>');
+					text.push('</span></li>');
 				}
 			}
 
@@ -5893,25 +5477,16 @@ module.exports = function(Chart) {
 			labels: {
 				generateLabels: function(data) {
 					if (data.labels.length && data.datasets.length) {
-
 						return data.labels.map(function(label, i) {
-							var ds = data.datasets[0];
-							var arc = ds.metaData[i];
-							var fill = arc.custom && arc.custom.backgroundColor ? arc.custom.backgroundColor : helpers.getValueAtIndexOrDefault(ds.backgroundColor, i, this.chart.options.elements.arc.backgroundColor);
-							var stroke = arc.custom && arc.custom.borderColor ? arc.custom.borderColor : helpers.getValueAtIndexOrDefault(ds.borderColor, i, this.chart.options.elements.arc.borderColor);
-							var bw = arc.custom && arc.custom.borderWidth ? arc.custom.borderWidth : helpers.getValueAtIndexOrDefault(ds.borderWidth, i, this.chart.options.elements.arc.borderWidth);
-
 							return {
 								text: label,
-								fillStyle: fill,
-								strokeStyle: stroke,
-								lineWidth: bw,
+								fillStyle: data.datasets[0].backgroundColor[i],
 								hidden: isNaN(data.datasets[0].data[i]),
 
 								// Extra data used for toggling the correct item
 								index: i
 							};
-						}, this);
+						});
 					} else {
 						return [];
 					}
@@ -6022,7 +5597,7 @@ module.exports = function(Chart) {
 			var offset = {x: 0, y: 0};
 
 			// If the chart's circumference isn't a full circle, calculate minSize as a ratio of the width/height of the arc
-			if (this.chart.options.circumference < Math.PI * 2.0) {
+			if (this.chart.options.circumference && this.chart.options.circumference < Math.PI * 2.0) {
 				var startAngle = this.chart.options.rotation % (Math.PI * 2.0);
 				startAngle += Math.PI * 2.0 * (startAngle >= Math.PI ? -1 : startAngle < -Math.PI ? 1 : 0);
 				var endAngle = startAngle + this.chart.options.circumference;
@@ -6063,9 +5638,9 @@ module.exports = function(Chart) {
 		updateElement: function(arc, index, reset) {
 			var centerX = (this.chart.chartArea.left + this.chart.chartArea.right) / 2;
 			var centerY = (this.chart.chartArea.top + this.chart.chartArea.bottom) / 2;
-			var startAngle = this.chart.options.rotation; // non reset case handled later
-			var endAngle = this.chart.options.rotation; // non reset case handled later
-			var circumference = reset && this.chart.options.animation.animateRotate ? 0 : this.calculateCircumference(this.getDataset().data[index]) * (this.chart.options.circumference / (2.0 * Math.PI));
+			var startAngle = this.chart.options.rotation || (Math.PI * -0.5); // non reset case handled later
+			var endAngle = this.chart.options.rotation || (Math.PI * -0.5); // non reset case handled later
+			var circumference = reset && this.chart.options.animation.animateRotate ? 0 : this.calculateCircumference(this.getDataset().data[index]) * ((this.chart.options.circumference || (2.0 * Math.PI)) / (2.0 * Math.PI));
 			var innerRadius = reset && this.chart.options.animation.animateScale ? 0 : this.innerRadius;
 			var outerRadius = reset && this.chart.options.animation.animateScale ? 0 : this.outerRadius;
 
@@ -6098,7 +5673,7 @@ module.exports = function(Chart) {
 			if (!reset) {
 
 				if (index === 0) {
-					arc._model.startAngle = this.chart.options.rotation;
+					arc._model.startAngle = this.chart.options.rotation || (Math.PI * -0.5);
 				} else {
 					arc._model.startAngle = this.getDataset().metaData[index - 1]._model.endAngle;
 				}
@@ -6136,14 +5711,13 @@ module.exports = function(Chart) {
 
 		calculateCircumference: function(value) {
 			if (this.getDataset().total > 0 && !isNaN(value)) {
-				return (Math.PI * 2.0) * (value / this.getDataset().total);
+				return (Math.PI * 1.999999) * (value / this.getDataset().total);
 			} else {
 				return 0;
 			}
 		}
 	});
 };
-
 },{}],18:[function(require,module,exports){
 "use strict";
 
@@ -6233,16 +5807,9 @@ module.exports = function(Chart) {
 				// Data
 				line._children = points;
 				// Model
-
-				// Compatibility: If the properties are defined with only the old name, use those values
-				if ((this.getDataset().tension !== undefined) && (this.getDataset().lineTension === undefined))
-				{
-					this.getDataset().lineTension = this.getDataset().tension;
-				}
-
 				line._model = {
 					// Appearance
-					tension: line.custom && line.custom.tension ? line.custom.tension : helpers.getValueOrDefault(this.getDataset().lineTension, this.chart.options.elements.line.tension),
+					tension: line.custom && line.custom.tension ? line.custom.tension : helpers.getValueOrDefault(this.getDataset().tension, this.chart.options.elements.line.tension),
 					backgroundColor: line.custom && line.custom.backgroundColor ? line.custom.backgroundColor : (this.getDataset().backgroundColor || this.chart.options.elements.line.backgroundColor),
 					borderWidth: line.custom && line.custom.borderWidth ? line.custom.borderWidth : (this.getDataset().borderWidth || this.chart.options.elements.line.borderWidth),
 					borderColor: line.custom && line.custom.borderColor ? line.custom.borderColor : (this.getDataset().borderColor || this.chart.options.elements.line.borderColor),
@@ -6332,28 +5899,18 @@ module.exports = function(Chart) {
 			point._index = index;
 
 			// Desired view properties
-
-			// Compatibility: If the properties are defined with only the old name, use those values
-			if ((this.getDataset().radius !== undefined) && (this.getDataset().pointRadius === undefined))
-			{
-				this.getDataset().pointRadius = this.getDataset().radius;
-			}
-			if ((this.getDataset().hitRadius !== undefined) && (this.getDataset().pointHitRadius === undefined))
-			{
-				this.getDataset().pointHitRadius = this.getDataset().hitRadius;
-			}
-
 			point._model = {
 				x: xScale.getPixelForValue(this.getDataset().data[index], index, this.index, this.chart.isCombo),
 				y: reset ? scaleBase : this.calculatePointY(this.getDataset().data[index], index, this.index, this.chart.isCombo),
 				// Appearance
-				radius: point.custom && point.custom.radius ? point.custom.radius : helpers.getValueAtIndexOrDefault(this.getDataset().pointRadius, index, this.chart.options.elements.point.radius),
+				tension: point.custom && point.custom.tension ? point.custom.tension : helpers.getValueOrDefault(this.getDataset().tension, this.chart.options.elements.line.tension),
+				radius: point.custom && point.custom.radius ? point.custom.radius : helpers.getValueAtIndexOrDefault(this.getDataset().radius, index, this.chart.options.elements.point.radius),
 				pointStyle: point.custom && point.custom.pointStyle ? point.custom.pointStyle : helpers.getValueAtIndexOrDefault(this.getDataset().pointStyle, index, this.chart.options.elements.point.pointStyle),
 				backgroundColor: this.getPointBackgroundColor(point, index),
 				borderColor: this.getPointBorderColor(point, index),
 				borderWidth: this.getPointBorderWidth(point, index),
 				// Tooltip
-				hitRadius: point.custom && point.custom.hitRadius ? point.custom.hitRadius : helpers.getValueAtIndexOrDefault(this.getDataset().pointHitRadius, index, this.chart.options.elements.point.hitRadius)
+				hitRadius: point.custom && point.custom.hitRadius ? point.custom.hitRadius : helpers.getValueAtIndexOrDefault(this.getDataset().hitRadius, index, this.chart.options.elements.point.hitRadius)
 			};
 
 			point._model.skip = point.custom && point.custom.skip ? point.custom.skip : (isNaN(point._model.x) || isNaN(point._model.y));
@@ -6397,7 +5954,7 @@ module.exports = function(Chart) {
 					helpers.previousItem(this.getDataset().metaData, index)._model,
 					point._model,
 					helpers.nextItem(this.getDataset().metaData, index)._model,
-					this.getDataset().metaDataset._model.tension
+					point._model.tension
 				);
 
 				// Prevent the bezier going outside of the bounds of the graph
@@ -6445,13 +6002,7 @@ module.exports = function(Chart) {
 			var dataset = this.chart.data.datasets[point._datasetIndex];
 			var index = point._index;
 
-			// Compatibility: If the properties are defined with only the old name, use those values
-			if ((this.getDataset().radius !== undefined) && (this.getDataset().pointRadius === undefined))
-			{
-				this.getDataset().pointRadius = this.getDataset().radius;
-			}
-
-			point._model.radius = point.custom && point.custom.radius ? point.custom.radius : helpers.getValueAtIndexOrDefault(this.getDataset().pointRadius, index, this.chart.options.elements.point.radius);
+			point._model.radius = point.custom && point.custom.radius ? point.custom.radius : helpers.getValueAtIndexOrDefault(this.getDataset().radius, index, this.chart.options.elements.point.radius);
 			point._model.backgroundColor = this.getPointBackgroundColor(point, index);
 			point._model.borderColor = this.getPointBorderColor(point, index);
 			point._model.borderWidth = this.getPointBorderWidth(point, index);
@@ -6500,23 +6051,15 @@ module.exports = function(Chart) {
 				generateLabels: function(data) {
 					if (data.labels.length && data.datasets.length) {
 						return data.labels.map(function(label, i) {
-							var ds = data.datasets[0];
-							var arc = ds.metaData[i];
-							var fill = arc.custom && arc.custom.backgroundColor ? arc.custom.backgroundColor : helpers.getValueAtIndexOrDefault(ds.backgroundColor, i, this.chart.options.elements.arc.backgroundColor);
-							var stroke = arc.custom && arc.custom.borderColor ? arc.custom.borderColor : helpers.getValueAtIndexOrDefault(ds.borderColor, i, this.chart.options.elements.arc.borderColor);
-							var bw = arc.custom && arc.custom.borderWidth ? arc.custom.borderWidth : helpers.getValueAtIndexOrDefault(ds.borderWidth, i, this.chart.options.elements.arc.borderWidth);
-
 							return {
 								text: label,
-								fillStyle: fill,
-								strokeStyle: stroke,
-								lineWidth: bw,
+								fillStyle: data.datasets[0].backgroundColor[i],
 								hidden: isNaN(data.datasets[0].data[i]),
 
 								// Extra data used for toggling the correct item
 								index: i
 							};
-						}, this);
+						});
 					} else {
 						return [];
 					}
@@ -7086,8 +6629,9 @@ module.exports = function(Chart) {
 	helpers.extend(Chart.Controller.prototype, {
 
 		initialize: function initialize() {
-			// Before init plugin notification
-			Chart.pluginService.notifyPlugins('beforeInit', [this]);
+
+			// TODO
+			// If BeforeInit(this) doesn't return false, proceed
 
 			this.bindEvents();
 
@@ -7102,8 +6646,8 @@ module.exports = function(Chart) {
 			this.initToolTip();
 			this.update();
 
-			// After init plugin notification
-			Chart.pluginService.notifyPlugins('afterInit', [this]);
+			// TODO
+			// If AfterInit(this) doesn't return false, proceed
 
 			return this;
 		},
@@ -7285,18 +6829,11 @@ module.exports = function(Chart) {
 		},
 
 		update: function update(animationDuration, lazy) {
-			Chart.pluginService.notifyPlugins('beforeUpdate', [this]);
-
 			// In case the entire data object changed
 			this.tooltip._data = this.data;
 
 			// Make sure dataset controllers are updated and new controllers are reset
 			var newControllers = this.buildOrUpdateControllers();
-
-			// Make sure all dataset controllers have correct meta data counts
-			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
-				dataset.controller.buildOrUpdateElements();
-			});
 
 			Chart.layoutService.update(this, this.chart.width, this.chart.height);
 
@@ -7305,17 +6842,19 @@ module.exports = function(Chart) {
 				controller.reset();
 			});
 
+			// Make sure all dataset controllers have correct meta data counts
+			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
+				dataset.controller.buildOrUpdateElements();
+			});
+
 			// This will loop through any data and do the appropriate element update for the type
 			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
 				dataset.controller.update();
 			});
 			this.render(animationDuration, lazy);
-
-			Chart.pluginService.notifyPlugins('afterUpdate', [this]);
 		},
 
 		render: function render(duration, lazy) {
-			Chart.pluginService.notifyPlugins('beforeRender', [this]);
 
 			if (this.options.animation && ((typeof duration !== 'undefined' && duration !== 0) || (typeof duration === 'undefined' && this.options.animation.duration !== 0))) {
 				var animation = new Chart.Animation();
@@ -7349,8 +6888,6 @@ module.exports = function(Chart) {
 			var easingDecimal = ease || 1;
 			this.clear();
 
-			Chart.pluginService.notifyPlugins('beforeDraw', [this, easingDecimal]);
-
 			// Draw all the scales
 			helpers.each(this.boxes, function(box) {
 				box.draw(this.chartArea);
@@ -7377,8 +6914,6 @@ module.exports = function(Chart) {
 
 			// Finally draw the tooltip
 			this.tooltip.transition(easingDecimal).draw();
-
-			Chart.pluginService.notifyPlugins('afterDraw', [this, easingDecimal]);
 		},
 
 		// Get the single element that was clicked on
@@ -7465,8 +7000,6 @@ module.exports = function(Chart) {
 			// Reset to the old style since it may have been changed by the device pixel ratio changes
 			canvas.style.width = this.chart.originalCanvasStyleWidth;
 			canvas.style.height = this.chart.originalCanvasStyleHeight;
-
-			Chart.pluginService.notifyPlugins('destroy', [this]);
 
 			delete Chart.instances[this.id];
 		},
@@ -8745,7 +8278,7 @@ module.exports = function(Chart) {
 
 };
 
-},{"chartjs-color":1}],26:[function(require,module,exports){
+},{"chartjs-color":5}],26:[function(require,module,exports){
 "use strict";
 
 module.exports = function() {
@@ -8906,6 +8439,10 @@ module.exports = function(Chart) {
 			var chartAreaBoxes = helpers.where(chartInstance.boxes, function(box) {
 				return box.options.position === "chartArea";
 			});
+
+			function fullWidthSorter(a, b) {
+
+			}
 
 			// Ensure that full width boxes are at the very top / bottom
 			topBoxes.sort(function(a, b) {
@@ -9103,15 +8640,11 @@ module.exports = function(Chart) {
 				});
 
 				helpers.each(topBoxes, function(box) {
-					if (!box.options.fullWidth) {
-						box.width = newMaxChartAreaWidth;
-					}
+					box.width = newMaxChartAreaWidth;
 				});
 
 				helpers.each(bottomBoxes, function(box) {
-					if (!box.options.fullWidth) {
-						box.width = newMaxChartAreaWidth;
-					}
+					box.width = newMaxChartAreaWidth;
 				});
 
 				maxChartAreaHeight = newMaxChartAreaHeight;
@@ -9278,6 +8811,7 @@ module.exports = function(Chart) {
 			this.afterUpdate();
 
 			return this.minSize;
+
 		},
 		afterUpdate: helpers.noop,
 
@@ -9512,66 +9046,6 @@ module.exports = function(Chart) {
 "use strict";
 
 module.exports = function(Chart) {
-	var helpers = Chart.helpers;
-
-	// Plugins are stored here
-	Chart.plugins = [];
-	Chart.pluginService = {
-		// Register a new plugin
-		register: function(plugin) {
-			if (Chart.plugins.indexOf(plugin) === -1) {
-				Chart.plugins.push(plugin);
-			}
-		},
-
-		// Remove a registered plugin
-		remove: function(plugin) {
-			var idx = Chart.plugins.indexOf(plugin);
-			if (idx !== -1) {
-				Chart.plugins.splice(idx, 1);
-			}
-		},
-
-		// Iterate over all plugins
-		notifyPlugins: function(method, args, scope) {
-			helpers.each(Chart.plugins, function(plugin) {
-				if (plugin[method] && typeof plugin[method] === 'function') {
-					plugin[method].apply(scope, args);
-				}
-			}, scope);
-		}
-	};
-
-	Chart.PluginBase = Chart.Element.extend({
-		// Plugin methods. All functions are passed the chart instance
-
-		// Called at start of chart init
-		beforeInit: helpers.noop,
-
-		// Called at end of chart init
-		afterInit: helpers.noop,
-
-		// Called at start of update
-		beforeUpdate: helpers.noop,
-
-		// Called at end of update
-		afterUpdate: helpers.noop,
-
-		// Called at start of draw
-		beforeDraw: helpers.noop,
-
-		// Called at end of draw
-		afterDraw: helpers.noop,
-
-		// Called during destroy
-		destroy: helpers.noop,
-	});
-};
-
-},{}],30:[function(require,module,exports){
-"use strict";
-
-module.exports = function(Chart) {
 
 	var helpers = Chart.helpers;
 
@@ -9585,7 +9059,6 @@ module.exports = function(Chart) {
 			lineWidth: 1,
 			drawOnChartArea: true,
 			drawTicks: true,
-			tickMarkLength: 10,
 			zeroLineWidth: 1,
 			zeroLineColor: "rgba(0,0,0,0.25)",
 			offsetGridLines: false
@@ -9843,12 +9316,12 @@ module.exports = function(Chart) {
 				// subtract the margins to line up with the chartArea if we are a full width scale
 				this.minSize.width = this.isFullWidth() ? this.maxWidth - this.margins.left - this.margins.right : this.maxWidth;
 			} else {
-				this.minSize.width = this.options.gridLines.tickMarkLength;
+				this.minSize.width = this.options.gridLines.display && this.options.display ? 10 : 0;
 			}
 
 			// height
 			if (this.isHorizontal()) {
-				this.minSize.height = this.options.gridLines.tickMarkLength;
+				this.minSize.height = this.options.gridLines.display && this.options.display ? 10 : 0;
 			} else {
 				this.minSize.height = this.maxHeight; // fill all the height
 			}
@@ -10023,7 +9496,6 @@ module.exports = function(Chart) {
 				var tickFontStyle = helpers.getValueOrDefault(this.options.ticks.fontStyle, Chart.defaults.global.defaultFontStyle);
 				var tickFontFamily = helpers.getValueOrDefault(this.options.ticks.fontFamily, Chart.defaults.global.defaultFontFamily);
 				var tickLabelFont = helpers.fontString(tickFontSize, tickFontStyle, tickFontFamily);
-				var tl = this.options.gridLines.tickMarkLength;
 
 				var scaleLabelFontColor = helpers.getValueOrDefault(this.options.scaleLabel.fontColor, Chart.defaults.global.defaultFontColor);
 				var scaleLabelFontSize = helpers.getValueOrDefault(this.options.scaleLabel.fontSize, Chart.defaults.global.defaultFontSize);
@@ -10041,8 +9513,8 @@ module.exports = function(Chart) {
 
 				if (this.isHorizontal()) {
 					setContextLineSettings = true;
-					var yTickStart = this.options.position === "bottom" ? this.top : this.bottom - tl;
-					var yTickEnd = this.options.position === "bottom" ? this.top + tl : this.bottom;
+					var yTickStart = this.options.position === "bottom" ? this.top : this.bottom - 10;
+					var yTickEnd = this.options.position === "bottom" ? this.top + 10 : this.bottom;
 					skipRatio = false;
 
 					if (((longestRotatedLabel / 2) + this.options.ticks.autoSkipPadding) * this.ticks.length > (this.width - (this.paddingLeft + this.paddingRight))) {
@@ -10110,7 +9582,7 @@ module.exports = function(Chart) {
 
 						if (this.options.ticks.display) {
 							this.ctx.save();
-							this.ctx.translate(xLabelValue, (isRotated) ? this.top + 12 : this.options.position === "top" ? this.bottom - tl : this.top + tl);
+							this.ctx.translate(xLabelValue, (isRotated) ? this.top + 12 : this.options.position === "top" ? this.bottom - 10 : this.top + 10);
 							this.ctx.rotate(helpers.toRadians(this.labelRotation) * -1);
 							this.ctx.font = tickLabelFont;
 							this.ctx.textAlign = (isRotated) ? "right" : "center";
@@ -10257,7 +9729,7 @@ module.exports = function(Chart) {
 	});
 };
 
-},{}],31:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 "use strict";
 
 module.exports = function(Chart) {
@@ -10292,7 +9764,7 @@ module.exports = function(Chart) {
 		}
 	};
 };
-},{}],32:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 "use strict";
 
 module.exports = function(Chart) {
@@ -10486,7 +9958,7 @@ module.exports = function(Chart) {
 		}
 	});
 };
-},{}],33:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 "use strict";
 
 module.exports = function(Chart) {
@@ -10739,7 +10211,7 @@ module.exports = function(Chart) {
 								datasetIndex: datasetIndex
 							});
 						}
-					}, null);
+					}, null, element._yScale.options.stacked);
 
 					helpers.each(this._active, function(active) {
 						if (active) {
@@ -10748,9 +10220,10 @@ module.exports = function(Chart) {
 								backgroundColor: active._view.backgroundColor
 							});
 						}
-					}, null);
+					}, null, element._yScale.options.stacked);
 
 					tooltipPosition = this.getAveragePosition(this._active);
+					tooltipPosition.y = this._active[0]._yScale.getPixelForDecimal(0.5);
 				}
 
 				// Build the Text Lines
@@ -11102,7 +10575,7 @@ module.exports = function(Chart) {
 	});
 };
 
-},{}],34:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 "use strict";
 
 module.exports = function(Chart, moment) {
@@ -11194,7 +10667,7 @@ module.exports = function(Chart, moment) {
   });
 };
 
-},{}],35:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 "use strict";
 
 module.exports = function(Chart) {
@@ -11356,7 +10829,7 @@ module.exports = function(Chart) {
 		}
 	});
 };
-},{}],36:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 "use strict";
 
 module.exports = function(Chart) {
@@ -11510,7 +10983,7 @@ module.exports = function(Chart) {
 		}
 	});
 };
-},{}],37:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 "use strict";
 
 module.exports = function(Chart) {
@@ -11617,7 +11090,7 @@ module.exports = function(Chart) {
 	});
 
 };
-},{}],38:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 "use strict";
 
 module.exports = function(Chart) {
@@ -11629,31 +11102,25 @@ module.exports = function(Chart) {
 	};
 
 	var DatasetScale = Chart.Scale.extend({
-		// Implement this so that 
-		determineDataLimits: function() {
-			this.minIndex = 0;
-			this.maxIndex = this.chart.data.labels.length;
+		buildTicks: function(index) {
+			this.startIndex = 0;
+			this.endIndex = this.chart.data.labels.length;
 			var findIndex;
 
 			if (this.options.ticks.min !== undefined) {
 				// user specified min value
 				findIndex = helpers.indexOf(this.chart.data.labels, this.options.ticks.min);
-				this.minIndex = findIndex !== -1 ? findIndex : this.minIndex;
+				this.startIndex = findIndex !== -1 ? findIndex : this.startIndex;
 			}
 
 			if (this.options.ticks.max !== undefined) {
 				// user specified max value
 				findIndex = helpers.indexOf(this.chart.data.labels, this.options.ticks.max);
-				this.maxIndex = findIndex !== -1 ? findIndex : this.maxIndex;
+				this.endIndex = findIndex !== -1 ? findIndex : this.endIndex;
 			}
 
-			this.min = this.chart.data.labels[this.minIndex];
-			this.max = this.chart.data.labels[this.maxIndex];
-		},
-
-		buildTicks: function(index) {
 			// If we are viewing some subset of labels, slice the original array
-			this.ticks = (this.minIndex === 0 && this.maxIndex === this.chart.data.labels.length) ? this.chart.data.labels : this.chart.data.labels.slice(this.minIndex, this.maxIndex + 1);
+			this.ticks = (this.startIndex === 0 && this.endIndex === this.chart.data.labels.length) ? this.chart.data.labels : this.chart.data.labels.slice(this.startIndex, this.endIndex + 1);
 		},
 
 		getLabelForIndex: function(index, datasetIndex) {
@@ -11668,7 +11135,7 @@ module.exports = function(Chart) {
 			if (this.isHorizontal()) {
 				var innerWidth = this.width - (this.paddingLeft + this.paddingRight);
 				var valueWidth = innerWidth / offsetAmt;
-				var widthOffset = (valueWidth * (index - this.minIndex)) + this.paddingLeft;
+				var widthOffset = (valueWidth * (index - this.startIndex)) + this.paddingLeft;
 
 				if (this.options.gridLines.offsetGridLines && includeOffset) {
 					widthOffset += (valueWidth / 2);
@@ -11678,7 +11145,7 @@ module.exports = function(Chart) {
 			} else {
 				var innerHeight = this.height - (this.paddingTop + this.paddingBottom);
 				var valueHeight = innerHeight / offsetAmt;
-				var heightOffset = (valueHeight * (index - this.minIndex)) + this.paddingTop;
+				var heightOffset = (valueHeight * (index - this.startIndex)) + this.paddingTop;
 
 				if (this.options.gridLines.offsetGridLines && includeOffset) {
 					heightOffset += (valueHeight / 2);
@@ -11688,14 +11155,14 @@ module.exports = function(Chart) {
 			}
 		},
 		getPixelForTick: function(index, includeOffset) {
-			return this.getPixelForValue(this.ticks[index], index + this.minIndex, null, includeOffset);
+			return this.getPixelForValue(this.ticks[index], index + this.startIndex, null, includeOffset);
 		}
 	});
 
 	Chart.scaleService.registerScaleType("category", DatasetScale, defaultConfig);
 
 };
-},{}],39:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 "use strict";
 
 module.exports = function(Chart) {
@@ -11706,8 +11173,7 @@ module.exports = function(Chart) {
 		position: "left",
 		ticks: {
 			callback: function(tickValue, index, ticks) {
-				// If we have lots of ticks, don't use the ones
-				var delta = ticks.length > 3 ? ticks[2] - ticks[1] : ticks[1] - ticks[0];
+				var delta = ticks[1] - ticks[0];
 
 				// If we have a number like 2.5 as the delta, figure out how many decimal places we need
 				if (Math.abs(delta) > 1) {
@@ -11955,7 +11421,7 @@ module.exports = function(Chart) {
 	Chart.scaleService.registerScaleType("linear", LinearScale, defaultConfig);
 
 };
-},{}],40:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 "use strict";
 
 module.exports = function(Chart) {
@@ -12151,7 +11617,7 @@ module.exports = function(Chart) {
 	Chart.scaleService.registerScaleType("logarithmic", LogarithmicScale, defaultConfig);
 
 };
-},{}],41:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 "use strict";
 
 module.exports = function(Chart) {
@@ -12592,7 +12058,7 @@ module.exports = function(Chart) {
 	Chart.scaleService.registerScaleType("radialLinear", LinearRadialScale, defaultConfig);
 
 };
-},{}],42:[function(require,module,exports){
+},{}],41:[function(require,module,exports){
 /*global window: false */
 "use strict";
 
@@ -12681,13 +12147,10 @@ module.exports = function(Chart) {
 			if (this.chart.data.labels && this.chart.data.labels.length > 0) {
 				helpers.each(this.chart.data.labels, function(label, index) {
 					var labelMoment = this.parseTime(label);
-
-					if (labelMoment.isValid()) {
-						if (this.options.time.round) {
-							labelMoment.startOf(this.options.time.round);
-						}
-						scaleLabelMoments.push(labelMoment);
+					if (this.options.time.round) {
+						labelMoment.startOf(this.options.time.round);
 					}
+					scaleLabelMoments.push(labelMoment);
 				}, this);
 
 				this.firstTick = moment.min.call(this, scaleLabelMoments);
@@ -12703,17 +12166,14 @@ module.exports = function(Chart) {
 				if (typeof dataset.data[0] === 'object') {
 					helpers.each(dataset.data, function(value, index) {
 						var labelMoment = this.parseTime(this.getRightValue(value));
-
-						if (labelMoment.isValid()) {
-							if (this.options.time.round) {
-								labelMoment.startOf(this.options.time.round);
-							}
-							momentsForDataset.push(labelMoment);
-
-							// May have gone outside the scale ranges, make sure we keep the first and last ticks updated
-							this.firstTick = this.firstTick !== null ? moment.min(this.firstTick, labelMoment) : labelMoment;
-							this.lastTick = this.lastTick !== null ? moment.max(this.lastTick, labelMoment) : labelMoment;
+						if (this.options.time.round) {
+							labelMoment.startOf(this.options.time.round);
 						}
+						momentsForDataset.push(labelMoment);
+
+						// May have gone outside the scale ranges, make sure we keep the first and last ticks updated
+						this.firstTick = this.firstTick !== null ? moment.min(this.firstTick, labelMoment) : labelMoment;
+						this.lastTick = this.lastTick !== null ? moment.max(this.lastTick, labelMoment) : labelMoment;
 					}, this);
 				} else {
 					// We have no labels. Use the ones from the scale

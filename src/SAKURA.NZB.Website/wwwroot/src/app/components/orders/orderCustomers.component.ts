@@ -1,4 +1,4 @@
-﻿import {Component, OnInit, Input} from "angular2/core";
+﻿import {Component, OnInit, AfterViewInit, Input} from "angular2/core";
 import {CORE_DIRECTIVES, FORM_DIRECTIVES, ControlGroup, Control, Validators} from "angular2/common";
 
 import {ApiService} from "../api.service";
@@ -7,6 +7,9 @@ import {CustomerOrder, OrderProduct, OrderModel} from "./models";
 import {Customer} from "../customers/edit.component";
 
 import {TYPEAHEAD_DIRECTIVES} from "ng2-bootstrap/ng2-bootstrap";
+
+declare var moment: any;
+declare var jQuery: any;
 
 export class CustomerKvp{
 	constructor(public id: number, public name: string) { }
@@ -20,13 +23,15 @@ export class CustomerKvp{
     directives: [CORE_DIRECTIVES, FORM_DIRECTIVES, AlphaIndexerDirective, TYPEAHEAD_DIRECTIVES]
 })
 
-export class OrderCustomersComponent implements OnInit {
+export class OrderCustomersComponent implements OnInit, AfterViewInit {
 	elementSource: Element[];
 	selectedCustomer: Customer = null;
 
 	selectedExCustomerName = '';
 	allCustomers: CustomerKvp[] = [];
 	recipientGroup: ControlGroup;
+
+	isOrderTimeValid = true;
 
 	@Input() orderModel: OrderModel;
 	@Input() viewMode: boolean;
@@ -47,6 +52,10 @@ export class OrderCustomersComponent implements OnInit {
 
 	ngOnInit() {
 		this.getCustomers();
+	}
+
+	ngAfterViewInit() {
+		this.initialiseDatePicker();
 	}
 
 	onElementSelected(id: string) {
@@ -94,6 +103,39 @@ export class OrderCustomersComponent implements OnInit {
 		this.orderModel.updateExpressText();
 	}
 
+	initialiseDatePicker() {
+		var that = this;
+		var today = moment().startOf('day');
+		var lastYear = moment().add(-1, 'y').endOf('day');
+		jQuery('#orderDate').datetimepicker({
+			locale: 'en-nz',
+			format: 'L',
+			minDate: lastYear,
+			maxDate: today,
+			ignoreReadonly: true,
+			allowInputToggle: true
+		});
+		jQuery('#orderDate').data("DateTimePicker").showTodayButton(true);
+		jQuery('#orderDate').data("DateTimePicker").showClear(true);
+		jQuery('#orderDate').data("DateTimePicker").showClose(true);
+		jQuery('#orderDate').data("DateTimePicker").defaultDate(today);
+		jQuery('#orderDate').on("dp.change", function (e) {
+			if (!e.date) {
+				that.isOrderTimeValid = false;
+				that.orderModel.orderTime = null;
+			} else {
+				that.isOrderTimeValid = true;
+				that.orderModel.orderTime = e.date.toDate();
+			}
+
+			that.orderModel.isCustomersValid = that.orderModel.isCustomersValid && that.isOrderTimeValid;
+		});
+
+		if (this.viewMode) {
+			jQuery('#orderDate').data("DateTimePicker").disable();
+		}
+	}
+
 	getCustomer(id: string) {
 		var that = this;
 
@@ -116,6 +158,10 @@ export class OrderCustomersComponent implements OnInit {
 					that.orderModel.customerOrders = [];
 					that.orderModel.customerOrders.push(co);
 					that.onModelChanged(co, true);
+				}
+
+				if (that.orderModel.orderTime) {
+					jQuery('#orderDate').data("DateTimePicker").date(moment(that.orderModel.orderTime));
 				}
             }
         });

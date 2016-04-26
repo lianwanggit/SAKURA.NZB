@@ -79,3 +79,30 @@
     letter-spacing: 1px;
     content: "收件人信息";
 }
+
+.order-date {
+    position: relative;
+    padding: 45px 15px 15px;
+    margin: 0 -15px 15px;
+    border-style: solid;
+    margin-right: 0;
+    margin-left: 0;
+    background-color: #fff;
+    border-color: #ddd;
+    border-width: 1px;
+    border-radius: 4px 4px 0 0;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+
+.order-date:after {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #959595;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    content: "时间";
+}

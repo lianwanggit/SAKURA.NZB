@@ -29,7 +29,8 @@ paths.lib = [
     './node_modules/clipboard/dist/**/*.*',
     './node_modules/ng2-bootstrap/bundles/**/*.*',
     './node_modules/chart.js/dist/**/*.*',
-    './node_modules/ng2-charts/bundles/**/*.*'
+    './node_modules/ng2-charts/bundles/**/*.*',
+    './node_modules/eonasdan-bootstrap-datetimepicker/build/**/*.*'
 ];
 
 paths.jsDest = paths.webroot + "js";

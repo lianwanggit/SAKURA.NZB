@@ -324,14 +324,14 @@ namespace SAKURA.NZB.Website.Controllers
 			return PaymentState.Unpaid;
 		};
 
-		static Func<DateTime?, DateTimeOffset?> NullableDateTimeToOffset = (dt) => { return dt.HasValue ? DateTime.SpecifyKind(dt.Value, DateTimeKind.Local) : (DateTimeOffset?)null; };
+		static Func<DateTime?, DateTimeOffset?> NullableDateTimeToOffset = (dt) => { return dt.HasValue ? dt.Value.ToLocalTime() : (DateTimeOffset?)null; };
 
 		private static Order Map(OrderModel model)
 		{			
 			var order = new Order
 			{
 				Id = model.Id,
-				OrderTime = DateTime.SpecifyKind(model.OrderTime, DateTimeKind.Local),
+				OrderTime = model.OrderTime.ToLocalTime(),
 				DeliveryTime = NullableDateTimeToOffset(model.DeliveryTime),
 				ReceiveTime = NullableDateTimeToOffset(model.ReceiveTime),
 				OrderState = StringToOrderState(model.OrderState),
