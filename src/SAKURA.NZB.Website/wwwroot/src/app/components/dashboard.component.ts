@@ -1,8 +1,9 @@
-﻿import {Component, OnInit} from "angular2/core";
+﻿import {Component, OnInit, ViewEncapsulation} from "angular2/core";
 import {CORE_DIRECTIVES, FORM_DIRECTIVES, NgClass} from 'angular2/common';
 import {ApiService} from "./api.service";
 
 import {CHART_DIRECTIVES} from 'ng2-charts/ng2-charts';
+declare var $: any;
 
 class Summary {
 	constructor(public customerCount: number, public brandCount: number, public productCount: number, public orderCount: number) { }
@@ -13,7 +14,8 @@ class Summary {
     templateUrl: "./src/app/components/dashboard.html",
 	styleUrls: ["./src/app/components/dashboard.css"],
 	providers: [ApiService],
-	directives: [CHART_DIRECTIVES, NgClass, CORE_DIRECTIVES, FORM_DIRECTIVES]
+	directives: [CHART_DIRECTIVES, NgClass, CORE_DIRECTIVES, FORM_DIRECTIVES],
+	encapsulation: ViewEncapsulation.None
 })
 
 export class DashboardComponent implements OnInit {
@@ -57,49 +59,48 @@ export class DashboardComponent implements OnInit {
 		animation: false,
 		responsive: true,
 		multiTooltipTemplate: '<%if (datasetLabel){%><%=datasetLabel %>: <%}%><%= value %>',
-		pointDotRadius: 6,
-		scaleOverride: true,
-
-		// ** Required if scaleOverride is true **
-		// Number - The number of steps in a hard coded scale
-		scaleSteps: 10,
-		// Number - The value jump in the hard coded scale
-		scaleStepWidth: 500,
-		// Number - The scale starting value
-		scaleStartValue: 0,
+		pointDotRadius: 4,
 		maintainAspectRatio: false,
+		datasetStrokeWidth: 1,
+		// scale
+		scaleLineColor: "rgba(0,0,0,0.5)",
+		scaleFontFamily: "'Roboto', sans-serif",
+		// Tooltip
+		tooltipFillColor: "#fff",
+		tooltipTitleFontColor: "#777",
+		tooltipTitleFontSize: 14,
+		tooltipTitleFontFamily: "'Roboto', sans-serif",
+		tooltipFontColor: "#777",
+		tooltipFontSize: 12,
+		tooltipFontFamily: "'Roboto', sans-serif"
+
 	};
 	private lineChartColours: Array<any> = [
-		{ // grey
-			fillColor: 'rgba(148,159,177,0.2)',
-			strokeColor: 'rgba(148,159,177,1)',
-			pointColor: 'rgba(148,159,177,1)',
+		{
+			fillColor: 'rgba(0,0,0,0)',
+			strokeColor: 'rgba(217,101,87,1)',
+			pointColor: 'rgba(217,101,87,1)',
 			pointStrokeColor: '#fff',
-			pointHighlightFill: '#fff',
-			pointHighlightStroke: 'rgba(148,159,177,0.8)'
+			pointHighlightFill: 'rgba(217,101,87,1)',
+			pointHighlightStroke: 'rgba(217,101,87,1)'
 		},
-		{ // dark grey
-			fillColor: 'rgba(77,83,96,0.2)',
-			strokeColor: 'rgba(77,83,96,1)',
-			pointColor: 'rgba(77,83,96,1)',
+		{
+			fillColor: 'rgba(0,0,0,0)',
+			strokeColor: 'rgba(0,153,204,1)',
+			pointColor: 'rgba(0,153,204,1)',
 			pointStrokeColor: '#fff',
-			pointHighlightFill: '#fff',
-			pointHighlightStroke: 'rgba(77,83,96,1)'
+			pointHighlightFill: 'rgba(0,153,204,1)',
+			pointHighlightStroke: 'rgba(0,153,204,1)'
 		},
-		{ // grey
-			fillColor: 'rgba(148,159,177,0.2)',
-			strokeColor: 'rgba(148,159,177,1)',
-			pointColor: 'rgba(148,159,177,1)',
+		{
+			fillColor: 'rgba(0,0,0,0)',
+			strokeColor: 'rgba(76,195,217,1)',
+			pointColor: 'rgba(76,195,217,1)',
 			pointStrokeColor: '#fff',
-			pointHighlightFill: '#fff',
-			pointHighlightStroke: 'rgba(148,159,177,0.8)'
+			pointHighlightFill: 'rgba(76,195,217,1)',
+			pointHighlightStroke: 'rgba(76,195,217,1)'
 		}
 	];
 	private lineChartLegend: boolean = true;
 	private lineChartType: string = 'Line';
-
-	// events
-	chartClicked(e: any) {
-		console.log(e);
-	}
 }

@@ -49,12 +49,13 @@
     </div>
 </div>
 
-<base-chart class="chart"
-            [data]="lineChartData"
-            [labels]="lineChartLabels"
-            [options]="lineChartOptions"
-            [series]="lineChartSeries"
-            [colours]="lineChartColours"
-            [legend]="lineChartLegend"
-            [chartType]="lineChartType"
-            (chartClick)="chartClicked($event)"></base-chart>
+<div class="widget widget-content shadow margin-top-5 padding-left-15">
+    <base-chart class="chart"
+                [data]="lineChartData"
+                [labels]="lineChartLabels"
+                [options]="lineChartOptions"
+                [series]="lineChartSeries"
+                [colours]="lineChartColours"
+                [legend]="lineChartLegend"
+                [chartType]="lineChartType"></base-chart>
+</div>

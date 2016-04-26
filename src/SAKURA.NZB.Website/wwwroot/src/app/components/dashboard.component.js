@@ -48,41 +48,45 @@ System.register(["angular2/core", 'angular2/common', "./api.service", 'ng2-chart
                         animation: false,
                         responsive: true,
                         multiTooltipTemplate: '<%if (datasetLabel){%><%=datasetLabel %>: <%}%><%= value %>',
-                        pointDotRadius: 6,
-                        scaleOverride: true,
-                        // ** Required if scaleOverride is true **
-                        // Number - The number of steps in a hard coded scale
-                        scaleSteps: 10,
-                        // Number - The value jump in the hard coded scale
-                        scaleStepWidth: 500,
-                        // Number - The scale starting value
-                        scaleStartValue: 0,
+                        pointDotRadius: 4,
                         maintainAspectRatio: false,
+                        datasetStrokeWidth: 1,
+                        // scale
+                        scaleLineColor: "rgba(0,0,0,0.5)",
+                        scaleFontFamily: "'Roboto', sans-serif",
+                        // Tooltip
+                        tooltipFillColor: "#fff",
+                        tooltipTitleFontColor: "#777",
+                        tooltipTitleFontSize: 14,
+                        tooltipTitleFontFamily: "'Roboto', sans-serif",
+                        tooltipFontColor: "#777",
+                        tooltipFontSize: 12,
+                        tooltipFontFamily: "'Roboto', sans-serif"
                     };
                     this.lineChartColours = [
                         {
-                            fillColor: 'rgba(148,159,177,0.2)',
-                            strokeColor: 'rgba(148,159,177,1)',
-                            pointColor: 'rgba(148,159,177,1)',
+                            fillColor: 'rgba(0,0,0,0)',
+                            strokeColor: 'rgba(217,101,87,1)',
+                            pointColor: 'rgba(217,101,87,1)',
                             pointStrokeColor: '#fff',
-                            pointHighlightFill: '#fff',
-                            pointHighlightStroke: 'rgba(148,159,177,0.8)'
+                            pointHighlightFill: 'rgba(217,101,87,1)',
+                            pointHighlightStroke: 'rgba(217,101,87,1)'
                         },
                         {
-                            fillColor: 'rgba(77,83,96,0.2)',
-                            strokeColor: 'rgba(77,83,96,1)',
-                            pointColor: 'rgba(77,83,96,1)',
+                            fillColor: 'rgba(0,0,0,0)',
+                            strokeColor: 'rgba(0,153,204,1)',
+                            pointColor: 'rgba(0,153,204,1)',
                             pointStrokeColor: '#fff',
-                            pointHighlightFill: '#fff',
-                            pointHighlightStroke: 'rgba(77,83,96,1)'
+                            pointHighlightFill: 'rgba(0,153,204,1)',
+                            pointHighlightStroke: 'rgba(0,153,204,1)'
                         },
                         {
-                            fillColor: 'rgba(148,159,177,0.2)',
-                            strokeColor: 'rgba(148,159,177,1)',
-                            pointColor: 'rgba(148,159,177,1)',
+                            fillColor: 'rgba(0,0,0,0)',
+                            strokeColor: 'rgba(76,195,217,1)',
+                            pointColor: 'rgba(76,195,217,1)',
                             pointStrokeColor: '#fff',
-                            pointHighlightFill: '#fff',
-                            pointHighlightStroke: 'rgba(148,159,177,0.8)'
+                            pointHighlightFill: 'rgba(76,195,217,1)',
+                            pointHighlightStroke: 'rgba(76,195,217,1)'
                         }
                     ];
                     this.lineChartLegend = true;
@@ -112,17 +116,14 @@ System.register(["angular2/core", 'angular2/common', "./api.service", 'ng2-chart
                         }
                     });
                 };
-                // events
-                DashboardComponent.prototype.chartClicked = function (e) {
-                    console.log(e);
-                };
                 DashboardComponent = __decorate([
                     core_1.Component({
                         selector: "dashboard",
                         templateUrl: "./src/app/components/dashboard.html",
                         styleUrls: ["./src/app/components/dashboard.css"],
                         providers: [api_service_1.ApiService],
-                        directives: [ng2_charts_1.CHART_DIRECTIVES, common_1.NgClass, common_1.CORE_DIRECTIVES, common_1.FORM_DIRECTIVES]
+                        directives: [ng2_charts_1.CHART_DIRECTIVES, common_1.NgClass, common_1.CORE_DIRECTIVES, common_1.FORM_DIRECTIVES],
+                        encapsulation: core_1.ViewEncapsulation.None
                     }), 
                     __metadata('design:paramtypes', [api_service_1.ApiService])
                 ], DashboardComponent);
