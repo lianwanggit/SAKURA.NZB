@@ -188,6 +188,11 @@ System.register(["angular2/core", "angular2/common", "../api.service", "../../di
                     enumerable: true,
                     configurable: true
                 });
+                Object.defineProperty(OrderCustomersComponent.prototype, "strOrderDate", {
+                    get: function () { return moment(this.orderModel.orderTime).format('DD/MM/YYYY'); },
+                    enumerable: true,
+                    configurable: true
+                });
                 __decorate([
                     core_1.Input(), 
                     __metadata('design:type', models_1.OrderModel)

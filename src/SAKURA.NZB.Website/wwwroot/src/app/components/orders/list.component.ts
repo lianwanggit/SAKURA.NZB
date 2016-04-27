@@ -241,7 +241,7 @@ export class OrdersComponent implements OnInit {
 						customers.Add(new CustomerOrder(co.customerId, co.customerName, products.ToArray()));
 					});
 
-					orders.Add(new OrderModel(om.id, moment(om.orderTime).format('YYYY-MM-DD'), om.deliveryTime, om.receiveTime,
+					orders.Add(new OrderModel(om.id, moment(om.orderTime).format('DD/MM/YYYY'), om.deliveryTime, om.receiveTime,
 						om.orderState, om.paymentState, om.waybillNumber, om.weight, om.freight, om.recipient, om.phone, om.address,
 						om.sender, om.senderPhone, that.currentRate, that.orderStates, customers.ToArray()));
 					orderCount += 1;

@@ -188,4 +188,5 @@ export class OrderCustomersComponent implements OnInit, AfterViewInit {
 
 	get customerId() { return this.orderModel.customerOrders.length ? this.orderModel.customerOrders[0].customerId : ''; }
 	get exCustomers() { return this.orderModel.customerOrders.length == 0 ? [] : this.orderModel.customerOrders.slice(1); }
+	get strOrderDate() { return moment(this.orderModel.orderTime).format('DD/MM/YYYY'); }
 }
