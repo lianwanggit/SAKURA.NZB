@@ -50,7 +50,11 @@
 </div>
 
 <div class="widget widget-content shadow margin-top-5 padding-left-15">
-    <base-chart class="chart"
+    <div class="btn-group pull-right">
+        <label class="margin-right-5 clickable" [(ngModel)]="lineChartSwitch"
+               btnCheckbox (click)="onSwapType()">...</label>
+    </div>
+    <base-chart class="line-chart "
                 [data]="lineChartData"
                 [labels]="lineChartLabels"
                 [options]="lineChartOptions"
@@ -58,4 +62,37 @@
                 [colours]="lineChartColours"
                 [legend]="lineChartLegend"
                 [chartType]="lineChartType"></base-chart>
+</div>
+
+<div class="row">
+    <div class="col-xs-12 col-sm-6 col-md-4">
+        <div class="widget widget-content shadow bg-primary">
+            <p class="md-display-2 font-weight-100 margin-bottom-0 text-center">$6,203.25</p>
+            <p class="opacity-50 margin-bottom-0 text-center">总成本</p>
+        </div>
+        <div class="widget widget-content shadow bg-primary">
+            <p class="md-display-2 font-weight-100 margin-bottom-0 text-center">¥73,326.12</p>
+            <p class="opacity-50 margin-bottom-0 text-center">总收入</p>
+        </div>
+        <div class="widget widget-content shadow bg-primary">
+            <p class="md-display-2 font-weight-100 margin-bottom-0 text-center">¥15,203.25</p>
+            <p class="opacity-50 margin-bottom-0 text-center">总利润</p>
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-12 col-md-4">
+        <div class="widget widget-content shadow">
+
+        </div>
+        <div class="widget widget-content shadow">
+
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-6 col-md-4">
+        <div class="widget widget-content shadow">
+            <base-chart class="doughnut-chart"
+                        [data]="doughnutChartData"
+                        [labels]="doughnutChartLabels"
+                        [chartType]="doughnutChartType"></base-chart>
+        </div>
+    </div>
 </div>
