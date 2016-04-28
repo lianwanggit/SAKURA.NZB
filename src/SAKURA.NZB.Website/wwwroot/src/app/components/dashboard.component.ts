@@ -79,7 +79,7 @@ export class DashboardComponent implements OnInit {
 			pointHighlightStroke: 'rgba(217,101,87,1)'
 		}
 	];
-	private lineChartLegend: boolean = true;
+	private lineChartLegend: boolean = false;
 	private lineChartType: string = 'Line';
 
 	private barChartOptions = {
@@ -111,6 +111,7 @@ export class DashboardComponent implements OnInit {
 		'Kiwigarden 酸奶小溶豆 (猕猴桃)',
 		'Kiwigarden 酸奶小溶豆 (草莓)'
 	];
+	selectedTopProductIndex = 1;
 	selectedTopProductName = this.barChartNames[0];
 	selectedTopProductCount = this.barChartData[0][0];
 
@@ -160,8 +161,9 @@ export class DashboardComponent implements OnInit {
 	}
 
 	onBarChartSelected(e) {
+		this.selectedTopProductIndex = parseInt(e.activeLabel, 10) + 1;
 		this.selectedTopProductName = this.barChartNames[e.activeLabel];
-		this.selectedTopProductCount = e.activePoint;
+		this.selectedTopProductCount = e.activePoints[0].value;
 	}
 
 	changeLineChartData() {

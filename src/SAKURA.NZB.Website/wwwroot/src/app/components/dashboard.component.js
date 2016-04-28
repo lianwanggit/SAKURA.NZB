@@ -97,7 +97,7 @@ System.register(["angular2/core", 'angular2/common', "./api.service", 'ng2-boots
                             pointHighlightStroke: 'rgba(217,101,87,1)'
                         }
                     ];
-                    this.lineChartLegend = true;
+                    this.lineChartLegend = false;
                     this.lineChartType = 'Line';
                     this.barChartOptions = {
                         responsive: true,
@@ -125,6 +125,7 @@ System.register(["angular2/core", 'angular2/common', "./api.service", 'ng2-boots
                         'Kiwigarden 酸奶小溶豆 (猕猴桃)',
                         'Kiwigarden 酸奶小溶豆 (草莓)'
                     ];
+                    this.selectedTopProductIndex = 1;
                     this.selectedTopProductName = this.barChartNames[0];
                     this.selectedTopProductCount = this.barChartData[0][0];
                     this.barChartColours = [
@@ -165,8 +166,9 @@ System.register(["angular2/core", 'angular2/common', "./api.service", 'ng2-boots
                     this.changeLineChartData();
                 };
                 DashboardComponent.prototype.onBarChartSelected = function (e) {
+                    this.selectedTopProductIndex = parseInt(e.activeLabel, 10) + 1;
                     this.selectedTopProductName = this.barChartNames[e.activeLabel];
-                    this.selectedTopProductCount = e.activePoint;
+                    this.selectedTopProductCount = e.activePoints[0].value;
                 };
                 DashboardComponent.prototype.changeLineChartData = function () {
                     if (!this.lineChartSwitch) {
