@@ -99,6 +99,42 @@ System.register(["angular2/core", 'angular2/common', "./api.service", 'ng2-boots
                     ];
                     this.lineChartLegend = true;
                     this.lineChartType = 'Line';
+                    this.barChartOptions = {
+                        responsive: true,
+                        multiTooltipTemplate: '<%if (datasetLabel){%><%=datasetLabel %>: <%}%><%= value %>',
+                        showScale: false,
+                        showTooltips: false,
+                        barShowStroke: false,
+                    };
+                    this.barChartLabels = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+                    this.barChartSeries = ['A'];
+                    this.barChartType = 'Bar';
+                    this.barChartLegend = false;
+                    this.barChartData = [
+                        [65, 59, 46, 35, 23, 16, 12, 8, 6, 3]
+                    ];
+                    this.barChartNames = [
+                        'Royal Nectar 皇家花蜜蜂毒眼霜紧实抗皱提拉紧致 15ml',
+                        'Royal Nectar 新西兰进口皇家蜂毒面膜50ml',
+                        'Trilogy 洁面200ml',
+                        'Kiwigarden 酸奶小溶豆 (香蕉)',
+                        'GROVE 特级初榨牛油果婴幼儿辅食孕妇必备 250m',
+                        'Antipodes KiwiSeed 奇异果籽精华眼霜30ml',
+                        'Trilogy 面霜60g',
+                        'Kiwigarden 酸奶小溶豆 (混合莓子)',
+                        'Kiwigarden 酸奶小溶豆 (猕猴桃)',
+                        'Kiwigarden 酸奶小溶豆 (草莓)'
+                    ];
+                    this.selectedTopProductName = this.barChartNames[0];
+                    this.selectedTopProductCount = this.barChartData[0][0];
+                    this.barChartColours = [
+                        {
+                            fillColor: 'rgba(84,84,84,0.3)',
+                            strokeColor: 'rgba(84,84,84,0.3)',
+                            highlightFill: 'rgba(76,195,217,1)',
+                            highlightStroke: 'rgba(76,195,217,1)'
+                        }
+                    ];
                     this.doughnutChartLabels = ['Download Sales', 'In-Store Sales', 'Mail-Order Sales', 'a', 'b', 'c', 'd'];
                     this.doughnutChartData = [350, 450, 100, 210, 330, 450, 800];
                     this.doughnutChartType = 'Doughnut';
@@ -127,6 +163,10 @@ System.register(["angular2/core", 'angular2/common', "./api.service", 'ng2-boots
                         return;
                     this.lineChartSwitch = flag;
                     this.changeLineChartData();
+                };
+                DashboardComponent.prototype.onBarChartSelected = function (e) {
+                    this.selectedTopProductName = this.barChartNames[e.activeLabel];
+                    this.selectedTopProductCount = e.activePoint;
                 };
                 DashboardComponent.prototype.changeLineChartData = function () {
                     if (!this.lineChartSwitch) {

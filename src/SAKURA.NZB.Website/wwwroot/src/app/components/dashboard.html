@@ -83,8 +83,6 @@
     </div>
 </div>
 
-
-
 <div class="row">
     <div class="col-xs-12 col-sm-6 col-md-4">
         <div class="widget widget-content shadow md-table">
@@ -94,6 +92,29 @@
             </div>
             <div class="md-table-cell-50">
                 <p class="md-display-1 font-weight-100 margin-bottom-0">¥5632.28</p>
+            </div>
+        </div>
+        <div class="widget widget-content shadow">
+            <div>
+                <p class="opacity-50 margin-bottom-0">最收欢迎产品</p>
+                <p class="md-display-0 font-weight-100 margin-bottom-0">Royal Nectar 皇家花蜜蜂毒眼霜紧实抗皱提拉紧致 15ml</p>
+            </div>
+            <div>
+                <base-chart class="bar-chart"
+                            [data]="barChartData"
+                            [labels]="barChartLabels"
+                            [options]="barChartOptions"
+                            [series]="barChartSeries"
+                            [colours]="barChartColours"
+                            [legend]="barChartLegend"
+                            [chartType]="barChartType"
+                            (chartHover)="onBarChartSelected($event)"
+                            (chartClick)="onBarChartSelected($event)"></base-chart>
+
+                <p class="md-display-05 font-weight-100 margin-top-5">
+                    {{selectedTopProductName}} 
+                    <small class="padding-left-8 opacity-30">售出</small> <strong>{{selectedTopProductCount}}</strong>
+                </p>
             </div>
         </div>
     </div>
