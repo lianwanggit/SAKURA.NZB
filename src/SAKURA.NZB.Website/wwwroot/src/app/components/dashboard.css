@@ -12,6 +12,12 @@
     background-color: rgb(255, 87, 34);
 }
 
+.purple{
+    border-color: rgb(186, 104, 200);
+    color: rgb(255, 255, 255);
+    background-color: rgb(186, 104, 200);
+}
+
 .light-blue {
     border-color: rgb(0, 188, 212);
     color: rgb(255, 255, 255);
@@ -90,6 +96,12 @@
     font-weight: 100 !important;
 }
 
+.md-display-1 {
+    font-size: 34px;
+    font-weight: 400;
+    line-height: 40px;
+}
+
 .md-display-2 {
     font-size: 45px;
     font-weight: 400;
@@ -115,6 +127,10 @@
 
 .opacity-60 {
     opacity: .6 !important;
+}
+
+.opacity-80 {
+    opacity: .8 !important;
 }
 
 .chart-legend, .bar-legend, .line-legend, .pie-legend, .radar-legend, .polararea-legend, .doughnut-legend {
@@ -152,7 +168,54 @@
     display: block;
     width: 100%;
     height: 250px;
-    margin-bottom: 70px;
+    margin-bottom: 30px;
+}
+
+.md-table {
+    display: table;
+    width: 100%;
+}
+
+.md-table-cell-50 {
+    display: table-cell;
+    width: 50%;
+}
+
+.chart-head-tab {
+    color: rgba(0,0,0,0.54);
+    font-size: 14px; 
+    font-weight: 500;
+    line-height: 24px;
+    margin-bottom: 5px;
+}
+
+.chart-head-tab > div {
+    text-align: center;
+    padding-bottom: 3px;
+    border-bottom: none;
+}
+
+.chart-head-tab .active {
+    color: rgb(0,188,212);
+    border-bottom: 2px solid rgb(255,229,127);
+}
+
+.bg-summary-first {
+    border-color: rgb(0, 188, 212);
+    color: rgb(255, 255, 255);
+    background-color: rgb(0, 188, 212);
+}
+
+.bg-summary-second {
+    border-color: rgb(0, 172, 193);
+    color: rgba(255, 255, 255, 0.870588);
+    background-color: rgb(0, 172, 193);
+}
+
+.bg-summary-third {
+    border-color: rgb(0, 151, 167);
+    color: rgb(255, 255, 255);
+    background-color: rgb(0, 151, 167);
 }
 
 .doughnut-chart {

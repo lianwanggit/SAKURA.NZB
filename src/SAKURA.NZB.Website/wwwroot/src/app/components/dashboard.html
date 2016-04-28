@@ -12,7 +12,7 @@
         </div>
     </div>
     <div class="col-xs-12 col-sm-6 col-md-3">
-        <div class="widget widget-content light-blue shadow clearfix">
+        <div class="widget widget-content purple shadow clearfix">
             <div class="scope table-cell">
                 <i class="fa fa-pagelines fa-4x opacity-50 margin-left-10"></i>
             </div>
@@ -49,34 +49,52 @@
     </div>
 </div>
 
-<div class="widget widget-content shadow margin-top-5 padding-left-15">
-    <div class="btn-group pull-right">
-        <label class="margin-right-5 clickable" [(ngModel)]="lineChartSwitch"
-               btnCheckbox (click)="onSwapType()">...</label>
-    </div>
-    <base-chart class="line-chart "
-                [data]="lineChartData"
-                [labels]="lineChartLabels"
-                [options]="lineChartOptions"
-                [series]="lineChartSeries"
-                [colours]="lineChartColours"
-                [legend]="lineChartLegend"
-                [chartType]="lineChartType"></base-chart>
-</div>
-
 <div class="row">
+    <div class="col-xs-12 col-sm-6 col-md-8">
+        <div class="widget widget-content shadow margin-top-5 padding-left-15">
+            <div class="chart-head-tab md-table opacity-80">
+                <div class="clickable md-table-cell-50" (click)="onSwapType(0)" [ngClass]="{active: !lineChartSwitch}">销售金额</div>
+                <div class="clickable md-table-cell-50" (click)="onSwapType(1)" [ngClass]="{active: lineChartSwitch}">订单数量</div>
+            </div>
+            <base-chart class="line-chart "
+                        [data]="lineChartData"
+                        [labels]="lineChartLabels"
+                        [options]="lineChartOptions"
+                        [series]="lineChartSeries"
+                        [colours]="lineChartColours"
+                        [legend]="lineChartLegend"
+                        [chartType]="lineChartType"></base-chart>
+        </div>
+    </div>
+
     <div class="col-xs-12 col-sm-6 col-md-4">
-        <div class="widget widget-content shadow bg-primary">
+        <div class="widget widget-content shadow margin-top-5 bg-summary-first">
             <p class="md-display-2 font-weight-100 margin-bottom-0 text-center">$6,203.25</p>
             <p class="opacity-50 margin-bottom-0 text-center">总成本</p>
         </div>
-        <div class="widget widget-content shadow bg-primary">
+        <div class="widget widget-content shadow bg-summary-second">
             <p class="md-display-2 font-weight-100 margin-bottom-0 text-center">¥73,326.12</p>
             <p class="opacity-50 margin-bottom-0 text-center">总收入</p>
         </div>
-        <div class="widget widget-content shadow bg-primary">
+        <div class="widget widget-content shadow bg-summary-third">
             <p class="md-display-2 font-weight-100 margin-bottom-0 text-center">¥15,203.25</p>
             <p class="opacity-50 margin-bottom-0 text-center">总利润</p>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="row">
+    <div class="col-xs-12 col-sm-6 col-md-4">
+        <div class="widget widget-content shadow md-table">
+            <div class="md-table-cell-50">
+                <p class="md-display-2 font-weight-100 margin-bottom-0 text-center">8</p>
+                <p class="opacity-50 margin-bottom-0 text-center">未支付订单</p>
+            </div>
+            <div class="md-table-cell-50">
+                <p class="md-display-1 font-weight-100 margin-bottom-0">¥5632.28</p>
+            </div>
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-4">

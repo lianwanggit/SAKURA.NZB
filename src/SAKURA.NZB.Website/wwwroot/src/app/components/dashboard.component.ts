@@ -106,22 +106,25 @@ export class DashboardComponent implements OnInit {
 					that.orderCountList.Add(x.count);
 				});
 
-				that.changeLineChartData(this.lineChartSwitch);
+				that.changeLineChartData();
 			}
 		});
     }
 
-	onSwapType() {
-		this.changeLineChartData(!this.lineChartSwitch);
+	onSwapType(flag: boolean) {
+		if (this.lineChartSwitch == flag) return;
+
+		this.lineChartSwitch = flag;
+		this.changeLineChartData();
 	}
 
-	changeLineChartData(numberMode: boolean) {
-		if (!numberMode) {
+	changeLineChartData() {
+		if (!this.lineChartSwitch) {
 			this.lineChartData = [this.costList.ToArray(), this.incomeList.ToArray(), this.profitList.ToArray()];
 			this.lineChartSeries = ['成本 (NZD)', '收入 (CNY)', '利润 (CNY)'];
 		} else {
 			this.lineChartData = [this.orderCountList.ToArray(), [], []];
-			this.lineChartSeries = ['订单数', '&nbsp;', '&nbsp;'];
+			this.lineChartSeries = ['订单数量', '&nbsp;', '&nbsp;'];
 		}
 	}
 }

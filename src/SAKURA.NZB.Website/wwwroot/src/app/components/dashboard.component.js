@@ -104,7 +104,6 @@ System.register(["angular2/core", 'angular2/common', "./api.service", 'ng2-boots
                     this.doughnutChartType = 'Doughnut';
                 }
                 DashboardComponent.prototype.ngOnInit = function () {
-                    var _this = this;
                     var that = this;
                     this.service.getDashboardSummary(function (json) {
                         if (json) {
@@ -119,21 +118,24 @@ System.register(["angular2/core", 'angular2/common', "./api.service", 'ng2-boots
                                 that.profitList.Add(x.profit);
                                 that.orderCountList.Add(x.count);
                             });
-                            that.changeLineChartData(_this.lineChartSwitch);
+                            that.changeLineChartData();
                         }
                     });
                 };
-                DashboardComponent.prototype.onSwapType = function () {
-                    this.changeLineChartData(!this.lineChartSwitch);
+                DashboardComponent.prototype.onSwapType = function (flag) {
+                    if (this.lineChartSwitch == flag)
+                        return;
+                    this.lineChartSwitch = flag;
+                    this.changeLineChartData();
                 };
-                DashboardComponent.prototype.changeLineChartData = function (numberMode) {
-                    if (!numberMode) {
+                DashboardComponent.prototype.changeLineChartData = function () {
+                    if (!this.lineChartSwitch) {
                         this.lineChartData = [this.costList.ToArray(), this.incomeList.ToArray(), this.profitList.ToArray()];
                         this.lineChartSeries = ['成本 (NZD)', '收入 (CNY)', '利润 (CNY)'];
                     }
                     else {
                         this.lineChartData = [this.orderCountList.ToArray(), [], []];
-                        this.lineChartSeries = ['订单数', '&nbsp;', '&nbsp;'];
+                        this.lineChartSeries = ['订单数量', '&nbsp;', '&nbsp;'];
                     }
                 };
                 DashboardComponent = __decorate([
