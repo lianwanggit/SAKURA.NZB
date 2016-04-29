@@ -46,7 +46,7 @@ namespace SAKURA.NZB.Website.Controllers.API
 					income += p.Price * p.Qty;
 				}
 
-				totalCost += cost + o.Freight ?? 0F;
+				totalCost += cost + (o.Freight ?? 0F);
 				totalIncome += income;
 
 				if (o.PaymentState == Domain.PaymentState.Unpaid)
