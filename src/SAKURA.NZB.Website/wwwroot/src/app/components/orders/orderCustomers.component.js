@@ -160,6 +160,9 @@ System.register(["angular2/core", "angular2/common", "../api.service", "../../di
                             if (that.orderModel.orderTime) {
                                 jQuery('#orderDate').data("DateTimePicker").date(moment(that.orderModel.orderTime));
                             }
+                            else {
+                                that.orderModel.orderTime = jQuery('#orderDate').data("DateTimePicker").date().toDate();
+                            }
                         }
                     });
                 };

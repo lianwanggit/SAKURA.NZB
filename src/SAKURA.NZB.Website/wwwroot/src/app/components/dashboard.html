@@ -56,7 +56,7 @@
                 <div class="clickable md-table-cell-50" (click)="onSwapType(0)" [ngClass]="{active: !lineChartSwitch}">销售金额</div>
                 <div class="clickable md-table-cell-50" (click)="onSwapType(1)" [ngClass]="{active: lineChartSwitch}">订单数量</div>
             </div>
-            <base-chart class="line-chart "
+            <base-chart class="line-chart"
                         [data]="lineChartData"
                         [labels]="lineChartLabels"
                         [options]="lineChartOptions"
@@ -69,15 +69,15 @@
 
     <div class="col-xs-12 col-sm-6 col-md-4">
         <div class="widget widget-content shadow margin-top-5 bg-summary-first">
-            <p class="md-display-2 font-weight-100 margin-bottom-0 text-center">$6,203.25</p>
+            <p class="md-display-2 font-weight-100 margin-bottom-0 text-center">{{summary.totalCost}}</p>
             <p class="opacity-50 margin-bottom-0 text-center">总成本</p>
         </div>
         <div class="widget widget-content shadow bg-summary-second">
-            <p class="md-display-2 font-weight-100 margin-bottom-0 text-center">¥73,326.12</p>
+            <p class="md-display-2 font-weight-100 margin-bottom-0 text-center">{{summary.totalIncome}}</p>
             <p class="opacity-50 margin-bottom-0 text-center">总收入</p>
         </div>
         <div class="widget widget-content shadow bg-summary-third">
-            <p class="md-display-2 font-weight-100 margin-bottom-0 text-center">¥15,203.25</p>
+            <p class="md-display-2 font-weight-100 margin-bottom-0 text-center">{{summary.totalProfit}}</p>
             <p class="opacity-50 margin-bottom-0 text-center">总利润</p>
         </div>
     </div>
@@ -87,11 +87,11 @@
     <div class="col-xs-12 col-sm-6 col-md-4">
         <div class="widget widget-content shadow md-table">
             <div class="md-table-cell-50">
-                <p class="md-display-2 font-weight-100 margin-bottom-0 text-center">8</p>
+                <p class="md-display-2 font-weight-100 margin-bottom-0 text-center">{{summary.unpaidCount}}</p>
                 <p class="opacity-50 margin-bottom-0 text-center">未支付订单</p>
             </div>
             <div class="md-table-cell-50">
-                <p class="md-display-1 font-weight-100 margin-bottom-0">¥5632.28</p>
+                <p class="md-display-1 font-weight-100 margin-bottom-0">{{summary.unpaidAmount}}</p>
             </div>
         </div>
         <div class="widget widget-content shadow">
@@ -112,14 +112,35 @@
 
                 <p class="md-display-05 font-weight-100 margin-top-10 margin-bottom-0">
                     #{{selectedTopProductIndex}} {{selectedTopProductName}} 
-                    <small class="padding-left-8 opacity-30">售出</small> <strong>{{selectedTopProductCount}}</strong>
+                    <small class="padding-left-8 opacity-30 smaller">售出</small> <strong>{{selectedTopProductCount}}</strong>
                 </p>
             </div>
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-4">
         <div class="widget widget-content shadow">
-
+            <div class="md-table">
+                <div class="md-table-cell-50 padding-left-8">
+                    <p class="md-display-1 font-weight-100 margin-top-15 margin-bottom-0">{{summary.todayProfit}}</p>
+                    <p class="opacity-50">今日利润</p>
+                </div>
+                <div class="md-table-cell-50 padding-right-8">
+                    <p class="md-display-05 font-weight-100 margin-bottom-0 text-right" [ngClass]="{up: summary.profitIncrement >= 0, down: summary.profitIncrement < 0}">
+                        <i class="fa" [ngClass]="{'fa-caret-up': summary.profitIncrement >= 0, 'fa-caret-down': summary.profitIncrement < 0}"></i>{{summary.profitIncrementRate}}
+                    </p>
+                    <p class="md-display-05 font-weight-300 opacity-80 text-right">
+                        <small>{{ summary.profitIncrement > 0 ? '+' + (summary.profitIncrement).toFixed(2) : (summary.profitIncrement).toFixed(2)}}</small>
+                    </p>
+                </div>
+            </div>
+            <base-chart class="line-chart1"
+                        [data]="lineChartData"
+                        [labels]="lineChartLabels"
+                        [options]="lineChartOptions"
+                        [series]="lineChartSeries"
+                        [colours]="lineChartColours"
+                        [legend]="lineChartLegend"
+                        [chartType]="lineChartType"></base-chart>
         </div>
         <div class="widget widget-content shadow">
 

@@ -7,7 +7,9 @@ import {CHART_DIRECTIVES} from 'ng2-charts/ng2-charts';
 declare var $: any;
 
 class Summary {
-	constructor(public customerCount: number, public brandCount: number, public productCount: number, public orderCount: number) { }
+	constructor(public customerCount: number, public brandCount: number, public productCount: number, public orderCount: number,
+		public totalCost: string, public totalIncome: string, public totalProfit: string, public unpaidCount: number,
+		public unpaidAmount: string, public todayProfit: string, public profitIncrementRate: string, public profitIncrement: number) { }
 }
 
 @Component({
@@ -20,7 +22,7 @@ class Summary {
 })
 
 export class DashboardComponent implements OnInit {
-    summary: Summary = new Summary(0, 0, 0, 0);
+    summary: Summary = new Summary(0, 0, 0, 0, '', '', '', 0, '', '', '', 0);
 
 	costList = [].ToList<number>();
 	incomeList = [].ToList<number>();
@@ -135,7 +137,9 @@ export class DashboardComponent implements OnInit {
 
         this.service.getDashboardSummary(json => {
 			if (json) {
-				that.summary = new Summary(json.customerCount, json.brandCount, json.productCount, json.orderCount);
+				that.summary = new Summary(json.customerCount, json.brandCount, json.productCount, json.orderCount,
+					json.totalCost, json.totalIncome, json.totalProfit, json.unpaidCount, json.unpaidAmount,
+					json.todayProfit, json.profitIncrementRate, json.profitIncrement);
 			}
 		});
 

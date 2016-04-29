@@ -31,18 +31,26 @@ System.register(["angular2/core", 'angular2/common', "./api.service", 'ng2-boots
             }],
         execute: function() {
             Summary = (function () {
-                function Summary(customerCount, brandCount, productCount, orderCount) {
+                function Summary(customerCount, brandCount, productCount, orderCount, totalCost, totalIncome, totalProfit, unpaidCount, unpaidAmount, todayProfit, profitIncrementRate, profitIncrement) {
                     this.customerCount = customerCount;
                     this.brandCount = brandCount;
                     this.productCount = productCount;
                     this.orderCount = orderCount;
+                    this.totalCost = totalCost;
+                    this.totalIncome = totalIncome;
+                    this.totalProfit = totalProfit;
+                    this.unpaidCount = unpaidCount;
+                    this.unpaidAmount = unpaidAmount;
+                    this.todayProfit = todayProfit;
+                    this.profitIncrementRate = profitIncrementRate;
+                    this.profitIncrement = profitIncrement;
                 }
                 return Summary;
             }());
             DashboardComponent = (function () {
                 function DashboardComponent(service) {
                     this.service = service;
-                    this.summary = new Summary(0, 0, 0, 0);
+                    this.summary = new Summary(0, 0, 0, 0, '', '', '', 0, '', '', '', 0);
                     this.costList = [].ToList();
                     this.incomeList = [].ToList();
                     this.profitList = [].ToList();
@@ -144,7 +152,7 @@ System.register(["angular2/core", 'angular2/common', "./api.service", 'ng2-boots
                     var that = this;
                     this.service.getDashboardSummary(function (json) {
                         if (json) {
-                            that.summary = new Summary(json.customerCount, json.brandCount, json.productCount, json.orderCount);
+                            that.summary = new Summary(json.customerCount, json.brandCount, json.productCount, json.orderCount, json.totalCost, json.totalIncome, json.totalProfit, json.unpaidCount, json.unpaidAmount, json.todayProfit, json.profitIncrementRate, json.profitIncrement);
                         }
                     });
                     this.service.getDashboardAnnualSales(function (json) {

@@ -162,6 +162,8 @@ export class OrderCustomersComponent implements OnInit, AfterViewInit {
 
 				if (that.orderModel.orderTime) {
 					jQuery('#orderDate').data("DateTimePicker").date(moment(that.orderModel.orderTime));
+				} else {
+					that.orderModel.orderTime = jQuery('#orderDate').data("DateTimePicker").date().toDate();
 				}
             }
         });
