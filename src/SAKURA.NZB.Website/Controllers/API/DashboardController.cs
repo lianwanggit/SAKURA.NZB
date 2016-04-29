@@ -57,12 +57,12 @@ namespace SAKURA.NZB.Website.Controllers.API
 
 				if (o.OrderTime.Date == yesterday)
 				{
-					yesterdayProfit = income - cost * _config.GetCurrentRate();
+					yesterdayProfit += income - cost * _config.GetCurrentRate();
 				}
 
 				if (o.OrderTime.Date == today)
 				{
-					todayProfit = income - cost * _config.GetCurrentRate();
+					todayProfit += income - cost * _config.GetCurrentRate();
 				}
 			}
 
