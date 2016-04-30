@@ -12,6 +12,10 @@ class Summary {
 		public unpaidAmount: string, public todayProfit: string, public profitIncrementRate: string, public profitIncrement: number) { }
 }
 
+class TopProduct {
+	constructor(public name: string, public count: number) { }
+}
+
 @Component({
     selector: "dashboard",
     templateUrl: "./src/app/components/dashboard.html",
@@ -23,19 +27,20 @@ class Summary {
 
 export class DashboardComponent implements OnInit {
     summary: Summary = new Summary(0, 0, 0, 0, '', '', '', 0, '', '', '', 0);
+	topSales = [].ToList<TopProduct>();
 
 	costList = [].ToList<number>();
 	incomeList = [].ToList<number>();
 	profitList = [].ToList<number>();
 	orderCountList = [].ToList<number>();
 
-	lineChartSwitch = false;
+	annualSalesChartSwitch = false;
 
 	// lineChart
-	private lineChartData: Array<any> = [[], [], []];
-	private lineChartLabels: Array<any> = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-	private lineChartSeries: Array<any> = ['成本 (NZD)', '收入 (CNY)', '利润 (CNY)'];
-	private lineChartOptions: any = {
+	private annualSalesChartData: Array<any> = [[], [], []];
+	private annualSalesChartLabels: Array<any> = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+	private annualSalesChartSeries: Array<any> = ['成本 (NZD)', '收入 (CNY)', '利润 (CNY)'];
+	private annualSalesChartOptions: any = {
 		animation: false,
 		responsive: true,
 		multiTooltipTemplate: '<%if (datasetLabel){%><%=datasetLabel %>: <%}%><%= value %>',
@@ -55,7 +60,7 @@ export class DashboardComponent implements OnInit {
 		tooltipFontFamily: "'Roboto', sans-serif"
 
 	};
-	private lineChartColours: Array<any> = [
+	private annualSalesChartColours: Array<any> = [
 		{
 			fillColor: 'rgba(0,0,0,0)',
 			strokeColor: 'rgba(0,153,204,1)',
@@ -81,10 +86,10 @@ export class DashboardComponent implements OnInit {
 			pointHighlightStroke: 'rgba(217,101,87,1)'
 		}
 	];
-	private lineChartLegend: boolean = false;
-	private lineChartType: string = 'Line';
+	private annualSalesChartLegend: boolean = false;
+	private annualSalesChartType: string = 'Line';
 
-	private barChartOptions = {
+	private topSalesChartOptions = {
 		responsive: true,
 		multiTooltipTemplate: '<%if (datasetLabel){%><%=datasetLabel %>: <%}%><%= value %>',
 		showScale: false,
@@ -92,32 +97,19 @@ export class DashboardComponent implements OnInit {
 		barShowStroke: false,
 	};
 
-	private barChartLabels = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
-	private barChartSeries = ['A'];
-	public barChartType = 'Bar';
-	private barChartLegend: boolean = false;
+	private topSalesChartLabels = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+	private topSalesChartSeries = ['A'];
+	public topSalesChartType = 'Bar';
+	private topSalesChartLegend: boolean = false;
 
-	private barChartData = [
-		[65, 59, 46, 35, 23, 16, 12, 8, 6, 3]
-	];
+	private topSalesChartData = []
+	private topSalesChartNames = [];
+	selectedTopProductIndex = 0;
+	selectedTopProductName = '';
+	selectedTopProductCount = 0;
+	firstTopProductName = '';
 
-	private barChartNames = [
-		'Royal Nectar 皇家花蜜蜂毒眼霜紧实抗皱提拉紧致 15ml',
-		'Royal Nectar 新西兰进口皇家蜂毒面膜50ml',
-		'Trilogy 洁面200ml',
-		'Kiwigarden 酸奶小溶豆 (香蕉)',
-		'GROVE 特级初榨牛油果婴幼儿辅食孕妇必备 250m',
-		'Antipodes KiwiSeed 奇异果籽精华眼霜30ml',
-		'Trilogy 面霜60g',
-		'Kiwigarden 酸奶小溶豆 (混合莓子)',
-		'Kiwigarden 酸奶小溶豆 (猕猴桃)',
-		'Kiwigarden 酸奶小溶豆 (草莓)'
-	];
-	selectedTopProductIndex = 1;
-	selectedTopProductName = this.barChartNames[0];
-	selectedTopProductCount = this.barChartData[0][0];
-
-	private barChartColours: Array<any> = [
+	private topSalesChartColours: Array<any> = [
 		{
 			fillColor: 'rgba(84,84,84,0.3)',
 			strokeColor: 'rgba(84,84,84,0.3)',
@@ -152,31 +144,49 @@ export class DashboardComponent implements OnInit {
 					that.orderCountList.Add(x.count);
 				});
 
-				that.changeLineChartData();
+				that.changeAnnualSalesChartData();
+			}
+		});
+
+		this.service.getDashboardTopSales(json => {
+			if (json) {
+				json.forEach(x => {
+					that.topSales.Add(new TopProduct(x.productName, x.count));
+				});
+
+				that.topSalesChartData = [that.topSales.Select(s => s.count).ToArray()];
+				that.topSalesChartNames = that.topSales.Select(s => s.name).ToArray();
+
+				if (that.topSales.Count() > 0) {
+					that.selectedTopProductIndex = 1;
+					that.selectedTopProductName = this.topSalesChartNames[0];
+					that.firstTopProductName = this.topSalesChartNames[0];
+					that.selectedTopProductCount = this.topSalesChartData[0][0];
+				}
 			}
 		});
     }
 
-	onSwapType(flag: boolean) {
-		if (this.lineChartSwitch == flag) return;
+	onSwapAnnualSalesDateSource(flag: boolean) {
+		if (this.annualSalesChartSwitch == flag) return;
 
-		this.lineChartSwitch = flag;
-		this.changeLineChartData();
+		this.annualSalesChartSwitch = flag;
+		this.changeAnnualSalesChartData();
 	}
 
-	onBarChartSelected(e) {
+	onTopSalesChartSelected(e) {
 		this.selectedTopProductIndex = parseInt(e.activeLabel, 10) + 1;
-		this.selectedTopProductName = this.barChartNames[e.activeLabel];
+		this.selectedTopProductName = this.topSalesChartNames[e.activeLabel];
 		this.selectedTopProductCount = e.activePoints[0].value;
 	}
 
-	changeLineChartData() {
-		if (!this.lineChartSwitch) {
-			this.lineChartData = [this.costList.ToArray(), this.incomeList.ToArray(), this.profitList.ToArray()];
-			this.lineChartSeries = ['成本 (NZD)', '收入 (CNY)', '利润 (CNY)'];
+	changeAnnualSalesChartData() {
+		if (!this.annualSalesChartSwitch) {
+			this.annualSalesChartData = [this.costList.ToArray(), this.incomeList.ToArray(), this.profitList.ToArray()];
+			this.annualSalesChartSeries = ['成本 (NZD)', '收入 (CNY)', '利润 (CNY)'];
 		} else {
-			this.lineChartData = [this.orderCountList.ToArray(), [], []];
-			this.lineChartSeries = ['订单数量', '&nbsp;', '&nbsp;'];
+			this.annualSalesChartData = [this.orderCountList.ToArray(), [], []];
+			this.annualSalesChartSeries = ['订单数量', '&nbsp;', '&nbsp;'];
 		}
 	}
 }

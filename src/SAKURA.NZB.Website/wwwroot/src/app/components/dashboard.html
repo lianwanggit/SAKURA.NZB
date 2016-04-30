@@ -53,17 +53,17 @@
     <div class="col-xs-12 col-sm-6 col-md-8">
         <div class="widget widget-content shadow margin-top-5 padding-left-15">
             <div class="chart-head-tab md-table opacity-80">
-                <div class="clickable md-table-cell-50" (click)="onSwapType(0)" [ngClass]="{active: !lineChartSwitch}">销售金额</div>
-                <div class="clickable md-table-cell-50" (click)="onSwapType(1)" [ngClass]="{active: lineChartSwitch}">订单数量</div>
+                <div class="clickable md-table-cell-50" (click)="onSwapAnnualSalesDateSource(0)" [ngClass]="{active: !annualSalesChartSwitch}">销售金额</div>
+                <div class="clickable md-table-cell-50" (click)="onSwapAnnualSalesDateSource(1)" [ngClass]="{active: annualSalesChartSwitch}">订单数量</div>
             </div>
             <base-chart class="line-chart"
-                        [data]="lineChartData"
-                        [labels]="lineChartLabels"
-                        [options]="lineChartOptions"
-                        [series]="lineChartSeries"
-                        [colours]="lineChartColours"
-                        [legend]="lineChartLegend"
-                        [chartType]="lineChartType"></base-chart>
+                        [data]="annualSalesChartData"
+                        [labels]="annualSalesChartLabels"
+                        [options]="annualSalesChartOptions"
+                        [series]="annualSalesChartSeries"
+                        [colours]="annualSalesChartColours"
+                        [legend]="annualSalesChartLegend"
+                        [chartType]="annualSalesChartType"></base-chart>
         </div>
     </div>
 
@@ -97,18 +97,18 @@
         <div class="widget widget-content shadow">
             <div>
                 <p class="opacity-50 margin-bottom-5">最收欢迎产品</p>
-                <p class="md-display-0 font-weight-100 margin-bottom-0">Royal Nectar 皇家花蜜蜂毒眼霜紧实抗皱提拉紧致 15ml</p>
+                <p class="md-display-0 font-weight-100 margin-bottom-0">{{firstTopProductName}}</p>
             </div>
-            <div>
+            <div class="margin-top-5">
                 <base-chart class="bar-chart"
-                            [data]="barChartData"
-                            [labels]="barChartLabels"
-                            [options]="barChartOptions"
-                            [series]="barChartSeries"
-                            [colours]="barChartColours"
-                            [legend]="barChartLegend"
-                            [chartType]="barChartType"
-                            (chartClick)="onBarChartSelected($event)"></base-chart>
+                            [data]="topSalesChartData"
+                            [labels]="topSalesChartLabels"
+                            [options]="topSalesChartOptions"
+                            [series]="topSalesChartSeries"
+                            [colours]="topSalesChartColours"
+                            [legend]="topSalesChartLegend"
+                            [chartType]="topSalesChartType"
+                            (chartClick)="onTopSalesChartSelected($event)"></base-chart>
 
                 <p class="md-display-05 font-weight-100 margin-top-10 margin-bottom-0">
                     #{{selectedTopProductIndex}} {{selectedTopProductName}} 
@@ -133,14 +133,14 @@
                     </p>
                 </div>
             </div>
-            <base-chart class="line-chart1"
+            <!--<base-chart class="line-chart1"
                         [data]="lineChartData"
                         [labels]="lineChartLabels"
                         [options]="lineChartOptions"
                         [series]="lineChartSeries"
                         [colours]="lineChartColours"
                         [legend]="lineChartLegend"
-                        [chartType]="lineChartType"></base-chart>
+                        [chartType]="lineChartType"></base-chart>-->
         </div>
         <div class="widget widget-content shadow">
 

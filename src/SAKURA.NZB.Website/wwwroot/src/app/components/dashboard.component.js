@@ -11,7 +11,7 @@ System.register(["angular2/core", 'angular2/common', "./api.service", 'ng2-boots
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
     var core_1, common_1, api_service_1, ng2_bootstrap_1, ng2_charts_1;
-    var Summary, DashboardComponent;
+    var Summary, TopProduct, DashboardComponent;
     return {
         setters:[
             function (core_1_1) {
@@ -47,20 +47,28 @@ System.register(["angular2/core", 'angular2/common', "./api.service", 'ng2-boots
                 }
                 return Summary;
             }());
+            TopProduct = (function () {
+                function TopProduct(name, count) {
+                    this.name = name;
+                    this.count = count;
+                }
+                return TopProduct;
+            }());
             DashboardComponent = (function () {
                 function DashboardComponent(service) {
                     this.service = service;
                     this.summary = new Summary(0, 0, 0, 0, '', '', '', 0, '', '', '', 0);
+                    this.topSales = [].ToList();
                     this.costList = [].ToList();
                     this.incomeList = [].ToList();
                     this.profitList = [].ToList();
                     this.orderCountList = [].ToList();
-                    this.lineChartSwitch = false;
+                    this.annualSalesChartSwitch = false;
                     // lineChart
-                    this.lineChartData = [[], [], []];
-                    this.lineChartLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-                    this.lineChartSeries = ['成本 (NZD)', '收入 (CNY)', '利润 (CNY)'];
-                    this.lineChartOptions = {
+                    this.annualSalesChartData = [[], [], []];
+                    this.annualSalesChartLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                    this.annualSalesChartSeries = ['成本 (NZD)', '收入 (CNY)', '利润 (CNY)'];
+                    this.annualSalesChartOptions = {
                         animation: false,
                         responsive: true,
                         multiTooltipTemplate: '<%if (datasetLabel){%><%=datasetLabel %>: <%}%><%= value %>',
@@ -79,7 +87,7 @@ System.register(["angular2/core", 'angular2/common', "./api.service", 'ng2-boots
                         tooltipFontSize: 12,
                         tooltipFontFamily: "'Roboto', sans-serif"
                     };
-                    this.lineChartColours = [
+                    this.annualSalesChartColours = [
                         {
                             fillColor: 'rgba(0,0,0,0)',
                             strokeColor: 'rgba(0,153,204,1)',
@@ -105,38 +113,26 @@ System.register(["angular2/core", 'angular2/common', "./api.service", 'ng2-boots
                             pointHighlightStroke: 'rgba(217,101,87,1)'
                         }
                     ];
-                    this.lineChartLegend = false;
-                    this.lineChartType = 'Line';
-                    this.barChartOptions = {
+                    this.annualSalesChartLegend = false;
+                    this.annualSalesChartType = 'Line';
+                    this.topSalesChartOptions = {
                         responsive: true,
                         multiTooltipTemplate: '<%if (datasetLabel){%><%=datasetLabel %>: <%}%><%= value %>',
                         showScale: false,
                         showTooltips: false,
                         barShowStroke: false,
                     };
-                    this.barChartLabels = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
-                    this.barChartSeries = ['A'];
-                    this.barChartType = 'Bar';
-                    this.barChartLegend = false;
-                    this.barChartData = [
-                        [65, 59, 46, 35, 23, 16, 12, 8, 6, 3]
-                    ];
-                    this.barChartNames = [
-                        'Royal Nectar 皇家花蜜蜂毒眼霜紧实抗皱提拉紧致 15ml',
-                        'Royal Nectar 新西兰进口皇家蜂毒面膜50ml',
-                        'Trilogy 洁面200ml',
-                        'Kiwigarden 酸奶小溶豆 (香蕉)',
-                        'GROVE 特级初榨牛油果婴幼儿辅食孕妇必备 250m',
-                        'Antipodes KiwiSeed 奇异果籽精华眼霜30ml',
-                        'Trilogy 面霜60g',
-                        'Kiwigarden 酸奶小溶豆 (混合莓子)',
-                        'Kiwigarden 酸奶小溶豆 (猕猴桃)',
-                        'Kiwigarden 酸奶小溶豆 (草莓)'
-                    ];
-                    this.selectedTopProductIndex = 1;
-                    this.selectedTopProductName = this.barChartNames[0];
-                    this.selectedTopProductCount = this.barChartData[0][0];
-                    this.barChartColours = [
+                    this.topSalesChartLabels = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+                    this.topSalesChartSeries = ['A'];
+                    this.topSalesChartType = 'Bar';
+                    this.topSalesChartLegend = false;
+                    this.topSalesChartData = [];
+                    this.topSalesChartNames = [];
+                    this.selectedTopProductIndex = 0;
+                    this.selectedTopProductName = '';
+                    this.selectedTopProductCount = 0;
+                    this.firstTopProductName = '';
+                    this.topSalesChartColours = [
                         {
                             fillColor: 'rgba(84,84,84,0.3)',
                             strokeColor: 'rgba(84,84,84,0.3)',
@@ -149,6 +145,7 @@ System.register(["angular2/core", 'angular2/common', "./api.service", 'ng2-boots
                     this.doughnutChartType = 'Doughnut';
                 }
                 DashboardComponent.prototype.ngOnInit = function () {
+                    var _this = this;
                     var that = this;
                     this.service.getDashboardSummary(function (json) {
                         if (json) {
@@ -163,29 +160,44 @@ System.register(["angular2/core", 'angular2/common', "./api.service", 'ng2-boots
                                 that.profitList.Add(x.profit);
                                 that.orderCountList.Add(x.count);
                             });
-                            that.changeLineChartData();
+                            that.changeAnnualSalesChartData();
+                        }
+                    });
+                    this.service.getDashboardTopSales(function (json) {
+                        if (json) {
+                            json.forEach(function (x) {
+                                that.topSales.Add(new TopProduct(x.productName, x.count));
+                            });
+                            that.topSalesChartData = [that.topSales.Select(function (s) { return s.count; }).ToArray()];
+                            that.topSalesChartNames = that.topSales.Select(function (s) { return s.name; }).ToArray();
+                            if (that.topSales.Count() > 0) {
+                                that.selectedTopProductIndex = 1;
+                                that.selectedTopProductName = _this.topSalesChartNames[0];
+                                that.firstTopProductName = _this.topSalesChartNames[0];
+                                that.selectedTopProductCount = _this.topSalesChartData[0][0];
+                            }
                         }
                     });
                 };
-                DashboardComponent.prototype.onSwapType = function (flag) {
-                    if (this.lineChartSwitch == flag)
+                DashboardComponent.prototype.onSwapAnnualSalesDateSource = function (flag) {
+                    if (this.annualSalesChartSwitch == flag)
                         return;
-                    this.lineChartSwitch = flag;
-                    this.changeLineChartData();
+                    this.annualSalesChartSwitch = flag;
+                    this.changeAnnualSalesChartData();
                 };
-                DashboardComponent.prototype.onBarChartSelected = function (e) {
+                DashboardComponent.prototype.onTopSalesChartSelected = function (e) {
                     this.selectedTopProductIndex = parseInt(e.activeLabel, 10) + 1;
-                    this.selectedTopProductName = this.barChartNames[e.activeLabel];
+                    this.selectedTopProductName = this.topSalesChartNames[e.activeLabel];
                     this.selectedTopProductCount = e.activePoints[0].value;
                 };
-                DashboardComponent.prototype.changeLineChartData = function () {
-                    if (!this.lineChartSwitch) {
-                        this.lineChartData = [this.costList.ToArray(), this.incomeList.ToArray(), this.profitList.ToArray()];
-                        this.lineChartSeries = ['成本 (NZD)', '收入 (CNY)', '利润 (CNY)'];
+                DashboardComponent.prototype.changeAnnualSalesChartData = function () {
+                    if (!this.annualSalesChartSwitch) {
+                        this.annualSalesChartData = [this.costList.ToArray(), this.incomeList.ToArray(), this.profitList.ToArray()];
+                        this.annualSalesChartSeries = ['成本 (NZD)', '收入 (CNY)', '利润 (CNY)'];
                     }
                     else {
-                        this.lineChartData = [this.orderCountList.ToArray(), [], []];
-                        this.lineChartSeries = ['订单数量', '&nbsp;', '&nbsp;'];
+                        this.annualSalesChartData = [this.orderCountList.ToArray(), [], []];
+                        this.annualSalesChartSeries = ['订单数量', '&nbsp;', '&nbsp;'];
                     }
                 };
                 DashboardComponent = __decorate([
