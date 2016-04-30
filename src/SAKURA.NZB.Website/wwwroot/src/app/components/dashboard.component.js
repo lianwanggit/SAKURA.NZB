@@ -11,7 +11,7 @@ System.register(["angular2/core", 'angular2/common', "./api.service", 'ng2-boots
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
     var core_1, common_1, api_service_1, ng2_bootstrap_1, ng2_charts_1;
-    var Summary, TopProduct, DaySale, DashboardComponent;
+    var Summary, TopProduct, DaySale, DayExchange, DashboardComponent;
     return {
         setters:[
             function (core_1_1) {
@@ -31,7 +31,7 @@ System.register(["angular2/core", 'angular2/common', "./api.service", 'ng2-boots
             }],
         execute: function() {
             Summary = (function () {
-                function Summary(customerCount, brandCount, productCount, orderCount, totalCost, totalIncome, totalProfit, unpaidCount, unpaidAmount, todayProfit, profitIncrementRate, profitIncrement) {
+                function Summary(customerCount, brandCount, productCount, orderCount, totalCost, totalIncome, totalProfit, unpaidCount, unpaidAmount, todayProfit, profitIncrementRate, profitIncrement, todayExchange, exchangeIncrement, exchangeIncrementRate) {
                     this.customerCount = customerCount;
                     this.brandCount = brandCount;
                     this.productCount = productCount;
@@ -44,6 +44,9 @@ System.register(["angular2/core", 'angular2/common', "./api.service", 'ng2-boots
                     this.todayProfit = todayProfit;
                     this.profitIncrementRate = profitIncrementRate;
                     this.profitIncrement = profitIncrement;
+                    this.todayExchange = todayExchange;
+                    this.exchangeIncrement = exchangeIncrement;
+                    this.exchangeIncrementRate = exchangeIncrementRate;
                 }
                 return Summary;
             }());
@@ -62,12 +65,20 @@ System.register(["angular2/core", 'angular2/common', "./api.service", 'ng2-boots
                 }
                 return DaySale;
             }());
+            DayExchange = (function () {
+                function DayExchange(date, exchange) {
+                    this.date = date;
+                    this.exchange = exchange;
+                }
+                return DayExchange;
+            }());
             DashboardComponent = (function () {
                 function DashboardComponent(service) {
                     this.service = service;
-                    this.summary = new Summary(0, 0, 0, 0, '', '', '', 0, '', '', '', 0);
+                    this.summary = new Summary(0, 0, 0, 0, '', '', '', 0, '', '', '', 0, 0, 0, '');
                     this.topSales = [].ToList();
                     this.past30DaysProfit = [].ToList();
+                    this.past30DaysExchange = [].ToList();
                     this.costList = [].ToList();
                     this.incomeList = [].ToList();
                     this.profitList = [].ToList();
@@ -143,8 +154,8 @@ System.register(["angular2/core", 'angular2/common', "./api.service", 'ng2-boots
                     this.firstTopProductName = '';
                     this.topSalesChartColours = [
                         {
-                            fillColor: 'rgba(84,84,84,0.3)',
-                            strokeColor: 'rgba(84,84,84,0.3)',
+                            fillColor: 'rgba(46,204,113,0.5)',
+                            strokeColor: 'rgba(46,204,113,0.5)',
                             highlightFill: 'rgba(76,195,217,1)',
                             highlightStroke: 'rgba(76,195,217,1)'
                         }
@@ -184,6 +195,41 @@ System.register(["angular2/core", 'angular2/common', "./api.service", 'ng2-boots
                     ];
                     this.pastDailyProfitChartLegend = false;
                     this.pastDailyProfitChartType = 'Line';
+                    // lineChart
+                    this.pastDailyExchangeChartData = [[], []];
+                    this.pastDailyExchangeChartLabels = [];
+                    this.pastDailyExchangeChartSeries = ['利润', '&nbsp;'];
+                    this.pastDailyExchangeChartOptions = {
+                        animation: false,
+                        responsive: true,
+                        multiTooltipTemplate: '<%if (datasetLabel){%><%=datasetLabel %>: <%}%><%= value %>',
+                        pointDotRadius: 2,
+                        maintainAspectRatio: false,
+                        datasetStrokeWidth: 1,
+                        showScale: false,
+                        pointDot: false,
+                        // Tooltip
+                        tooltipFillColor: "#fff",
+                        tooltipTitleFontColor: "#777",
+                        tooltipTitleFontSize: 14,
+                        tooltipTitleFontFamily: "'Roboto', sans-serif",
+                        tooltipFontColor: "#777",
+                        tooltipFontSize: 12,
+                        tooltipFontFamily: "'Roboto', sans-serif"
+                    };
+                    this.pastDailyExchangeChartColours = [
+                        {
+                            fillColor: 'rgba(0,153,204,0.5)',
+                            strokeColor: 'rgba(0,153,204,0.5)',
+                            pointColor: 'rgba(0,153,204,0.5)',
+                            pointStrokeColor: 'rgba(0,153,204,0.5)',
+                            pointHighlightFill: 'rgba(0,153,204,1)',
+                            pointHighlightStroke: 'rgba(0,153,204,1)'
+                        },
+                        {}
+                    ];
+                    this.pastDailyExchangeChartLegend = false;
+                    this.pastDailyExchangeChartType = 'Line';
                     this.doughnutChartLabels = ['Download Sales', 'In-Store Sales', 'Mail-Order Sales', 'a', 'b', 'c', 'd'];
                     this.doughnutChartData = [350, 450, 100, 210, 330, 450, 800];
                     this.doughnutChartType = 'Doughnut';
@@ -193,7 +239,7 @@ System.register(["angular2/core", 'angular2/common', "./api.service", 'ng2-boots
                     var that = this;
                     this.service.getDashboardSummary(function (json) {
                         if (json) {
-                            that.summary = new Summary(json.customerCount, json.brandCount, json.productCount, json.orderCount, json.totalCost, json.totalIncome, json.totalProfit, json.unpaidCount, json.unpaidAmount, json.todayProfit, json.profitIncrementRate, json.profitIncrement);
+                            that.summary = new Summary(json.customerCount, json.brandCount, json.productCount, json.orderCount, json.totalCost, json.totalIncome, json.totalProfit, json.unpaidCount, json.unpaidAmount, json.todayProfit, json.profitIncrementRate, json.profitIncrement, json.todayExchange, json.exchangeIncrement, json.exchangeIncrementRate);
                         }
                     });
                     this.service.getDashboardAnnualSales(function (json) {
@@ -229,6 +275,15 @@ System.register(["angular2/core", 'angular2/common', "./api.service", 'ng2-boots
                             });
                             that.pastDailyProfitChartLabels = that.past30DaysProfit.Select(function (p) { return p.date; }).ToArray();
                             that.pastDailyProfitChartData = [that.past30DaysProfit.Select(function (p) { return p.profit; }).ToArray(), []];
+                        }
+                    });
+                    this.service.getDashboardPast30DaysExchange(function (json) {
+                        if (json) {
+                            json.forEach(function (x) {
+                                that.past30DaysExchange.Add(new DayExchange(x.date, x.exchange));
+                            });
+                            that.pastDailyExchangeChartLabels = that.past30DaysExchange.Select(function (p) { return p.date; }).ToArray();
+                            that.pastDailyExchangeChartData = [that.past30DaysExchange.Select(function (p) { return p.exchange; }).ToArray(), []];
                         }
                     });
                 };

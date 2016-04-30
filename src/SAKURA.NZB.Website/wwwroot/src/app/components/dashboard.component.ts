@@ -9,7 +9,8 @@ declare var $: any;
 class Summary {
 	constructor(public customerCount: number, public brandCount: number, public productCount: number, public orderCount: number,
 		public totalCost: string, public totalIncome: string, public totalProfit: string, public unpaidCount: number,
-		public unpaidAmount: string, public todayProfit: string, public profitIncrementRate: string, public profitIncrement: number) { }
+		public unpaidAmount: string, public todayProfit: string, public profitIncrementRate: string, public profitIncrement: number,
+		public todayExchange: number, public exchangeIncrement: number, public exchangeIncrementRate: string) { }
 }
 
 class TopProduct {
@@ -18,6 +19,10 @@ class TopProduct {
 
 class DaySale {
 	constructor(public date: string, public count: number, public profit: number) { }
+}
+
+class DayExchange {
+	constructor(public date: string, public exchange: number) { }
 }
 
 @Component({
@@ -30,9 +35,10 @@ class DaySale {
 })
 
 export class DashboardComponent implements OnInit {
-    summary: Summary = new Summary(0, 0, 0, 0, '', '', '', 0, '', '', '', 0);
+    summary: Summary = new Summary(0, 0, 0, 0, '', '', '', 0, '', '', '', 0, 0, 0 , '');
 	topSales = [].ToList<TopProduct>();
 	past30DaysProfit = [].ToList<DaySale>();
+	past30DaysExchange = [].ToList<DayExchange>();
 
 	costList = [].ToList<number>();
 	incomeList = [].ToList<number>();
@@ -116,8 +122,8 @@ export class DashboardComponent implements OnInit {
 
 	private topSalesChartColours: Array<any> = [
 		{
-			fillColor: 'rgba(84,84,84,0.3)',
-			strokeColor: 'rgba(84,84,84,0.3)',
+			fillColor: 'rgba(46,204,113,0.5)',
+			strokeColor: 'rgba(46,204,113,0.5)',
 			highlightFill: 'rgba(76,195,217,1)',
 			highlightStroke: 'rgba(76,195,217,1)'
 		}
@@ -160,6 +166,43 @@ export class DashboardComponent implements OnInit {
 	private pastDailyProfitChartLegend: boolean = false;
 	private pastDailyProfitChartType: string = 'Line';
 
+	// lineChart
+	private pastDailyExchangeChartData: Array<any> = [[], []];
+	private pastDailyExchangeChartLabels: Array<any> = [];
+	private pastDailyExchangeChartSeries: Array<any> = ['利润', '&nbsp;'];
+	private pastDailyExchangeChartOptions: any = {
+		animation: false,
+		responsive: true,
+		multiTooltipTemplate: '<%if (datasetLabel){%><%=datasetLabel %>: <%}%><%= value %>',
+		pointDotRadius: 2,
+		maintainAspectRatio: false,
+		datasetStrokeWidth: 1,
+		showScale: false,
+		pointDot: false,
+		// Tooltip
+		tooltipFillColor: "#fff",
+		tooltipTitleFontColor: "#777",
+		tooltipTitleFontSize: 14,
+		tooltipTitleFontFamily: "'Roboto', sans-serif",
+		tooltipFontColor: "#777",
+		tooltipFontSize: 12,
+		tooltipFontFamily: "'Roboto', sans-serif"
+
+	};
+	private pastDailyExchangeChartColours: Array<any> = [
+		{
+			fillColor: 'rgba(0,153,204,0.5)',
+			strokeColor: 'rgba(0,153,204,0.5)',
+			pointColor: 'rgba(0,153,204,0.5)',
+			pointStrokeColor: 'rgba(0,153,204,0.5)',
+			pointHighlightFill: 'rgba(0,153,204,1)',
+			pointHighlightStroke: 'rgba(0,153,204,1)'
+		},
+		{}
+	];
+	private pastDailyExchangeChartLegend: boolean = false;
+	private pastDailyExchangeChartType: string = 'Line';
+
 	private doughnutChartLabels = ['Download Sales', 'In-Store Sales', 'Mail-Order Sales', 'a', 'b', 'c', 'd'];
 	private doughnutChartData = [350, 450, 100, 210, 330, 450, 800];
 	private doughnutChartType = 'Doughnut';
@@ -173,7 +216,8 @@ export class DashboardComponent implements OnInit {
 			if (json) {
 				that.summary = new Summary(json.customerCount, json.brandCount, json.productCount, json.orderCount,
 					json.totalCost, json.totalIncome, json.totalProfit, json.unpaidCount, json.unpaidAmount,
-					json.todayProfit, json.profitIncrementRate, json.profitIncrement);
+					json.todayProfit, json.profitIncrementRate, json.profitIncrement, json.todayExchange,
+					json.exchangeIncrement, json.exchangeIncrementRate);
 			}
 		});
 
@@ -216,6 +260,17 @@ export class DashboardComponent implements OnInit {
 
 				that.pastDailyProfitChartLabels = that.past30DaysProfit.Select(p => p.date).ToArray();
 				that.pastDailyProfitChartData = [that.past30DaysProfit.Select(p => p.profit).ToArray(), []];			
+			}
+		});
+
+		this.service.getDashboardPast30DaysExchange(json => {
+			if (json) {
+				json.forEach(x => {
+					that.past30DaysExchange.Add(new DayExchange(x.date, x.exchange));
+				});
+
+				that.pastDailyExchangeChartLabels = that.past30DaysExchange.Select(p => p.date).ToArray();
+				that.pastDailyExchangeChartData = [that.past30DaysExchange.Select(p => p.exchange).ToArray(), []];
 			}
 		});
     }

@@ -143,7 +143,28 @@
                         [chartType]="pastDailyProfitChartType"></base-chart>
         </div>
         <div class="widget widget-content shadow">
-
+            <div class="md-table">
+                <div class="md-table-cell-50 padding-left-8">
+                    <p class="md-display-1 font-weight-100 margin-top-15 margin-bottom-0">{{summary.todayExchange}}</p>
+                    <p class="opacity-50">今日汇率</p>
+                </div>
+                <div class="md-table-cell-50 padding-right-8">
+                    <p class="md-display-05 font-weight-100 margin-bottom-0 text-right" [ngClass]="{up: summary.exchangeIncrement >= 0, down: summary.exchangeIncrement < 0}">
+                        <i class="fa" [ngClass]="{'fa-caret-up': summary.exchangeIncrement >= 0, 'fa-caret-down': summary.exchangeIncrement < 0}"></i> {{summary.exchangeIncrementRate}}
+                    </p>
+                    <p class="md-display-05 font-weight-300 opacity-80 text-right">
+                        <small>{{ summary.exchangeIncrement > 0 ? '+' + (summary.exchangeIncrement).toFixed(2) : (summary.exchangeIncrement).toFixed(2)}}</small>
+                    </p>
+                </div>
+            </div>
+            <base-chart class="line-chart1"
+                        [data]="pastDailyExchangeChartData"
+                        [labels]="pastDailyExchangeChartLabels"
+                        [options]="pastDailyExchangeChartOptions"
+                        [series]="pastDailyExchangeChartSeries"
+                        [colours]="pastDailyExchangeChartColours"
+                        [legend]="pastDailyExchangeChartLegend"
+                        [chartType]="pastDailyExchangeChartType"></base-chart>
         </div>
     </div>
     <div class="col-xs-12 col-sm-6 col-md-4">

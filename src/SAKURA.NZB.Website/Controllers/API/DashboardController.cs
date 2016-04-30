@@ -70,9 +70,16 @@ namespace SAKURA.NZB.Website.Controllers.API
 
 			totalProfit = totalIncome - totalCost * rate;
 			profitIncrement = todayProfit - yesterdayProfit;
-			profitIncrementRate = Math.Abs( yesterdayProfit == 0 ? 1 : profitIncrement / yesterdayProfit);
+			profitIncrementRate = Math.Abs(yesterdayProfit == 0 ? 1 : profitIncrement / yesterdayProfit);
 
-			var summary = new { customerCount = _context.Customers.Count(),
+			var todayExchange = (float)Math.Round(_context.ExchangeRates.FirstOrDefault(r => r.ModifiedTime.Date == today)?.NZDCNY ?? 0, 4);
+			var yesterdayExchange =  (float)Math.Round(_context.ExchangeRates.FirstOrDefault(r => r.ModifiedTime.Date == yesterday)?.NZDCNY ?? 0, 4);
+			var exchangeIncrement = todayExchange - yesterdayExchange;
+			var exchangeIncrementRate = Math.Abs(yesterdayExchange == 0 ? 0 : exchangeIncrement / yesterdayExchange);
+			
+			var summary = new
+			{
+				customerCount = _context.Customers.Count(),
 				brandCount = _context.Brands.Count(),
 				productCount = _context.Products.Count(),
 				orderCount = _context.Orders.Count(),
@@ -83,7 +90,10 @@ namespace SAKURA.NZB.Website.Controllers.API
 				unpaidAmount = currencyToCny(unpaidAmount),
 				todayProfit = currencyToCny(todayProfit),
 				profitIncrementRate = percentToString(profitIncrementRate),
-				profitIncrement = profitIncrement
+				profitIncrement = profitIncrement,
+				todayExchange = todayExchange,
+				exchangeIncrement = exchangeIncrement,
+				exchangeIncrementRate = percentToString(exchangeIncrementRate)
 			};
 
 			return new ObjectResult(summary);
@@ -120,7 +130,8 @@ namespace SAKURA.NZB.Website.Controllers.API
 				}
 				else
 				{
-					result.Add(new MonthSale {
+					result.Add(new MonthSale
+					{
 						Month = month,
 						Count = 1,
 						Cost = cost,
@@ -135,7 +146,8 @@ namespace SAKURA.NZB.Website.Controllers.API
 				var sale = result.FirstOrDefault(r => r.Month == i);
 				if (sale == null)
 				{
-					result.Add(new MonthSale {
+					result.Add(new MonthSale
+					{
 						Month = i,
 						Count = 0,
 						Cost = 0,
@@ -164,7 +176,7 @@ namespace SAKURA.NZB.Website.Controllers.API
 		public IActionResult GetPast30DaysProfit()
 		{
 			var orders = _context.Orders.Include(o => o.Products).ToList();
-			var dates = Enumerable.Range(1, 30).Select(i => DateTimeOffset.Now.Date.AddDays(i-30));
+			var dates = Enumerable.Range(1, 30).Select(i => DateTimeOffset.Now.Date.AddDays(i - 30));
 			var rate = _config.GetCurrentRate();
 
 			var result = new List<DaySale>();
@@ -194,8 +206,24 @@ namespace SAKURA.NZB.Website.Controllers.API
 			return new ObjectResult(result);
 		}
 
+		[HttpGet("past-30days-exchange")]
+		public IActionResult GetPast30DaysExchange()
+		{
+			var rates = _context.ExchangeRates.ToList();
+			var dates = Enumerable.Range(1, 30).Select(i => DateTimeOffset.Now.Date.AddDays(i - 30));
+
+			var result = new List<DayExchange>();
+			foreach (var d in dates)
+			{
+				var rate = rates.FirstOrDefault(r => r.ModifiedTime.Date == d);
+				result.Add(new DayExchange { Date = d.ToShortDateString(), Exchange = (float)Math.Round(rate.NZDCNY, 4) });
+			}
+
+			return new ObjectResult(result);
+		}
+
 		private Func<float, string> currencyToNzd = (f) => { return f.ToString("C", CultureInfo.CreateSpecificCulture("en-NZ")); };
-		private Func<float, string> currencyToCny = (f) => 
+		private Func<float, string> currencyToCny = (f) =>
 		{
 			var ci = CultureInfo.CreateSpecificCulture("zh-CN");
 			ci.NumberFormat.CurrencyNegativePattern = 1;
@@ -221,6 +249,12 @@ namespace SAKURA.NZB.Website.Controllers.API
 	{
 		public string Date { get; set; }
 		public int OrderCount { get; set; }
-		public float Profit { get; set; } 
+		public float Profit { get; set; }
+	}
+
+	class DayExchange
+	{
+		public string Date { get; set; }
+		public float Exchange { get; set; }
 	}
 }
