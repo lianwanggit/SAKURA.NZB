@@ -186,4 +186,8 @@ export class ApiService {
 	getDashboardPast30DaysExchange(onNext: (json: any) => void) {
 		this.http.get("api/dashboard/past-30days-exchange").map(response => response.json()).subscribe(onNext);
 	}
+
+	getDashboardOrderStatus(onNext: (json: any) => void) {
+		this.http.get("api/dashboard/order-status").map(response => response.json()).subscribe(onNext);
+	}
 }

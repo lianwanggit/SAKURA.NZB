@@ -2,6 +2,7 @@
 using Microsoft.Data.Entity;
 using SAKURA.NZB.Business.Configuration;
 using SAKURA.NZB.Data;
+using SAKURA.NZB.Domain;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -218,6 +219,16 @@ namespace SAKURA.NZB.Website.Controllers.API
 				var rate = rates.FirstOrDefault(r => r.ModifiedTime.Date == d);
 				result.Add(new DayExchange { Date = d.ToShortDateString(), Exchange = (float)Math.Round(rate.NZDCNY, 4) });
 			}
+
+			return new ObjectResult(result);
+		}
+
+		[HttpGet("order-status")]
+		public IActionResult GetOrderStatus()
+		{
+			var orders = _context.Orders.GroupBy(o => o.OrderState).Select(g => new { Status = g.Key.ToString(), Count = g.Count() }).ToList();
+			var result = Enum.GetNames(typeof(OrderState)).Select(s => new { Status = s,
+				Count = orders.FirstOrDefault(o => o.Status == s)?.Count ?? 0 });
 
 			return new ObjectResult(result);
 		}

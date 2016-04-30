@@ -214,6 +214,11 @@ strong {
     width: 50%;
 }
 
+.md-table-cell-20 {
+    display: table-cell;
+    width: 20%;
+}
+
 .chart-head-tab {
     color: rgba(0,0,0,0.54);
     font-size: 14px; 

@@ -1,6 +1,7 @@
 ﻿import {Component, OnInit, ViewEncapsulation} from "angular2/core";
 import {CORE_DIRECTIVES, FORM_DIRECTIVES, NgClass} from 'angular2/common';
 import {ApiService} from "./api.service";
+import {Dict} from "./orders/models";
 
 import {BUTTON_DIRECTIVES} from 'ng2-bootstrap/ng2-bootstrap';
 import {CHART_DIRECTIVES} from 'ng2-charts/ng2-charts';
@@ -25,6 +26,10 @@ class DayExchange {
 	constructor(public date: string, public exchange: number) { }
 }
 
+class OrderStatus {
+	constructor(public status: string, public count: number) { }
+}
+
 @Component({
     selector: "dashboard",
     templateUrl: "./src/app/components/dashboard.html",
@@ -44,6 +49,9 @@ export class DashboardComponent implements OnInit {
 	incomeList = [].ToList<number>();
 	profitList = [].ToList<number>();
 	orderCountList = [].ToList<number>();
+
+	orderStates = (new Dict()).orderStates;
+	orderStatusSummary: OrderStatus[] = [];
 
 	annualSalesChartSwitch = false;
 
@@ -158,10 +166,10 @@ export class DashboardComponent implements OnInit {
 		{
 			fillColor: 'rgba(16,150,24,0.3)',
 			strokeColor: 'rgba(16,150,24,0.5)',
-			pointColor: 'rgba(0,153,204,0.5)',
-			pointStrokeColor: 'rgba(0,153,204,0.5)',
-			pointHighlightFill: 'rgba(0,153,204,1)',
-			pointHighlightStroke: 'rgba(0,153,204,1)'
+			pointColor: 'rgba(16,150,24,0.5)',
+			pointStrokeColor: 'rgba(16,150,24,0.5)',
+			pointHighlightFill: 'rgba(16,150,24,1)',
+			pointHighlightStroke: 'rgba(16,150,24,1)'
 		},
 		{}
 	];
@@ -171,7 +179,7 @@ export class DashboardComponent implements OnInit {
 	// lineChart
 	private pastDailyExchangeChartData: Array<any> = [[], []];
 	private pastDailyExchangeChartLabels: Array<any> = [];
-	private pastDailyExchangeChartSeries: Array<any> = ['利润', '&nbsp;'];
+	private pastDailyExchangeChartSeries: Array<any> = ['汇率', '&nbsp;'];
 	private pastDailyExchangeChartOptions: any = {
 		animation: false,
 		responsive: true,
@@ -205,8 +213,8 @@ export class DashboardComponent implements OnInit {
 	private pastDailyExchangeChartLegend: boolean = false;
 	private pastDailyExchangeChartType: string = 'Line';
 
-	private doughnutChartLabels = ['Download Sales', 'In-Store Sales', 'Mail-Order Sales', 'a', 'b', 'c', 'd'];
-	private doughnutChartData = [350, 450, 100, 210, 330, 450, 800];
+	private doughnutChartLabels = ['Download Sales', 'In-Store Sales', 'Mail-Order Sales', 'a'];
+	private doughnutChartData = [350, 330, 450, 800];
 	private doughnutChartType = 'Doughnut';
 
     constructor(private service: ApiService) { }
@@ -273,6 +281,15 @@ export class DashboardComponent implements OnInit {
 
 				that.pastDailyExchangeChartLabels = that.past30DaysExchange.Select(p => p.date).ToArray();
 				that.pastDailyExchangeChartData = [that.past30DaysExchange.Select(p => p.exchange).ToArray(), []];
+			}
+		});
+
+		this.service.getDashboardOrderStatus(json => {
+			if (json) {
+				json.forEach(x => {
+					that.orderStatusSummary.push(new OrderStatus(that.orderStates[x.status], x.count));
+				});
+
 			}
 		});
     }

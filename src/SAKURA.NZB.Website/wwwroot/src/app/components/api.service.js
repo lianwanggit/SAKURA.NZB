@@ -159,6 +159,9 @@ System.register(["rxjs/Rx", "angular2/http", "angular2/core"], function(exports_
                 ApiService.prototype.getDashboardPast30DaysExchange = function (onNext) {
                     this.http.get("api/dashboard/past-30days-exchange").map(function (response) { return response.json(); }).subscribe(onNext);
                 };
+                ApiService.prototype.getDashboardOrderStatus = function (onNext) {
+                    this.http.get("api/dashboard/order-status").map(function (response) { return response.json(); }).subscribe(onNext);
+                };
                 ApiService = __decorate([
                     core_1.Injectable(), 
                     __metadata('design:paramtypes', [http_1.Http])
