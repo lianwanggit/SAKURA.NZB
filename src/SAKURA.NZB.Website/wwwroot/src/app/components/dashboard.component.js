@@ -140,7 +140,8 @@ System.register(["angular2/core", 'angular2/common', "./api.service", 'ng2-boots
                         multiTooltipTemplate: '<%if (datasetLabel){%><%=datasetLabel %>: <%}%><%= value %>',
                         showScale: false,
                         showTooltips: false,
-                        barShowStroke: false,
+                        barShowStroke: true,
+                        barStrokeWidth: 1
                     };
                     this.topSalesChartLabels = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
                     this.topSalesChartSeries = ['A'];
@@ -154,8 +155,8 @@ System.register(["angular2/core", 'angular2/common', "./api.service", 'ng2-boots
                     this.firstTopProductName = '';
                     this.topSalesChartColours = [
                         {
-                            fillColor: 'rgba(46,204,113,0.5)',
-                            strokeColor: 'rgba(46,204,113,0.5)',
+                            fillColor: 'rgba(244,180,0,0.3)',
+                            strokeColor: 'rgba(244,180,0,0.5)',
                             highlightFill: 'rgba(76,195,217,1)',
                             highlightStroke: 'rgba(76,195,217,1)'
                         }
@@ -173,6 +174,7 @@ System.register(["angular2/core", 'angular2/common', "./api.service", 'ng2-boots
                         datasetStrokeWidth: 1,
                         showScale: false,
                         pointDot: false,
+                        bezierCurve: false,
                         // Tooltip
                         tooltipFillColor: "#fff",
                         tooltipTitleFontColor: "#777",
@@ -184,8 +186,8 @@ System.register(["angular2/core", 'angular2/common', "./api.service", 'ng2-boots
                     };
                     this.pastDailyProfitChartColours = [
                         {
-                            fillColor: 'rgba(0,153,204,0.5)',
-                            strokeColor: 'rgba(0,153,204,0.5)',
+                            fillColor: 'rgba(16,150,24,0.3)',
+                            strokeColor: 'rgba(16,150,24,0.5)',
                             pointColor: 'rgba(0,153,204,0.5)',
                             pointStrokeColor: 'rgba(0,153,204,0.5)',
                             pointHighlightFill: 'rgba(0,153,204,1)',
@@ -219,7 +221,7 @@ System.register(["angular2/core", 'angular2/common', "./api.service", 'ng2-boots
                     };
                     this.pastDailyExchangeChartColours = [
                         {
-                            fillColor: 'rgba(0,153,204,0.5)',
+                            fillColor: 'rgba(0,153,204,0.3)',
                             strokeColor: 'rgba(0,153,204,0.5)',
                             pointColor: 'rgba(0,153,204,0.5)',
                             pointStrokeColor: 'rgba(0,153,204,0.5)',
