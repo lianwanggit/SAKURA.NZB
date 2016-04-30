@@ -178,4 +178,8 @@ export class ApiService {
 	getDashboardTopSales(onNext: (json: any) => void) {
 		this.http.get("api/dashboard/top-sales").map(response => response.json()).subscribe(onNext);
 	}
+
+	getDashboardPast30DaysProfit(onNext: (json: any) => void) {
+		this.http.get("api/dashboard/past-30days-profit").map(response => response.json()).subscribe(onNext);
+	}
 }

@@ -11,7 +11,7 @@ System.register(["angular2/core", 'angular2/common', "./api.service", 'ng2-boots
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
     var core_1, common_1, api_service_1, ng2_bootstrap_1, ng2_charts_1;
-    var Summary, TopProduct, DashboardComponent;
+    var Summary, TopProduct, DaySale, DashboardComponent;
     return {
         setters:[
             function (core_1_1) {
@@ -54,11 +54,20 @@ System.register(["angular2/core", 'angular2/common', "./api.service", 'ng2-boots
                 }
                 return TopProduct;
             }());
+            DaySale = (function () {
+                function DaySale(date, count, profit) {
+                    this.date = date;
+                    this.count = count;
+                    this.profit = profit;
+                }
+                return DaySale;
+            }());
             DashboardComponent = (function () {
                 function DashboardComponent(service) {
                     this.service = service;
                     this.summary = new Summary(0, 0, 0, 0, '', '', '', 0, '', '', '', 0);
                     this.topSales = [].ToList();
+                    this.past30DaysProfit = [].ToList();
                     this.costList = [].ToList();
                     this.incomeList = [].ToList();
                     this.profitList = [].ToList();
@@ -140,6 +149,41 @@ System.register(["angular2/core", 'angular2/common', "./api.service", 'ng2-boots
                             highlightStroke: 'rgba(76,195,217,1)'
                         }
                     ];
+                    // lineChart
+                    this.pastDailyProfitChartData = [[], []];
+                    this.pastDailyProfitChartLabels = [];
+                    this.pastDailyProfitChartSeries = ['利润', '&nbsp;'];
+                    this.pastDailyProfitChartOptions = {
+                        animation: false,
+                        responsive: true,
+                        multiTooltipTemplate: '<%if (datasetLabel){%><%=datasetLabel %>: <%}%><%= value %>',
+                        pointDotRadius: 2,
+                        maintainAspectRatio: false,
+                        datasetStrokeWidth: 1,
+                        showScale: false,
+                        pointDot: false,
+                        // Tooltip
+                        tooltipFillColor: "#fff",
+                        tooltipTitleFontColor: "#777",
+                        tooltipTitleFontSize: 14,
+                        tooltipTitleFontFamily: "'Roboto', sans-serif",
+                        tooltipFontColor: "#777",
+                        tooltipFontSize: 12,
+                        tooltipFontFamily: "'Roboto', sans-serif"
+                    };
+                    this.pastDailyProfitChartColours = [
+                        {
+                            fillColor: 'rgba(0,153,204,0.5)',
+                            strokeColor: 'rgba(0,153,204,0.5)',
+                            pointColor: 'rgba(0,153,204,0.5)',
+                            pointStrokeColor: 'rgba(0,153,204,0.5)',
+                            pointHighlightFill: 'rgba(0,153,204,1)',
+                            pointHighlightStroke: 'rgba(0,153,204,1)'
+                        },
+                        {}
+                    ];
+                    this.pastDailyProfitChartLegend = false;
+                    this.pastDailyProfitChartType = 'Line';
                     this.doughnutChartLabels = ['Download Sales', 'In-Store Sales', 'Mail-Order Sales', 'a', 'b', 'c', 'd'];
                     this.doughnutChartData = [350, 450, 100, 210, 330, 450, 800];
                     this.doughnutChartType = 'Doughnut';
@@ -176,6 +220,15 @@ System.register(["angular2/core", 'angular2/common', "./api.service", 'ng2-boots
                                 that.firstTopProductName = _this.topSalesChartNames[0];
                                 that.selectedTopProductCount = _this.topSalesChartData[0][0];
                             }
+                        }
+                    });
+                    this.service.getDashboardPast30DaysProfit(function (json) {
+                        if (json) {
+                            json.forEach(function (x) {
+                                that.past30DaysProfit.Add(new DaySale(x.date, x.orderCount, x.profit));
+                            });
+                            that.pastDailyProfitChartLabels = that.past30DaysProfit.Select(function (p) { return p.date; }).ToArray();
+                            that.pastDailyProfitChartData = [that.past30DaysProfit.Select(function (p) { return p.profit; }).ToArray(), []];
                         }
                     });
                 };

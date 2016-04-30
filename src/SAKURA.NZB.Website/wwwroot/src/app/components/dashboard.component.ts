@@ -16,6 +16,10 @@ class TopProduct {
 	constructor(public name: string, public count: number) { }
 }
 
+class DaySale {
+	constructor(public date: string, public count: number, public profit: number) { }
+}
+
 @Component({
     selector: "dashboard",
     templateUrl: "./src/app/components/dashboard.html",
@@ -28,6 +32,7 @@ class TopProduct {
 export class DashboardComponent implements OnInit {
     summary: Summary = new Summary(0, 0, 0, 0, '', '', '', 0, '', '', '', 0);
 	topSales = [].ToList<TopProduct>();
+	past30DaysProfit = [].ToList<DaySale>();
 
 	costList = [].ToList<number>();
 	incomeList = [].ToList<number>();
@@ -118,6 +123,43 @@ export class DashboardComponent implements OnInit {
 		}
 	];
 
+	// lineChart
+	private pastDailyProfitChartData: Array<any> = [[],[]];
+	private pastDailyProfitChartLabels: Array<any> = [];
+	private pastDailyProfitChartSeries: Array<any> = ['利润', '&nbsp;'];
+	private pastDailyProfitChartOptions: any = {
+		animation: false,
+		responsive: true,
+		multiTooltipTemplate: '<%if (datasetLabel){%><%=datasetLabel %>: <%}%><%= value %>',
+		pointDotRadius: 2,
+		maintainAspectRatio: false,
+		datasetStrokeWidth: 1,
+		showScale: false,
+		pointDot: false,
+		// Tooltip
+		tooltipFillColor: "#fff",
+		tooltipTitleFontColor: "#777",
+		tooltipTitleFontSize: 14,
+		tooltipTitleFontFamily: "'Roboto', sans-serif",
+		tooltipFontColor: "#777",
+		tooltipFontSize: 12,
+		tooltipFontFamily: "'Roboto', sans-serif"
+
+	};
+	private pastDailyProfitChartColours: Array<any> = [
+		{
+			fillColor: 'rgba(0,153,204,0.5)',
+			strokeColor: 'rgba(0,153,204,0.5)',
+			pointColor: 'rgba(0,153,204,0.5)',
+			pointStrokeColor: 'rgba(0,153,204,0.5)',
+			pointHighlightFill: 'rgba(0,153,204,1)',
+			pointHighlightStroke: 'rgba(0,153,204,1)'
+		},
+		{}
+	];
+	private pastDailyProfitChartLegend: boolean = false;
+	private pastDailyProfitChartType: string = 'Line';
+
 	private doughnutChartLabels = ['Download Sales', 'In-Store Sales', 'Mail-Order Sales', 'a', 'b', 'c', 'd'];
 	private doughnutChartData = [350, 450, 100, 210, 330, 450, 800];
 	private doughnutChartType = 'Doughnut';
@@ -163,6 +205,17 @@ export class DashboardComponent implements OnInit {
 					that.firstTopProductName = this.topSalesChartNames[0];
 					that.selectedTopProductCount = this.topSalesChartData[0][0];
 				}
+			}
+		});
+
+		this.service.getDashboardPast30DaysProfit(json => {
+			if (json) {
+				json.forEach(x => {
+					that.past30DaysProfit.Add(new DaySale(x.date, x.orderCount, x.profit));
+				});
+
+				that.pastDailyProfitChartLabels = that.past30DaysProfit.Select(p => p.date).ToArray();
+				that.pastDailyProfitChartData = [that.past30DaysProfit.Select(p => p.profit).ToArray(), []];			
 			}
 		});
     }
