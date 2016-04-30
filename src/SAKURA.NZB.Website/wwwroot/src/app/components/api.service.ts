@@ -175,8 +175,12 @@ export class ApiService {
 		this.http.get("api/dashboard/annual-sales").map(response => response.json()).subscribe(onNext);
 	}
 
-	getDashboardTopSales(onNext: (json: any) => void) {
-		this.http.get("api/dashboard/top-sales").map(response => response.json()).subscribe(onNext);
+	getDashboardTopSaleProducts(onNext: (json: any) => void) {
+		this.http.get("api/dashboard/top-sale-products").map(response => response.json()).subscribe(onNext);
+	}
+
+	getDashboardTopSaleBrands(onNext: (json: any) => void) {
+		this.http.get("api/dashboard/top-sale-brands").map(response => response.json()).subscribe(onNext);
 	}
 
 	getDashboardPast30DaysProfit(onNext: (json: any) => void) {

@@ -11,7 +11,7 @@ System.register(["angular2/core", 'angular2/common', "./api.service", "./orders/
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
     var core_1, common_1, api_service_1, models_1, ng2_bootstrap_1, ng2_charts_1;
-    var Summary, TopProduct, DaySale, DayExchange, OrderStatus, DashboardComponent;
+    var Summary, TopProduct, TopBrand, DaySale, DayExchange, OrderStatus, Legend, DashboardComponent;
     return {
         setters:[
             function (core_1_1) {
@@ -60,6 +60,13 @@ System.register(["angular2/core", 'angular2/common', "./api.service", "./orders/
                 }
                 return TopProduct;
             }());
+            TopBrand = (function () {
+                function TopBrand(name, count) {
+                    this.name = name;
+                    this.count = count;
+                }
+                return TopBrand;
+            }());
             DaySale = (function () {
                 function DaySale(date, count, profit) {
                     this.date = date;
@@ -82,11 +89,19 @@ System.register(["angular2/core", 'angular2/common', "./api.service", "./orders/
                 }
                 return OrderStatus;
             }());
+            Legend = (function () {
+                function Legend(color, label) {
+                    this.color = color;
+                    this.label = label;
+                }
+                return Legend;
+            }());
             DashboardComponent = (function () {
                 function DashboardComponent(service) {
                     this.service = service;
                     this.summary = new Summary(0, 0, 0, 0, '', '', '', 0, '', '', '', 0, 0, 0, '');
-                    this.topSales = [].ToList();
+                    this.topSaleProducts = [].ToList();
+                    this.topSaleBrands = [].ToList();
                     this.past30DaysProfit = [].ToList();
                     this.past30DaysExchange = [].ToList();
                     this.costList = [].ToList();
@@ -147,7 +162,7 @@ System.register(["angular2/core", 'angular2/common', "./api.service", "./orders/
                     ];
                     this.annualSalesChartLegend = false;
                     this.annualSalesChartType = 'Line';
-                    this.topSalesChartOptions = {
+                    this.topSaleProductsChartOptions = {
                         responsive: true,
                         multiTooltipTemplate: '<%if (datasetLabel){%><%=datasetLabel %>: <%}%><%= value %>',
                         showScale: false,
@@ -155,17 +170,17 @@ System.register(["angular2/core", 'angular2/common', "./api.service", "./orders/
                         barShowStroke: true,
                         barStrokeWidth: 1
                     };
-                    this.topSalesChartLabels = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
-                    this.topSalesChartSeries = ['A'];
-                    this.topSalesChartType = 'Bar';
-                    this.topSalesChartLegend = false;
-                    this.topSalesChartData = [];
-                    this.topSalesChartNames = [];
+                    this.topSaleProductsChartLabels = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+                    this.topSaleProductsChartSeries = ['A'];
+                    this.topSaleProductsChartType = 'Bar';
+                    this.topSaleProductsChartLegend = false;
+                    this.topSaleProductsChartData = [];
+                    this.topSaleProductsChartNames = [];
                     this.selectedTopProductIndex = 0;
                     this.selectedTopProductName = '';
                     this.selectedTopProductCount = 0;
                     this.firstTopProductName = '';
-                    this.topSalesChartColours = [
+                    this.topSaleProductsChartColours = [
                         {
                             fillColor: 'rgba(244,180,0,0.3)',
                             strokeColor: 'rgba(244,180,0,0.5)',
@@ -244,9 +259,60 @@ System.register(["angular2/core", 'angular2/common', "./api.service", "./orders/
                     ];
                     this.pastDailyExchangeChartLegend = false;
                     this.pastDailyExchangeChartType = 'Line';
-                    this.doughnutChartLabels = ['Download Sales', 'In-Store Sales', 'Mail-Order Sales', 'a'];
-                    this.doughnutChartData = [350, 330, 450, 800];
-                    this.doughnutChartType = 'Doughnut';
+                    this.topSaleBrandsChartOptions = {
+                        // Tooltip
+                        tooltipFillColor: "#fff",
+                        tooltipFontColor: "#777",
+                        tooltipFontSize: 12,
+                        tooltipFontFamily: "'Roboto', sans-serif"
+                    };
+                    this.topSaleBrandsChartLabels = [];
+                    this.topSaleBrandsChartData = [];
+                    this.topSaleBrandsChartColours = [
+                        {
+                            color: "rgba(151,187,205,0.8)",
+                            highlight: "rgba(151,187,205,1)",
+                        },
+                        {
+                            color: "rgba(220,220,220,0.8)",
+                            highlight: "rgba(220,220,220,1)",
+                        },
+                        {
+                            color: "rgba(247,70,74,0.8)",
+                            highlight: "rgba(247,70,74,1)",
+                        },
+                        {
+                            color: "rgba(70,191,189,0.8)",
+                            highlight: "rgba(70,191,189,1)",
+                        },
+                        {
+                            color: "rgba(253,180,92,0.8)",
+                            highlight: "rgba(253,180,92,1)",
+                        },
+                        {
+                            color: "rgba(148,159,177,0.8)",
+                            highlight: "rgba(148,159,177,1)",
+                        },
+                        {
+                            color: "rgba(77,83,96,0.8)",
+                            highlight: "rgba(77,83,96,1)",
+                        },
+                        {
+                            color: "rgba(164,10,134,0.8)",
+                            highlight: "rgba(164,10,134,1)",
+                        },
+                        {
+                            color: "rgba(195,26,105,0.8)",
+                            highlight: "rgba(195,26,105,1)",
+                        },
+                        {
+                            color: "rgba(33,137,228,0.8)",
+                            highlight: "rgba(33,137,228,1)",
+                        }
+                    ];
+                    this.topSaleBrandsChartLegend = false;
+                    this.topSaleBrandsChartCustomLegend = [];
+                    this.topSaleBrandsChartType = 'Doughnut';
                 }
                 DashboardComponent.prototype.ngOnInit = function () {
                     var _this = this;
@@ -267,18 +333,30 @@ System.register(["angular2/core", 'angular2/common', "./api.service", "./orders/
                             that.changeAnnualSalesChartData();
                         }
                     });
-                    this.service.getDashboardTopSales(function (json) {
+                    this.service.getDashboardTopSaleProducts(function (json) {
                         if (json) {
                             json.forEach(function (x) {
-                                that.topSales.Add(new TopProduct(x.productName, x.count));
+                                that.topSaleProducts.Add(new TopProduct(x.productName, x.count));
                             });
-                            that.topSalesChartData = [that.topSales.Select(function (s) { return s.count; }).ToArray()];
-                            that.topSalesChartNames = that.topSales.Select(function (s) { return s.name; }).ToArray();
-                            if (that.topSales.Count() > 0) {
+                            that.topSaleProductsChartData = [that.topSaleProducts.Select(function (s) { return s.count; }).ToArray()];
+                            that.topSaleProductsChartNames = that.topSaleProducts.Select(function (s) { return s.name; }).ToArray();
+                            if (that.topSaleProducts.Count() > 0) {
                                 that.selectedTopProductIndex = 1;
-                                that.selectedTopProductName = _this.topSalesChartNames[0];
-                                that.firstTopProductName = _this.topSalesChartNames[0];
-                                that.selectedTopProductCount = _this.topSalesChartData[0][0];
+                                that.selectedTopProductName = _this.topSaleProductsChartNames[0];
+                                that.firstTopProductName = _this.topSaleProductsChartNames[0];
+                                that.selectedTopProductCount = _this.topSaleProductsChartData[0][0];
+                            }
+                        }
+                    });
+                    this.service.getDashboardTopSaleBrands(function (json) {
+                        if (json) {
+                            json.forEach(function (x) {
+                                that.topSaleBrands.Add(new TopBrand(x.brandName, x.count));
+                            });
+                            that.topSaleBrandsChartData = that.topSaleBrands.Select(function (s) { return s.count; }).ToArray();
+                            that.topSaleBrandsChartLabels = that.topSaleBrands.Select(function (s) { return s.name; }).ToArray();
+                            for (var i = 0; i < that.topSaleBrands.Count(); i++) {
+                                that.topSaleBrandsChartCustomLegend.push(new Legend(that.topSaleBrandsChartColours[i].color, that.topSaleBrandsChartLabels[i] + ': ' + that.topSaleBrandsChartData[i]));
                             }
                         }
                     });
@@ -314,9 +392,9 @@ System.register(["angular2/core", 'angular2/common', "./api.service", "./orders/
                     this.annualSalesChartSwitch = flag;
                     this.changeAnnualSalesChartData();
                 };
-                DashboardComponent.prototype.onTopSalesChartSelected = function (e) {
+                DashboardComponent.prototype.ontopSaleProductsChartSelected = function (e) {
                     this.selectedTopProductIndex = parseInt(e.activeLabel, 10) + 1;
-                    this.selectedTopProductName = this.topSalesChartNames[e.activeLabel];
+                    this.selectedTopProductName = this.topSaleProductsChartNames[e.activeLabel];
                     this.selectedTopProductCount = e.activePoints[0].value;
                 };
                 DashboardComponent.prototype.changeAnnualSalesChartData = function () {

@@ -150,8 +150,11 @@ System.register(["rxjs/Rx", "angular2/http", "angular2/core"], function(exports_
                 ApiService.prototype.getDashboardAnnualSales = function (onNext) {
                     this.http.get("api/dashboard/annual-sales").map(function (response) { return response.json(); }).subscribe(onNext);
                 };
-                ApiService.prototype.getDashboardTopSales = function (onNext) {
-                    this.http.get("api/dashboard/top-sales").map(function (response) { return response.json(); }).subscribe(onNext);
+                ApiService.prototype.getDashboardTopSaleProducts = function (onNext) {
+                    this.http.get("api/dashboard/top-sale-products").map(function (response) { return response.json(); }).subscribe(onNext);
+                };
+                ApiService.prototype.getDashboardTopSaleBrands = function (onNext) {
+                    this.http.get("api/dashboard/top-sale-brands").map(function (response) { return response.json(); }).subscribe(onNext);
                 };
                 ApiService.prototype.getDashboardPast30DaysProfit = function (onNext) {
                     this.http.get("api/dashboard/past-30days-profit").map(function (response) { return response.json(); }).subscribe(onNext);

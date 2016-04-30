@@ -168,20 +168,20 @@
         <div class="widget widget-content shadow">
             <div>
                 <p class="opacity-50 margin-bottom-5">最收欢迎产品</p>
-                <p class="md-display-0 font-weight-100 margin-bottom-0"><i class="fa fa-certificate opacity-50 gold-color"></i> {{firstTopProductName}}</p>
+                <p class="md-display-0 font-weight-100 margin-bottom-0 md-min-height-68"> {{firstTopProductName}}</p>
             </div>
             <div class="margin-top-5">
                 <base-chart class="bar-chart"
-                            [data]="topSalesChartData"
-                            [labels]="topSalesChartLabels"
-                            [options]="topSalesChartOptions"
-                            [series]="topSalesChartSeries"
-                            [colours]="topSalesChartColours"
-                            [legend]="topSalesChartLegend"
-                            [chartType]="topSalesChartType"
-                            (chartClick)="onTopSalesChartSelected($event)"></base-chart>
+                            [data]="topSaleProductsChartData"
+                            [labels]="topSaleProductsChartLabels"
+                            [options]="topSaleProductsChartOptions"
+                            [series]="topSaleProductsChartSeries"
+                            [colours]="topSaleProductsChartColours"
+                            [legend]="topSaleProductsChartLegend"
+                            [chartType]="topSaleProductsChartType"
+                            (chartClick)="ontopSaleProductsChartSelected($event)"></base-chart>
 
-                <p class="md-display-05 font-weight-100 margin-top-10 margin-bottom-0">
+                <p class="md-display-05 font-weight-100 margin-top-10 margin-bottom-0 md-min-height-68">
                     #{{selectedTopProductIndex}} {{selectedTopProductName}}
                     <small class="padding-left-8 opacity-30 smaller">售出</small> <strong>{{selectedTopProductCount}}</strong>
                 </p>
@@ -191,10 +191,26 @@
 
     <div class="col-xs-12 col-sm-6">
         <div class="widget widget-content shadow">
-            <base-chart class="doughnut-chart"
-                        [data]="doughnutChartData"
-                        [labels]="doughnutChartLabels"
-                        [chartType]="doughnutChartType"></base-chart>
+            <div>
+                <p class="opacity-50 margin-bottom-5">最佳销售品牌</p>
+            </div>
+            <div class="md-table">
+                <div class="md-table-cell-60">
+                    <base-chart class="doughnut-chart"
+                                [data]="topSaleBrandsChartData"
+                                [labels]="topSaleBrandsChartLabels"
+                                [options]="topSaleBrandsChartOptions"
+                                [colours]="topSaleBrandsChartColours"
+                                [legend]="topSaleBrandsChartLegend"
+                                [chartType]="topSaleBrandsChartType"></base-chart>
+                </div>
+                <div class="md-table-cell-40 md-vertical-top padding-left-15 hidden-xs hidden-sm">
+                    <ul class="doughnut-legend">
+                        <li class="font-weight-300" *ngFor="#l of topSaleBrandsChartCustomLegend; #i = index"><span [ngStyle]="{'background-color': l.color}"></span>{{l.label}}</li>
+                    </ul>
+                </div>
+            </div>
+            
         </div>
     </div>
 

@@ -161,14 +161,26 @@ namespace SAKURA.NZB.Website.Controllers.API
 			return new ObjectResult(result.OrderBy(s => s.Month));
 		}
 
-		[HttpGet("top-sales")]
-		public IActionResult GetTopSales()
+		[HttpGet("top-sale-products")]
+		public IActionResult GetTopSaleProducts()
 		{
 			var orders = _context.Orders.Include(o => o.Products).ThenInclude(p => p.Product).ThenInclude(p => p.Brand).ToList();
 			var result = from o in orders
 						 from op in o.Products
 						 group op by op.Product into pg
 						 select new { ProductName = string.Concat(pg.Key.Brand.Name, ' ', pg.Key.Name), Count = pg.Sum(x => x.Qty) };
+
+			return new ObjectResult(result.OrderByDescending(r => r.Count).Take(10));
+		}
+
+		[HttpGet("top-sale-brands")]
+		public IActionResult GetTopSaleBrands()
+		{
+			var orders = _context.Orders.Include(o => o.Products).ThenInclude(p => p.Product).ThenInclude(p => p.Brand).ToList();
+			var result = from o in orders
+						 from op in o.Products
+						 group op by op.Product.Brand into bg
+						 select new { BrandName = bg.Key.Name, Count = bg.Sum(x => x.Qty) };
 
 			return new ObjectResult(result.OrderByDescending(r => r.Count).Take(10));
 		}

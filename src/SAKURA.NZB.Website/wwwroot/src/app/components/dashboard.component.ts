@@ -18,6 +18,10 @@ class TopProduct {
 	constructor(public name: string, public count: number) { }
 }
 
+class TopBrand {
+	constructor(public name: string, public count: number) { }
+}
+
 class DaySale {
 	constructor(public date: string, public count: number, public profit: number) { }
 }
@@ -28,6 +32,10 @@ class DayExchange {
 
 class OrderStatus {
 	constructor(public status: string, public count: number) { }
+}
+
+class Legend {
+	constructor(public color: string, public label: string) { }
 }
 
 @Component({
@@ -41,7 +49,8 @@ class OrderStatus {
 
 export class DashboardComponent implements OnInit {
     summary: Summary = new Summary(0, 0, 0, 0, '', '', '', 0, '', '', '', 0, 0, 0 , '');
-	topSales = [].ToList<TopProduct>();
+	topSaleProducts = [].ToList<TopProduct>();
+	topSaleBrands = [].ToList<TopBrand>();
 	past30DaysProfit = [].ToList<DaySale>();
 	past30DaysExchange = [].ToList<DayExchange>();
 
@@ -108,7 +117,7 @@ export class DashboardComponent implements OnInit {
 	private annualSalesChartLegend: boolean = false;
 	private annualSalesChartType: string = 'Line';
 
-	private topSalesChartOptions = {
+	private topSaleProductsChartOptions = {
 		responsive: true,
 		multiTooltipTemplate: '<%if (datasetLabel){%><%=datasetLabel %>: <%}%><%= value %>',
 		showScale: false,
@@ -117,19 +126,19 @@ export class DashboardComponent implements OnInit {
 		barStrokeWidth: 1
 	};
 
-	private topSalesChartLabels = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
-	private topSalesChartSeries = ['A'];
-	public topSalesChartType = 'Bar';
-	private topSalesChartLegend: boolean = false;
+	private topSaleProductsChartLabels = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+	private topSaleProductsChartSeries = ['A'];
+	public topSaleProductsChartType = 'Bar';
+	private topSaleProductsChartLegend: boolean = false;
 
-	private topSalesChartData = []
-	private topSalesChartNames = [];
+	private topSaleProductsChartData = []
+	private topSaleProductsChartNames = [];
 	selectedTopProductIndex = 0;
 	selectedTopProductName = '';
 	selectedTopProductCount = 0;
 	firstTopProductName = '';
 
-	private topSalesChartColours: Array<any> = [
+	private topSaleProductsChartColours: Array<any> = [
 		{
 			fillColor: 'rgba(244,180,0,0.3)',
 			strokeColor: 'rgba(244,180,0,0.5)',
@@ -213,9 +222,63 @@ export class DashboardComponent implements OnInit {
 	private pastDailyExchangeChartLegend: boolean = false;
 	private pastDailyExchangeChartType: string = 'Line';
 
-	private doughnutChartLabels = ['Download Sales', 'In-Store Sales', 'Mail-Order Sales', 'a'];
-	private doughnutChartData = [350, 330, 450, 800];
-	private doughnutChartType = 'Doughnut';
+	private topSaleBrandsChartOptions: any = {
+
+		// Tooltip
+		tooltipFillColor: "#fff",
+		tooltipFontColor: "#777",
+		tooltipFontSize: 12,
+		tooltipFontFamily: "'Roboto', sans-serif"
+
+	};
+
+	private topSaleBrandsChartLabels = [];
+	private topSaleBrandsChartData = [];
+	private topSaleBrandsChartColours: Array<any> = [
+		{
+			color: "rgba(151,187,205,0.8)",
+			highlight: "rgba(151,187,205,1)",
+		},
+		{
+			color: "rgba(220,220,220,0.8)",
+			highlight: "rgba(220,220,220,1)",
+		},
+		{
+			color: "rgba(247,70,74,0.8)",
+			highlight: "rgba(247,70,74,1)",
+		},
+		{
+			color: "rgba(70,191,189,0.8)",
+			highlight: "rgba(70,191,189,1)",
+		},
+		{
+			color: "rgba(253,180,92,0.8)",
+			highlight: "rgba(253,180,92,1)",
+		},
+		{
+			color: "rgba(148,159,177,0.8)",
+			highlight: "rgba(148,159,177,1)",
+		},
+		{
+			color: "rgba(77,83,96,0.8)",
+			highlight: "rgba(77,83,96,1)",
+		},
+		{
+			color: "rgba(164,10,134,0.8)",
+			highlight: "rgba(164,10,134,1)",
+		},
+		{
+			color: "rgba(195,26,105,0.8)",
+			highlight: "rgba(195,26,105,1)",
+		},
+		{
+			color: "rgba(33,137,228,0.8)",
+			highlight: "rgba(33,137,228,1)",
+		}
+	];
+	private topSaleBrandsChartLegend: boolean = false;
+	private topSaleBrandsChartCustomLegend = [];
+	private topSaleBrandsChartType = 'Doughnut';
 
     constructor(private service: ApiService) { }
 
@@ -244,20 +307,36 @@ export class DashboardComponent implements OnInit {
 			}
 		});
 
-		this.service.getDashboardTopSales(json => {
+		this.service.getDashboardTopSaleProducts(json => {
 			if (json) {
 				json.forEach(x => {
-					that.topSales.Add(new TopProduct(x.productName, x.count));
+					that.topSaleProducts.Add(new TopProduct(x.productName, x.count));
 				});
 
-				that.topSalesChartData = [that.topSales.Select(s => s.count).ToArray()];
-				that.topSalesChartNames = that.topSales.Select(s => s.name).ToArray();
+				that.topSaleProductsChartData = [that.topSaleProducts.Select(s => s.count).ToArray()];
+				that.topSaleProductsChartNames = that.topSaleProducts.Select(s => s.name).ToArray();
 
-				if (that.topSales.Count() > 0) {
+				if (that.topSaleProducts.Count() > 0) {
 					that.selectedTopProductIndex = 1;
-					that.selectedTopProductName = this.topSalesChartNames[0];
-					that.firstTopProductName = this.topSalesChartNames[0];
-					that.selectedTopProductCount = this.topSalesChartData[0][0];
+					that.selectedTopProductName = this.topSaleProductsChartNames[0];
+					that.firstTopProductName = this.topSaleProductsChartNames[0];
+					that.selectedTopProductCount = this.topSaleProductsChartData[0][0];
+				}
+			}
+		});
+
+		this.service.getDashboardTopSaleBrands(json => {
+			if (json) {
+				json.forEach(x => {
+					that.topSaleBrands.Add(new TopBrand(x.brandName, x.count));
+				});
+
+				that.topSaleBrandsChartData = that.topSaleBrands.Select(s => s.count).ToArray();
+				that.topSaleBrandsChartLabels = that.topSaleBrands.Select(s => s.name).ToArray();
+
+				for (var i = 0; i < that.topSaleBrands.Count(); i++) {
+					that.topSaleBrandsChartCustomLegend.push(new Legend(that.topSaleBrandsChartColours[i].color,
+						that.topSaleBrandsChartLabels[i] + ': ' + that.topSaleBrandsChartData[i]));
 				}
 			}
 		});
@@ -301,9 +380,9 @@ export class DashboardComponent implements OnInit {
 		this.changeAnnualSalesChartData();
 	}
 
-	onTopSalesChartSelected(e) {
+	ontopSaleProductsChartSelected(e) {
 		this.selectedTopProductIndex = parseInt(e.activeLabel, 10) + 1;
-		this.selectedTopProductName = this.topSalesChartNames[e.activeLabel];
+		this.selectedTopProductName = this.topSaleProductsChartNames[e.activeLabel];
 		this.selectedTopProductCount = e.activePoints[0].value;
 	}
 
