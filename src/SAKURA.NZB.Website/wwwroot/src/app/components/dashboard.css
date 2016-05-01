@@ -1,4 +1,18 @@
-﻿.widget-content {
+﻿.dashboard .row {
+    margin-right: -5px;
+    margin-left: -5px;
+}
+
+.dashboard .col-md-3,
+.dashboard .col-md-4,
+.dashboard .col-md-8,
+.dashboard .col-sm-6,
+.dashboard .col-xs-12 {
+    padding-right: 5px;
+    padding-left: 5px;
+}
+
+.widget-content {
     padding: 8px;
     font-family: 'Roboto', sans-serif;
     width: 100%;

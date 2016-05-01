@@ -9,7 +9,7 @@
                 </div>
             </td>
             <td>
-                <div class="from-container">
+                <div [ngClass]="{'from-container': editMode}">
                     <h2 class="page-header">{{title}}</h2>
 
                     <form class="form-horizontal" (ngSubmit)="onSubmit()" #myForm="ngForm">
