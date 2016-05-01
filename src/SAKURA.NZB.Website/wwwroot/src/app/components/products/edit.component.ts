@@ -7,6 +7,7 @@ import {ApiService} from "../api.service";
 import {Category, Brand, Supplier, Product, Quote} from "./models";
 import {SelectValidator, ValidationResult} from "../../validators/selectValidator";
 
+import {TYPEAHEAD_DIRECTIVES} from "ng2-bootstrap/ng2-bootstrap";
 import '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js';
 
 @Component({
@@ -14,14 +15,14 @@ import '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.
     templateUrl: "./src/app/components/products/edit.html",
 	styleUrls: ["./src/app/components/products/products.css"],
     providers: [ApiService],
-    directives: [CORE_DIRECTIVES, FORM_DIRECTIVES, ROUTER_DIRECTIVES]
+    directives: [CORE_DIRECTIVES, FORM_DIRECTIVES, ROUTER_DIRECTIVES, TYPEAHEAD_DIRECTIVES]
 })
 export class ProductEditComponent implements OnInit {
 	categories: Category[] = [];
 	brands: Brand[] = [];
 	suppliers: Supplier[] = [];
 
-	//quotes: Quote[] = [];
+	public selectedBrandName: string = '';
 
 	fixedRateHigh: number;
 	fixedRateLow: number;
@@ -44,7 +45,7 @@ export class ProductEditComponent implements OnInit {
 
 		this.productForm = new ControlGroup({
 			category: new Control(this.model.categoryId, SelectValidator.unselected),
-			brand: new Control(this.model.brandId, SelectValidator.unselected),
+			brand: new Control(this.model.brandId, Validators.required),
 			name: new Control(this.model.name, Validators.required),
 			price: new Control(this.model.price),
 			desc: new Control(this.model.desc)
@@ -103,6 +104,8 @@ export class ProductEditComponent implements OnInit {
 					var descControl: any;
 					descControl = that.productForm.controls['desc'];
 					descControl.updateValue(that.model.desc);
+
+					that.selectedBrandName = that.model.brand.name;
 				}
 			});
 		}
@@ -120,6 +123,25 @@ export class ProductEditComponent implements OnInit {
 
 	onRemoveQuote(i: number) {
 		this.model.quotes.splice(i, 1);
+	}
+
+	onSelectBrand(e: any) {
+		var brandControl: any;
+		brandControl = this.productForm.controls['brand'];
+		brandControl.updateValue(e.item.id);
+	}
+
+	onBrandInput(e: any) {
+		var name = e.target.value;
+		var brand = this.brands.ToList<Brand>().FirstOrDefault(b => b.name == name);
+		var brandControl: any;
+		brandControl = this.productForm.controls['brand'];
+
+		if (brand) {
+			brandControl.updateValue(brand.id);
+		} else {
+			brandControl.updateValue(null);
+		}
 	}
 
 	onSubmit() {

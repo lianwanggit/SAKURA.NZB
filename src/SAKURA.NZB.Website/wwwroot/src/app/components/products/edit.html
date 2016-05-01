@@ -18,12 +18,22 @@
         <div class="form-group">
             <label class="col-md-2" for="brand">品牌</label>
             <div class="col-md-10">
-                <select id="brand" class="form-control" ngControl="brand" #brand="ngForm">
+                <!--<select id="brand" class="form-control" ngControl="brand" #brand="ngForm">
                     <option *ngFor="#c of brands; #i = index" value="{{c.id}}">{{c.name}}</option>
                 </select>
 
                 <div [hidden]="brand.valid || brand.pristine" class="alert alert-danger">
                     请选择一个品牌
+                </div>-->
+                <input id="brands" class="form-control"
+                       [(ngModel)]="selectedBrandName"
+                       [typeahead]="brands"
+                       (typeaheadOnSelect)="onSelectBrand($event)"
+                       [typeaheadOptionField]="'name'" required #brand="ngForm" 
+                       [ngClass]="{'ng-invalid': !productForm.controls.brand.valid, 'ng-valid': productForm.controls.brand.valid}"
+                       (input)="onBrandInput($event)"/>
+                <div [hidden]="productForm.controls.brand.valid || brand.pristine" class="alert alert-danger">
+                    请输入一个品牌
                 </div>
             </div>
         </div>
@@ -31,7 +41,7 @@
         <div class="form-group">
             <label class="col-md-2" for="name">产品名称</label>
             <div class="col-md-10">
-                <input id="name" type="text" class="form-control" maxlength="100" ngControl="name" #name="ngForm" />
+                <input id="name" type="text" class="form-control" maxlength="100" ngControl="name" #name="ngForm" required/>
                 <div [hidden]="name.valid || name.pristine" class="alert alert-danger">
                     产品名称不能为空
                 </div>
@@ -138,7 +148,7 @@
             <div class="col-md-10">
                 <div class="input-group">
                     <i class="fa fa-yen input-group-addon"></i>
-                    <input id="price" type="number" class="form-control" min="1" step="0.01" placeholder="CNY" ngControl="price" />
+                    <input id="price" type="number" class="form-control" min="1" step="0.01" placeholder="CNY" ngControl="price"/>
                     <span class="input-group-addon" *ngIf="profit != ''">利润: {{profit}}</span>
                 </div>
                 <div [hidden]="!isLowPrice" class="alert alert-warning">
@@ -159,7 +169,7 @@
             <div class="col-md-offset-2 col-md-10">
                 <button type="button" class="btn btn-default" [routerLink]="['产品']">返回列表</button>
                 <button type="submit" class="btn btn-success left-spacer"
-                        [disabled]="!myForm.form.valid || !isQuotesValid">
+                        [disabled]="!myForm.form.valid || !isQuotesValid || !brand.valid">
                     保存 <i class="fa fa-floppy-o fa-lg"></i>
                 </button>
             </div>

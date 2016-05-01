@@ -1,5 +1,5 @@
 /// <reference path="../../../../lib/TypeScript-Linq/Scripts/typings/System/Collections/Generic/List.ts" />
-System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.service", "./models", "../../validators/selectValidator", '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js'], function(exports_1, context_1) {
+System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.service", "./models", "../../validators/selectValidator", "ng2-bootstrap/ng2-bootstrap", '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -11,7 +11,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, common_1, router_1, api_service_1, models_1, selectValidator_1;
+    var core_1, common_1, router_1, api_service_1, models_1, selectValidator_1, ng2_bootstrap_1;
     var ProductEditComponent;
     return {
         setters:[
@@ -33,6 +33,9 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
             function (selectValidator_1_1) {
                 selectValidator_1 = selectValidator_1_1;
             },
+            function (ng2_bootstrap_1_1) {
+                ng2_bootstrap_1 = ng2_bootstrap_1_1;
+            },
             function (_1) {}],
         execute: function() {
             ProductEditComponent = (function () {
@@ -42,6 +45,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     this.categories = [];
                     this.brands = [];
                     this.suppliers = [];
+                    this.selectedBrandName = '';
                     this.model = new models_1.Product({
                         "id": 0, "name": null, "desc": null, "categoryId": 0, "category": null,
                         "brandId": 0, "brand": null, "images": null, "quotes": [], "price": null
@@ -53,7 +57,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     }
                     this.productForm = new common_1.ControlGroup({
                         category: new common_1.Control(this.model.categoryId, selectValidator_1.SelectValidator.unselected),
-                        brand: new common_1.Control(this.model.brandId, selectValidator_1.SelectValidator.unselected),
+                        brand: new common_1.Control(this.model.brandId, common_1.Validators.required),
                         name: new common_1.Control(this.model.name, common_1.Validators.required),
                         price: new common_1.Control(this.model.price),
                         desc: new common_1.Control(this.model.desc)
@@ -105,6 +109,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                                 var descControl;
                                 descControl = that.productForm.controls['desc'];
                                 descControl.updateValue(that.model.desc);
+                                that.selectedBrandName = that.model.brand.name;
                             }
                         });
                     }
@@ -120,6 +125,23 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                 };
                 ProductEditComponent.prototype.onRemoveQuote = function (i) {
                     this.model.quotes.splice(i, 1);
+                };
+                ProductEditComponent.prototype.onSelectBrand = function (e) {
+                    var brandControl;
+                    brandControl = this.productForm.controls['brand'];
+                    brandControl.updateValue(e.item.id);
+                };
+                ProductEditComponent.prototype.onBrandInput = function (e) {
+                    var name = e.target.value;
+                    var brand = this.brands.ToList().FirstOrDefault(function (b) { return b.name == name; });
+                    var brandControl;
+                    brandControl = this.productForm.controls['brand'];
+                    if (brand) {
+                        brandControl.updateValue(brand.id);
+                    }
+                    else {
+                        brandControl.updateValue(null);
+                    }
                 };
                 ProductEditComponent.prototype.onSubmit = function () {
                     var _this = this;
@@ -194,7 +216,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                         templateUrl: "./src/app/components/products/edit.html",
                         styleUrls: ["./src/app/components/products/products.css"],
                         providers: [api_service_1.ApiService],
-                        directives: [common_1.CORE_DIRECTIVES, common_1.FORM_DIRECTIVES, router_1.ROUTER_DIRECTIVES]
+                        directives: [common_1.CORE_DIRECTIVES, common_1.FORM_DIRECTIVES, router_1.ROUTER_DIRECTIVES, ng2_bootstrap_1.TYPEAHEAD_DIRECTIVES]
                     }), 
                     __metadata('design:paramtypes', [api_service_1.ApiService, router_1.Router, router_1.RouteParams])
                 ], ProductEditComponent);

@@ -116,7 +116,6 @@ System.register(["angular2/core", 'angular2/common', "./api.service", "./orders/
                     this.annualSalesChartLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
                     this.annualSalesChartSeries = ['成本 (NZD)', '收入 (CNY)', '利润 (CNY)'];
                     this.annualSalesChartOptions = {
-                        animation: false,
                         responsive: true,
                         multiTooltipTemplate: '<%if (datasetLabel){%><%=datasetLabel %>: <%}%><%= value %>',
                         pointDotRadius: 4,
@@ -193,7 +192,6 @@ System.register(["angular2/core", 'angular2/common', "./api.service", "./orders/
                     this.pastDailyProfitChartLabels = [];
                     this.pastDailyProfitChartSeries = ['利润', '&nbsp;'];
                     this.pastDailyProfitChartOptions = {
-                        animation: false,
                         responsive: true,
                         multiTooltipTemplate: '<%if (datasetLabel){%><%=datasetLabel %>: <%}%><%= value %>',
                         pointDotRadius: 2,
@@ -229,7 +227,6 @@ System.register(["angular2/core", 'angular2/common', "./api.service", "./orders/
                     this.pastDailyExchangeChartLabels = [];
                     this.pastDailyExchangeChartSeries = ['汇率', '&nbsp;'];
                     this.pastDailyExchangeChartOptions = {
-                        animation: false,
                         responsive: true,
                         multiTooltipTemplate: '<%if (datasetLabel){%><%=datasetLabel %>: <%}%><%= value %>',
                         pointDotRadius: 2,

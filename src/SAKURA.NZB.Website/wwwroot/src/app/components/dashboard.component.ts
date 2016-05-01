@@ -69,7 +69,6 @@ export class DashboardComponent implements OnInit {
 	private annualSalesChartLabels: Array<any> = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 	private annualSalesChartSeries: Array<any> = ['成本 (NZD)', '收入 (CNY)', '利润 (CNY)'];
 	private annualSalesChartOptions: any = {
-		animation: false,
 		responsive: true,
 		multiTooltipTemplate: '<%if (datasetLabel){%><%=datasetLabel %>: <%}%><%= value %>',
 		pointDotRadius: 4,
@@ -152,7 +151,6 @@ export class DashboardComponent implements OnInit {
 	private pastDailyProfitChartLabels: Array<any> = [];
 	private pastDailyProfitChartSeries: Array<any> = ['利润', '&nbsp;'];
 	private pastDailyProfitChartOptions: any = {
-		animation: false,
 		responsive: true,
 		multiTooltipTemplate: '<%if (datasetLabel){%><%=datasetLabel %>: <%}%><%= value %>',
 		pointDotRadius: 2,
@@ -190,7 +188,6 @@ export class DashboardComponent implements OnInit {
 	private pastDailyExchangeChartLabels: Array<any> = [];
 	private pastDailyExchangeChartSeries: Array<any> = ['汇率', '&nbsp;'];
 	private pastDailyExchangeChartOptions: any = {
-		animation: false,
 		responsive: true,
 		multiTooltipTemplate: '<%if (datasetLabel){%><%=datasetLabel %>: <%}%><%= value %>',
 		pointDotRadius: 2,
@@ -223,7 +220,6 @@ export class DashboardComponent implements OnInit {
 	private pastDailyExchangeChartType: string = 'Line';
 
 	private topSaleBrandsChartOptions: any = {
-
 		// Tooltip
 		tooltipFillColor: "#fff",
 		tooltipFontColor: "#777",
