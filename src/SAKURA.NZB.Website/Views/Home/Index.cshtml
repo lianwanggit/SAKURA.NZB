@@ -9,9 +9,20 @@
             </a>
             <br>
             <small>
-                <a class="recolor">NZ BUY</a>  <i class="fa fa-refresh fa-spin left-spacer"></i> @Html.Raw(ViewBag.CurrencyRate)
-            </small>            
+                <a class="recolor">NZ BUY</a>
+            </small>
         </h1>
+        <form class="form-inline">
+            <div class="input-group">             
+                <input id="nzd" class="form-control" placeholder="NZD" value="1" />
+                <div class="input-group-addon">NZD</div>
+            </div>
+            <i class="fa fa-exchange"></i>
+            <div class="input-group">               
+                <input id="cny" class="form-control" placeholder="CNY" value="@Html.Raw(ViewBag.CurrencyRate)" />
+                <div class="input-group-addon">CNY</div>
+            </div>
+        </form>
     </div>
     <div class="col-sm-6" style="padding:0">
         <div class="pull-right">
@@ -19,5 +30,24 @@
         </div>
     </div>
 </div>
+<script>
+    var rate = @Html.Raw(ViewBag.CurrencyRate);
+    $('#nzd').on('input',function(e){
+        var source = e.target.value;
+        if ($.isNumeric(source)){
+            var result = (parseFloat(source) * rate).toFixed(4);
+            $('#cny').val(result);
+        }else{
+            $('#cny').val('');
+        }
+    });
+    $('#cny').on('input',function(e){
+        var source = e.target.value;
+        if ($.isNumeric(source)){
+            var result = (parseFloat(source) / rate).toFixed(4);
+            $('#nzd').val(result);
+        }
+    });
+</script>
 
 <app class="container" style="display: block;">Loading...</app>

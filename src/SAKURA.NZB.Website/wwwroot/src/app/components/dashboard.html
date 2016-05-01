@@ -144,8 +144,8 @@
                         <p class="opacity-50">今日汇率</p>
                     </div>
                     <div class="md-table-cell-50 padding-right-8">
-                        <p class="md-display-05 font-weight-100 margin-bottom-0 text-right" [ngClass]="{up: summary.exchangeIncrement >= 0, down: summary.exchangeIncrement < 0}">
-                            <i class="fa" [ngClass]="{'fa-caret-up': summary.exchangeIncrement >= 0, 'fa-caret-down': summary.exchangeIncrement < 0}"></i> {{summary.exchangeIncrementRate}}
+                        <p class="md-display-05 font-weight-100 margin-bottom-0 text-right" [ngClass]="{up: summary.exchangeIncrement > 0, down: summary.exchangeIncrement < 0}">
+                            <i class="fa" [ngClass]="{'fa-caret-up': summary.exchangeIncrement > 0, 'fa-caret-down': summary.exchangeIncrement < 0}"></i> {{summary.exchangeIncrementRate}}
                         </p>
                         <p class="md-display-05 font-weight-300 opacity-80 text-right">
                             <small>{{ summary.exchangeIncrement > 0 ? '+' + (summary.exchangeIncrement).toFixed(2) : (summary.exchangeIncrement).toFixed(2)}}</small>

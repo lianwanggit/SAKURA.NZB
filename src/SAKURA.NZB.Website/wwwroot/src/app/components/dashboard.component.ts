@@ -76,7 +76,7 @@ export class DashboardComponent implements OnInit {
 		maintainAspectRatio: false,
 		datasetStrokeWidth: 1,
 		// scale
-		scaleLineColor: "rgba(0,0,0,0.5)",
+		scaleLineColor: "rgba(0,0,0,0.3)",
 		scaleFontFamily: "'Roboto', sans-serif",
 		// Tooltip
 		tooltipFillColor: "#fff",
