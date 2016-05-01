@@ -75,19 +75,26 @@ System.register(["angular2/core", "angular2/common", '../../../lib/TypeScript-Li
                     this.clearIndexSelection();
                     if (this.filterText !== value)
                         this.filterText = value;
-                    if (this.filterText === this._filterText)
+                    if (this.filterText === this._filterText && this.filterText != '')
                         return;
                     this.itemList = [];
                     if (/^$|^[\u4e00-\u9fa5_a-zA-Z0-9 ]+$/g.test(this.filterText)) {
-                        this.itemList = this.items.ToList()
-                            .Where(function (x) { return _this.includes(x.name, _this.filterText); })
-                            .OrderBy(function (x) { return x.name; })
-                            .ToArray();
+                        var brand = this.brandList.ToList().FirstOrDefault(function (x) { return _this.startsWith(x.name, _this.filterText); });
+                        if (brand) {
+                            this.onClickIndexer(brand.name, false);
+                        }
+                        else {
+                            this.itemList = this.items.ToList()
+                                .OrderBy(function (x) { return x.name; })
+                                .ToArray();
+                            this.clearIndexSelection();
+                        }
                     }
                     this._filterText = this.filterText;
                 };
-                BrandIndexerDirective.prototype.onClickIndexer = function (brand) {
-                    if (this._brand === brand) {
+                BrandIndexerDirective.prototype.onClickIndexer = function (brand, toggle) {
+                    if (toggle === void 0) { toggle = true; }
+                    if (this._brand === brand && toggle) {
                         this.clearIndexSelection();
                         this.itemList = this.items.ToList()
                             .OrderBy(function (x) { return x.name; })
@@ -119,13 +126,10 @@ System.register(["angular2/core", "angular2/common", '../../../lib/TypeScript-Li
                         index.selected = false;
                     this._brand = '';
                 };
-                BrandIndexerDirective.prototype.includes = function (str, search) {
-                    if (search.length > str.length) {
+                BrandIndexerDirective.prototype.startsWith = function (str, searchString) {
+                    if (searchString == '')
                         return false;
-                    }
-                    else {
-                        return str.indexOf(search) !== -1;
-                    }
+                    return str.toLowerCase().substr(0, searchString.length) === searchString.toLowerCase();
                 };
                 ;
                 __decorate([

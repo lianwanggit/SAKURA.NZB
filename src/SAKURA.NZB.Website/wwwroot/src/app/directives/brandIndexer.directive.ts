@@ -66,22 +66,28 @@ export class BrandIndexerDirective implements OnChanges {
 		if (this.filterText !== value)
 			this.filterText = value;
 
-		if (this.filterText === this._filterText)
+		if (this.filterText === this._filterText && this.filterText != '')
 			return;
 
 		this.itemList = [];
 		if (/^$|^[\u4e00-\u9fa5_a-zA-Z0-9 ]+$/g.test(this.filterText)) {
-			this.itemList = this.items.ToList<Item>()
-				.Where(x => this.includes(x.name, this.filterText))
+			var brand = this.brandList.ToList<Brand>().FirstOrDefault(x => this.startsWith(x.name, this.filterText));
+			if (brand) {
+				this.onClickIndexer(brand.name, false);	
+			} else {
+				this.itemList = this.items.ToList<Item>()
 				.OrderBy(x => x.name)
 				.ToArray();
+
+				this.clearIndexSelection();
+			}
 		}
 
 		this._filterText = this.filterText;
 	}
 
-	onClickIndexer(brand: string) {
-		if (this._brand === brand) {
+	onClickIndexer(brand: string, toggle = true) {
+		if (this._brand === brand && toggle) {
 			this.clearIndexSelection();
 			this.itemList = this.items.ToList<Item>()
 				.OrderBy(x => x.name)
@@ -117,12 +123,8 @@ export class BrandIndexerDirective implements OnChanges {
 		this._brand = '';
 	}
 
-	includes(str:string, search:string) {
-		if (search.length > str.length) {
-			return false;
-		} else {
-			return str.indexOf(search) !== -1;
-		}
+	startsWith(str: string, searchString: string) {
+		if (searchString == '') return false;
+		return str.toLowerCase().substr(0, searchString.length) === searchString.toLowerCase();
 	};
-
 }

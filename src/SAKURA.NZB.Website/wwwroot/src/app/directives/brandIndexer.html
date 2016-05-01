@@ -1,6 +1,6 @@
 ﻿<div class="form-group input-group">
-    <input type="text" class="form-control" placeholder="搜索"
-           [(ngModel)]="filterText" (keyup)="onSearch($event.target.value)" (input)="onSearch($event.target.value)" />
+    <input type="text" class="form-control" placeholder="搜索品牌"
+           [(ngModel)]="filterText" (input)="onSearch($event.target.value)" />
     <div class="input-group-btn">
         <button type="button" class="btn btn-default" aria-label="Clear" (click)="onClearFilter()">
             <span class="glyphicon glyphicon-remove"></span>
