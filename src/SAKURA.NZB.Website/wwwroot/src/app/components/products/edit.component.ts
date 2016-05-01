@@ -112,10 +112,15 @@ export class ProductEditComponent implements OnInit {
 	}
 
 	onAddQuote() {
+		var supplierId = 0;
+		if (this.suppliers.length) {
+			supplierId = this.suppliers[0].id;
+		}
+
 		this.model.quotes.push(new Quote({
 			id: 0,
 			productId: 0,
-			supplierId: 0,
+			supplierId: supplierId,
 			supplier: null,
 			price: null
 		}));

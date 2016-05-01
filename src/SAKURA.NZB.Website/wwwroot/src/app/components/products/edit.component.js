@@ -115,10 +115,14 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     }
                 };
                 ProductEditComponent.prototype.onAddQuote = function () {
+                    var supplierId = 0;
+                    if (this.suppliers.length) {
+                        supplierId = this.suppliers[0].id;
+                    }
                     this.model.quotes.push(new models_1.Quote({
                         id: 0,
                         productId: 0,
-                        supplierId: 0,
+                        supplierId: supplierId,
                         supplier: null,
                         price: null
                     }));
