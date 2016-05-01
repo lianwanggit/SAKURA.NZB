@@ -18,13 +18,6 @@
         <div class="form-group">
             <label class="col-md-2" for="brand">品牌</label>
             <div class="col-md-10">
-                <!--<select id="brand" class="form-control" ngControl="brand" #brand="ngForm">
-                    <option *ngFor="#c of brands; #i = index" value="{{c.id}}">{{c.name}}</option>
-                </select>
-
-                <div [hidden]="brand.valid || brand.pristine" class="alert alert-danger">
-                    请选择一个品牌
-                </div>-->
                 <input id="brands" class="form-control"
                        [(ngModel)]="selectedBrandName"
                        [typeahead]="brands"
@@ -33,7 +26,7 @@
                        [ngClass]="{'ng-invalid': !productForm.controls.brand.valid, 'ng-valid': productForm.controls.brand.valid}"
                        (input)="onBrandInput($event)"/>
                 <div [hidden]="productForm.controls.brand.valid || brand.pristine" class="alert alert-danger">
-                    请输入一个品牌
+                    请输入并选择一个品牌
                 </div>
             </div>
         </div>

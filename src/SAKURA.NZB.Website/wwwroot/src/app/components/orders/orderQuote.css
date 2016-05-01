@@ -1,0 +1,27 @@
+﻿.product-list .card-block {
+    padding: 0;
+}
+
+.product-list table {
+    margin-bottom: 0;
+    border: 0;
+}
+
+.product-list table th {
+    font-weight: 600;
+    color: #777;
+}
+
+.product-list table th:first-of-type,
+.product-list table td:first-of-type {
+    border-left: 0;
+}
+
+.product-list table th:last-of-type,
+.product-list table td:last-of-type {
+    border-right: 0;
+}
+
+.product-list table tr:last-of-type td {
+    border-bottom: 0;
+}

@@ -1,5 +1,5 @@
 /// <reference path="../../../../lib/TypeScript-Linq/Scripts/typings/System/Collections/Generic/List.ts" />
-System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.service", "./models", "./orderCustomers.component", "./orderProducts.component", "./orderInvoice.component", "./orderSummary.component", '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js'], function(exports_1, context_1) {
+System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.service", "./models", "./orderCustomers.component", "./orderProducts.component", "./orderQuote.component", "./orderInvoice.component", "./orderSummary.component", '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -11,7 +11,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, common_1, router_1, api_service_1, models_1, orderCustomers_component_1, orderProducts_component_1, orderInvoice_component_1, orderSummary_component_1;
+    var core_1, common_1, router_1, api_service_1, models_1, orderCustomers_component_1, orderProducts_component_1, orderQuote_component_1, orderInvoice_component_1, orderSummary_component_1;
     var OrderEditComponent;
     return {
         setters:[
@@ -35,6 +35,9 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
             },
             function (orderProducts_component_1_1) {
                 orderProducts_component_1 = orderProducts_component_1_1;
+            },
+            function (orderQuote_component_1_1) {
+                orderQuote_component_1 = orderQuote_component_1_1;
             },
             function (orderInvoice_component_1_1) {
                 orderInvoice_component_1 = orderInvoice_component_1_1;
@@ -166,7 +169,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                         styleUrls: ["./src/app/components/orders/edit.css"],
                         providers: [api_service_1.ApiService],
                         directives: [common_1.CORE_DIRECTIVES, common_1.FORM_DIRECTIVES, router_1.ROUTER_DIRECTIVES,
-                            orderCustomers_component_1.OrderCustomersComponent, orderProducts_component_1.OrderProductsComponent, orderInvoice_component_1.OrderInvoiceComponent, orderSummary_component_1.OrderSummaryComponent],
+                            orderCustomers_component_1.OrderCustomersComponent, orderProducts_component_1.OrderProductsComponent, orderQuote_component_1.OrderQuoteComponent, orderInvoice_component_1.OrderInvoiceComponent, orderSummary_component_1.OrderSummaryComponent],
                         encapsulation: core_1.ViewEncapsulation.None
                     }), 
                     __metadata('design:paramtypes', [api_service_1.ApiService, router_1.Router, router_1.RouteParams, router_1.RouteData])

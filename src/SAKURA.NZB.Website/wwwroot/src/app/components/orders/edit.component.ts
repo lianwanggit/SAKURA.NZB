@@ -10,6 +10,7 @@ import {Dict, OrderModel, CustomerOrder, OrderProduct, map} from "./models";
 import {SelectValidator, ValidationResult} from "../../validators/selectValidator";
 import {OrderCustomersComponent} from "./orderCustomers.component";
 import {OrderProductsComponent} from "./orderProducts.component";
+import {OrderQuoteComponent} from "./orderQuote.component";
 import {OrderInvoiceComponent} from "./orderInvoice.component";
 import {OrderSummaryComponent} from "./orderSummary.component";
 
@@ -21,7 +22,7 @@ import '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.
 	styleUrls: ["./src/app/components/orders/edit.css"],
     providers: [ApiService],
     directives: [CORE_DIRECTIVES, FORM_DIRECTIVES, ROUTER_DIRECTIVES,
-		OrderCustomersComponent, OrderProductsComponent, OrderInvoiceComponent, OrderSummaryComponent],
+		OrderCustomersComponent, OrderProductsComponent, OrderQuoteComponent, OrderInvoiceComponent, OrderSummaryComponent],
 	encapsulation: ViewEncapsulation.None
 })
 

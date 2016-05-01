@@ -20,6 +20,7 @@
 /// <reference path="src/app/components/orders/ordercustomers.component.js" />
 /// <reference path="src/app/components/orders/orderinvoice.component.js" />
 /// <reference path="src/app/components/orders/orderproducts.component.js" />
+/// <reference path="src/app/components/orders/orderquote.component.js" />
 /// <reference path="src/app/components/orders/ordersummary.component.js" />
 /// <reference path="src/app/components/products/baseedit.component.js" />
 /// <reference path="src/app/components/products/baseedit.js" />
