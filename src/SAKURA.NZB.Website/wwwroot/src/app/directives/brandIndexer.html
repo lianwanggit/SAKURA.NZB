@@ -15,6 +15,7 @@
                 <li *ngFor="#item of brandList; #i = index">
                     <button class="btn btn-default" (click)="onClickIndexer(item.name)" 
                             [class.active]="item.selected"
+                            *ngIf="indexNoSelection || item.selected" 
                             title="{{item.name}}">
                         <span class="brand pull-left">{{item.name}}</span>
                         <span class="badge pull-right">{{item.count}}</span>

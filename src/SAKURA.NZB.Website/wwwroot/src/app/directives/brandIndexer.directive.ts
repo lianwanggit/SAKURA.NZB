@@ -7,6 +7,7 @@ import '../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js'
 
 export class Item {
 	selected: boolean = false;
+	visible = true;
 	constructor(public id: string, public name: string, public brand: string) { }
 }
 
@@ -127,4 +128,6 @@ export class BrandIndexerDirective implements OnChanges {
 		if (searchString == '') return false;
 		return str.toLowerCase().substr(0, searchString.length) === searchString.toLowerCase();
 	};
+
+	get indexNoSelection() { return this.brandList.ToList<Brand>().All(b => !b.selected); }
 }

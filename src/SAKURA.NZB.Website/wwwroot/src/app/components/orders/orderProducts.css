@@ -27,6 +27,10 @@
    color: #777;
 }
 
+.product-table tr > td:nth-of-type(2) {
+    padding-right: 5px;
+}
+
 .product-table .no-border {
     padding:6px 10px 6px 0;
 }

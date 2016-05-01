@@ -29,6 +29,7 @@ System.register(["angular2/core", "angular2/common", '../../../lib/TypeScript-Li
                     this.name = name;
                     this.brand = brand;
                     this.selected = false;
+                    this.visible = true;
                 }
                 return Item;
             }());
@@ -132,6 +133,11 @@ System.register(["angular2/core", "angular2/common", '../../../lib/TypeScript-Li
                     return str.toLowerCase().substr(0, searchString.length) === searchString.toLowerCase();
                 };
                 ;
+                Object.defineProperty(BrandIndexerDirective.prototype, "indexNoSelection", {
+                    get: function () { return this.brandList.ToList().All(function (b) { return !b.selected; }); },
+                    enumerable: true,
+                    configurable: true
+                });
                 __decorate([
                     core_1.Input(), 
                     __metadata('design:type', Array)
