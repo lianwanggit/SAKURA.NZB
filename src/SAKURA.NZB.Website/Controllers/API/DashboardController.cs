@@ -71,7 +71,7 @@ namespace SAKURA.NZB.Website.Controllers.API
 
 			totalProfit = totalIncome - totalCost * rate;
 			profitIncrement = todayProfit - yesterdayProfit;
-			profitIncrementRate = Math.Abs(yesterdayProfit == 0 ? 1 : profitIncrement / yesterdayProfit);
+			profitIncrementRate = Math.Abs(yesterdayProfit == 0 ? 0 : profitIncrement / yesterdayProfit);
 
 			var todayExchange = (float)Math.Round(_context.ExchangeRates.FirstOrDefault(r => r.ModifiedTime.Date == today)?.NZDCNY ?? 0, 4);
 			var yesterdayExchange =  (float)Math.Round(_context.ExchangeRates.FirstOrDefault(r => r.ModifiedTime.Date == yesterday)?.NZDCNY ?? 0, 4);

@@ -13,6 +13,7 @@ export class Item {
 
 export class Brand {
 	selected: boolean = false;
+	visible = true;
 	constructor(public name: string, public count: number) { }
 }
 
@@ -63,24 +64,30 @@ export class BrandIndexerDirective implements OnChanges {
 
 	onSearch(value: string) {
 		this.clearIndexSelection();
+		this.restoreIndexVisibility();
 
 		if (this.filterText !== value)
 			this.filterText = value;
 
-		if (this.filterText === this._filterText && this.filterText != '')
+		if (this.filterText === this._filterText)
 			return;
 
 		this.itemList = [];
 		if (/^$|^[\u4e00-\u9fa5_a-zA-Z0-9 ]+$/g.test(this.filterText)) {
-			var brand = this.brandList.ToList<Brand>().FirstOrDefault(x => this.startsWith(x.name, this.filterText));
-			if (brand) {
-				this.onClickIndexer(brand.name, false);	
-			} else {
-				this.itemList = this.items.ToList<Item>()
-				.OrderBy(x => x.name)
-				.ToArray();
+			this.brandList.forEach(b => {
+				b.visible = this.startsWith(b.name, this.filterText);
+			});
 
-				this.clearIndexSelection();
+			if (this.filterText == '') {
+				this.itemList = this.items.ToList<Item>()
+					.OrderBy(x => x.name)
+					.ToArray();
+			}
+			else {
+				var brand = this.brandList.ToList<Brand>().FirstOrDefault(x => x.visible);
+				if (brand) {
+					this.onClickIndexer(brand.name, false);
+				}
 			}
 		}
 
@@ -124,10 +131,11 @@ export class BrandIndexerDirective implements OnChanges {
 		this._brand = '';
 	}
 
+	restoreIndexVisibility() {
+		this.brandList.forEach(b => { b.visible = true; });
+	}
+
 	startsWith(str: string, searchString: string) {
-		if (searchString == '') return false;
 		return str.toLowerCase().substr(0, searchString.length) === searchString.toLowerCase();
 	};
-
-	get indexNoSelection() { return this.brandList.ToList<Brand>().All(b => !b.selected); }
 }

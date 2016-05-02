@@ -117,8 +117,8 @@
                         <p class="opacity-50">今日利润</p>
                     </div>
                     <div class="md-table-cell-50 padding-right-8">
-                        <p class="md-display-05 font-weight-100 margin-bottom-0 text-right" [ngClass]="{up: summary.profitIncrement >= 0, down: summary.profitIncrement < 0}">
-                            <i class="fa" [ngClass]="{'fa-caret-up': summary.profitIncrement >= 0, 'fa-caret-down': summary.profitIncrement < 0}"></i> {{summary.profitIncrementRate}}
+                        <p class="md-display-05 font-weight-100 margin-bottom-0 text-right" [ngClass]="{up: summary.profitIncrement > 0, down: summary.profitIncrement < 0}">
+                            <i class="fa" [ngClass]="{'fa-caret-up': summary.profitIncrement > 0, 'fa-caret-down': summary.profitIncrement < 0}"></i> {{summary.profitIncrementRate}}
                         </p>
                         <p class="md-display-05 font-weight-300 opacity-80 text-right">
                             <small>{{ summary.profitIncrement > 0 ? '+' + (summary.profitIncrement).toFixed(2) : (summary.profitIncrement).toFixed(2)}}</small>

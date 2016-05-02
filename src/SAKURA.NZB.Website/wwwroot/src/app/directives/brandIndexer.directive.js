@@ -39,6 +39,7 @@ System.register(["angular2/core", "angular2/common", '../../../lib/TypeScript-Li
                     this.name = name;
                     this.count = count;
                     this.selected = false;
+                    this.visible = true;
                 }
                 return Brand;
             }());
@@ -74,21 +75,26 @@ System.register(["angular2/core", "angular2/common", '../../../lib/TypeScript-Li
                 BrandIndexerDirective.prototype.onSearch = function (value) {
                     var _this = this;
                     this.clearIndexSelection();
+                    this.restoreIndexVisibility();
                     if (this.filterText !== value)
                         this.filterText = value;
-                    if (this.filterText === this._filterText && this.filterText != '')
+                    if (this.filterText === this._filterText)
                         return;
                     this.itemList = [];
                     if (/^$|^[\u4e00-\u9fa5_a-zA-Z0-9 ]+$/g.test(this.filterText)) {
-                        var brand = this.brandList.ToList().FirstOrDefault(function (x) { return _this.startsWith(x.name, _this.filterText); });
-                        if (brand) {
-                            this.onClickIndexer(brand.name, false);
-                        }
-                        else {
+                        this.brandList.forEach(function (b) {
+                            b.visible = _this.startsWith(b.name, _this.filterText);
+                        });
+                        if (this.filterText == '') {
                             this.itemList = this.items.ToList()
                                 .OrderBy(function (x) { return x.name; })
                                 .ToArray();
-                            this.clearIndexSelection();
+                        }
+                        else {
+                            var brand = this.brandList.ToList().FirstOrDefault(function (x) { return x.visible; });
+                            if (brand) {
+                                this.onClickIndexer(brand.name, false);
+                            }
                         }
                     }
                     this._filterText = this.filterText;
@@ -127,17 +133,13 @@ System.register(["angular2/core", "angular2/common", '../../../lib/TypeScript-Li
                         index.selected = false;
                     this._brand = '';
                 };
+                BrandIndexerDirective.prototype.restoreIndexVisibility = function () {
+                    this.brandList.forEach(function (b) { b.visible = true; });
+                };
                 BrandIndexerDirective.prototype.startsWith = function (str, searchString) {
-                    if (searchString == '')
-                        return false;
                     return str.toLowerCase().substr(0, searchString.length) === searchString.toLowerCase();
                 };
                 ;
-                Object.defineProperty(BrandIndexerDirective.prototype, "indexNoSelection", {
-                    get: function () { return this.brandList.ToList().All(function (b) { return !b.selected; }); },
-                    enumerable: true,
-                    configurable: true
-                });
                 __decorate([
                     core_1.Input(), 
                     __metadata('design:type', Array)
