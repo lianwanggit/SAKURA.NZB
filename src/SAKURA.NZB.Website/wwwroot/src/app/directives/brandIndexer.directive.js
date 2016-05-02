@@ -1,5 +1,5 @@
 /// <reference path="../../../lib/TypeScript-Linq/Scripts/typings/System/Collections/Generic/List.ts" />
-System.register(["angular2/core", "angular2/common", '../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js'], function(exports_1, context_1) {
+System.register(["angular2/core", "angular2/common", 'ng2-bootstrap/ng2-bootstrap', '../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -11,7 +11,7 @@ System.register(["angular2/core", "angular2/common", '../../../lib/TypeScript-Li
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, common_1;
+    var core_1, common_1, ng2_bootstrap_1;
     var Item, Brand, BrandIndexerDirective;
     return {
         setters:[
@@ -20,6 +20,9 @@ System.register(["angular2/core", "angular2/common", '../../../lib/TypeScript-Li
             },
             function (common_1_1) {
                 common_1 = common_1_1;
+            },
+            function (ng2_bootstrap_1_1) {
+                ng2_bootstrap_1 = ng2_bootstrap_1_1;
             },
             function (_1) {}],
         execute: function() {
@@ -162,7 +165,7 @@ System.register(["angular2/core", "angular2/common", '../../../lib/TypeScript-Li
                         templateUrl: "./src/app/directives/brandIndexer.html",
                         styleUrls: ["./src/app/directives/alpha-indexer.css",
                             "./src/app/directives/brand-indexer.css"],
-                        directives: [common_1.CORE_DIRECTIVES, common_1.FORM_DIRECTIVES]
+                        directives: [common_1.CORE_DIRECTIVES, common_1.FORM_DIRECTIVES, ng2_bootstrap_1.TOOLTIP_DIRECTIVES]
                     }), 
                     __metadata('design:paramtypes', [])
                 ], BrandIndexerDirective);

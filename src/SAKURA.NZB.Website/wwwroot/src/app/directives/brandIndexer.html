@@ -16,7 +16,7 @@
                     <button class="btn btn-default" (click)="onClickIndexer(item.name)" 
                             [class.active]="item.selected"
                             *ngIf="item.visible" 
-                            title="{{item.name}}">
+                            tooltip="{{item.name}}" tooltipTrigger="focus" tooltipPlacement="right">
                         <span class="brand pull-left">{{item.name}}</span>
                         <span class="badge pull-right">{{item.count}}</span>
                     </button>
@@ -26,7 +26,7 @@
         <td>
             <div class="list-group">
                 <button type="button" class="list-group-item" *ngFor="#e of itemList; #i = index" (click)="onClickElement(e.id)"              
-                        title="{{e.brand}} {{e.name}}">
+                        tooltip="{{e.brand}} {{e.name}}" tooltipTrigger="focus" tooltipPlacement="right">
                     <span class="product pull-left">{{e.name}}</span>
                     <i class="fa fa-plus pull-right"></i>
                 </button>

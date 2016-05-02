@@ -3,6 +3,7 @@
 import {Component, OnChanges, SimpleChange, Input, Output, EventEmitter} from "angular2/core";
 import {CORE_DIRECTIVES, FORM_DIRECTIVES} from "angular2/common";
 
+import {TOOLTIP_DIRECTIVES} from 'ng2-bootstrap/ng2-bootstrap';
 import '../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js';
 
 export class Item {
@@ -22,7 +23,7 @@ export class Brand {
     templateUrl: "./src/app/directives/brandIndexer.html",
 	styleUrls: ["./src/app/directives/alpha-indexer.css",
 		"./src/app/directives/brand-indexer.css"],
-    directives: [CORE_DIRECTIVES, FORM_DIRECTIVES]
+    directives: [CORE_DIRECTIVES, FORM_DIRECTIVES, TOOLTIP_DIRECTIVES]
 })
 
 export class BrandIndexerDirective implements OnChanges {
