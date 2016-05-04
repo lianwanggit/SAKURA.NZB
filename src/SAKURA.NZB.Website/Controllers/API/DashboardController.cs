@@ -119,7 +119,7 @@ namespace SAKURA.NZB.Website.Controllers.API
 				}
 
 				cost += (o.Freight ?? 0F);
-				var profit = (income - cost * rate);
+				var profit = (float)Math.Round(income - cost * rate, 2);
 
 				var sale = result.FirstOrDefault(s => s.Month == month);
 				if (sale != null)

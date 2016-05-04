@@ -11,13 +11,6 @@ namespace SAKURA.NZB.Website.Controllers.API
 		private NZBContext _context;
 		private Config _config;
 
-		private class NzdToCnyRates
-		{
-			public float FixedRateHigh { get; set; }
-			public float FixedRateLow { get; set; }
-			public float? CurrentRate { get; set; }
-		}
-
 		public ExchangeRatesController(NZBContext context, Config config)
 		{
 			_context = context;
@@ -33,10 +26,11 @@ namespace SAKURA.NZB.Website.Controllers.API
         [HttpGet, Route("latest")]
         public IActionResult Get(int id)
         {
-			return new ObjectResult(new NzdToCnyRates {
+			return new ObjectResult(new {
 				FixedRateHigh = _config.GetFixedRateHigh(),
 				FixedRateLow = _config.GetFixedRateLow(),
-				CurrentRate = _config.GetCurrentRate()
+				CurrentRate = _config.GetCurrentRate(),
+				FreightRate = _config.GetFreightRate()
 			});
 		}
     }

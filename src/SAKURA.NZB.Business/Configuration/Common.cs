@@ -4,6 +4,7 @@
     {
 		public static float ExchangeRateL = 4.5f;
 		public static float ExchangeRateH = 5.0f;
+		public static float FreightRate = 6.5f;
 
 	}
 }

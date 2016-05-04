@@ -7,5 +7,6 @@
 		public static string ApiLayerAccessKey = "currencylayer.AccessKey";
 		public static string Sender = "Sender";
 		public static string SenderPhone = "Sender.Phone";
+		public static string FreightRate = "FreightRate";
 	}
 }

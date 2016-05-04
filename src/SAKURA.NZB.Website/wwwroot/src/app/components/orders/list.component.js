@@ -111,6 +111,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                             that.fixedRateHigh = json.fixedRateHigh;
                             that.fixedRateLow = json.fixedRateLow;
                             that.currentRate = json.currentRate.toFixed(2);
+                            that.freightRate = json.freightRate;
                             that.loadOrders();
                         }
                     });
@@ -142,14 +143,14 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     });
                 };
                 OrdersComponent.prototype.onDeliverOpen = function (orderId) {
-                    this.deliveryModel = new OrderDeliveryModel(orderId, '', null, null);
+                    this.deliveryModel = new OrderDeliveryModel(orderId, '100001', null, null);
                     this.deliveryForm.controls['waybillNumber'].updateValue(this.deliveryModel.waybillNumber);
                     this.deliveryForm.controls['weight'].updateValue(this.deliveryModel.weight);
                     this.deliveryForm.controls['freight'].updateValue(this.deliveryModel.freight);
                     $('#myModal').modal('show');
                 };
                 OrdersComponent.prototype.onInputWeight = function (weight) {
-                    this.deliveryForm.controls['freight'].updateValue((weight * 7).toFixed(2));
+                    this.deliveryForm.controls['freight'].updateValue((weight * this.freightRate).toFixed(2));
                 };
                 OrdersComponent.prototype.onDeliverySubmit = function () {
                     var _this = this;

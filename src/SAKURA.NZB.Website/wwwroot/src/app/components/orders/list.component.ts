@@ -66,6 +66,7 @@ export class OrdersComponent implements OnInit {
 	fixedRateHigh: number;
 	fixedRateLow: number;
 	currentRate: number;
+	freightRate: number;
 
 	private _filterText = '';
 	colorSheet = ['bg-red', 'bg-pink', 'bg-purple', 'bg-deeppurple', 'bg-indigo', 'bg-blue', 'bg-teal', 'bg-green', 'bg-orange', 'bg-deeporange', 'bg-brown', 'bg-bluegrey'];
@@ -98,6 +99,7 @@ export class OrdersComponent implements OnInit {
 				that.fixedRateHigh = json.fixedRateHigh;
 				that.fixedRateLow = json.fixedRateLow;
 				that.currentRate = json.currentRate.toFixed(2);
+				that.freightRate = json.freightRate;
 
 				that.loadOrders();
 			}
@@ -141,7 +143,7 @@ export class OrdersComponent implements OnInit {
 	}
 
 	onDeliverOpen(orderId: number) {
-		this.deliveryModel = new OrderDeliveryModel(orderId, '', null, null);
+		this.deliveryModel = new OrderDeliveryModel(orderId, '100001', null, null);
 
 		(<any>this.deliveryForm.controls['waybillNumber']).updateValue(this.deliveryModel.waybillNumber);
 		(<any>this.deliveryForm.controls['weight']).updateValue(this.deliveryModel.weight);
@@ -151,7 +153,7 @@ export class OrdersComponent implements OnInit {
 	}
 
 	onInputWeight(weight: number) {
-		(<any>this.deliveryForm.controls['freight']).updateValue((weight * 7).toFixed(2));
+		(<any>this.deliveryForm.controls['freight']).updateValue((weight * this.freightRate).toFixed(2));
 	}
 
 	onDeliverySubmit() {

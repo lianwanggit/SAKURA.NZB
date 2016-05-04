@@ -25,6 +25,8 @@ namespace SAKURA.NZB.Business.Configuration
 		public string GetSender() => GetByKey(ConfigKeys.Sender);
 		public string GetSenderPhone() => GetByKey(ConfigKeys.SenderPhone);
 
+		public float GetFreightRate() => GetFloatByKey(ConfigKeys.FreightRate);
+
 		public void EnsureDefaults()
 		{
 			if (!Exists(ConfigKeys.FixedRateLow))
@@ -32,6 +34,9 @@ namespace SAKURA.NZB.Business.Configuration
 
 			if (!Exists(ConfigKeys.FixedRateHigh))
 				Set(ConfigKeys.FixedRateHigh, Common.ExchangeRateH.ToString());
+
+			if (!Exists(ConfigKeys.FreightRate))
+				Set(ConfigKeys.FreightRate, Common.FreightRate.ToString());
 		}
 
 		private bool Exists(string key) => _context.Configs.Any(c => c.Key == key);
