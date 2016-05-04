@@ -264,6 +264,7 @@ namespace SAKURA.NZB.Website.Controllers
 					Price = o.Price,
 					Qty = o.Qty,
 					ProductId = o.ProductId,
+					ProductName = o.ProductName,
 					CustomerId = o.CustomerId,
 					Purchased = o.Purchased
 				});
@@ -300,6 +301,7 @@ namespace SAKURA.NZB.Website.Controllers
 				{
 					var op = co.OrderProducts[j];
 					if (_context.Products.All(p => p.Id != op.ProductId)) return false;
+					if (string.IsNullOrEmpty(op.ProductName)) return false;
 					if (op.Cost < 0 || op.Price < 0 || op.Qty < 1) return false;
 				}
 			}
@@ -362,6 +364,7 @@ namespace SAKURA.NZB.Website.Controllers
 							Qty = op.Qty,
 							Purchased = op.Purchased,
 							ProductId = op.ProductId,
+							ProductName = op.ProductName,
 							CustomerId = co.CustomerId
 						});
 					}
@@ -411,7 +414,7 @@ namespace SAKURA.NZB.Website.Controllers
 				{
 					ProductId = p.ProductId,
 					ProductBrand = p.Product.Brand.Name,
-					ProductName = p.Product.Name,
+					ProductName = p.ProductName,
 					Cost = p.Cost,
 					Price = p.Price,
 					Qty = p.Qty,

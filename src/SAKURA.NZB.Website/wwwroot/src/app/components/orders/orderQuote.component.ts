@@ -34,8 +34,7 @@ export class OrderQuoteComponent {
 				if (p)
 					p.qty += op.qty;
 				else
-					list.Add(new ProductInfo(op.productId, op.productBrand + ' ' + op.productName,
-						op.price, op.qty));
+					list.Add(new ProductInfo(op.productId, op.productName, op.price, op.qty));
 			});
 		});
 

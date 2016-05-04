@@ -65,7 +65,7 @@ System.register(["angular2/core", "angular2/common", "../api.service", "./models
                                 if (p)
                                     p.qty += op.qty;
                                 else
-                                    list.Add(new ProductInfo(op.productId, op.productBrand + ' ' + op.productName, op.cost, op.qty, op.purchased));
+                                    list.Add(new ProductInfo(op.productId, op.productName, op.cost, op.qty, op.purchased));
                             });
                         });
                         this.totalCost = (list.Sum(function (p) { return p.totalCost; }) + this.orderModel.freight).toFixed(2);

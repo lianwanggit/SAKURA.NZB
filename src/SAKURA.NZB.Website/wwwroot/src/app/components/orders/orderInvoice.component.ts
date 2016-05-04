@@ -50,8 +50,7 @@ export class OrderInvoiceComponent {
 				if (p)
 					p.qty += op.qty;
 				else
-					list.Add(new ProductInfo(op.productId, op.productBrand + ' ' + op.productName,
-						op.cost, op.qty, op.purchased));
+					list.Add(new ProductInfo(op.productId, op.productName, op.cost, op.qty, op.purchased));
 			});
 		});
 

@@ -11,6 +11,9 @@ namespace SAKURA.NZB.Domain
 		public int CustomerId { get; set; }
 		public Customer Customer { get; set; }
 		public Product Product { get; set; }
+		[Required]
+		[StringLength(100)]
+		public string ProductName { get; set; }
 		[DataType(DataType.Currency)]
 		public float Cost { get; set; }
 		[DataType(DataType.Currency)]

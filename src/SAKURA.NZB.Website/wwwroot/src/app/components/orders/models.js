@@ -180,7 +180,8 @@ System.register([], function(exports_1, context_1) {
                 };
                 Object.defineProperty(OrderProduct.prototype, "isValid", {
                     get: function () {
-                        return !isNaN(this.cost) && this.cost > 0
+                        return this.productName
+                            && !isNaN(this.cost) && this.cost > 0
                             && !isNaN(this.price) && this.price >= 0
                             && !isNaN(this.qty) && this.qty > 0;
                     },

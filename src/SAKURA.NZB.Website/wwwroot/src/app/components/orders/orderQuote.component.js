@@ -48,7 +48,7 @@ System.register(["angular2/core", "angular2/common", "./models"], function(expor
                                 if (p)
                                     p.qty += op.qty;
                                 else
-                                    list.Add(new ProductInfo(op.productId, op.productBrand + ' ' + op.productName, op.price, op.qty));
+                                    list.Add(new ProductInfo(op.productId, op.productName, op.price, op.qty));
                             });
                         });
                         this.totalPrice = (list.Sum(function (p) { return p.totalPrice; })).toFixed(2);

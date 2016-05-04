@@ -40,7 +40,7 @@ export class OrderSummaryComponent {
 				if (p)
 					p.qty += op.qty;
 				else
-					list.Add(new ProductInfo(op.productId, op.productBrand + ' ' + op.productName,
+					list.Add(new ProductInfo(op.productId, op.productName,
 						op.cost, (op.cost * this.exchangeRate).toFixed(2), op.price, op.qty,
 						op.profit, op.strProfit));
 			});

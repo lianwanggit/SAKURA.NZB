@@ -58,7 +58,7 @@ System.register(["angular2/core", "angular2/common", "../api.service", "./models
                                 if (p)
                                     p.qty += op.qty;
                                 else
-                                    list.Add(new ProductInfo(op.productId, op.productBrand + ' ' + op.productName, op.cost, (op.cost * _this.exchangeRate).toFixed(2), op.price, op.qty, op.profit, op.strProfit));
+                                    list.Add(new ProductInfo(op.productId, op.productName, op.cost, (op.cost * _this.exchangeRate).toFixed(2), op.price, op.qty, op.profit, op.strProfit));
                             });
                         });
                         return list.OrderBy(function (p) { return p.name; }).ToArray();

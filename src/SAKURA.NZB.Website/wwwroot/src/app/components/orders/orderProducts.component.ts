@@ -48,7 +48,8 @@ export class OrderProductsComponent implements OnInit {
 					var lowestCost = 0; 
 					if (product.quotes.length)
 						lowestCost = product.quotes.ToList<Quote>().Min(q => q.price);
-					co.orderProducts.push(new OrderProduct(product.id, product.brand.name, product.name, lowestCost, product.price, 1, false, this.exchangeRate));
+					co.orderProducts.push(new OrderProduct(product.id, product.brand.name, product.brand.name + ' ' + product.name,
+						lowestCost, product.price, 1, false, this.exchangeRate));
 				}
 				else
 					op.qty += 1;
