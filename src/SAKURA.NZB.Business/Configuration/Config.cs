@@ -27,6 +27,9 @@ namespace SAKURA.NZB.Business.Configuration
 
 		public float GetFreightRate() => GetFloatByKey(ConfigKeys.FreightRate);
 
+		public string GetExpressTrackerUri() => GetByKey(ConfigKeys.ExpressTrackerUri);
+		public string GetExpressTrackerCode() => GetByKey(ConfigKeys.ExpressTrackerCode);
+
 		public void EnsureDefaults()
 		{
 			if (!Exists(ConfigKeys.FixedRateLow))

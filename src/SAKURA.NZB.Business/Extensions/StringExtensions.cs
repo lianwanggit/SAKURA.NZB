@@ -26,6 +26,21 @@ namespace SAKURA.NZB.Business.Extensions
 			return string.Format(text, args);
 		}
 
+		public static string After(this string value, string splitter)
+		{
+			int posA = value.LastIndexOf(splitter);
+			if (posA == -1)
+			{
+				return "";
+			}
+			int adjustedPosA = posA + splitter.Length;
+			if (adjustedPosA >= value.Length)
+			{
+				return "";
+			}
+			return value.Substring(adjustedPosA);
+		}
+
 		public static string ToSlug(this string value)
 		{
 			value = value.ToLowerInvariant();
