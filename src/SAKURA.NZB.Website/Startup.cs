@@ -5,7 +5,6 @@ using Microsoft.AspNet.Mvc.Formatters;
 using Microsoft.Data.Entity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using SAKURA.NZB.Business;
@@ -22,8 +21,9 @@ namespace SAKURA.NZB.Website
 		{
 			// Set up configuration sources.
 			Log.Logger = new LoggerConfiguration()
-							  .WriteTo.ColoredConsole()
-							  .CreateLogger();
+				.Enrich.WithProperty("SourceContext", string.Empty)
+				.WriteTo.LiterateConsole(outputTemplate: "{Timestamp:HH:mm:ss.fff} [{Level}] {SourceContext} {Message}{NewLine}{Exception}")
+				.CreateLogger();
 
 			var builder = new ConfigurationBuilder()
 				.AddJsonFile("appsettings.json")
@@ -65,12 +65,8 @@ namespace SAKURA.NZB.Website
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-		public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+		public void Configure(IApplicationBuilder app, IHostingEnvironment env)
 		{
-			//loggerFactory.AddConsole(Configuration.GetSection("Logging"));
-			//loggerFactory.AddDebug();
-			loggerFactory.AddSerilog();
-
 			app.UseApplicationInsightsRequestTelemetry();
 
 			var dbContext = app.ApplicationServices.GetRequiredService<NZBContext>();
@@ -119,6 +115,7 @@ namespace SAKURA.NZB.Website
 			foreach (var bootTask in app.ApplicationServices.GetServices<IBootTask>())
 			{
 				bootTask.Run();
+				Log.Logger.ForContext<Startup>().Information($"Running boot task {bootTask}");
 			}
 		}
 

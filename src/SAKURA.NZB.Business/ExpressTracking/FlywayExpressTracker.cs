@@ -1,25 +1,27 @@
 ﻿using HtmlAgilityPack;
 using SAKURA.NZB.Business.Configuration;
 using SAKURA.NZB.Business.Extensions;
+using SAKURA.NZB.Domain;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace SAKURA.NZB.Business.ExpressTracker
+namespace SAKURA.NZB.Business.ExpressTracking
 {
-	public class ExpressTracker
-    {
+	public class FlywayExpressTracker
+	{
 		private readonly Config _config;
+		private readonly ILogger _logger = Log.ForContext<FlywayExpressTracker>();
 
-		public ExpressTracker(Config config)
+		public FlywayExpressTracker(Config config)
 		{
 			_config = config;
 		}
 
-		public TrackSummary Track(string waybillNumber)
+		public ExpressTrack Track(string waybillNumber)
 		{
 			var uri = _config.GetExpressTrackerUri();
 			var code = _config.GetExpressTrackerCode();
@@ -33,21 +35,27 @@ namespace SAKURA.NZB.Business.ExpressTracker
 				return Parse(dom);
 			}
 
-			return null;
+			return default(ExpressTrack);
 		}
 
-		private TrackSummary Parse(string dom)
+		private ExpressTrack Parse(string dom)
 		{
 			try
 			{
-				var summary = new TrackSummary();
+				var summary = new ExpressTrack();
 				var html = new HtmlDocument();
 				html.LoadHtml(dom);
 
 				var root = html.DocumentNode;
 				var trackListTable = root.Descendants()
 					.Where(n => n.GetAttributeValue("class", "") == "trackListTable")
-					.Single();
+					.SingleOrDefault();
+
+				if (trackListTable == null)
+				{
+					_logger.Warning("Failed to parse the response");
+					return default(ExpressTrack);
+				}
 
 				var children = trackListTable.Descendants("table");
 				var trackHead = children.First(n => n.GetAttributeValue("class", "") == "trackHead")
@@ -67,15 +75,15 @@ namespace SAKURA.NZB.Business.ExpressTracker
 					summary.Status = trackHead[4].InnerText.After("：");
 				}
 
-				summary.Details = new List<TrackRecord>();
+				summary.Details = new List<ExpressTrackRecord>();
 				foreach (var item in trackContent)
 				{
 					var td = item.Descendants("td").ToArray();
 					if (td.Length != 3) continue;
 
-					summary.Details.Add(new TrackRecord
+					summary.Details.Add(new ExpressTrackRecord
 					{
-						When = td[0].InnerText,
+						When = StringToDateTime(td[0].InnerText),
 						Where = td[1].InnerText,
 						Content = td[2].InnerText,
 					});
@@ -83,14 +91,14 @@ namespace SAKURA.NZB.Business.ExpressTracker
 
 				return summary;
 			}
-			catch
+			catch(Exception ex)
 			{
+				_logger.Error(ex, "Failed to parse the response");
+				return default(ExpressTrack);
 			}
-
-			return null;
 		}
 
-		public static async Task<string> PostAsync(string uri, string data)
+		private async Task<string> PostAsync(string uri, string data)
 		{
 			using (var client = new WebClient())
 			{
@@ -101,9 +109,10 @@ namespace SAKURA.NZB.Business.ExpressTracker
 					var response = await client.UploadStringTaskAsync(uri, data);
 					return response;
 				}
-				catch
+				catch(Exception ex)
 				{
-					throw new HttpRequestException($"Failed to post {data} to {uri}");
+					_logger.Error(ex, $"Failed to post {data} to {uri}");
+					return default(string);
 				}
 			}
 		}
@@ -116,23 +125,5 @@ namespace SAKURA.NZB.Business.ExpressTracker
 
 			return null;
 		};
-	}
-
-	public class TrackSummary
-	{
-		public string WaybillNumber { get; set; }
-		public string From { get; set; }
-		public string Destination { get; set; }
-		public string ItemCount { get; set; }
-		public string Status { get; set; }
-
-		public List<TrackRecord> Details { get; set; }
-	}
-
-	public class TrackRecord
-	{
-		public string When { get; set; }
-		public string Where { get; set; }
-		public string Content { get; set; }
 	}
 }

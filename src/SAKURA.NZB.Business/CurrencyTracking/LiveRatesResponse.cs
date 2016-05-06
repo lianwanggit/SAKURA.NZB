@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 
-namespace SAKURA.NZB.Business.ExchangeRate
+namespace SAKURA.NZB.Business.CurrencyTracking
 {
 	public class LiveRatesResponse
 	{

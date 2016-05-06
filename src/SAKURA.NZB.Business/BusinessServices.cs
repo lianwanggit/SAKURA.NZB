@@ -4,7 +4,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SAKURA.NZB.Business.BootTasks;
 using SAKURA.NZB.Business.Configuration;
-using SAKURA.NZB.Business.ExchangeRate;
+using SAKURA.NZB.Business.CurrencyTracking;
+using SAKURA.NZB.Business.ExpressTracking;
 using SAKURA.NZB.Business.Hangfire;
 using SAKURA.NZB.Business.Services;
 using SAKURA.NZB.Data;
@@ -37,11 +38,16 @@ namespace SAKURA.NZB.Business
 
 			services.AddTransient<IBackgroundJobClient>(_ => new BackgroundJobClient());
 			services.AddTransient<HangfireHelper>();
+			services.AddTransient<FlywayExpressTracker>();
+			services.AddTransient<CurrencyLayerTracker>();
+			services.AddScoped<CurrencyTrackBootTask>();
+			services.AddScoped<ExpressTrackBootTask>();
+			services.AddScoped<DbCleanupBootTask>();
 
-			services.AddTransient<CurrencyLayerService>();
-
-			services.AddTransient<IBootTask, AppConfigBootTask>();
-			services.AddTransient<IBootTask, QueryExchangeRatesBootTask>();
+			services.AddScoped<IBootTask, AppConfigBootTask>();
+			services.AddScoped<IBootTask, CurrencyTrackBootTask>();
+			services.AddScoped<IBootTask, ExpressTrackBootTask>();
+			services.AddScoped<IBootTask, DbCleanupBootTask>();
 		}
     }
 }
