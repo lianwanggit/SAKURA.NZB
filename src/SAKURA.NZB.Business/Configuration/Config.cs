@@ -32,6 +32,9 @@ namespace SAKURA.NZB.Business.Configuration
 
 		public void EnsureDefaults()
 		{
+			if (!Exists(ConfigKeys.ApiLayerAccessKey))
+				Set(ConfigKeys.ApiLayerAccessKey, "");
+
 			if (!Exists(ConfigKeys.FixedRateLow))
 				Set(ConfigKeys.FixedRateLow, Common.ExchangeRateL.ToString());
 
@@ -40,6 +43,18 @@ namespace SAKURA.NZB.Business.Configuration
 
 			if (!Exists(ConfigKeys.FreightRate))
 				Set(ConfigKeys.FreightRate, Common.FreightRate.ToString());
+
+			if (!Exists(ConfigKeys.Sender))
+				Set(ConfigKeys.Sender, "");
+
+			if (!Exists(ConfigKeys.SenderPhone))
+				Set(ConfigKeys.SenderPhone, "");
+
+			if (!Exists(ConfigKeys.ExpressTrackerUri))
+				Set(ConfigKeys.ExpressTrackerUri, "");
+
+			if (!Exists(ConfigKeys.ExpressTrackerCode))
+				Set(ConfigKeys.ExpressTrackerCode, "");
 		}
 
 		private bool Exists(string key) => _context.Configs.Any(c => c.Key == key);

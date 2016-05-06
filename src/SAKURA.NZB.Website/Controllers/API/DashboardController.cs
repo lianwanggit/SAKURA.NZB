@@ -229,7 +229,7 @@ namespace SAKURA.NZB.Website.Controllers.API
 			foreach (var d in dates)
 			{
 				var rate = rates.FirstOrDefault(r => r.ModifiedTime.Date == d);
-				result.Add(new DayExchange { Date = d.ToShortDateString(), Exchange = (float)Math.Round(rate.NZDCNY, 4) });
+				result.Add(new DayExchange { Date = d.ToShortDateString(), Exchange = (float)Math.Round(rate?.NZDCNY ?? 0F, 4) });
 			}
 
 			return new ObjectResult(result);

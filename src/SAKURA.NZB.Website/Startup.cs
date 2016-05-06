@@ -1,6 +1,4 @@
 ﻿using Hangfire;
-using Hangfire.Dashboard;
-using Hangfire.SqlServer;
 using Microsoft.AspNet.Builder;
 using Microsoft.AspNet.Hosting;
 using Microsoft.AspNet.Mvc.Formatters;
@@ -12,9 +10,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using SAKURA.NZB.Business;
 using SAKURA.NZB.Business.BootTasks;
-using SAKURA.NZB.Business.Hangfire;
 using SAKURA.NZB.Data;
-using System;
 using System.Linq;
 
 namespace SAKURA.NZB.Website
@@ -27,7 +23,8 @@ namespace SAKURA.NZB.Website
 
 			var builder = new ConfigurationBuilder()
 				.AddJsonFile("appsettings.json")
-				.AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
+				.AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
+				.AddJsonFile("appsettings.local.json", optional: true);
 
 			if (env.IsDevelopment())
 			{
@@ -70,6 +67,9 @@ namespace SAKURA.NZB.Website
 			loggerFactory.AddDebug();
 
 			app.UseApplicationInsightsRequestTelemetry();
+
+			var dbContext = app.ApplicationServices.GetRequiredService<NZBContext>();
+			dbContext.Database.EnsureCreated();
 
 			if (env.IsDevelopment())
 			{
