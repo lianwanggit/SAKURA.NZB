@@ -11,6 +11,7 @@ using Newtonsoft.Json.Serialization;
 using SAKURA.NZB.Business;
 using SAKURA.NZB.Business.BootTasks;
 using SAKURA.NZB.Data;
+using Serilog;
 using System.Linq;
 
 namespace SAKURA.NZB.Website
@@ -20,6 +21,9 @@ namespace SAKURA.NZB.Website
 		public Startup(IHostingEnvironment env)
 		{
 			// Set up configuration sources.
+			Log.Logger = new LoggerConfiguration()
+							  .WriteTo.ColoredConsole()
+							  .CreateLogger();
 
 			var builder = new ConfigurationBuilder()
 				.AddJsonFile("appsettings.json")
@@ -63,8 +67,9 @@ namespace SAKURA.NZB.Website
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
 		public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
 		{
-			loggerFactory.AddConsole(Configuration.GetSection("Logging"));
-			loggerFactory.AddDebug();
+			//loggerFactory.AddConsole(Configuration.GetSection("Logging"));
+			//loggerFactory.AddDebug();
+			loggerFactory.AddSerilog();
 
 			app.UseApplicationInsightsRequestTelemetry();
 

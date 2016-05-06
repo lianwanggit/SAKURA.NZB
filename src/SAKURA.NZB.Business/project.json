@@ -21,6 +21,8 @@
     "Microsoft.AspNet.Owin": "1.0.0-rc1-final",
     "Microsoft.AspNet.WebApi.Client": "5.2.2",
     "Newtonsoft.Json": "8.0.2",
-    "htmlagilitypack" : "1.4.9"
+    "htmlagilitypack": "1.4.9",
+    "Serilog.Extensions.Logging": "1.0.0-rc1-final-10086",
+    "Serilog.Sinks.ColoredConsole": "2.0.0-beta-465"
   }
 }
