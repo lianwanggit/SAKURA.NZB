@@ -62,6 +62,7 @@ namespace SAKURA.NZB.Business.BootTasks
 				else
 				{
 					track.ModifiedTime = DateTimeOffset.Now;
+					track.Status = result.Status;
 					track.ArrivedTime = result.ArrivedTime;
 					track.Recipient = result.Recipient;
 

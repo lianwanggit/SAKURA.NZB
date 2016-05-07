@@ -152,7 +152,7 @@ export class Product {
 export class ExpressTrack {
 	constructor(public waybillNumber: string, public from: string, public destination: string,
 		public itemCount: number, public status: string, public arrivedTime: Date, public recipient: string,
-		public details: ExpressTrackRecord[]) { }
+		public details: ExpressTrackRecord[]) {}
 
 	get duration() {
 		if (this.details.length) {
@@ -166,7 +166,9 @@ export class ExpressTrack {
 		return "";
 	}
 
-	get arrivedTimeText() { return this.arrivedTime ? moment(this.arrivedTime).format('YYYY-MM-DD HH:mm') : "" }
+	get arrivedTimeDayText() { return this.arrivedTime ? moment(this.arrivedTime).format('MM-DD') : "到达时间" }
+	get arrivedTimeText() { return this.arrivedTime ? moment(this.arrivedTime).format('HH:mm') : "" }
+	get recipientText() { return this.recipient ? this.recipient : "签收人" }
 }
 
 export class ExpressTrackRecord {

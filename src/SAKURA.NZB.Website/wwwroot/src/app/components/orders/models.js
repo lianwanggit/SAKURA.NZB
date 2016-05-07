@@ -224,8 +224,18 @@ System.register([], function(exports_1, context_1) {
                     enumerable: true,
                     configurable: true
                 });
+                Object.defineProperty(ExpressTrack.prototype, "arrivedTimeDayText", {
+                    get: function () { return this.arrivedTime ? moment(this.arrivedTime).format('MM-DD') : "到达时间"; },
+                    enumerable: true,
+                    configurable: true
+                });
                 Object.defineProperty(ExpressTrack.prototype, "arrivedTimeText", {
-                    get: function () { return this.arrivedTime ? moment(this.arrivedTime).format('YYYY-MM-DD HH:mm') : ""; },
+                    get: function () { return this.arrivedTime ? moment(this.arrivedTime).format('HH:mm') : ""; },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(ExpressTrack.prototype, "recipientText", {
+                    get: function () { return this.recipient ? this.recipient : "签收人"; },
                     enumerable: true,
                     configurable: true
                 });

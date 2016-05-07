@@ -120,6 +120,45 @@
     color: red;
 }
 
+.express-summary h3 {
+    margin-top: 10px;
+    margin-bottom: 15px;
+}
+
+.express-summary h5 {
+    margin-top: 5px;
+}
+
+.express-summary .row {
+    margin-right: -3px;
+    margin-left: -3px;
+}
+
+.express-summary .col-xs-3 {
+    padding-right: 3px;
+    padding-left: 3px;
+}
+
+.express-summary .express-summary-left {
+    padding: 8px 0 3px 0;
+    border-bottom-left-radius: 6px;
+    border-top-left-radius: 6px;
+}
+
+.express-summary .express-summary-middle {
+    padding: 8px 0 3px 0;
+}
+
+.express-summary .express-summary-right {
+    padding: 8px 0 3px 0;
+    border-bottom-right-radius: 6px;
+    border-top-right-radius: 6px;
+}
+
+.express-details-title {
+    margin-top: 25px;
+}
+
 @media (min-width: 768px) {
     .month-header table {
         width: 300px;

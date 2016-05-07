@@ -211,27 +211,35 @@
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 <h2 class="modal-title" id="expressTrackModalLabel">运单跟踪</h2>
             </div>
-            <div class="modal-body">
-                <h3>{{expressTrackInfo.waybillNumber}}</h3>
+            <div class="modal-body express-summary">
+                <h3>运单号 {{expressTrackInfo.waybillNumber}}</h3>
                 <div class="row">
                     <div class="col-xs-3 text-center">
-                        <i class="fa fa-clock-o fa-4x"></i>
-                        <h4>{{expressTrackInfo.duration}}</h4>
+                        <div class="bg-info-light express-summary-left">
+                            <i class="fa fa-clock-o fa-3x opacity-80"></i>
+                            <h5>{{expressTrackInfo.duration}}</h5>
+                        </div>
                     </div>
                     <div class="col-xs-3 text-center">
-                        <i class="fa fa-truck fa-4x"></i>
-                        <h4>{{expressTrackInfo.status}}</h4>
+                        <div class="bg-info-light express-summary-middle">
+                            <i class="fa fa-truck fa-3x opacity-80"></i>
+                            <h5>{{expressTrackInfo.status}}</h5>
+                        </div>                 
                     </div>
                     <div class="col-xs-3 text-center">
-                        <i class="fa fa-flag-o fa-4x"></i>
-                        <h4>{{expressTrackInfo.arrivedTimeText}}</h4>
+                        <div class="express-summary-middle" [ngClass]="{'bg-info-light':expressTrackInfo.arrivedTime, 'bg-grey': !expressTrackInfo.arrivedTime }">
+                            <i class="fa fa-flag-o fa-3x opacity-80"></i>
+                            <h5>{{expressTrackInfo.arrivedTimeDayText}} <span class="hidden-xs">{{expressTrackInfo.arrivedTimeText}}</span></h5>
+                        </div>                 
                     </div>
                     <div class="col-xs-3 text-center">
-                        <i class="fa fa-pencil fa-4x"></i>
-                        <h4>{{expressTrackInfo.recipient}}</h4>
+                        <div class="express-summary-right" [ngClass]="{'bg-info-light':expressTrackInfo.recipient, 'bg-grey': !expressTrackInfo.recipient }">
+                            <i class="fa fa-pencil fa-3x opacity-80"></i>
+                            <h5>{{expressTrackInfo.recipientText}}</h5>
+                        </div>          
                     </div>
                 </div>
-
+                <h4 class="express-details-title">跟踪信息</h4>
                 <table class="table table-striped">
                     <tr *ngFor="#r of expressTrackInfo.details">
                         <td>{{r.when}}</td>
