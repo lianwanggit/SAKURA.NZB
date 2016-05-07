@@ -28,6 +28,8 @@ namespace SAKURA.NZB.Business.BootTasks
 
 		public void Track()
 		{
+			_logger.Information("Start tracking the live currency rates.");
+
 			var result = _service.Query();
 			var ratesToday = _context.ExchangeRates.FirstOrDefault(x => x.ModifiedTime.Date == DateTimeOffset.Now.Date);
 

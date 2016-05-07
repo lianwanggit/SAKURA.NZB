@@ -35,6 +35,8 @@ namespace SAKURA.NZB.Business.BootTasks
 
 		public async void DelayTrack()
 		{
+			_logger.Information("Start tracking the live express information.");
+
 			var waybills = _context.Orders.Where(o => !string.IsNullOrEmpty(o.WaybillNumber)
 						&& (o.OrderState == Domain.OrderState.Delivered || o.OrderState == Domain.OrderState.Received))
 					.Select(o => o.WaybillNumber).ToList();
