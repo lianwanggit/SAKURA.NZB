@@ -16,16 +16,15 @@ namespace SAKURA.NZB.Data.Migrations
             migrationBuilder.DropForeignKey(name: "FK_Product_Category_CategoryId", table: "Product");
             migrationBuilder.DropForeignKey(name: "FK_ProductQuote_Product_ProductId", table: "ProductQuote");
             migrationBuilder.DropForeignKey(name: "FK_ProductQuote_Supplier_SupplierId", table: "ProductQuote");
-            migrationBuilder.AddColumn<bool>(
-                name: "IsCompleted",
+            migrationBuilder.DropColumn(name: "IsCompleted", table: "ExpressTrack");
+            migrationBuilder.AddColumn<DateTime>(
+                name: "ArrivedTime",
                 table: "ExpressTrack",
-                nullable: false,
-                defaultValue: false);
-            migrationBuilder.AddColumn<DateTimeOffset>(
-                name: "ModifiedTime",
+                nullable: true);
+            migrationBuilder.AddColumn<string>(
+                name: "Recipient",
                 table: "ExpressTrack",
-                nullable: false,
-                defaultValue: new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)));
+                nullable: true);
             migrationBuilder.AddForeignKey(
                 name: "FK_ExpressTrackRecord_ExpressTrack_ExpressTrackId",
                 table: "ExpressTrackRecord",
@@ -94,8 +93,13 @@ namespace SAKURA.NZB.Data.Migrations
             migrationBuilder.DropForeignKey(name: "FK_Product_Category_CategoryId", table: "Product");
             migrationBuilder.DropForeignKey(name: "FK_ProductQuote_Product_ProductId", table: "ProductQuote");
             migrationBuilder.DropForeignKey(name: "FK_ProductQuote_Supplier_SupplierId", table: "ProductQuote");
-            migrationBuilder.DropColumn(name: "IsCompleted", table: "ExpressTrack");
-            migrationBuilder.DropColumn(name: "ModifiedTime", table: "ExpressTrack");
+            migrationBuilder.DropColumn(name: "ArrivedTime", table: "ExpressTrack");
+            migrationBuilder.DropColumn(name: "Recipient", table: "ExpressTrack");
+            migrationBuilder.AddColumn<bool>(
+                name: "IsCompleted",
+                table: "ExpressTrack",
+                nullable: false,
+                defaultValue: false);
             migrationBuilder.AddForeignKey(
                 name: "FK_ExpressTrackRecord_ExpressTrack_ExpressTrackId",
                 table: "ExpressTrackRecord",

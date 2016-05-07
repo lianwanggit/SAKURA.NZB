@@ -114,18 +114,21 @@ namespace SAKURA.NZB.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<DateTime?>("ArrivedTime");
+
                     b.Property<string>("Destination")
                         .HasAnnotation("MaxLength", 20);
 
                     b.Property<string>("From")
                         .HasAnnotation("MaxLength", 20);
 
-                    b.Property<bool>("IsCompleted");
-
                     b.Property<string>("ItemCount")
                         .HasAnnotation("MaxLength", 10);
 
                     b.Property<DateTimeOffset>("ModifiedTime");
+
+                    b.Property<string>("Recipient")
+                        .HasAnnotation("MaxLength", 20);
 
                     b.Property<string>("Status")
                         .HasAnnotation("MaxLength", 20);

@@ -20,7 +20,9 @@ namespace SAKURA.NZB.Domain
 		public string Status { get; set; }
 
 		public DateTimeOffset ModifiedTime { get; set; }
-		public bool IsCompleted { get; set; }
+		public DateTime? ArrivedTime { get; set; }
+		[StringLength(20)]
+		public string Recipient { get; set; }
 
 		public List<ExpressTrackRecord> Details { get; set; }
 	}

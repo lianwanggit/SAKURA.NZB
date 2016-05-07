@@ -58,25 +58,24 @@ namespace SAKURA.NZB.Business.ExpressTracking
 				}
 
 				var children = trackListTable.Descendants("table");
-				var trackHead = children.First(n => n.GetAttributeValue("class", "") == "trackHead")
+				var trackHeadSpans = children.First(n => n.GetAttributeValue("class", "") == "trackHead")
 					.Descendants("span")
 					.ToArray();
-				var trackContent = children.First(n => n.GetAttributeValue("class", "") == "trackContentTable")
+				var trackContentTrs = children.First(n => n.GetAttributeValue("class", "") == "trackContentTable")
 					.Descendants("tr")
 					.Skip(1)
 					.ToList();
 
-				if (trackHead.Length == 5)
-				{
-					summary.WaybillNumber = trackHead[0].InnerText.After("：");
-					summary.From = trackHead[1].InnerText.After("：");
-					summary.Destination = trackHead[2].InnerText.After("：");
-					summary.ItemCount = trackHead[3].InnerText.After("：");
-					summary.Status = trackHead[4].InnerText.After("：");
-				}
+				summary.WaybillNumber = trackHeadSpans.FirstOrDefault(s => s.GetAttributeValue("id", "") == "HeaderNum")?.InnerText.After("：");
+				summary.From = trackHeadSpans.FirstOrDefault(s => s.GetAttributeValue("id", "") == "HeaderFrom")?.InnerText.After("：");
+				summary.Destination = trackHeadSpans.FirstOrDefault(s => s.GetAttributeValue("id", "") == "HeaderDes")?.InnerText.After("：");
+				summary.ItemCount = trackHeadSpans.FirstOrDefault(s => s.GetAttributeValue("id", "") == "HeaderItem")?.InnerText.After("：");
+				summary.Status = trackHeadSpans.FirstOrDefault(s => s.GetAttributeValue("id", "") == "HeaderState")?.InnerText.After("：");
+				summary.ArrivedTime = StringToDateTime(trackHeadSpans.FirstOrDefault(s => s.GetAttributeValue("id", "") == "HeaderADate")?.InnerText.After("："));
+				summary.Recipient = trackHeadSpans.FirstOrDefault(s => s.GetAttributeValue("id", "") == "HeaderSign")?.InnerText.After("：");
 
 				summary.Details = new List<ExpressTrackRecord>();
-				foreach (var item in trackContent)
+				foreach (var item in trackContentTrs)
 				{
 					var td = item.Descendants("td").ToArray();
 					if (td.Length != 3) continue;

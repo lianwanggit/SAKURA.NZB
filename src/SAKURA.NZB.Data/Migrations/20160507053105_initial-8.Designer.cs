@@ -8,7 +8,7 @@ using SAKURA.NZB.Data;
 namespace SAKURA.NZB.Data.Migrations
 {
     [DbContext(typeof(NZBContext))]
-    [Migration("20160506105905_initial-8")]
+    [Migration("20160507053105_initial-8")]
     partial class initial8
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -115,18 +115,21 @@ namespace SAKURA.NZB.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<DateTime?>("ArrivedTime");
+
                     b.Property<string>("Destination")
                         .HasAnnotation("MaxLength", 20);
 
                     b.Property<string>("From")
                         .HasAnnotation("MaxLength", 20);
 
-                    b.Property<bool>("IsCompleted");
-
                     b.Property<string>("ItemCount")
                         .HasAnnotation("MaxLength", 10);
 
                     b.Property<DateTimeOffset>("ModifiedTime");
+
+                    b.Property<string>("Recipient")
+                        .HasAnnotation("MaxLength", 20);
 
                     b.Property<string>("Status")
                         .HasAnnotation("MaxLength", 20);

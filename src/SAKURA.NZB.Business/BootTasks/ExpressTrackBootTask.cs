@@ -26,7 +26,11 @@ namespace SAKURA.NZB.Business.BootTasks
 
 		public void Run()
 		{
-			RecurringJob.AddOrUpdate("track-express-info-task", () => DelayTrack(), Cron.Daily(14));
+			var timezone = TimeZoneInfo.FindSystemTimeZoneById("China Standard Time");
+			RecurringJob.AddOrUpdate("track-express-info-task1", () => DelayTrack(), Cron.Daily(9, 30), timezone);
+			RecurringJob.AddOrUpdate("track-express-info-task2", () => DelayTrack(), Cron.Daily(12, 00), timezone);
+			RecurringJob.AddOrUpdate("track-express-info-task3", () => DelayTrack(), Cron.Daily(15, 30), timezone);
+			RecurringJob.AddOrUpdate("track-express-info-task4", () => DelayTrack(), Cron.Daily(18, 00), timezone);
 		}
 
 		public async void DelayTrack()
