@@ -4,6 +4,7 @@ using SAKURA.NZB.Business.ExpressTracking;
 using SAKURA.NZB.Data;
 using Serilog;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -35,14 +36,14 @@ namespace SAKURA.NZB.Business.BootTasks
 
 		public async void DelayTrack()
 		{
-			_logger.Information("Start tracking the live express information.");
-
 			var waybills = _context.Orders.Where(o => !string.IsNullOrEmpty(o.WaybillNumber)
 						&& (o.OrderState == Domain.OrderState.Delivered || o.OrderState == Domain.OrderState.Received))
 					.Select(o => o.WaybillNumber).ToList();
 
 			foreach (var wb in waybills)
 			{
+				_logger.Information($"Start tracking the live express information of waybill: {wb}");
+
 				var result = _expressTracker.Track(wb);
 				if (result == null)
 				{
@@ -60,6 +61,10 @@ namespace SAKURA.NZB.Business.BootTasks
 				}
 				else
 				{
+					track.ModifiedTime = DateTimeOffset.Now;
+					track.ArrivedTime = result.ArrivedTime;
+					track.Recipient = result.Recipient;
+
 					foreach (var r in result.Details)
 					{
 						if (track.Details.All(x => x.When != r.When))
@@ -68,6 +73,8 @@ namespace SAKURA.NZB.Business.BootTasks
 							_logger.Information($"Added new express track record of waybill: {wb}");
 						}
 					}
+
+					_logger.Information($"Updated the express track of waybill: {wb}");
 				}
 
 				_context.SaveChanges();
