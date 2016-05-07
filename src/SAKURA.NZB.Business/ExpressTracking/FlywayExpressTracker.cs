@@ -66,13 +66,13 @@ namespace SAKURA.NZB.Business.ExpressTracking
 					.Skip(1)
 					.ToList();
 
-				summary.WaybillNumber = trackHeadSpans.FirstOrDefault(s => s.GetAttributeValue("id", "") == "HeaderNum")?.InnerText.After("：");
-				summary.From = trackHeadSpans.FirstOrDefault(s => s.GetAttributeValue("id", "") == "HeaderFrom")?.InnerText.After("：");
-				summary.Destination = trackHeadSpans.FirstOrDefault(s => s.GetAttributeValue("id", "") == "HeaderDes")?.InnerText.After("：");
-				summary.ItemCount = trackHeadSpans.FirstOrDefault(s => s.GetAttributeValue("id", "") == "HeaderItem")?.InnerText.After("：");
-				summary.Status = trackHeadSpans.FirstOrDefault(s => s.GetAttributeValue("id", "") == "HeaderState")?.InnerText.After("：");
+				summary.WaybillNumber = trackHeadSpans.FirstOrDefault(s => s.GetAttributeValue("id", "") == "HeaderNum")?.InnerText.After("：").Trim();
+				summary.From = trackHeadSpans.FirstOrDefault(s => s.GetAttributeValue("id", "") == "HeaderFrom")?.InnerText.After("：").Trim();
+				summary.Destination = trackHeadSpans.FirstOrDefault(s => s.GetAttributeValue("id", "") == "HeaderDes")?.InnerText.After("：").Trim();
+				summary.ItemCount = trackHeadSpans.FirstOrDefault(s => s.GetAttributeValue("id", "") == "HeaderItem")?.InnerText.After("：").Trim();
+				summary.Status = trackHeadSpans.FirstOrDefault(s => s.GetAttributeValue("id", "") == "HeaderState")?.InnerText.After("：").Trim();
 				summary.ArrivedTime = StringToDateTime(trackHeadSpans.FirstOrDefault(s => s.GetAttributeValue("id", "") == "HeaderADate")?.InnerText.After("："));
-				summary.Recipient = trackHeadSpans.FirstOrDefault(s => s.GetAttributeValue("id", "") == "HeaderSign")?.InnerText.After("：");
+				summary.Recipient = trackHeadSpans.FirstOrDefault(s => s.GetAttributeValue("id", "") == "HeaderSign")?.InnerText.After("：").Trim();
 
 				summary.Details = new List<ExpressTrackRecord>();
 				foreach (var item in trackContentTrs)

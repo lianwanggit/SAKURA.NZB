@@ -17,7 +17,6 @@ namespace SAKURA.NZB.Website.Models
 		public float? Weight { get; set; }
 		public float? Freight { get; set; }
 		public Image Waybill { get; set; }
-		public string TransitStatus { get; set; }
 		public string Description { get; set; }
 		public string Recipient { get; set; }
 		public string Phone { get; set; }

@@ -247,7 +247,6 @@ namespace SAKURA.NZB.Website.Controllers
 			item.Weight = order.Weight;
 			item.Freight = order.Freight;
 			item.Waybill = order.Waybill;
-			item.TransitStatus = order.TransitStatus;
 			item.Description = order.Description;
 			item.Recipient = order.Recipient;
 			item.Phone = order.Phone;
@@ -342,7 +341,6 @@ namespace SAKURA.NZB.Website.Controllers
 				Weight = model.Weight,
 				Freight = model.Freight,
 				Waybill = model.Waybill,
-				TransitStatus = model.TransitStatus,
 				Description = model.Description,
 				Recipient = model.Recipient,
 				Phone = model.Phone,
@@ -384,7 +382,7 @@ namespace SAKURA.NZB.Website.Controllers
 			return order;
 		}
 
-		private static OrderModel MapTo(Order o, string sender, string senderPhone)
+		private OrderModel MapTo(Order o, string sender, string senderPhone)
 		{
 			var model = new OrderModel
 			{
@@ -398,7 +396,6 @@ namespace SAKURA.NZB.Website.Controllers
 				Weight = o.Weight,
 				Freight = o.Freight,
 				Waybill = o.Waybill,
-				TransitStatus = o.TransitStatus,
 				Description = o.Description,
 				Recipient = o.Recipient,
 				Phone = o.Phone,

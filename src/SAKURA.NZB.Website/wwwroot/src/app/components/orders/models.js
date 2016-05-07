@@ -6,7 +6,7 @@ System.register([], function(exports_1, context_1) {
         var o = {
             id: order.id, orderTime: order.orderTime, deliveryTime: order.deliveryTime, receiveTime: order.receiveTime,
             orderState: order.orderState, paymentState: order.paymentState, waybillNumber: order.waybillNumber, weight: order.weight,
-            freight: order.freight, waybill: null, transitStatus: null, description: null, recipient: order.recipient,
+            freight: order.freight, waybill: null, description: null, recipient: order.recipient,
             phone: order.phone, address: order.address, sender: order.sender, senderPhone: order.senderPhone, customerOrders: []
         };
         order.customerOrders.forEach(function (co) {

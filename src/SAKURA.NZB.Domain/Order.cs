@@ -21,8 +21,6 @@ namespace SAKURA.NZB.Domain
 		[DataType(DataType.Currency)]
 		public float? Freight { get; set; }
 		public Image Waybill { get; set; }
-		[StringLength(100)]
-		public string TransitStatus { get; set; }
 		[StringLength(255)]
 		public string Description { get; set; }
 		[StringLength(10)]
