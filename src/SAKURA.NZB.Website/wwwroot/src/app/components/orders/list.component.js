@@ -1,5 +1,5 @@
 /// <reference path="../../../../lib/TypeScript-Linq/Scripts/typings/System/Collections/Generic/List.ts" />
-System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.service", "./models", '../../directives/clipboard.directive', '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js', 'moment'], function(exports_1, context_1) {
+System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.service", "./models", '../../directives/clipboard.directive', '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -11,7 +11,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, common_1, router_1, api_service_1, models_1, clipboard_directive_1, moment_1;
+    var core_1, common_1, router_1, api_service_1, models_1, clipboard_directive_1;
     var YearGroup, MonthGroup, OrderDeliveryModel, OrdersComponent;
     return {
         setters:[
@@ -33,10 +33,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
             function (clipboard_directive_1_1) {
                 clipboard_directive_1 = clipboard_directive_1_1;
             },
-            function (_1) {},
-            function (moment_1_1) {
-                moment_1 = moment_1_1;
-            }],
+            function (_1) {}],
         execute: function() {
             YearGroup = (function () {
                 function YearGroup(year, monthGroups) {
@@ -75,6 +72,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     this.router = router;
                     this.data = [];
                     this.deliveryModel = null;
+                    this.expressTrackInfo = null;
                     this.filteredData = [];
                     this.filterText = '';
                     this.orderState = '';
@@ -85,10 +83,11 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     this.paymentStateKeys = [];
                     this.totalAmount = 0;
                     this.amount = 0;
-                    this.thisYear = moment_1.default().year();
+                    this.thisYear = moment().year();
                     this._filterText = '';
                     this.colorSheet = ['bg-red', 'bg-pink', 'bg-purple', 'bg-deeppurple', 'bg-indigo', 'bg-blue', 'bg-teal', 'bg-green', 'bg-orange', 'bg-deeporange', 'bg-brown', 'bg-bluegrey'];
                     this.deliveryModel = new OrderDeliveryModel(null, '', null, null);
+                    this.expressTrackInfo = new models_1.ExpressTrack(null, null, null, null, null, null, null, []);
                     this.deliveryForm = new common_1.ControlGroup({
                         waybillNumber: new common_1.Control(this.deliveryModel.waybillNumber, common_1.Validators.required),
                         weight: new common_1.Control(this.deliveryModel.weight, common_1.Validators.required),
@@ -213,6 +212,26 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                         ;
                     });
                 };
+                OrdersComponent.prototype.onOpenExpressTrack = function (waybillNumber) {
+                    var that = this;
+                    this.expressTrackInfo = new models_1.ExpressTrack(null, null, null, null, null, null, null, []);
+                    this.service.getExpressTrack(waybillNumber, function (json) {
+                        if (json) {
+                            that.expressTrackInfo.waybillNumber = json.waybillNumber;
+                            that.expressTrackInfo.from = json.from;
+                            that.expressTrackInfo.destination = json.destination;
+                            that.expressTrackInfo.itemCount = json.itemCount;
+                            that.expressTrackInfo.status = json.status;
+                            if (json.arrivedTime)
+                                that.expressTrackInfo.arrivedTime = json.arrivedTime;
+                            that.expressTrackInfo.recipient = json.recipient;
+                            json.details.forEach(function (d) {
+                                that.expressTrackInfo.details.push(new models_1.ExpressTrackRecord(moment(d.when).format('YYYY-MM-DD HH:mm'), d.where, d.content));
+                            });
+                            $('#expressTrackModal').modal('show');
+                        }
+                    });
+                };
                 OrdersComponent.prototype.map = function (json, that, initial) {
                     var yearGroups = [].ToList();
                     var orderCount = 0;
@@ -230,7 +249,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                                     });
                                     customers.Add(new models_1.CustomerOrder(co.customerId, co.customerName, products.ToArray()));
                                 });
-                                orders.Add(new models_1.OrderModel(om.id, moment_1.default(om.orderTime).format('DD/MM/YYYY'), om.deliveryTime, om.receiveTime, om.orderState, om.paymentState, om.waybillNumber, om.weight, om.freight, om.recipient, om.phone, om.address, om.sender, om.senderPhone, that.currentRate, that.orderStates, customers.ToArray()));
+                                orders.Add(new models_1.OrderModel(om.id, moment(om.orderTime).format('DD/MM/YYYY'), om.deliveryTime, om.receiveTime, om.orderState, om.paymentState, om.waybillNumber, om.weight, om.freight, om.recipient, om.phone, om.address, om.sender, om.senderPhone, that.currentRate, that.orderStates, customers.ToArray()));
                                 orderCount += 1;
                             });
                             monthGroups.Add(new MonthGroup(mg.month, orders.ToArray()));

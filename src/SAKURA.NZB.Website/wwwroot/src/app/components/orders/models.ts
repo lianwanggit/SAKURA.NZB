@@ -1,4 +1,6 @@
-﻿export class Dict {
+﻿declare var moment: any;
+
+export class Dict {
 	orderStates = {};
 	paymentStates = {};
 
@@ -145,6 +147,30 @@ export class OrderProduct {
 
 export class Product {
 	constructor(public id: number, public name: string, public qty: number) { }
+}
+
+export class ExpressTrack {
+	constructor(public waybillNumber: string, public from: string, public destination: string,
+		public itemCount: number, public status: string, public arrivedTime: Date, public recipient: string,
+		public details: ExpressTrackRecord[]) { }
+
+	get duration() {
+		if (this.details.length) {
+			var start = moment(this.details[0].when);
+			var end = this.arrivedTime ? moment(this.arrivedTime) : moment();
+
+			var ms = end.diff(start);
+			return moment.duration(ms).humanize();
+		}
+
+		return "";
+	}
+
+	get arrivedTimeText() { return this.arrivedTime ? moment(this.arrivedTime).format('YYYY-MM-DD HH:mm') : "" }
+}
+
+export class ExpressTrackRecord {
+	constructor(public when: string, public where: string, public content: string) { }
 }
 
 export function map(order: OrderModel) {

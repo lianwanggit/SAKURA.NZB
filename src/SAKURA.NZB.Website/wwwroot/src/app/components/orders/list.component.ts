@@ -4,10 +4,11 @@ import {Component, OnInit} from "angular2/core";
 import {CORE_DIRECTIVES, FORM_DIRECTIVES, ControlGroup, Control, Validators} from "angular2/common";
 import {Router, ROUTER_DIRECTIVES} from 'angular2/router';
 import {ApiService} from "../api.service";
-import {OrderModel, CustomerOrder, OrderProduct, Dict, formatCurrency} from "./models";
+import {OrderModel, CustomerOrder, OrderProduct, ExpressTrack, ExpressTrackRecord, Dict, formatCurrency} from "./models";
 import {ClipboardDirective} from '../../directives/clipboard.directive';
 import '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js';
-import moment from 'moment';
+
+declare var moment: any;
 
 declare var $: any;
 
@@ -48,6 +49,8 @@ class OrderDeliveryModel {
 export class OrdersComponent implements OnInit {
 	data: YearGroup[] = [];
 	deliveryModel: OrderDeliveryModel = null;
+	expressTrackInfo: ExpressTrack = null;
+
 	deliveryForm: ControlGroup;
 
 	filteredData: YearGroup[] = [];
@@ -68,11 +71,14 @@ export class OrdersComponent implements OnInit {
 	currentRate: number;
 	freightRate: number;
 
+
 	private _filterText = '';
 	colorSheet = ['bg-red', 'bg-pink', 'bg-purple', 'bg-deeppurple', 'bg-indigo', 'bg-blue', 'bg-teal', 'bg-green', 'bg-orange', 'bg-deeporange', 'bg-brown', 'bg-bluegrey'];
 
     constructor(private service: ApiService, private router: Router) {
 		this.deliveryModel = new OrderDeliveryModel(null, '', null, null);
+		this.expressTrackInfo = new ExpressTrack(null, null, null, null, null, null, null, []);
+
 		this.deliveryForm = new ControlGroup({
 			waybillNumber: new Control(this.deliveryModel.waybillNumber, Validators.required),
 			weight: new Control(this.deliveryModel.weight, Validators.required),
@@ -221,6 +227,32 @@ export class OrdersComponent implements OnInit {
 			};
 		});
 	}
+
+	onOpenExpressTrack(waybillNumber) {
+		var that = this;
+
+		this.expressTrackInfo = new ExpressTrack(null, null, null, null, null, null, null, []);
+		this.service.getExpressTrack(waybillNumber, json => {
+			if (json) {
+				that.expressTrackInfo.waybillNumber = json.waybillNumber;
+				that.expressTrackInfo.from = json.from;
+				that.expressTrackInfo.destination = json.destination;
+				that.expressTrackInfo.itemCount = json.itemCount;
+				that.expressTrackInfo.status = json.status;
+
+				if (json.arrivedTime)
+					that.expressTrackInfo.arrivedTime = json.arrivedTime;
+				that.expressTrackInfo.recipient = json.recipient;
+
+				json.details.forEach(d => {
+					that.expressTrackInfo.details.push(new ExpressTrackRecord(moment(d.when).format('YYYY-MM-DD HH:mm'), d.where, d.content));
+				});
+
+				$('#expressTrackModal').modal('show');
+			}
+		});
+	}
+
 
 	map(json: any, that: OrdersComponent, initial: boolean) {
 		var yearGroups = [].ToList<YearGroup>();

@@ -1,7 +1,7 @@
 System.register([], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
-    var Dict, OrderModel, CustomerOrder, OrderProduct, Product;
+    var Dict, OrderModel, CustomerOrder, OrderProduct, Product, ExpressTrack, ExpressTrackRecord;
     function map(order) {
         var o = {
             id: order.id, orderTime: order.orderTime, deliveryTime: order.deliveryTime, receiveTime: order.receiveTime,
@@ -200,6 +200,47 @@ System.register([], function(exports_1, context_1) {
                 return Product;
             }());
             exports_1("Product", Product);
+            ExpressTrack = (function () {
+                function ExpressTrack(waybillNumber, from, destination, itemCount, status, arrivedTime, recipient, details) {
+                    this.waybillNumber = waybillNumber;
+                    this.from = from;
+                    this.destination = destination;
+                    this.itemCount = itemCount;
+                    this.status = status;
+                    this.arrivedTime = arrivedTime;
+                    this.recipient = recipient;
+                    this.details = details;
+                }
+                Object.defineProperty(ExpressTrack.prototype, "duration", {
+                    get: function () {
+                        if (this.details.length) {
+                            var start = moment(this.details[0].when);
+                            var end = this.arrivedTime ? moment(this.arrivedTime) : moment();
+                            var ms = end.diff(start);
+                            return moment.duration(ms).humanize();
+                        }
+                        return "";
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(ExpressTrack.prototype, "arrivedTimeText", {
+                    get: function () { return this.arrivedTime ? moment(this.arrivedTime).format('YYYY-MM-DD HH:mm') : ""; },
+                    enumerable: true,
+                    configurable: true
+                });
+                return ExpressTrack;
+            }());
+            exports_1("ExpressTrack", ExpressTrack);
+            ExpressTrackRecord = (function () {
+                function ExpressTrackRecord(when, where, content) {
+                    this.when = when;
+                    this.where = where;
+                    this.content = content;
+                }
+                return ExpressTrackRecord;
+            }());
+            exports_1("ExpressTrackRecord", ExpressTrackRecord);
         }
     }
 });

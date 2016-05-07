@@ -194,4 +194,8 @@ export class ApiService {
 	getDashboardOrderStatus(onNext: (json: any) => void) {
 		this.http.get("api/dashboard/order-status").map(response => response.json()).subscribe(onNext);
 	}
+
+	getExpressTrack(id: string, onNext: (json: any) => void) {
+		this.http.get("api/expresstrack/" + id).map(response => response.json()).subscribe(onNext);
+	}
 }
