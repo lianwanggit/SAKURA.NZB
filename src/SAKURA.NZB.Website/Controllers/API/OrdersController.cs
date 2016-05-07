@@ -352,7 +352,7 @@ namespace SAKURA.NZB.Website.Controllers
 			{
 				foreach (var op in co.OrderProducts)
 				{
-					var p = order.Products.FirstOrDefault(x => x.ProductId == op.ProductId && x.CustomerId == co.CustomerId);
+					var p = order.Products.FirstOrDefault(x => x.ProductId == op.ProductId && x.ProductName == op.ProductName && x.CustomerId == co.CustomerId);
 					if (p == null)
 					{
 						order.Products.Add(new OrderProduct

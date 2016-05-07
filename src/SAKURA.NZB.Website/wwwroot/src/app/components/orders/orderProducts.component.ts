@@ -43,16 +43,11 @@ export class OrderProductsComponent implements OnInit {
 			if (json) {
 				var product = new Product(json);
 
-				var op = opList.FirstOrDefault(p => p.productId == product.id);
-				if (!op) {
-					var lowestCost = 0; 
-					if (product.quotes.length)
-						lowestCost = product.quotes.ToList<Quote>().Min(q => q.price);
-					co.orderProducts.push(new OrderProduct(product.id, product.brand.name, product.brand.name + ' ' + product.name,
-						lowestCost, product.price, 1, false, this.exchangeRate));
-				}
-				else
-					op.qty += 1;
+				var lowestCost = 0; 
+				if (product.quotes.length)
+					lowestCost = product.quotes.ToList<Quote>().Min(q => q.price);
+				co.orderProducts.push(new OrderProduct(product.id, product.brand.name, product.brand.name + ' ' + product.name,
+					lowestCost, product.price, 1, false, this.exchangeRate));
 
 				that.onModelChanged(co);
 			}
