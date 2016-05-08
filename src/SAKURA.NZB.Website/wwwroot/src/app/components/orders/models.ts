@@ -152,6 +152,8 @@ export class Product {
 }
 
 export class ExpressTrack {
+	public isEmpty: boolean = true;
+
 	constructor(public waybillNumber: string, public from: string, public destination: string,
 		public itemCount: number, public status: string, public arrivedTime: Date, public recipient: string,
 		public details: ExpressTrackRecord[]) {}

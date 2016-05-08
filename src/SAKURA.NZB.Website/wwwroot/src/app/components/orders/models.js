@@ -216,6 +216,7 @@ System.register([], function(exports_1, context_1) {
                     this.arrivedTime = arrivedTime;
                     this.recipient = recipient;
                     this.details = details;
+                    this.isEmpty = true;
                 }
                 Object.defineProperty(ExpressTrack.prototype, "duration", {
                     get: function () {

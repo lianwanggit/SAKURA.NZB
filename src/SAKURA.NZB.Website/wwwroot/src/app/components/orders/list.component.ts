@@ -230,7 +230,7 @@ export class OrdersComponent implements OnInit {
 	onOpenExpressTrack(waybillNumber) {
 		var that = this;
 
-		this.expressTrackInfo = new ExpressTrack(null, null, null, null, null, null, null, []);
+		this.expressTrackInfo = new ExpressTrack(waybillNumber, null, null, null, null, null, null, []);
 		this.service.getExpressTrack(waybillNumber, json => {
 			if (json) {
 				that.expressTrackInfo.waybillNumber = json.waybillNumber;
@@ -238,6 +238,7 @@ export class OrdersComponent implements OnInit {
 				that.expressTrackInfo.destination = json.destination;
 				that.expressTrackInfo.itemCount = json.itemCount;
 				that.expressTrackInfo.status = json.status;
+				that.expressTrackInfo.isEmpty = false;
 
 				if (json.arrivedTime)
 					that.expressTrackInfo.arrivedTime = json.arrivedTime;
@@ -246,10 +247,10 @@ export class OrdersComponent implements OnInit {
 				json.details.forEach(d => {
 					that.expressTrackInfo.details.push(new ExpressTrackRecord(moment(d.when).format('YYYY-MM-DD HH:mm'), d.where, d.content));
 				});
-
-				$('#expressTrackModal').modal('show');
 			}
 		});
+
+		$('#expressTrackModal').modal('show');
 	}
 
 

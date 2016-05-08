@@ -214,7 +214,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                 };
                 OrdersComponent.prototype.onOpenExpressTrack = function (waybillNumber) {
                     var that = this;
-                    this.expressTrackInfo = new models_1.ExpressTrack(null, null, null, null, null, null, null, []);
+                    this.expressTrackInfo = new models_1.ExpressTrack(waybillNumber, null, null, null, null, null, null, []);
                     this.service.getExpressTrack(waybillNumber, function (json) {
                         if (json) {
                             that.expressTrackInfo.waybillNumber = json.waybillNumber;
@@ -222,15 +222,16 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                             that.expressTrackInfo.destination = json.destination;
                             that.expressTrackInfo.itemCount = json.itemCount;
                             that.expressTrackInfo.status = json.status;
+                            that.expressTrackInfo.isEmpty = false;
                             if (json.arrivedTime)
                                 that.expressTrackInfo.arrivedTime = json.arrivedTime;
                             that.expressTrackInfo.recipient = json.recipient;
                             json.details.forEach(function (d) {
                                 that.expressTrackInfo.details.push(new models_1.ExpressTrackRecord(moment(d.when).format('YYYY-MM-DD HH:mm'), d.where, d.content));
                             });
-                            $('#expressTrackModal').modal('show');
                         }
                     });
+                    $('#expressTrackModal').modal('show');
                 };
                 OrdersComponent.prototype.map = function (json, that, initial) {
                     var yearGroups = [].ToList();
