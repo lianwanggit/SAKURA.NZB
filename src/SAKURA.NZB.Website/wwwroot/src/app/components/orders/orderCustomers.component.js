@@ -147,7 +147,6 @@ System.register(["angular2/core", "angular2/common", "../api.service", "../../di
                             that.orderModel.orderTime = null;
                         }
                         else {
-                            that.orderModel.orderTime = e.date.toDate();
                             that.expressGroup.controls['orderTime'].updateValue(e.date.toDate());
                             that.orderModel.orderTime = that.expressGroup.value.orderTime;
                         }

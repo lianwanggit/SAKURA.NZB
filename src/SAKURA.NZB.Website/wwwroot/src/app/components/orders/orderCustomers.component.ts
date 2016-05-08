@@ -146,8 +146,6 @@ export class OrderCustomersComponent implements OnInit, AfterViewInit {
 				(<any>that.expressGroup.controls['orderTime']).updateValue(null);
 				that.orderModel.orderTime = null;
 			} else {
-				that.orderModel.orderTime = e.date.toDate();
-
 				(<any>that.expressGroup.controls['orderTime']).updateValue(e.date.toDate());
 				that.orderModel.orderTime = that.expressGroup.value.orderTime;
 			}

@@ -71,7 +71,6 @@ export class OrdersComponent implements OnInit {
 	currentRate: number;
 	freightRate: number;
 
-
 	private _filterText = '';
 	colorSheet = ['bg-red', 'bg-pink', 'bg-purple', 'bg-deeppurple', 'bg-indigo', 'bg-blue', 'bg-teal', 'bg-green', 'bg-orange', 'bg-deeporange', 'bg-brown', 'bg-bluegrey'];
 
