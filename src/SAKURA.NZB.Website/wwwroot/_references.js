@@ -30,4 +30,5 @@
 /// <reference path="src/app/directives/alphaindexer.directive.js" />
 /// <reference path="src/app/directives/brandindexer.directive.js" />
 /// <reference path="src/app/directives/clipboard.directive.js" />
+/// <reference path="src/app/validators/numbervalidator.js" />
 /// <reference path="src/app/validators/selectvalidator.js" />

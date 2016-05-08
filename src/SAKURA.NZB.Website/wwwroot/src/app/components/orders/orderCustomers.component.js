@@ -1,4 +1,4 @@
-System.register(["angular2/core", "angular2/common", "../api.service", "../../directives/alphaIndexer.directive", "./models", "../customers/edit.component", "ng2-bootstrap/ng2-bootstrap"], function(exports_1, context_1) {
+System.register(["angular2/core", "angular2/common", "../api.service", "../../directives/alphaIndexer.directive", "./models", "../customers/edit.component", "../../validators/numberValidator", "ng2-bootstrap/ng2-bootstrap"], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -10,7 +10,7 @@ System.register(["angular2/core", "angular2/common", "../api.service", "../../di
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, common_1, api_service_1, alphaIndexer_directive_1, models_1, edit_component_1, ng2_bootstrap_1;
+    var core_1, common_1, api_service_1, alphaIndexer_directive_1, models_1, edit_component_1, numberValidator_1, ng2_bootstrap_1;
     var CustomerKvp, OrderCustomersComponent;
     return {
         setters:[
@@ -32,6 +32,9 @@ System.register(["angular2/core", "angular2/common", "../api.service", "../../di
             function (edit_component_1_1) {
                 edit_component_1 = edit_component_1_1;
             },
+            function (numberValidator_1_1) {
+                numberValidator_1 = numberValidator_1_1;
+            },
             function (ng2_bootstrap_1_1) {
                 ng2_bootstrap_1 = ng2_bootstrap_1_1;
             }],
@@ -50,16 +53,26 @@ System.register(["angular2/core", "angular2/common", "../api.service", "../../di
                     this.selectedCustomer = null;
                     this.selectedExCustomerName = '';
                     this.allCustomers = [];
-                    this.isOrderTimeValid = true;
+                    var that = this;
                     this.recipientGroup = new common_1.ControlGroup({
                         recipient: new common_1.Control(null, common_1.Validators.required),
                         phone: new common_1.Control(null, common_1.Validators.required),
                         address: new common_1.Control(null, common_1.Validators.required)
                     });
-                    var that = this;
                     this.recipientGroup.valueChanges.subscribe(function (data) {
                         if (that.orderModel.isCustomersValid !== that.recipientGroup.valid)
                             that.orderModel.isCustomersValid = that.recipientGroup.valid;
+                    });
+                    this.expressGroup = new common_1.ControlGroup({
+                        orderTime: new common_1.Control(null, common_1.Validators.required),
+                        waybill: new common_1.Control(null, common_1.Validators.required),
+                        weight: new common_1.Control(null, numberValidator_1.NumberValidator.unspecified),
+                        freight: new common_1.Control(null, numberValidator_1.NumberValidator.unspecified)
+                    });
+                    this.expressGroup.valueChanges.subscribe(function (data) {
+                        var valid = (that.orderModel.delivered) ? that.expressGroup.valid : that.isOrderDateValid;
+                        if (that.orderModel.isExpressValid !== valid)
+                            that.orderModel.isExpressValid = valid;
                     });
                 }
                 OrderCustomersComponent.prototype.ngOnInit = function () {
@@ -106,6 +119,12 @@ System.register(["angular2/core", "angular2/common", "../api.service", "../../di
                     }
                     this.orderModel.updateExpressText();
                 };
+                OrderCustomersComponent.prototype.onExpressModelChanged = function (newValue) {
+                    this.orderModel.waybillNumber = this.expressGroup.value.waybill;
+                    this.orderModel.weight = this.expressGroup.value.weight;
+                    this.orderModel.freight = this.expressGroup.value.freight;
+                    this.orderModel.updateSummary();
+                };
                 OrderCustomersComponent.prototype.initialiseDatePicker = function () {
                     var that = this;
                     var today = moment().startOf('day');
@@ -124,14 +143,14 @@ System.register(["angular2/core", "angular2/common", "../api.service", "../../di
                     jQuery('#orderDate').data("DateTimePicker").defaultDate(today);
                     jQuery('#orderDate').on("dp.change", function (e) {
                         if (!e.date) {
-                            that.isOrderTimeValid = false;
+                            that.expressGroup.controls['orderTime'].updateValue(null);
                             that.orderModel.orderTime = null;
                         }
                         else {
-                            that.isOrderTimeValid = true;
                             that.orderModel.orderTime = e.date.toDate();
+                            that.expressGroup.controls['orderTime'].updateValue(e.date.toDate());
+                            that.orderModel.orderTime = that.expressGroup.value.orderTime;
                         }
-                        that.orderModel.isCustomersValid = that.orderModel.isCustomersValid && that.isOrderTimeValid;
                     });
                     if (this.viewMode) {
                         jQuery('#orderDate').data("DateTimePicker").disable();
@@ -163,6 +182,10 @@ System.register(["angular2/core", "angular2/common", "../api.service", "../../di
                             else {
                                 that.orderModel.orderTime = jQuery('#orderDate').data("DateTimePicker").date().toDate();
                             }
+                            that.expressGroup.controls['orderTime'].updateValue(that.orderModel.orderTime);
+                            that.expressGroup.controls['waybill'].updateValue(that.orderModel.waybillNumber);
+                            that.expressGroup.controls['weight'].updateValue(that.orderModel.weight);
+                            that.expressGroup.controls['freight'].updateValue(that.orderModel.freight);
                         }
                     });
                 };
@@ -188,6 +211,11 @@ System.register(["angular2/core", "angular2/common", "../api.service", "../../di
                 });
                 Object.defineProperty(OrderCustomersComponent.prototype, "exCustomers", {
                     get: function () { return this.orderModel.customerOrders.length == 0 ? [] : this.orderModel.customerOrders.slice(1); },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(OrderCustomersComponent.prototype, "isOrderDateValid", {
+                    get: function () { return this.expressGroup.controls['orderTime'].valid; },
                     enumerable: true,
                     configurable: true
                 });

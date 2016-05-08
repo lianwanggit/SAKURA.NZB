@@ -5,13 +5,14 @@ import {ApiService} from "../api.service";
 import {AlphaIndexerDirective, Element} from "../../directives/alphaIndexer.directive";
 import {CustomerOrder, OrderProduct, OrderModel} from "./models";
 import {Customer} from "../customers/edit.component";
+import {NumberValidator, ValidationResult} from "../../validators/numberValidator";
 
 import {TYPEAHEAD_DIRECTIVES} from "ng2-bootstrap/ng2-bootstrap";
 
 declare var moment: any;
 declare var jQuery: any;
 
-export class CustomerKvp{
+export class CustomerKvp {
 	constructor(public id: number, public name: string) { }
 }
 
@@ -30,23 +31,36 @@ export class OrderCustomersComponent implements OnInit, AfterViewInit {
 	selectedExCustomerName = '';
 	allCustomers: CustomerKvp[] = [];
 	recipientGroup: ControlGroup;
-
-	isOrderTimeValid = true;
+	expressGroup: ControlGroup;
 
 	@Input() orderModel: OrderModel;
 	@Input() viewMode: boolean;
 
 	constructor(private service: ApiService) {
+		var that = this;
+
 		this.recipientGroup = new ControlGroup({
 			recipient: new Control(null, Validators.required),
 			phone: new Control(null, Validators.required),
 			address: new Control(null, Validators.required)
 		});
 
-		var that = this;
 		this.recipientGroup.valueChanges.subscribe(data => {
 			if (that.orderModel.isCustomersValid !== that.recipientGroup.valid)
-				that.orderModel.isCustomersValid = that.recipientGroup.valid;		
+				that.orderModel.isCustomersValid = that.recipientGroup.valid;
+		});
+
+		this.expressGroup = new ControlGroup({
+			orderTime: new Control(null, Validators.required),
+			waybill: new Control(null, Validators.required),
+			weight: new Control(null, NumberValidator.unspecified),
+			freight: new Control(null, NumberValidator.unspecified)
+		});
+
+		this.expressGroup.valueChanges.subscribe(data => {
+			var valid = (that.orderModel.delivered) ? that.expressGroup.valid : that.isOrderDateValid;
+			if (that.orderModel.isExpressValid !== valid)
+				that.orderModel.isExpressValid = valid;
 		});
 	}
 
@@ -89,7 +103,7 @@ export class OrderCustomersComponent implements OnInit, AfterViewInit {
 			if (this.orderModel.customerOrders[i].customerId.toString() == id) {
 				this.orderModel.customerOrders.splice(i, 1);
 				return;
-			} 
+			}
 		}
 	}
 
@@ -101,6 +115,14 @@ export class OrderCustomersComponent implements OnInit, AfterViewInit {
 		}
 
 		this.orderModel.updateExpressText();
+	}
+
+	onExpressModelChanged(newValue: any) {
+		this.orderModel.waybillNumber = this.expressGroup.value.waybill;
+		this.orderModel.weight = this.expressGroup.value.weight;
+		this.orderModel.freight = this.expressGroup.value.freight;
+
+		this.orderModel.updateSummary();
 	}
 
 	initialiseDatePicker() {
@@ -121,14 +143,14 @@ export class OrderCustomersComponent implements OnInit, AfterViewInit {
 		jQuery('#orderDate').data("DateTimePicker").defaultDate(today);
 		jQuery('#orderDate').on("dp.change", function (e) {
 			if (!e.date) {
-				that.isOrderTimeValid = false;
+				(<any>that.expressGroup.controls['orderTime']).updateValue(null);
 				that.orderModel.orderTime = null;
 			} else {
-				that.isOrderTimeValid = true;
 				that.orderModel.orderTime = e.date.toDate();
-			}
 
-			that.orderModel.isCustomersValid = that.orderModel.isCustomersValid && that.isOrderTimeValid;
+				(<any>that.expressGroup.controls['orderTime']).updateValue(e.date.toDate());
+				that.orderModel.orderTime = that.expressGroup.value.orderTime;
+			}
 		});
 
 		if (this.viewMode) {
@@ -142,14 +164,14 @@ export class OrderCustomersComponent implements OnInit, AfterViewInit {
         this.service.getCustomer(id, json => {
             if (json) {
                 that.selectedCustomer = new Customer(json);
-				
+
 				if (that.orderModel.id != 0 && that.orderModel.customerOrders.length
 					&& that.orderModel.customerOrders[0].customerId.toString() == id) {
 					(<any>that.recipientGroup.controls['recipient']).updateValue(that.orderModel.recipient);
 					(<any>that.recipientGroup.controls['phone']).updateValue(that.orderModel.phone);
 					(<any>that.recipientGroup.controls['address']).updateValue(that.orderModel.address);
 				}
-				else {				
+				else {
 					(<any>that.recipientGroup.controls['recipient']).updateValue(that.selectedCustomer.fullName);
 					(<any>that.recipientGroup.controls['phone']).updateValue(that.selectedCustomer.phone1);
 					(<any>that.recipientGroup.controls['address']).updateValue(that.selectedCustomer.address);
@@ -165,6 +187,11 @@ export class OrderCustomersComponent implements OnInit, AfterViewInit {
 				} else {
 					that.orderModel.orderTime = jQuery('#orderDate').data("DateTimePicker").date().toDate();
 				}
+
+				(<any>that.expressGroup.controls['orderTime']).updateValue(that.orderModel.orderTime);
+				(<any>that.expressGroup.controls['waybill']).updateValue(that.orderModel.waybillNumber);
+				(<any>that.expressGroup.controls['weight']).updateValue(that.orderModel.weight);
+				(<any>that.expressGroup.controls['freight']).updateValue(that.orderModel.freight);
             }
         });
 	}
@@ -190,5 +217,6 @@ export class OrderCustomersComponent implements OnInit, AfterViewInit {
 
 	get customerId() { return this.orderModel.customerOrders.length ? this.orderModel.customerOrders[0].customerId : ''; }
 	get exCustomers() { return this.orderModel.customerOrders.length == 0 ? [] : this.orderModel.customerOrders.slice(1); }
+	get isOrderDateValid() { return this.expressGroup.controls['orderTime'].valid; }
 	get strOrderDate() { return moment(this.orderModel.orderTime).format('DD/MM/YYYY'); }
 }

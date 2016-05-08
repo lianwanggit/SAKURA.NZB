@@ -26,6 +26,7 @@ export class OrderModel {
 	statusText: string;
 	expressText: string;
 	isCustomersValid: boolean = false;
+	isExpressValid: boolean = false;
 
 	constructor(public id: number, public orderTime: any, public deliveryTime: Date, public receiveTime: Date,
 		public orderState: string, public paymentState: string, public waybillNumber: string, public weight: number,
@@ -39,7 +40,8 @@ export class OrderModel {
 	}
 
 	get deliverable() { return this.recipient && this.phone && this.address; }
-	get delivered() { return this.waybillNumber && this.weight && this.freight; }
+	get delivered() { return this.orderState != 'Created' && this.orderState != 'Confirmed'; }
+	get hasExpressWaybill() { return this.waybillNumber && this.weight && this.freight; }
 
 	updateStatus() {
 		var seed = this.paymentState == 'Paid' ? 20 : 0;
@@ -97,7 +99,7 @@ export class OrderModel {
 	}
 
 	get isProductsValid() { return this.customerOrders.length && this.customerOrders.ToList<CustomerOrder>().All(co => co.isProductsValid); }
-	get isValid() { return this.isCustomersValid && this.isProductsValid; }
+	get isValid() { return this.isCustomersValid && this.isExpressValid && this.isProductsValid; }
 }
 
 export class CustomerOrder {

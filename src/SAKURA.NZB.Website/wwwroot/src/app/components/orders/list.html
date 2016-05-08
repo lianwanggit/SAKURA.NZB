@@ -104,7 +104,7 @@
                                         </tr>
                                         <tr class="summary" *ngIf="ico == md.customerOrders.length - 1">
                                             <td>
-                                                <div *ngIf="md.delivered" class="row">
+                                                <div *ngIf="md.hasExpressWaybill" class="row">
                                                     <div class="col-xs-12 col-sm-6 col-md-3"><i class="fa fa-balance-scale fa-lg"></i> {{md.weight}} kg</div>
                                                     <div class="col-xs-12 col-sm-6 col-md-3"><i class="fa fa-dollar fa-lg"></i> {{md.freight}}</div>
                                                     <div class="col-xs-12 col-sm-12 col-md-6">

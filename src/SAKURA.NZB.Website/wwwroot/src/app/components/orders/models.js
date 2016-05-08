@@ -63,6 +63,7 @@ System.register([], function(exports_1, context_1) {
                     this.orderStates = orderStates;
                     this.customerOrders = customerOrders;
                     this.isCustomersValid = false;
+                    this.isExpressValid = false;
                     this.updateSummary();
                     this.updateStatus();
                     this.updateExpressText();
@@ -73,6 +74,11 @@ System.register([], function(exports_1, context_1) {
                     configurable: true
                 });
                 Object.defineProperty(OrderModel.prototype, "delivered", {
+                    get: function () { return this.orderState != 'Created' && this.orderState != 'Confirmed'; },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(OrderModel.prototype, "hasExpressWaybill", {
                     get: function () { return this.waybillNumber && this.weight && this.freight; },
                     enumerable: true,
                     configurable: true
@@ -132,7 +138,7 @@ System.register([], function(exports_1, context_1) {
                     configurable: true
                 });
                 Object.defineProperty(OrderModel.prototype, "isValid", {
-                    get: function () { return this.isCustomersValid && this.isProductsValid; },
+                    get: function () { return this.isCustomersValid && this.isExpressValid && this.isProductsValid; },
                     enumerable: true,
                     configurable: true
                 });
