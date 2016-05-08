@@ -61,7 +61,7 @@ System.register(["angular2/core", "angular2/common", "../api.service", "./models
                         var list = [].ToList();
                         this.orderModel.customerOrders.forEach(function (co) {
                             co.orderProducts.forEach(function (op) {
-                                var p = list.FirstOrDefault(function (l) { return l.id == op.productId; });
+                                var p = list.FirstOrDefault(function (l) { return l.id == op.productId && l.name == op.productName; });
                                 if (p)
                                     p.qty += op.qty;
                                 else

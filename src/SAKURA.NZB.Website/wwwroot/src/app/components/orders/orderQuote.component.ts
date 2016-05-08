@@ -30,7 +30,7 @@ export class OrderQuoteComponent {
 		var list = [].ToList<ProductInfo>();
 		this.orderModel.customerOrders.forEach(co => {
 			co.orderProducts.forEach(op => {
-				var p = list.FirstOrDefault(l => l.id == op.productId);
+				var p = list.FirstOrDefault(l => l.id == op.productId && l.name == op.productName);
 				if (p)
 					p.qty += op.qty;
 				else
