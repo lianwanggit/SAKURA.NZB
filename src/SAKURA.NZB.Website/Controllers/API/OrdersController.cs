@@ -34,15 +34,12 @@ namespace SAKURA.NZB.Website.Controllers
 				.Include(o => o.Products)
 					.ThenInclude(p => p.Product)
 					.ThenInclude(p => p.Brand)
-				.OrderByDescending(o => o.OrderTime)
 				.ToList();
 
-			var models = new List<OrderModel>();
-			orders.ForEach(o =>
-			{
-				var model = MapTo(o, _sender, _senderPhone);
-				models.Add(model);
-			});
+			var models = (from o in orders
+						  orderby o.Products.FirstOrDefault()?.Customer.NamePinYin
+						  orderby o.OrderTime descending
+						  select MapTo(o, _sender, _senderPhone)).ToList();
 
 			var groupedModels = from m in models
 								group m by m.OrderTime.Year into yg
@@ -405,7 +402,8 @@ namespace SAKURA.NZB.Website.Controllers
 				CustomerOrders = new List<CustomerOrderMode>()
 			};
 
-			foreach (var p in o.Products)
+			var products = o.Products.OrderBy(p => p.ProductName).ToList();
+			foreach (var p in products)
 			{
 				var orderProductModel = new OrderProductModel
 				{
