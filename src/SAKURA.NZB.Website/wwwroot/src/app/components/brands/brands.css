@@ -1,0 +1,53 @@
+﻿.customers-list {
+    list-style: none;
+    overflow: hidden;
+    padding-left: 0;
+}
+
+.customers-list li {
+    float: left;
+    width: 33%;
+    height: 105px;
+    padding: 5px;
+    line-height: 1.4;
+    text-align: center;
+    border: 1px solid #fff;
+}
+
+.customers-list li h3 {
+    font-size: 20px;
+}
+
+.customers-list li > div {
+    padding: 10px 5px;
+    border: 1px solid #aaa;
+    border-radius: 6px;
+}
+
+.customers-list li:hover > div {
+    background-color: #d26c6c;
+    border: 1px solid #fff;
+    color: #fff;
+}
+
+
+@media (min-width: 768px) {
+    .customers-list li {
+        width: 20%;
+    }
+
+    .customers-table th {
+        width: 60px;
+    }
+
+    .from-container {
+        padding-left: 30px;
+        overflow: hidden;
+    }
+}
+
+@media (min-width: 1024px) {
+    .customers-list li {
+        width: 12.5%;
+    }
+}

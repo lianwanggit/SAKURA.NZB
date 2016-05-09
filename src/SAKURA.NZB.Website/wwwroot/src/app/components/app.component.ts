@@ -10,6 +10,7 @@ import {ProductBaseEditComponent} from "./products/baseEdit.component";
 import {ProductEditComponent} from "./products/edit.component";
 import {OrdersComponent} from "./orders/list.component";
 import {OrderEditComponent} from "./orders/edit.component";
+import {BrandsComponent} from "./brands/brands.component";
 
 declare var System: any;
 import '../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js';
@@ -39,7 +40,8 @@ export class AppComponent implements OnInit {
 				{ path: "/products", component: ProductsComponent, name: "产品", useAsDefault: false },
 				{ path: "/products/edit/base/:type", component: ProductBaseEditComponent, name: "PbeEdit", useAsDefault: false },
 				{ path: "/products/add", component: ProductEditComponent, name: "PAdd", useAsDefault: false },
-				{ path: "/products/edit/:id", component: ProductEditComponent, name: "PEdit", useAsDefault: false },				
+				{ path: "/products/edit/:id", component: ProductEditComponent, name: "PEdit", useAsDefault: false },
+				{ path: "/brands", component: BrandsComponent, name: "品牌", useAsDefault: false },			
 				{ path: "/customers", component: CustomersComponent, name: "客户", useAsDefault: false },
 				{ path: "/customers/add", component: CustomerEditComponent, name: "CAdd", useAsDefault: false },
 				{ path: "/customers/edit/:id", component: CustomerEditComponent, name: "CEdit", useAsDefault: false },

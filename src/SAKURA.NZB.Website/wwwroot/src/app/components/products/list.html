@@ -65,7 +65,7 @@
         </thead>
         <tbody>
             <tr *ngFor="#s of searchList; #i = index" (click)="onSelect(s.id)" [ngClass]="{'info': s.selected}">
-                <td *ngIf="s.isCategoryItem" colspan="9" class="bg-primary">{{s.category}}</td>
+                <td *ngIf="s.isCategoryItem" colspan="9" class="bg-primary opacity-60">{{s.category}}</td>
 
                 <td *ngIf="!s.isCategoryItem">{{s.brand}} {{s.name}}</td>
                 <td *ngIf="!s.isCategoryItem" class="hidden-xs">{{s.price}}</td>

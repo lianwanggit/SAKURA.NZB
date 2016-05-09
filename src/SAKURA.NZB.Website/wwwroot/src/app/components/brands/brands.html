@@ -1,0 +1,29 @@
+﻿<div class="grey-border">
+    <h2 class="page-header">
+        品牌 <small>({{amount}} / {{totalAmount}})</small>
+        <button type="button" class="btn btn-info pull-right">
+            新建 <i class="fa fa-paw fa-lg"></i>
+        </button>
+    </h2>
+
+    <div>
+        <div class="form-group input-group">
+            <input type="text" class="form-control" placeholder="搜索品牌"
+                   [(ngModel)]="filterText" (keyup)="onSearch($event.target.value)" (input)="onSearch($event.target.value)" />
+            <div class="input-group-btn">
+                <button type="button" class="btn btn-default" aria-label="Clear" (click)="onClearFilter()">
+                    <span class="glyphicon glyphicon-remove"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <ul class="customers-list">
+        <li *ngFor="#c of searchList; #i = index">
+            <div>
+                <i class="fa fa-photo fa-2x opacity-40"></i>
+                <h3 class="font-weight-300 margin-top-10 text-ellipsis">{{c.name}}</h3>
+            </div>    
+        </li>
+    </ul>
+</div>

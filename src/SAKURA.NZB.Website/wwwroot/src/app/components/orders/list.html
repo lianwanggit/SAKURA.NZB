@@ -105,10 +105,10 @@
                                         <tr class="summary" *ngIf="ico == md.customerOrders.length - 1">
                                             <td>
                                                 <div class="row">
-                                                    <div class="col-xs-12 col-sm-6 col-md-3" *ngIf="md.weight > 0"><i class="fa fa-balance-scale fa-lg"></i> {{md.weight}} kg</div>
-                                                    <div class="col-xs-12 col-sm-6 col-md-3" *ngIf="md.freight > 0"><i class="fa fa-dollar fa-lg"></i> {{md.freight}}</div>
+                                                    <div class="col-xs-12 col-sm-6 col-md-3" *ngIf="md.weight > 0"><i class="fa fa-balance-scale fa-lg opacity-60"></i> {{md.weight}} kg</div>
+                                                    <div class="col-xs-12 col-sm-6 col-md-3" *ngIf="md.freight > 0"><i class="fa fa-dollar fa-lg opacity-60"></i> {{md.freight}}</div>
                                                     <div class="col-xs-12 col-sm-12 col-md-6" *ngIf="md.hasExpressWaybill">
-                                                        <a (click)="onOpenExpressTrack(md.waybillNumber)"><i class="fa fa-barcode fa-lg"></i>  {{md.waybillNumber}}</a>
+                                                        <a (click)="onOpenExpressTrack(md.waybillNumber)"><i class="fa fa-barcode fa-lg opacity-60"></i>  {{md.waybillNumber}}</a>
                                                     </div>
                                                 </div>
                                             </td>
