@@ -41,7 +41,7 @@ export class OrderModel {
 
 	get deliverable() { return this.recipient && this.phone && this.address; }
 	get delivered() { return this.orderState != 'Created' && this.orderState != 'Confirmed'; }
-	get hasExpressWaybill() { return this.waybillNumber && this.weight && this.freight; }
+	get hasExpressWaybill() { return this.waybillNumber; }
 
 	updateStatus() {
 		var seed = this.paymentState == 'Paid' ? 20 : 0;
@@ -141,7 +141,7 @@ export class OrderProduct {
 
 	get isValid() {
 		return this.productName
-			&& !isNaN(this.cost) && this.cost > 0
+			&& !isNaN(this.cost) && this.cost >= 0
 			&& !isNaN(this.price) && this.price >= 0
 			&& !isNaN(this.qty) && this.qty > 0;
 	}

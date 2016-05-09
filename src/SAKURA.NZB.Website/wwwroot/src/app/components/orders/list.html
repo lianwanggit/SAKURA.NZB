@@ -104,10 +104,10 @@
                                         </tr>
                                         <tr class="summary" *ngIf="ico == md.customerOrders.length - 1">
                                             <td>
-                                                <div *ngIf="md.hasExpressWaybill" class="row">
-                                                    <div class="col-xs-12 col-sm-6 col-md-3"><i class="fa fa-balance-scale fa-lg"></i> {{md.weight}} kg</div>
-                                                    <div class="col-xs-12 col-sm-6 col-md-3"><i class="fa fa-dollar fa-lg"></i> {{md.freight}}</div>
-                                                    <div class="col-xs-12 col-sm-12 col-md-6">
+                                                <div class="row">
+                                                    <div class="col-xs-12 col-sm-6 col-md-3" *ngIf="md.weight > 0"><i class="fa fa-balance-scale fa-lg"></i> {{md.weight}} kg</div>
+                                                    <div class="col-xs-12 col-sm-6 col-md-3" *ngIf="md.freight > 0"><i class="fa fa-dollar fa-lg"></i> {{md.freight}}</div>
+                                                    <div class="col-xs-12 col-sm-12 col-md-6" *ngIf="md.hasExpressWaybill">
                                                         <a (click)="onOpenExpressTrack(md.waybillNumber)"><i class="fa fa-barcode fa-lg"></i>  {{md.waybillNumber}}</a>
                                                     </div>
                                                 </div>
@@ -184,7 +184,7 @@
                         <label class="col-md-2" for="freight">运费</label>
                         <div class="col-md-10">
                             <div class="input-group">
-                                <input id="freight" type="number" class="form-control" min="1" step="0.01" ngControl="freight" #freight="ngForm" placeholder="NZD" />
+                                <input id="freight" type="number" class="form-control" min="0" step="0.1" ngControl="freight" #freight="ngForm" placeholder="NZD" />
                                 <div class="input-group-addon">${{freightRate}}/kg</div>
                             </div>
 

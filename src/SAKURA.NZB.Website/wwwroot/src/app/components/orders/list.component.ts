@@ -5,7 +5,9 @@ import {CORE_DIRECTIVES, FORM_DIRECTIVES, ControlGroup, Control, Validators} fro
 import {Router, ROUTER_DIRECTIVES} from 'angular2/router';
 import {ApiService} from "../api.service";
 import {OrderModel, CustomerOrder, OrderProduct, ExpressTrack, ExpressTrackRecord, Dict, formatCurrency} from "./models";
+import {NumberValidator, PositiveNumberValidator, ValidationResult} from "../../validators/numberValidator";
 import {ClipboardDirective} from '../../directives/clipboard.directive';
+
 import '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js';
 
 declare var moment: any;
@@ -80,8 +82,8 @@ export class OrdersComponent implements OnInit {
 
 		this.deliveryForm = new ControlGroup({
 			waybillNumber: new Control(this.deliveryModel.waybillNumber, Validators.required),
-			weight: new Control(this.deliveryModel.weight, Validators.required),
-			freight: new Control(this.deliveryModel.freight, Validators.required),
+			weight: new Control(this.deliveryModel.weight, NumberValidator.unspecified),
+			freight: new Control(this.deliveryModel.freight, NumberValidator.unspecified)
 		});
 
 		for (var key in this.orderStates) {

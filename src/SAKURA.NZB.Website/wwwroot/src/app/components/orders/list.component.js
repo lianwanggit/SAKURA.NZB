@@ -1,5 +1,5 @@
 /// <reference path="../../../../lib/TypeScript-Linq/Scripts/typings/System/Collections/Generic/List.ts" />
-System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.service", "./models", '../../directives/clipboard.directive', '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js'], function(exports_1, context_1) {
+System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.service", "./models", "../../validators/numberValidator", '../../directives/clipboard.directive', '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -11,7 +11,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, common_1, router_1, api_service_1, models_1, clipboard_directive_1;
+    var core_1, common_1, router_1, api_service_1, models_1, numberValidator_1, clipboard_directive_1;
     var YearGroup, MonthGroup, OrderDeliveryModel, OrdersComponent;
     return {
         setters:[
@@ -29,6 +29,9 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
             },
             function (models_1_1) {
                 models_1 = models_1_1;
+            },
+            function (numberValidator_1_1) {
+                numberValidator_1 = numberValidator_1_1;
             },
             function (clipboard_directive_1_1) {
                 clipboard_directive_1 = clipboard_directive_1_1;
@@ -90,8 +93,8 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     this.expressTrackInfo = new models_1.ExpressTrack(null, null, null, null, null, null, null, []);
                     this.deliveryForm = new common_1.ControlGroup({
                         waybillNumber: new common_1.Control(this.deliveryModel.waybillNumber, common_1.Validators.required),
-                        weight: new common_1.Control(this.deliveryModel.weight, common_1.Validators.required),
-                        freight: new common_1.Control(this.deliveryModel.freight, common_1.Validators.required),
+                        weight: new common_1.Control(this.deliveryModel.weight, numberValidator_1.NumberValidator.unspecified),
+                        freight: new common_1.Control(this.deliveryModel.freight, numberValidator_1.NumberValidator.unspecified)
                     });
                     for (var key in this.orderStates) {
                         this.orderStateKeys.push(key);

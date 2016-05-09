@@ -5,7 +5,7 @@ import {ApiService} from "../api.service";
 import {AlphaIndexerDirective, Element} from "../../directives/alphaIndexer.directive";
 import {CustomerOrder, OrderProduct, OrderModel} from "./models";
 import {Customer} from "../customers/edit.component";
-import {NumberValidator, ValidationResult} from "../../validators/numberValidator";
+import {NumberValidator, PositiveNumberValidator, ValidationResult} from "../../validators/numberValidator";
 
 import {TYPEAHEAD_DIRECTIVES} from "ng2-bootstrap/ng2-bootstrap";
 
