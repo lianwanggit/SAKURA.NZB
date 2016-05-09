@@ -169,7 +169,7 @@
                         <label class="col-md-2" for="waybillNumber">货品重量</label>
                         <div class="col-md-10">
                             <div class="input-group">
-                                <input id="weight" type="number" class="form-control" min="1" step="0.01" ngControl="weight" #weight="ngForm"
+                                <input id="weight" type="number" class="form-control" min="0" step="0.1" ngControl="weight" #weight="ngForm"
                                        (keyup)="onInputWeight($event.target.value)" />
                                 <div class="input-group-addon">kg</div>
                             </div>
@@ -214,7 +214,13 @@
             <div class="modal-body express-summary">
                 <h3>运单号 {{expressTrackInfo.waybillNumber}}</h3>
 
-                <div class="alert alert-warning" role="alert" *ngIf="expressTrackInfo.isEmpty"><i class="fa fa-warning"></i> 该运单号的跟踪记录不存在，请检查已输入的运单号是否有误</div>
+                <div class="alert alert-warning" role="alert" *ngIf="expressTrackInfo.isEmpty"><i class="fa fa-warning"></i> 该运单号的跟踪记录不存在。请检查：
+                    <ul class="margin-top-10">
+                        <li class="margin-top-5">该运单号是否有误</li>
+                        <li class="margin-top-5">该运单已经超过<b>三个月</b>有效查询期</li>
+                        <li class="margin-top-5">该运单是否属于程光快递 (暂只时支持查询程光)</li>
+                    </ul>
+                </div>
                 <div *ngIf="!expressTrackInfo.isEmpty">
                     <div class="row">
                         <div class="col-xs-3 text-center">
