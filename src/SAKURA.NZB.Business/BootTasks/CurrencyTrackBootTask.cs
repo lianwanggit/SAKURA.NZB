@@ -54,7 +54,7 @@ namespace SAKURA.NZB.Business.BootTasks
 			ratesToday.ModifiedTime = DateTimeOffset.Now;
 
 			_context.SaveChanges();
-			_logger.Information($"Updated currency exchange rate. NZD - CNY: {ratesToday.NZDCNY}");
+			_logger.Information("Updated currency exchange rate. NZD - CNY: {0}", ratesToday.NZDCNY);
 		}
 	}
 }

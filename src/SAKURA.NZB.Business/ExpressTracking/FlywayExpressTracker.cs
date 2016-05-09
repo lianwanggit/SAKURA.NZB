@@ -110,7 +110,7 @@ namespace SAKURA.NZB.Business.ExpressTracking
 				}
 				catch(Exception ex)
 				{
-					_logger.Error(ex, $"Failed to post {data} to {uri}");
+					_logger.Error(ex, "Failed to post {0} to {1}", data, uri);
 					return default(string);
 				}
 			}

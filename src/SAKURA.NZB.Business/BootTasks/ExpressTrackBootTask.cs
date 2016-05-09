@@ -42,12 +42,12 @@ namespace SAKURA.NZB.Business.BootTasks
 
 			foreach (var wb in waybills)
 			{
-				_logger.Information($"Start tracking the live express information of waybill: {wb}");
+				_logger.Information("Start tracking the live express information of waybill: {0}", wb);
 
 				var result = _expressTracker.Track(wb);
 				if (result == null)
 				{
-					_logger.Warning($"Can't track the waybill: {wb}");
+					_logger.Warning("Can't track the waybill: {0}", wb);
 					continue;
 				}
 
@@ -57,7 +57,7 @@ namespace SAKURA.NZB.Business.BootTasks
 					result.ModifiedTime = DateTimeOffset.Now;
 										
 					_context.ExpressTracks.Add(result);
-					_logger.Information($"Added new express track of waybill: {wb}");
+					_logger.Information("Added new express track of waybill: {0}", wb);
 				}
 				else
 				{
@@ -71,11 +71,11 @@ namespace SAKURA.NZB.Business.BootTasks
 						if (track.Details.All(x => x.When != r.When))
 						{
 							track.Details.Add(r);
-							_logger.Information($"Added new express track record of waybill: {wb}");
+							_logger.Information("Added new express track record of waybill: {0}", wb);
 						}
 					}
 
-					_logger.Information($"Updated the express track of waybill: {wb}");
+					_logger.Information("Updated the express track of waybill: {0}", wb);
 				}
 
 				_context.SaveChanges();

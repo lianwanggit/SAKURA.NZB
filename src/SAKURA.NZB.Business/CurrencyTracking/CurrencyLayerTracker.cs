@@ -48,7 +48,7 @@ namespace SAKURA.NZB.Business.CurrencyTracking
 				}
 				catch (Exception ex)
 				{
-					Log.Error(ex, $"Failed to get data from web api: { baseAddress + routeUri }");
+					Log.Error(ex, "Failed to get data from web api: {0}", baseAddress + routeUri);
 					return default(LiveRatesResponse);
 				}
 			}

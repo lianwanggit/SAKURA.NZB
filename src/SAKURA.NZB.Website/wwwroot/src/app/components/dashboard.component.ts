@@ -158,7 +158,7 @@ export class DashboardComponent implements OnInit {
 		datasetStrokeWidth: 1,
 		showScale: false,
 		pointDot: false,
-		bezierCurve: false,
+		bezierCurve: true,
 		// Tooltip
 		tooltipFillColor: "#fff",
 		tooltipTitleFontColor: "#777",

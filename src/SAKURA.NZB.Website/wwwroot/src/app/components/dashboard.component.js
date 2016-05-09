@@ -199,7 +199,7 @@ System.register(["angular2/core", 'angular2/common', "./api.service", "./orders/
                         datasetStrokeWidth: 1,
                         showScale: false,
                         pointDot: false,
-                        bezierCurve: false,
+                        bezierCurve: true,
                         // Tooltip
                         tooltipFillColor: "#fff",
                         tooltipTitleFontColor: "#777",
