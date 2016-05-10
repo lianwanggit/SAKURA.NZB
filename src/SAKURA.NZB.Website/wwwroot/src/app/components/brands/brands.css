@@ -7,7 +7,7 @@
 .customers-list li {
     float: left;
     width: 33%;
-    height: 105px;
+    height: 75px;
     padding: 5px;
     line-height: 1.4;
     text-align: center;
@@ -21,13 +21,19 @@
 .customers-list li > div {
     padding: 10px 5px;
     border: 1px solid #aaa;
-    border-radius: 6px;
+    border-radius: 3px;
 }
 
 .customers-list li:hover > div {
-    background-color: #d26c6c;
+    background-color: #e5f6fb;
     border: 1px solid #fff;
+    color: #555;
+}
+
+.customers-list .selected {
+    background-color: #00aedb;
     color: #fff;
+    border: 1px solid #fff !important;
 }
 
 

@@ -1,12 +1,15 @@
 ﻿/// <reference path="../../../../lib/TypeScript-Linq/Scripts/typings/System/Collections/Generic/List.ts" />
 
 import {Component, OnInit} from "angular2/core";
-import {CORE_DIRECTIVES, FORM_DIRECTIVES} from "angular2/common";
+import {CORE_DIRECTIVES, FORM_DIRECTIVES, ControlGroup, Control, Validators} from "angular2/common";
 import {ApiService} from "../api.service";
 
 import '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js';
 
+declare var $: any;
+
 class Brand {
+	public selected: boolean = false;
 	constructor(public id: string, public name: string) { }
 }
 
@@ -23,8 +26,18 @@ export class BrandsComponent implements OnInit {
 	searchList: Brand[] = [];
 	filterText = '';
 	totalAmount = 0;
+
+	private _editMode = false;
 	private _filterText = '';
-	constructor(private service: ApiService) { }
+	private _selectedBrand: Brand;
+
+	brandForm: ControlGroup;
+
+	constructor(private service: ApiService) {
+		this.brandForm = new ControlGroup({
+			brand: new Control(null, Validators.required)
+		});
+	}
 
 	ngOnInit() {
 		this.get();
@@ -52,9 +65,46 @@ export class BrandsComponent implements OnInit {
 		this._filterText = this.filterText;
 	}
 
+	onCreate() {
+		(<any>this.brandForm.controls['brand']).updateValue(null);
+		this._editMode = false;
+		$('#myModal').modal('show');
+	}
+
+	onClick(id: string) {
+		this.searchList.forEach(b => {
+			b.selected = b.id == id;
+
+			if (b.id == id)
+			{
+				this._selectedBrand = b;
+			}
+		});
+
+		(<any>this.brandForm.controls['brand']).updateValue(this._selectedBrand.name);
+		this._editMode = true;
+		$('#myModal').modal('show');
+	}
+
+	onSubmit() {
+		$('#myModal').modal('hide');
+		var name = this.brandForm.value.brand;
+		var that = this;
+
+		if (this._editMode) {
+			var brand = new Brand(this._selectedBrand.id, name);
+			this.service.putBrand(brand.id, JSON.stringify(brand))
+				.subscribe(x => that.get());
+		}
+		else
+			this.service.postBrand(JSON.stringify(new Brand("0", name)))
+				.subscribe(x => that.get());
+	}
+
 	get() {
 		var that = this;
 
+		this.brandList = [];
         this.service.getBrands(json => {
             if (json) {
                 json.forEach(c => {
@@ -64,7 +114,17 @@ export class BrandsComponent implements OnInit {
 				that.totalAmount = that.brandList.length;
 				that.searchList = that.brandList.ToList<Brand>()
 					.OrderBy(x => x.name)
-					.ToArray();;
+					.ToArray();
+
+				if (that._selectedBrand) {
+					this.searchList.forEach(b => {
+						b.selected = b.id == that._selectedBrand.id;
+
+						if (b.id == that._selectedBrand.id) {
+							that._selectedBrand = b;
+						}
+					});
+				}
             }
         });
     }
@@ -74,4 +134,5 @@ export class BrandsComponent implements OnInit {
 	};
 
 	get amount() { return this.searchList.length; }
+	get dialogTitle() { return this._editMode ? "编辑品牌" : "新建品牌"; }
 }

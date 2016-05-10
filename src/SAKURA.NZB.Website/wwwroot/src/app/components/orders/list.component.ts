@@ -11,7 +11,6 @@ import {ClipboardDirective} from '../../directives/clipboard.directive';
 import '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js';
 
 declare var moment: any;
-
 declare var $: any;
 
 class YearGroup {

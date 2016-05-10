@@ -30,6 +30,7 @@ System.register(["angular2/core", "angular2/common", "../api.service", '../../..
                 function Brand(id, name) {
                     this.id = id;
                     this.name = name;
+                    this.selected = false;
                 }
                 return Brand;
             }());
@@ -40,7 +41,11 @@ System.register(["angular2/core", "angular2/common", "../api.service", '../../..
                     this.searchList = [];
                     this.filterText = '';
                     this.totalAmount = 0;
+                    this._editMode = false;
                     this._filterText = '';
+                    this.brandForm = new common_1.ControlGroup({
+                        brand: new common_1.Control(null, common_1.Validators.required)
+                    });
                 }
                 BrandsComponent.prototype.ngOnInit = function () {
                     this.get();
@@ -63,8 +68,40 @@ System.register(["angular2/core", "angular2/common", "../api.service", '../../..
                     }
                     this._filterText = this.filterText;
                 };
-                BrandsComponent.prototype.get = function () {
+                BrandsComponent.prototype.onCreate = function () {
+                    this.brandForm.controls['brand'].updateValue(null);
+                    this._editMode = false;
+                    $('#myModal').modal('show');
+                };
+                BrandsComponent.prototype.onClick = function (id) {
+                    var _this = this;
+                    this.searchList.forEach(function (b) {
+                        b.selected = b.id == id;
+                        if (b.id == id) {
+                            _this._selectedBrand = b;
+                        }
+                    });
+                    this.brandForm.controls['brand'].updateValue(this._selectedBrand.name);
+                    this._editMode = true;
+                    $('#myModal').modal('show');
+                };
+                BrandsComponent.prototype.onSubmit = function () {
+                    $('#myModal').modal('hide');
+                    var name = this.brandForm.value.brand;
                     var that = this;
+                    if (this._editMode) {
+                        var brand = new Brand(this._selectedBrand.id, name);
+                        this.service.putBrand(brand.id, JSON.stringify(brand))
+                            .subscribe(function (x) { return that.get(); });
+                    }
+                    else
+                        this.service.postBrand(JSON.stringify(new Brand("0", name)))
+                            .subscribe(function (x) { return that.get(); });
+                };
+                BrandsComponent.prototype.get = function () {
+                    var _this = this;
+                    var that = this;
+                    this.brandList = [];
                     this.service.getBrands(function (json) {
                         if (json) {
                             json.forEach(function (c) {
@@ -74,7 +111,14 @@ System.register(["angular2/core", "angular2/common", "../api.service", '../../..
                             that.searchList = that.brandList.ToList()
                                 .OrderBy(function (x) { return x.name; })
                                 .ToArray();
-                            ;
+                            if (that._selectedBrand) {
+                                _this.searchList.forEach(function (b) {
+                                    b.selected = b.id == that._selectedBrand.id;
+                                    if (b.id == that._selectedBrand.id) {
+                                        that._selectedBrand = b;
+                                    }
+                                });
+                            }
                         }
                     });
                 };
@@ -84,6 +128,11 @@ System.register(["angular2/core", "angular2/common", "../api.service", '../../..
                 ;
                 Object.defineProperty(BrandsComponent.prototype, "amount", {
                     get: function () { return this.searchList.length; },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(BrandsComponent.prototype, "dialogTitle", {
+                    get: function () { return this._editMode ? "编辑品牌" : "新建品牌"; },
                     enumerable: true,
                     configurable: true
                 });

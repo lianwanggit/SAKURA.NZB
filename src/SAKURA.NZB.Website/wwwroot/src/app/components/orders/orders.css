@@ -124,6 +124,10 @@
     color: red;
 }
 
+.underline {
+	border-bottom: #777 1px solid;
+}
+
 .express-summary h3 {
     margin-top: 10px;
     margin-bottom: 15px;

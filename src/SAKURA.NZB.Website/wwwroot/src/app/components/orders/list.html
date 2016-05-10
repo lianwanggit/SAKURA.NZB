@@ -113,7 +113,7 @@
                                                 </div>
                                             </td>
                                             <td class="hidden-xs">{{(md.totalCost).toFixed(2)}}</td>
-                                            <td class="hidden-xs"><span>{{md.totalPrice}}</span></td>
+                                            <td class="hidden-xs"><span class="underline">{{md.totalPrice}}</span></td>
                                             <td class="hidden-xs">{{md.totalQty}}</td>
                                             <td [ngClass]="{up: md.totalProfit > 0, down: md.totalProfit < 0}"><strong>{{md.strTotalProfit}}</strong></td>
                                         </tr>
@@ -155,7 +155,7 @@
                         <label class="col-md-2" for="waybillNumber">运单号</label>
                         <div class="col-md-10">
                             <div class="input-group">
-                                <input id="waybillNumber" type="text" class="form-control" maxlength="100" ngControl="waybillNumber" #wbnumber="ngForm" />
+                                <input id="waybillNumber" type="text" class="form-control" maxlength="100" ngControl="waybillNumber" required #wbnumber="ngForm" />
                                 <div class="input-group-addon"><i class="fa fa-barcode fa-lg"></i></div>
                             </div>
 
@@ -169,7 +169,7 @@
                         <label class="col-md-2" for="waybillNumber">货品重量</label>
                         <div class="col-md-10">
                             <div class="input-group">
-                                <input id="weight" type="number" class="form-control" min="0" step="0.1" ngControl="weight" #weight="ngForm"
+                                <input id="weight" type="number" class="form-control" min="0" step="0.1" ngControl="weight" required #weight="ngForm"
                                        (keyup)="onInputWeight($event.target.value)" />
                                 <div class="input-group-addon">kg</div>
                             </div>
@@ -184,7 +184,7 @@
                         <label class="col-md-2" for="freight">运费</label>
                         <div class="col-md-10">
                             <div class="input-group">
-                                <input id="freight" type="number" class="form-control" min="0" step="0.01" ngControl="freight" #freight="ngForm" placeholder="NZD" />
+                                <input id="freight" type="number" class="form-control" min="0" step="0.01" ngControl="freight" required #freight="ngForm" placeholder="NZD" />
                                 <div class="input-group-addon">${{freightRate}}/kg</div>
                             </div>
 

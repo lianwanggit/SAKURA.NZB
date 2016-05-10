@@ -36,14 +36,14 @@ namespace SAKURA.NZB.Business.BootTasks
 
 		public async void DelayTrack()
 		{
+			_logger.Information("Start tracking the live express");
+
 			var waybills = _context.Orders.Where(o => !string.IsNullOrEmpty(o.WaybillNumber) && !o.WaybillNumber.StartsWith("ST")
 						&& (o.OrderState == Domain.OrderState.Delivered || o.OrderState == Domain.OrderState.Received))
 					.Select(o => o.WaybillNumber).ToList();
 
 			foreach (var wb in waybills)
 			{
-				_logger.Information("Start tracking the live express information of waybill: {0}", wb);
-
 				var result = _expressTracker.Track(wb);
 				if (result == null)
 				{
@@ -71,7 +71,6 @@ namespace SAKURA.NZB.Business.BootTasks
 						if (track.Details.All(x => x.When != r.When))
 						{
 							track.Details.Add(r);
-							_logger.Information("Added new express track record of waybill: {0}", wb);
 						}
 					}
 
@@ -81,6 +80,9 @@ namespace SAKURA.NZB.Business.BootTasks
 				_context.SaveChanges();
 				await Task.Delay(TimeSpan.FromSeconds(seconds));
 			}
+
+			_logger.Information("End tracking the live express");
+
 		}
 	}
 }
