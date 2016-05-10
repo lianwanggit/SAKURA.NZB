@@ -36,7 +36,7 @@ namespace SAKURA.NZB.Business.BootTasks
 
 		public async void DelayTrack()
 		{
-			var waybills = _context.Orders.Where(o => !string.IsNullOrEmpty(o.WaybillNumber)
+			var waybills = _context.Orders.Where(o => !string.IsNullOrEmpty(o.WaybillNumber) && !o.WaybillNumber.StartsWith("ST")
 						&& (o.OrderState == Domain.OrderState.Delivered || o.OrderState == Domain.OrderState.Received))
 					.Select(o => o.WaybillNumber).ToList();
 
