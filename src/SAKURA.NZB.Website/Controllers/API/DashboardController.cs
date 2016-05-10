@@ -13,13 +13,15 @@ namespace SAKURA.NZB.Website.Controllers.API
 	[Route("api/[controller]")]
 	public class DashboardController : Controller
 	{
-		private NZBContext _context;
-		private Config _config;
+		private readonly NZBContext _context;
+		private readonly Config _config;
+		private readonly float _exchangeRate;
 
 		public DashboardController(NZBContext context, Config config)
 		{
 			_context = context;
 			_config = config;
+			_exchangeRate = _config.GetCurrentRate();
 		}
 
 		[HttpGet("summary")]
@@ -37,7 +39,6 @@ namespace SAKURA.NZB.Website.Controllers.API
 
 			var today = DateTimeOffset.Now.Date;
 			var yesterday = DateTimeOffset.Now.Date.AddDays(-1);
-			var rate = _config.GetCurrentRate();
 
 			foreach (var o in _context.Orders.Include(o => o.Products))
 			{
@@ -60,16 +61,16 @@ namespace SAKURA.NZB.Website.Controllers.API
 
 				if (o.OrderTime.Date == yesterday)
 				{
-					yesterdayProfit += (income - cost * rate);
+					yesterdayProfit += (income - cost * _exchangeRate);
 				}
 
 				if (o.OrderTime.Date == today)
 				{
-					todayProfit += (income - cost * rate);
+					todayProfit += (income - cost * _exchangeRate);
 				}
 			}
 
-			totalProfit = totalIncome - totalCost * rate;
+			totalProfit = totalIncome - totalCost * _exchangeRate;
 			profitIncrement = todayProfit - yesterdayProfit;
 			profitIncrementRate = Math.Abs(yesterdayProfit == 0 ? 0 : profitIncrement / yesterdayProfit);
 
@@ -104,7 +105,6 @@ namespace SAKURA.NZB.Website.Controllers.API
 		public IActionResult GetAnnualSales()
 		{
 			var result = new List<MonthSale>();
-			var rate = _config.GetCurrentRate();
 
 			foreach (var o in _context.Orders.Include(o => o.Products).Where(o => o.OrderTime.Year == DateTime.Now.Year))
 			{
@@ -119,7 +119,7 @@ namespace SAKURA.NZB.Website.Controllers.API
 				}
 
 				cost += (o.Freight ?? 0F);
-				var profit = (float)Math.Round(income - cost * rate, 2);
+				var profit = income - cost * _exchangeRate;
 
 				var sale = result.FirstOrDefault(s => s.Month == month);
 				if (sale != null)
@@ -156,6 +156,12 @@ namespace SAKURA.NZB.Website.Controllers.API
 						Profit = 0
 					});
 				}
+				else
+				{
+					sale.Cost = (float)Math.Round(sale.Cost, 2);
+					sale.Income = (float)Math.Round(sale.Income, 2);
+					sale.Profit = (float)Math.Round(sale.Profit, 2);
+				}
 			}
 
 			return new ObjectResult(result.OrderBy(s => s.Month));
@@ -180,7 +186,7 @@ namespace SAKURA.NZB.Website.Controllers.API
 			var result = from o in orders
 						 from op in o.Products
 						 group op by op.Product.Brand into bg
-						 select new { BrandName = bg.Key.Name, Count = bg.Sum(x => x.Qty) };
+						 select new { BrandName = bg.Key.Name, Count = (float)Math.Round(bg.Sum(x => x.Qty * (x.Price - x.Cost * _exchangeRate)), 2) };
 
 			return new ObjectResult(result.OrderByDescending(r => r.Count).Take(10));
 		}
@@ -190,7 +196,6 @@ namespace SAKURA.NZB.Website.Controllers.API
 		{
 			var orders = _context.Orders.Include(o => o.Products).ToList();
 			var dates = Enumerable.Range(1, 30).Select(i => DateTimeOffset.Now.Date.AddDays(i - 30));
-			var rate = _config.GetCurrentRate();
 
 			var result = new List<DaySale>();
 			foreach (var d in dates)
@@ -210,7 +215,7 @@ namespace SAKURA.NZB.Website.Controllers.API
 
 					count += 1;
 					cost += (o.Freight ?? 0F);
-					profit += (income - cost * rate);
+					profit += (income - cost * _exchangeRate);
 				}
 
 				result.Add(new DaySale { Date = d.ToShortDateString(), OrderCount = count, Profit = (float)Math.Round(profit, 2) });

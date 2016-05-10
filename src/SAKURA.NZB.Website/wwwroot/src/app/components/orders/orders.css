@@ -12,12 +12,14 @@
     padding: 10px 0 20px 0;
 }
 
-.month-header span {   
-    padding-left: 10px;
+.month-header {
+    padding: 5px 0;
+    font-size: 16px;
 }
 
-.month-header table {
-    width: 115px;
+.month-header span {
+    font-size: 18px;
+    padding-left: 10px;
 }
 
 .month-header table td:first-child {
@@ -112,10 +114,12 @@
     padding-top: 3px;
 }
 
+.paid,
 .up {
     color: green;
 }
 
+.unpaid,
 .down {
     color: red;
 }
@@ -160,10 +164,6 @@
 }
 
 @media (min-width: 768px) {
-    .month-header table {
-        width: 300px;
-    }
-
     .month-header table td:first-child {
         width: 20%;
     }
@@ -173,7 +173,7 @@
     }
 
     .month-header table td:nth-child(3) {
-        width: 25%;
+        width: 30%;
     }
 }
 

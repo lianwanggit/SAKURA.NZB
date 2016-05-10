@@ -10,7 +10,7 @@
         <div class="form-group">
             <label for="key">关键字</label>
             <div class="input-group">
-                <input type="text" class="form-control" id="keyword" placeholder="客户姓名, 拼音或品牌" [(ngModel)]="filterText"
+                <input type="text" class="form-control" id="keyword" placeholder="客户姓名, 拼音, 品牌, 订单号" [(ngModel)]="filterText"
                        (keyup)="onSearchByKeyword($event.target.value)" (input)="onSearchByKeyword($event.target.value)">
                 <div class="input-group-btn">
                     <button type="button" class="btn btn-default" aria-label="Clear" (click)="onClearFilter()">
@@ -38,10 +38,10 @@
     <div *ngFor="#y of data">
         <h3 class="text-center bg-cyan year-header" *ngIf="thisYear != y.year">{{y.year}}</h3>
         <div *ngFor="#m of y.monthGroups; #img = index">
-            <div class="month-header clearfix bg-info-light">
+            <div class="month-header clearfix bg-info-dark">
                 <span class="pull-left">{{m.month}}</span>
                 <div class="pull-right">
-                    <table class="month-header">
+                    <table class="font-weight-300">
                         <tr>
                             <td><i class="fa fa-shopping-cart"></i> {{m.models.length}}</td>
                             <td class="hidden-xs"><i class="fa fa-dollar"></i> {{m.totalCost}}</td>
@@ -113,7 +113,7 @@
                                                 </div>
                                             </td>
                                             <td class="hidden-xs">{{(md.totalCost).toFixed(2)}}</td>
-                                            <td class="hidden-xs">{{md.totalPrice}}</td>
+                                            <td class="hidden-xs"><span>{{md.totalPrice}}</span></td>
                                             <td class="hidden-xs">{{md.totalQty}}</td>
                                             <td [ngClass]="{up: md.totalProfit > 0, down: md.totalProfit < 0}"><strong>{{md.strTotalProfit}}</strong></td>
                                         </tr>
@@ -123,7 +123,7 @@
                         </div>
                         <div class="col-sm-2 hidden-xs product-status">
                             <div class="row">
-                                <div class="hidden-xs hidden-sm col-md-4">
+                                <div class="hidden-xs hidden-sm col-md-4 opacity-80">
                                     <i class="fa fa-credit-card fa-lg" [ngClass]="{unpaid: md.paymentState != 'Paid', paid: md.paymentState == 'Paid'}"></i>
                                 </div>
                                 <div class="col-md-8">
