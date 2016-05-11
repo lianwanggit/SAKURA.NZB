@@ -73,17 +73,18 @@ export class BrandsComponent implements OnInit {
 
 	onClick(id: string) {
 		this.searchList.forEach(b => {
-			b.selected = b.id == id;
+			if (b.id == id) {
+				if (b.selected) {
+					(<any>this.brandForm.controls['brand']).updateValue(this._selectedBrand.name);
+					this._editMode = true;
+					$('#myModal').modal('show');
+				}
 
-			if (b.id == id)
-			{
 				this._selectedBrand = b;
 			}
-		});
 
-		(<any>this.brandForm.controls['brand']).updateValue(this._selectedBrand.name);
-		this._editMode = true;
-		$('#myModal').modal('show');
+			b.selected = b.id == id;
+		});
 	}
 
 	onSubmit() {

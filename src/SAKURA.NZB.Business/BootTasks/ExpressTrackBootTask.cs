@@ -4,7 +4,6 @@ using SAKURA.NZB.Business.ExpressTracking;
 using SAKURA.NZB.Data;
 using Serilog;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -31,7 +30,6 @@ namespace SAKURA.NZB.Business.BootTasks
 			RecurringJob.AddOrUpdate("track-express-info-task1", () => DelayTrack(), Cron.Daily(9, 30), timezone);
 			RecurringJob.AddOrUpdate("track-express-info-task2", () => DelayTrack(), Cron.Daily(12, 00), timezone);
 			RecurringJob.AddOrUpdate("track-express-info-task3", () => DelayTrack(), Cron.Daily(15, 30), timezone);
-			RecurringJob.AddOrUpdate("track-express-info-task4", () => DelayTrack(), Cron.Daily(18, 00), timezone);
 		}
 
 		public async void DelayTrack()

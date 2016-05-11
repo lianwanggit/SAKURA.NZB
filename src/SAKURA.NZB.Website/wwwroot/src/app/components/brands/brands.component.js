@@ -76,14 +76,16 @@ System.register(["angular2/core", "angular2/common", "../api.service", '../../..
                 BrandsComponent.prototype.onClick = function (id) {
                     var _this = this;
                     this.searchList.forEach(function (b) {
-                        b.selected = b.id == id;
                         if (b.id == id) {
+                            if (b.selected) {
+                                _this.brandForm.controls['brand'].updateValue(_this._selectedBrand.name);
+                                _this._editMode = true;
+                                $('#myModal').modal('show');
+                            }
                             _this._selectedBrand = b;
                         }
+                        b.selected = b.id == id;
                     });
-                    this.brandForm.controls['brand'].updateValue(this._selectedBrand.name);
-                    this._editMode = true;
-                    $('#myModal').modal('show');
                 };
                 BrandsComponent.prototype.onSubmit = function () {
                     $('#myModal').modal('hide');

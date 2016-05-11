@@ -24,6 +24,12 @@
     border-radius: 3px;
 }
 
+.customers-list li:hover > div.selected {
+    background-color: #12bbf0;
+    border: 1px solid #fff;
+    color: #fff;
+}
+
 .customers-list li:hover > div {
     background-color: #e5f6fb;
     border: 1px solid #fff;

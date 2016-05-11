@@ -83,8 +83,8 @@ namespace SAKURA.NZB.Business.ExpressTracking
 					summary.Details.Add(new ExpressTrackRecord
 					{
 						When = StringToDateTime(td[0].InnerText),
-						Where = td[1].InnerText,
-						Content = td[2].InnerText,
+						Where = td[1].InnerText.Trim(),
+						Content = td[2].InnerText.Trim(),
 					});
 				}
 
