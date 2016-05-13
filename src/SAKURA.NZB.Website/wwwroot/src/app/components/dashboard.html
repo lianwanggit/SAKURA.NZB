@@ -54,8 +54,9 @@
         <div class="col-xs-12 col-sm-6 col-md-8">
             <div class="widget widget-content shadow margin-top-5 padding-left-15">
                 <div class="chart-head-tab md-table opacity-80">
-                    <div class="clickable md-table-cell-50" (click)="onSwapAnnualSalesDateSource(0)" [ngClass]="{active: !annualSalesChartSwitch}">销售金额</div>
-                    <div class="clickable md-table-cell-50" (click)="onSwapAnnualSalesDateSource(1)" [ngClass]="{active: annualSalesChartSwitch}">订单数量</div>
+                    <div class="clickable md-table-cell-33" (click)="onSwapAnnualSalesDateSource(0)" [ngClass]="{active: annualSalesChartSwitch == 0}">成本 | 利润</div>
+                    <div class="clickable md-table-cell-33" (click)="onSwapAnnualSalesDateSource(1)" [ngClass]="{active: annualSalesChartSwitch == 1}">订单</div>
+                    <div class="clickable md-table-cell-33" (click)="onSwapAnnualSalesDateSource(2)" [ngClass]="{active: annualSalesChartSwitch == 2}">收入</div>
                 </div>
                 <base-chart class="line-chart"
                             [data]="annualSalesChartData"

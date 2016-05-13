@@ -62,12 +62,12 @@ export class DashboardComponent implements OnInit {
 	orderStates = (new Dict()).orderStates;
 	orderStatusSummary: OrderStatus[] = [];
 
-	annualSalesChartSwitch = false;
+	annualSalesChartSwitch = 0;
 
 	// lineChart
-	private annualSalesChartData: Array<any> = [[], [], []];
+	private annualSalesChartData: Array<any> = [[], []];
 	private annualSalesChartLabels: Array<any> = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-	private annualSalesChartSeries: Array<any> = ['成本 (NZD)', '收入 (CNY)', '利润 (CNY)'];
+	private annualSalesChartSeries: Array<any> = ['成本 (NZD)', '利润 (CNY)'];
 	private annualSalesChartOptions: any = {
 		responsive: true,
 		multiTooltipTemplate: '<%if (datasetLabel){%><%=datasetLabel %>: <%}%><%= value %>',
@@ -370,10 +370,10 @@ export class DashboardComponent implements OnInit {
 		});
     }
 
-	onSwapAnnualSalesDateSource(flag: boolean) {
-		if (this.annualSalesChartSwitch == flag) return;
+	onSwapAnnualSalesDateSource(value: number) {
+		if (this.annualSalesChartSwitch == value) return;
 
-		this.annualSalesChartSwitch = flag;
+		this.annualSalesChartSwitch = value;
 		this.changeAnnualSalesChartData();
 	}
 
@@ -384,12 +384,15 @@ export class DashboardComponent implements OnInit {
 	}
 
 	changeAnnualSalesChartData() {
-		if (!this.annualSalesChartSwitch) {
-			this.annualSalesChartData = [this.costList.ToArray(), this.incomeList.ToArray(), this.profitList.ToArray()];
-			this.annualSalesChartSeries = ['成本 (NZD)', '收入 (CNY)', '利润 (CNY)'];
-		} else {
-			this.annualSalesChartData = [this.orderCountList.ToArray(), [], []];
+		if (this.annualSalesChartSwitch == 0) {
+			this.annualSalesChartData = [this.costList.ToArray(), this.profitList.ToArray()];
+			this.annualSalesChartSeries = ['成本 (NZD)', '利润 (CNY)'];
+		} else if (this.annualSalesChartSwitch == 1) {
+			this.annualSalesChartData = [this.orderCountList.ToArray(), []];
 			this.annualSalesChartSeries = ['订单数量', '&nbsp;', '&nbsp;'];
+		} else{
+			this.annualSalesChartData = [this.incomeList.ToArray(), []];
+			this.annualSalesChartSeries = ['收入 (CNY)', '&nbsp;', '&nbsp;'];
 		}
 	}
 }

@@ -110,11 +110,11 @@ System.register(["angular2/core", 'angular2/common', "./api.service", "./orders/
                     this.orderCountList = [].ToList();
                     this.orderStates = (new models_1.Dict()).orderStates;
                     this.orderStatusSummary = [];
-                    this.annualSalesChartSwitch = false;
+                    this.annualSalesChartSwitch = 0;
                     // lineChart
-                    this.annualSalesChartData = [[], [], []];
+                    this.annualSalesChartData = [[], []];
                     this.annualSalesChartLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-                    this.annualSalesChartSeries = ['成本 (NZD)', '收入 (CNY)', '利润 (CNY)'];
+                    this.annualSalesChartSeries = ['成本 (NZD)', '利润 (CNY)'];
                     this.annualSalesChartOptions = {
                         responsive: true,
                         multiTooltipTemplate: '<%if (datasetLabel){%><%=datasetLabel %>: <%}%><%= value %>',
@@ -384,10 +384,10 @@ System.register(["angular2/core", 'angular2/common', "./api.service", "./orders/
                         }
                     });
                 };
-                DashboardComponent.prototype.onSwapAnnualSalesDateSource = function (flag) {
-                    if (this.annualSalesChartSwitch == flag)
+                DashboardComponent.prototype.onSwapAnnualSalesDateSource = function (value) {
+                    if (this.annualSalesChartSwitch == value)
                         return;
-                    this.annualSalesChartSwitch = flag;
+                    this.annualSalesChartSwitch = value;
                     this.changeAnnualSalesChartData();
                 };
                 DashboardComponent.prototype.ontopSaleProductsChartSelected = function (e) {
@@ -396,13 +396,17 @@ System.register(["angular2/core", 'angular2/common', "./api.service", "./orders/
                     this.selectedTopProductCount = e.activePoints[0].value;
                 };
                 DashboardComponent.prototype.changeAnnualSalesChartData = function () {
-                    if (!this.annualSalesChartSwitch) {
-                        this.annualSalesChartData = [this.costList.ToArray(), this.incomeList.ToArray(), this.profitList.ToArray()];
-                        this.annualSalesChartSeries = ['成本 (NZD)', '收入 (CNY)', '利润 (CNY)'];
+                    if (this.annualSalesChartSwitch == 0) {
+                        this.annualSalesChartData = [this.costList.ToArray(), this.profitList.ToArray()];
+                        this.annualSalesChartSeries = ['成本 (NZD)', '利润 (CNY)'];
+                    }
+                    else if (this.annualSalesChartSwitch == 1) {
+                        this.annualSalesChartData = [this.orderCountList.ToArray(), []];
+                        this.annualSalesChartSeries = ['订单数量', '&nbsp;', '&nbsp;'];
                     }
                     else {
-                        this.annualSalesChartData = [this.orderCountList.ToArray(), [], []];
-                        this.annualSalesChartSeries = ['订单数量', '&nbsp;', '&nbsp;'];
+                        this.annualSalesChartData = [this.incomeList.ToArray(), []];
+                        this.annualSalesChartSeries = ['收入 (CNY)', '&nbsp;', '&nbsp;'];
                     }
                 };
                 DashboardComponent = __decorate([

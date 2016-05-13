@@ -451,6 +451,11 @@ strong {
     width: 50%;
 }
 
+.md-table-cell-33 {
+    display: table-cell;
+    width: 33%;
+}
+
 .md-table-cell-20 {
     display: table-cell;
     width: 20%;
