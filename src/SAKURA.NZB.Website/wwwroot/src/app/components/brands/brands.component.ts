@@ -1,7 +1,7 @@
 ﻿/// <reference path="../../../../lib/TypeScript-Linq/Scripts/typings/System/Collections/Generic/List.ts" />
 
 import {Component, OnInit} from "angular2/core";
-import {CORE_DIRECTIVES, FORM_DIRECTIVES, ControlGroup, Control, Validators} from "angular2/common";
+import {CORE_DIRECTIVES, FORM_DIRECTIVES, FormBuilder, ControlGroup, Control, Validators} from "angular2/common";
 import {ApiService} from "../api.service";
 
 import '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js';
@@ -33,9 +33,9 @@ export class BrandsComponent implements OnInit {
 
 	brandForm: ControlGroup;
 
-	constructor(private service: ApiService) {
-		this.brandForm = new ControlGroup({
-			brand: new Control(null, Validators.required)
+	constructor(private service: ApiService, fb: FormBuilder) {
+		this.brandForm = fb.group({
+			brand: [null, Validators.required]
 		});
 	}
 
@@ -101,6 +101,14 @@ export class BrandsComponent implements OnInit {
 			this.service.postBrand(JSON.stringify(new Brand("0", name)))
 				.subscribe(x => that.get());
 	}
+
+	//areDuplicated(group: ControlGroup) {
+	//	var id = (this._selectedBrand) ? this._selectedBrand.id : '';
+	//	var name = group.controls['brand'].value
+	//	var isDuplicated = this.brandList.ToList<Brand>().Any(b => b.id != id && b.name == name);
+
+	//	return isDuplicated ? { duplicated: true } : null;
+	//}
 
 	get() {
 		var that = this;

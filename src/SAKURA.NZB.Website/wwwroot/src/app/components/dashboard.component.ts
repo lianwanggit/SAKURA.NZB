@@ -75,6 +75,7 @@ export class DashboardComponent implements OnInit {
 		maintainAspectRatio: false,
 		datasetStrokeWidth: 1,
 		// scale
+		scaleFontColor: "#999",
 		scaleLineColor: "rgba(0,0,0,0.3)",
 		scaleFontFamily: "'Roboto', sans-serif",
 		// Tooltip
@@ -90,27 +91,27 @@ export class DashboardComponent implements OnInit {
 	private annualSalesChartColours: Array<any> = [
 		{
 			fillColor: 'rgba(0,0,0,0)',
-			strokeColor: 'rgba(0,153,204,1)',
-			pointColor: 'rgba(0,153,204,1)',
+			strokeColor: 'rgba(66,133,244,1)',
+			pointColor: 'rgba(66,133,244,1)',
 			pointStrokeColor: '#fff',
-			pointHighlightFill: 'rgba(0,153,204,1)',
-			pointHighlightStroke: 'rgba(0,153,204,1)'
+			pointHighlightFill: 'rgba(66,133,244,1)',
+			pointHighlightStroke: 'rgba(66,133,244,1)'
 		},
 		{
 			fillColor: 'rgba(0,0,0,0)',
-			strokeColor: 'rgba(76,195,217,1)',
-			pointColor: 'rgba(76,195,217,1)',
+			strokeColor: 'rgba(244,180,0,1)',
+			pointColor: 'rgba(244,180,0,1)',
 			pointStrokeColor: '#fff',
-			pointHighlightFill: 'rgba(76,195,217,1)',
-			pointHighlightStroke: 'rgba(76,195,217,1)'
+			pointHighlightFill: 'rgba(244,180,0,1)',
+			pointHighlightStroke: 'rgba(244,180,0,1)'
 		},
 		{
 			fillColor: 'rgba(0,0,0,0)',
-			strokeColor: 'rgba(217,101,87,1)',
-			pointColor: 'rgba(217,101,87,1)',
+			strokeColor: 'rgba(15,157,88,1)',
+			pointColor: 'rgba(15,157,88,1)',
 			pointStrokeColor: '#fff',
-			pointHighlightFill: 'rgba(217,101,87,1)',
-			pointHighlightStroke: 'rgba(217,101,87,1)'
+			pointHighlightFill: 'rgba(15,157,88,1)',
+			pointHighlightStroke: 'rgba(15,157,88,1)'
 		}
 	];
 	private annualSalesChartLegend: boolean = false;

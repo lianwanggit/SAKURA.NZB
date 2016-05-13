@@ -35,7 +35,7 @@ System.register(["angular2/core", "angular2/common", "../api.service", '../../..
                 return Brand;
             }());
             BrandsComponent = (function () {
-                function BrandsComponent(service) {
+                function BrandsComponent(service, fb) {
                     this.service = service;
                     this.brandList = [];
                     this.searchList = [];
@@ -43,8 +43,8 @@ System.register(["angular2/core", "angular2/common", "../api.service", '../../..
                     this.totalAmount = 0;
                     this._editMode = false;
                     this._filterText = '';
-                    this.brandForm = new common_1.ControlGroup({
-                        brand: new common_1.Control(null, common_1.Validators.required)
+                    this.brandForm = fb.group({
+                        brand: [null, common_1.Validators.required]
                     });
                 }
                 BrandsComponent.prototype.ngOnInit = function () {
@@ -100,6 +100,12 @@ System.register(["angular2/core", "angular2/common", "../api.service", '../../..
                         this.service.postBrand(JSON.stringify(new Brand("0", name)))
                             .subscribe(function (x) { return that.get(); });
                 };
+                //areDuplicated(group: ControlGroup) {
+                //	var id = (this._selectedBrand) ? this._selectedBrand.id : '';
+                //	var name = group.controls['brand'].value
+                //	var isDuplicated = this.brandList.ToList<Brand>().Any(b => b.id != id && b.name == name);
+                //	return isDuplicated ? { duplicated: true } : null;
+                //}
                 BrandsComponent.prototype.get = function () {
                     var _this = this;
                     var that = this;
@@ -146,7 +152,7 @@ System.register(["angular2/core", "angular2/common", "../api.service", '../../..
                         providers: [api_service_1.ApiService],
                         directives: [common_1.CORE_DIRECTIVES, common_1.FORM_DIRECTIVES]
                     }), 
-                    __metadata('design:paramtypes', [api_service_1.ApiService])
+                    __metadata('design:paramtypes', [api_service_1.ApiService, common_1.FormBuilder])
                 ], BrandsComponent);
                 return BrandsComponent;
             }());

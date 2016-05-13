@@ -38,7 +38,7 @@ namespace SAKURA.NZB.Website.Controllers
 
 			var models = (from o in orders
 						  orderby o.Products.FirstOrDefault()?.Customer.NamePinYin
-						  orderby o.OrderTime //descending
+						  orderby o.OrderTime descending
 						  select MapTo(o, _sender, _senderPhone)).ToList();
 
 			var groupedModels = from m in models
