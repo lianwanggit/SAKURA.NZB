@@ -82,7 +82,7 @@ namespace SAKURA.NZB.Business.ExpressTracking
 
 					summary.Details.Add(new ExpressTrackRecord
 					{
-						When = StringToDateTime(td[0].InnerText.Replace("：", ":")),
+						When = StringToDateTime(td[0].InnerText),
 						Where = td[1].InnerText.Trim(),
 						Content = td[2].InnerText.Trim(),
 					});
@@ -116,8 +116,17 @@ namespace SAKURA.NZB.Business.ExpressTracking
 			}
 		}
 
-		private static Func<string, DateTime?> StringToDateTime = (str) => 
+		private static Func<string, DateTime?> StringToDateTime = (str) =>
 		{
+			// 2016-4-28 9：20
+			str = str.Replace("：", ":");
+			// 2016/4/28/9:20
+			if (str.Count(c => c == '/') > 2)
+			{
+				var index = str.LastIndexOf('/');
+				str = str.Remove(index, 1).Insert(index, " ");
+			} 
+
 			DateTime dt;
 			if (DateTime.TryParse(str, out dt))
 				return dt;
