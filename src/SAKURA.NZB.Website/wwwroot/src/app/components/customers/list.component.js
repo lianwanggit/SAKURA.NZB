@@ -1,5 +1,5 @@
 /// <reference path="../../../../lib/TypeScript-Linq/Scripts/typings/System/Collections/Generic/List.ts" />
-System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.service", '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js'], function(exports_1, context_1) {
+System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/router', "../api.service", '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -11,7 +11,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, common_1, router_1, api_service_1;
+    var core_1, common_1, http_1, router_1, api_service_1;
     var Customer, CustomersComponent;
     return {
         setters:[
@@ -20,6 +20,9 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
             },
             function (common_1_1) {
                 common_1 = common_1_1;
+            },
+            function (http_1_1) {
+                http_1 = http_1_1;
             },
             function (router_1_1) {
                 router_1 = router_1_1;
@@ -43,7 +46,8 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
             }());
             exports_1("Customer", Customer);
             CustomersComponent = (function () {
-                function CustomersComponent(service, router) {
+                function CustomersComponent(http, service, router) {
+                    this.http = http;
                     this.service = service;
                     this.router = router;
                     this.icons = ['ambulance', 'car', 'bicycle', 'bus', 'taxi', 'fighter-jet', 'motorcycle', 'plane', 'rocket', 'ship', 'space-shuttle', 'subway', 'taxi', 'train', 'truck'];
@@ -52,24 +56,32 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     this.filterText = '';
                     this.totalAmount = 0;
                     this.isListViewMode = true;
+                    this.isLoading = true;
                     this._filterText = '';
                 }
                 CustomersComponent.prototype.ngOnInit = function () {
                     this.get();
                 };
                 CustomersComponent.prototype.get = function () {
+                    var _this = this;
                     var that = this;
-                    this.service.getCustomers(function (json) {
-                        if (json) {
-                            json.forEach(function (c) {
-                                that.customerList.push(new Customer(c));
-                            });
-                            that.totalAmount = that.customerList.length;
-                            that.searchList = that.customerList.ToList()
-                                .OrderBy(function (x) { return x.pinyin.toUpperCase(); })
-                                .ToArray();
-                            ;
-                        }
+                    this.http.get(api_service_1.GET_CUSTOMERS)
+                        .map(function (res) { return res.status === 404 ? null : res.json(); })
+                        .subscribe(function (json) {
+                        _this.isLoading = false;
+                        if (!json)
+                            return;
+                        json.forEach(function (c) {
+                            that.customerList.push(new Customer(c));
+                        });
+                        that.totalAmount = that.customerList.length;
+                        that.searchList = that.customerList.ToList()
+                            .OrderBy(function (x) { return x.pinyin.toUpperCase(); })
+                            .ToArray();
+                        ;
+                    }, function (error) {
+                        _this.isLoading = false;
+                        console.log(error);
                     });
                 };
                 CustomersComponent.prototype.onClearFilter = function () {
@@ -133,7 +145,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                         providers: [api_service_1.ApiService],
                         directives: [common_1.CORE_DIRECTIVES, common_1.FORM_DIRECTIVES, router_1.ROUTER_DIRECTIVES]
                     }), 
-                    __metadata('design:paramtypes', [api_service_1.ApiService, router_1.Router])
+                    __metadata('design:paramtypes', [http_1.Http, api_service_1.ApiService, router_1.Router])
                 ], CustomersComponent);
                 return CustomersComponent;
             }());

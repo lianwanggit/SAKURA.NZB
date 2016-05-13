@@ -2,8 +2,9 @@
 
 import {Component, OnInit} from "angular2/core";
 import {CORE_DIRECTIVES, FORM_DIRECTIVES} from "angular2/common";
+import {Http} from 'angular2/http';
 import {Router, ROUTER_DIRECTIVES} from 'angular2/router';
-import {ApiService} from "../api.service";
+import {ApiService, GET_CUSTOMERS} from "../api.service";
 
 import '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js';
 
@@ -41,9 +42,10 @@ export class CustomersComponent implements OnInit {
 	totalAmount = 0;
 	isListViewMode = true;
 
+	isLoading = true;
 	private _filterText = '';
 
-    constructor(private service: ApiService, private router: Router) { }
+    constructor(private http: Http, private service: ApiService, private router: Router) { }
 
     ngOnInit() {
         this.get();
@@ -52,9 +54,13 @@ export class CustomersComponent implements OnInit {
     get() {
 		var that = this;
 
-        this.service.getCustomers(json => {
-            if (json) {
-                json.forEach(c => {
+		this.http.get(GET_CUSTOMERS)
+			.map(res => res.status === 404 ? null : res.json())
+			.subscribe(json => {
+				this.isLoading = false;
+				if (!json) return;
+
+				json.forEach(c => {
 					that.customerList.push(new Customer(c));
 				});
 
@@ -62,8 +68,12 @@ export class CustomersComponent implements OnInit {
 				that.searchList = that.customerList.ToList<Customer>()
 					.OrderBy(x => x.pinyin.toUpperCase())
 					.ToArray();;
-            }
-        });
+			},
+			error => {
+				this.isLoading = false;
+				console.log(error);
+			}
+		);
     }
 
 	onClearFilter() {

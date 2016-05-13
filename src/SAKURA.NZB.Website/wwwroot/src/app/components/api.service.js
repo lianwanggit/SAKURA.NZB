@@ -11,7 +11,7 @@ System.register(["rxjs/Rx", "angular2/http", "angular2/core"], function(exports_
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
     var http_1, core_1;
-    var ApiService;
+    var GET_CUSTOMERS, ApiService;
     return {
         setters:[
             function (_1) {},
@@ -22,6 +22,7 @@ System.register(["rxjs/Rx", "angular2/http", "angular2/core"], function(exports_
                 core_1 = core_1_1;
             }],
         execute: function() {
+            exports_1("GET_CUSTOMERS", GET_CUSTOMERS = "api/customers");
             ApiService = (function () {
                 function ApiService(http) {
                     this.http = http;

@@ -115,7 +115,7 @@ namespace SAKURA.NZB.Website
 			foreach (var bootTask in app.ApplicationServices.GetServices<IBootTask>())
 			{
 				bootTask.Run();
-				Log.Logger.ForContext<Startup>().Information($"Running boot task {bootTask}");
+				Log.Logger.ForContext<Startup>().Information("Running boot task {0}", bootTask);
 			}
 		}
 
