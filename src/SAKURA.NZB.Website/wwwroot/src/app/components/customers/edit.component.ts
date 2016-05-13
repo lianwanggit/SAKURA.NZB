@@ -125,7 +125,6 @@ export class CustomerEditComponent implements OnInit {
 		if (!this.editMode)
 			this.http
 				.post(CUSTOMERS_ENDPOINT, JSON.stringify(this.model, this.emptyStringToNull), { headers: headers })
-				.map(res => res.json())
 				.subscribe(
 					response => this.router.navigate(['客户']),
 					error => console.error(error));

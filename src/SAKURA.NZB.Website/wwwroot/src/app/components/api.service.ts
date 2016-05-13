@@ -3,7 +3,7 @@ import {Http, Headers} from "angular2/http";
 import {Injectable} from "angular2/core";
 
 export const CUSTOMERS_ENDPOINT = "api/customers/";
-
+export const BRANDS_ENDPOINT = "api/brands/";
 
 @Injectable()
 export class ApiService {

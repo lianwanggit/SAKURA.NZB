@@ -2,7 +2,8 @@
 
 import {Component, OnInit} from "angular2/core";
 import {CORE_DIRECTIVES, FORM_DIRECTIVES, FormBuilder, ControlGroup, Control, Validators} from "angular2/common";
-import {ApiService} from "../api.service";
+import {Http, Headers} from 'angular2/http';
+import {BRANDS_ENDPOINT} from "../api.service";
 
 import '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js';
 
@@ -17,7 +18,6 @@ class Brand {
     selector: "customers",
     templateUrl: "./src/app/components/brands/brands.html",
 	styleUrls: ["./src/app/components/brands/brands.css"],
-    providers: [ApiService],
     directives: [CORE_DIRECTIVES, FORM_DIRECTIVES]
 })
 
@@ -31,9 +31,10 @@ export class BrandsComponent implements OnInit {
 	private _filterText = '';
 	private _selectedBrand: Brand;
 
+	isLoading = true;
 	brandForm: ControlGroup;
 
-	constructor(private service: ApiService, fb: FormBuilder) {
+	constructor(private http: Http, fb: FormBuilder) {
 		this.brandForm = fb.group({
 			brand: [null, Validators.required]
 		});
@@ -89,34 +90,37 @@ export class BrandsComponent implements OnInit {
 
 	onSubmit() {
 		$('#myModal').modal('hide');
-		var name = this.brandForm.value.brand;
 		var that = this;
-
-		if (this._editMode) {
+		var name = this.brandForm.value.brand;
+		var headers = new Headers();
+		headers.append('Content-Type', 'application/json');
+	
+		if (!this._editMode)
+			this.http
+				.post(BRANDS_ENDPOINT, JSON.stringify(new Brand("0", name)), { headers: headers })
+				.subscribe(
+					response => this.get(),
+					error => console.error(error));
+		else {
 			var brand = new Brand(this._selectedBrand.id, name);
-			this.service.putBrand(brand.id, JSON.stringify(brand))
-				.subscribe(x => that.get());
+			this.http.put(BRANDS_ENDPOINT + brand.id, JSON.stringify(brand), { headers: headers })
+				.subscribe(
+					response => this.get(),
+					error => console.error(error));
 		}
-		else
-			this.service.postBrand(JSON.stringify(new Brand("0", name)))
-				.subscribe(x => that.get());
 	}
-
-	//areDuplicated(group: ControlGroup) {
-	//	var id = (this._selectedBrand) ? this._selectedBrand.id : '';
-	//	var name = group.controls['brand'].value
-	//	var isDuplicated = this.brandList.ToList<Brand>().Any(b => b.id != id && b.name == name);
-
-	//	return isDuplicated ? { duplicated: true } : null;
-	//}
 
 	get() {
 		var that = this;
-
 		this.brandList = [];
-        this.service.getBrands(json => {
-            if (json) {
-                json.forEach(c => {
+
+		this.http.get(BRANDS_ENDPOINT)
+			.map(res => res.status === 404 ? null : res.json())
+			.subscribe(json => {
+				this.isLoading = false;
+				if (!json) return;
+
+				json.forEach(c => {
 					that.brandList.push(new Brand(c.id, c.name));
 				});
 
@@ -134,8 +138,11 @@ export class BrandsComponent implements OnInit {
 						}
 					});
 				}
-            }
-        });
+			},
+			error => {
+				this.isLoading = false;
+				console.log(error);
+			});
     }
 
 	startsWith(str: string, searchString: string) {

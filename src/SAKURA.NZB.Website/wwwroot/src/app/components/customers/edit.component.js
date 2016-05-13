@@ -124,7 +124,6 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/
                     if (!this.editMode)
                         this.http
                             .post(api_service_1.CUSTOMERS_ENDPOINT, JSON.stringify(this.model, this.emptyStringToNull), { headers: headers })
-                            .map(function (res) { return res.json(); })
                             .subscribe(function (response) { return _this.router.navigate(['客户']); }, function (error) { return console.error(error); });
                     else
                         this.http.put(api_service_1.CUSTOMERS_ENDPOINT + this.customerId, JSON.stringify(this.model, this.emptyStringToNull), { headers: headers })

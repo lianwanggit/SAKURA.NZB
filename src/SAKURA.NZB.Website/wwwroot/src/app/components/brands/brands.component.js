@@ -1,5 +1,5 @@
 /// <reference path="../../../../lib/TypeScript-Linq/Scripts/typings/System/Collections/Generic/List.ts" />
-System.register(["angular2/core", "angular2/common", "../api.service", '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js'], function(exports_1, context_1) {
+System.register(["angular2/core", "angular2/common", 'angular2/http', "../api.service", '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -11,7 +11,7 @@ System.register(["angular2/core", "angular2/common", "../api.service", '../../..
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, common_1, api_service_1;
+    var core_1, common_1, http_1, api_service_1;
     var Brand, BrandsComponent;
     return {
         setters:[
@@ -20,6 +20,9 @@ System.register(["angular2/core", "angular2/common", "../api.service", '../../..
             },
             function (common_1_1) {
                 common_1 = common_1_1;
+            },
+            function (http_1_1) {
+                http_1 = http_1_1;
             },
             function (api_service_1_1) {
                 api_service_1 = api_service_1_1;
@@ -35,14 +38,15 @@ System.register(["angular2/core", "angular2/common", "../api.service", '../../..
                 return Brand;
             }());
             BrandsComponent = (function () {
-                function BrandsComponent(service, fb) {
-                    this.service = service;
+                function BrandsComponent(http, fb) {
+                    this.http = http;
                     this.brandList = [];
                     this.searchList = [];
                     this.filterText = '';
                     this.totalAmount = 0;
                     this._editMode = false;
                     this._filterText = '';
+                    this.isLoading = true;
                     this.brandForm = fb.group({
                         brand: [null, common_1.Validators.required]
                     });
@@ -88,46 +92,50 @@ System.register(["angular2/core", "angular2/common", "../api.service", '../../..
                     });
                 };
                 BrandsComponent.prototype.onSubmit = function () {
+                    var _this = this;
                     $('#myModal').modal('hide');
-                    var name = this.brandForm.value.brand;
                     var that = this;
-                    if (this._editMode) {
+                    var name = this.brandForm.value.brand;
+                    var headers = new http_1.Headers();
+                    headers.append('Content-Type', 'application/json');
+                    if (!this._editMode)
+                        this.http
+                            .post(api_service_1.BRANDS_ENDPOINT, JSON.stringify(new Brand("0", name)), { headers: headers })
+                            .subscribe(function (response) { return _this.get(); }, function (error) { return console.error(error); });
+                    else {
                         var brand = new Brand(this._selectedBrand.id, name);
-                        this.service.putBrand(brand.id, JSON.stringify(brand))
-                            .subscribe(function (x) { return that.get(); });
+                        this.http.put(api_service_1.BRANDS_ENDPOINT + brand.id, JSON.stringify(brand), { headers: headers })
+                            .subscribe(function (response) { return _this.get(); }, function (error) { return console.error(error); });
                     }
-                    else
-                        this.service.postBrand(JSON.stringify(new Brand("0", name)))
-                            .subscribe(function (x) { return that.get(); });
                 };
-                //areDuplicated(group: ControlGroup) {
-                //	var id = (this._selectedBrand) ? this._selectedBrand.id : '';
-                //	var name = group.controls['brand'].value
-                //	var isDuplicated = this.brandList.ToList<Brand>().Any(b => b.id != id && b.name == name);
-                //	return isDuplicated ? { duplicated: true } : null;
-                //}
                 BrandsComponent.prototype.get = function () {
                     var _this = this;
                     var that = this;
                     this.brandList = [];
-                    this.service.getBrands(function (json) {
-                        if (json) {
-                            json.forEach(function (c) {
-                                that.brandList.push(new Brand(c.id, c.name));
+                    this.http.get(api_service_1.BRANDS_ENDPOINT)
+                        .map(function (res) { return res.status === 404 ? null : res.json(); })
+                        .subscribe(function (json) {
+                        _this.isLoading = false;
+                        if (!json)
+                            return;
+                        json.forEach(function (c) {
+                            that.brandList.push(new Brand(c.id, c.name));
+                        });
+                        that.totalAmount = that.brandList.length;
+                        that.searchList = that.brandList.ToList()
+                            .OrderBy(function (x) { return x.name; })
+                            .ToArray();
+                        if (that._selectedBrand) {
+                            _this.searchList.forEach(function (b) {
+                                b.selected = b.id == that._selectedBrand.id;
+                                if (b.id == that._selectedBrand.id) {
+                                    that._selectedBrand = b;
+                                }
                             });
-                            that.totalAmount = that.brandList.length;
-                            that.searchList = that.brandList.ToList()
-                                .OrderBy(function (x) { return x.name; })
-                                .ToArray();
-                            if (that._selectedBrand) {
-                                _this.searchList.forEach(function (b) {
-                                    b.selected = b.id == that._selectedBrand.id;
-                                    if (b.id == that._selectedBrand.id) {
-                                        that._selectedBrand = b;
-                                    }
-                                });
-                            }
                         }
+                    }, function (error) {
+                        _this.isLoading = false;
+                        console.log(error);
                     });
                 };
                 BrandsComponent.prototype.startsWith = function (str, searchString) {
@@ -149,10 +157,9 @@ System.register(["angular2/core", "angular2/common", "../api.service", '../../..
                         selector: "customers",
                         templateUrl: "./src/app/components/brands/brands.html",
                         styleUrls: ["./src/app/components/brands/brands.css"],
-                        providers: [api_service_1.ApiService],
                         directives: [common_1.CORE_DIRECTIVES, common_1.FORM_DIRECTIVES]
                     }), 
-                    __metadata('design:paramtypes', [api_service_1.ApiService, common_1.FormBuilder])
+                    __metadata('design:paramtypes', [http_1.Http, common_1.FormBuilder])
                 ], BrandsComponent);
                 return BrandsComponent;
             }());
