@@ -1,4 +1,6 @@
-﻿<div class="grey-border">
+﻿<div class="loading" *ngIf="isLoading">Loading&#8230;</div>
+
+<div class="grey-border" *ngIf="!isLoading">
     <table>
         <tr>
             <td class="hidden-xs" *ngIf="editMode">

@@ -1,5 +1,5 @@
 /// <reference path="../../../../lib/TypeScript-Linq/Scripts/typings/System/Collections/Generic/List.ts" />
-System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.service", "../../directives/alphaIndexer.directive", '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js'], function(exports_1, context_1) {
+System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/router', "../api.service", "../../directives/alphaIndexer.directive", '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -11,7 +11,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, common_1, router_1, api_service_1, alphaIndexer_directive_1;
+    var core_1, common_1, http_1, router_1, api_service_1, alphaIndexer_directive_1;
     var Customer, CustomerEditComponent;
     return {
         setters:[
@@ -20,6 +20,9 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
             },
             function (common_1_1) {
                 common_1 = common_1_1;
+            },
+            function (http_1_1) {
+                http_1 = http_1_1;
             },
             function (router_1_1) {
                 router_1 = router_1_1;
@@ -50,17 +53,23 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
             }());
             exports_1("Customer", Customer);
             CustomerEditComponent = (function () {
-                function CustomerEditComponent(service, router, params) {
-                    this.service = service;
+                function CustomerEditComponent(http, router, params) {
+                    this.http = http;
                     this.router = router;
                     this.model = new Customer({
                         "id": 0, "fullName": null, "namePinYin": null, "phone1": null, "phone2": null,
                         "address": null, "address1": null, "email": null, "isIdentityUploaded": false, "level": null, "description": null
                     });
                     this.editMode = false;
+                    this.isCustomerLoading = true;
+                    this.isListLoading = true;
                     this.customerId = params.get("id");
                     if (this.customerId) {
                         this.editMode = true;
+                    }
+                    else {
+                        this.isCustomerLoading = false;
+                        this.isListLoading = false;
                     }
                 }
                 CustomerEditComponent.prototype.ngOnInit = function () {
@@ -70,24 +79,38 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     }
                 };
                 CustomerEditComponent.prototype.getCustomer = function (id) {
+                    var _this = this;
                     var that = this;
-                    this.service.getCustomer(id, function (json) {
-                        if (json) {
-                            that.model = new Customer(json);
-                        }
+                    this.http.get(api_service_1.CUSTOMERS_ENDPOINT + id)
+                        .map(function (res) { return res.status === 404 ? null : res.json(); })
+                        .subscribe(function (json) {
+                        _this.isCustomerLoading = false;
+                        if (!json)
+                            return;
+                        that.model = new Customer(json);
+                    }, function (error) {
+                        _this.isCustomerLoading = false;
+                        console.log(error);
                     });
                 };
                 CustomerEditComponent.prototype.getCustomers = function () {
+                    var _this = this;
                     var that = this;
-                    this.service.getCustomers(function (json) {
-                        if (json) {
-                            var list = [].ToList();
-                            json.forEach(function (x) {
-                                var c = new Customer(x);
-                                list.Add(new alphaIndexer_directive_1.Element(c.id, c.fullName, c.namePinYin));
-                            });
-                            that.elementSource = list.ToArray();
-                        }
+                    this.http.get(api_service_1.CUSTOMERS_ENDPOINT)
+                        .map(function (res) { return res.status === 404 ? null : res.json(); })
+                        .subscribe(function (json) {
+                        _this.isListLoading = false;
+                        if (!json)
+                            return;
+                        var list = [].ToList();
+                        json.forEach(function (x) {
+                            var c = new Customer(x);
+                            list.Add(new alphaIndexer_directive_1.Element(c.id, c.fullName, c.namePinYin));
+                        });
+                        that.elementSource = list.ToArray();
+                    }, function (error) {
+                        _this.isListLoading = false;
+                        console.log(error);
                     });
                 };
                 CustomerEditComponent.prototype.onElementSelected = function (id) {
@@ -96,16 +119,16 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                 CustomerEditComponent.prototype.onSubmit = function () {
                     var _this = this;
                     var that = this;
+                    var headers = new http_1.Headers();
+                    headers.append('Content-Type', 'application/json');
                     if (!this.editMode)
-                        this.service.postCustomer(JSON.stringify(this.model, this.emptyStringToNull))
-                            .subscribe(function (response) {
-                            _this.router.navigate(['客户']);
-                        });
+                        this.http
+                            .post(api_service_1.CUSTOMERS_ENDPOINT, JSON.stringify(this.model, this.emptyStringToNull), { headers: headers })
+                            .map(function (res) { return res.json(); })
+                            .subscribe(function (response) { return _this.router.navigate(['客户']); }, function (error) { return console.error(error); });
                     else
-                        this.service.putCustomer(this.customerId, JSON.stringify(this.model, this.emptyStringToNull))
-                            .subscribe(function (response) {
-                            _this.router.navigate(['客户']);
-                        });
+                        this.http.put(api_service_1.CUSTOMERS_ENDPOINT + this.customerId, JSON.stringify(this.model, this.emptyStringToNull), { headers: headers })
+                            .subscribe(function (response) { return _this.router.navigate(['客户']); }, function (error) { return console.error(error); });
                 };
                 CustomerEditComponent.prototype.emptyStringToNull = function (key, value) {
                     return value === "" ? null : value;
@@ -120,15 +143,19 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     enumerable: true,
                     configurable: true
                 });
+                Object.defineProperty(CustomerEditComponent.prototype, "isLoading", {
+                    get: function () { return this.isCustomerLoading || this.isListLoading; },
+                    enumerable: true,
+                    configurable: true
+                });
                 CustomerEditComponent = __decorate([
                     core_1.Component({
                         selector: "customer-edit",
                         templateUrl: "./src/app/components/customers/edit.html",
                         styleUrls: ["./src/app/components/customers/customers.css"],
-                        providers: [api_service_1.ApiService],
                         directives: [common_1.CORE_DIRECTIVES, common_1.FORM_DIRECTIVES, router_1.ROUTER_DIRECTIVES, alphaIndexer_directive_1.AlphaIndexerDirective]
                     }), 
-                    __metadata('design:paramtypes', [api_service_1.ApiService, router_1.Router, router_1.RouteParams])
+                    __metadata('design:paramtypes', [http_1.Http, router_1.Router, router_1.RouteParams])
                 ], CustomerEditComponent);
                 return CustomerEditComponent;
             }());

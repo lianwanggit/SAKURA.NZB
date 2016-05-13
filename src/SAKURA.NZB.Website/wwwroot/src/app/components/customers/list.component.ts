@@ -4,7 +4,7 @@ import {Component, OnInit} from "angular2/core";
 import {CORE_DIRECTIVES, FORM_DIRECTIVES} from "angular2/common";
 import {Http} from 'angular2/http';
 import {Router, ROUTER_DIRECTIVES} from 'angular2/router';
-import {ApiService, GET_CUSTOMERS} from "../api.service";
+import {CUSTOMERS_ENDPOINT} from "../api.service";
 
 import '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js';
 
@@ -31,7 +31,6 @@ export class Customer {
     selector: "customers",
     templateUrl: "./src/app/components/customers/list.html",
 	styleUrls: ["./src/app/components/customers/customers.css"],
-    providers: [ApiService],
     directives: [CORE_DIRECTIVES, FORM_DIRECTIVES, ROUTER_DIRECTIVES]
 })
 export class CustomersComponent implements OnInit {
@@ -45,7 +44,7 @@ export class CustomersComponent implements OnInit {
 	isLoading = true;
 	private _filterText = '';
 
-    constructor(private http: Http, private service: ApiService, private router: Router) { }
+    constructor(private http: Http, private router: Router) { }
 
     ngOnInit() {
         this.get();
@@ -54,7 +53,7 @@ export class CustomersComponent implements OnInit {
     get() {
 		var that = this;
 
-		this.http.get(GET_CUSTOMERS)
+		this.http.get(CUSTOMERS_ENDPOINT)
 			.map(res => res.status === 404 ? null : res.json())
 			.subscribe(json => {
 				this.isLoading = false;
@@ -72,8 +71,7 @@ export class CustomersComponent implements OnInit {
 			error => {
 				this.isLoading = false;
 				console.log(error);
-			}
-		);
+			});
     }
 
 	onClearFilter() {

@@ -2,7 +2,8 @@
 import {Http, Headers} from "angular2/http";
 import {Injectable} from "angular2/core";
 
-export const GET_CUSTOMERS = "api/customers";
+export const CUSTOMERS_ENDPOINT = "api/customers/";
+
 
 @Injectable()
 export class ApiService {

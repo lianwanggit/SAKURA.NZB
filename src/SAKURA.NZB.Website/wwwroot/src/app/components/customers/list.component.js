@@ -46,9 +46,8 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/
             }());
             exports_1("Customer", Customer);
             CustomersComponent = (function () {
-                function CustomersComponent(http, service, router) {
+                function CustomersComponent(http, router) {
                     this.http = http;
-                    this.service = service;
                     this.router = router;
                     this.icons = ['ambulance', 'car', 'bicycle', 'bus', 'taxi', 'fighter-jet', 'motorcycle', 'plane', 'rocket', 'ship', 'space-shuttle', 'subway', 'taxi', 'train', 'truck'];
                     this.customerList = [];
@@ -65,7 +64,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/
                 CustomersComponent.prototype.get = function () {
                     var _this = this;
                     var that = this;
-                    this.http.get(api_service_1.GET_CUSTOMERS)
+                    this.http.get(api_service_1.CUSTOMERS_ENDPOINT)
                         .map(function (res) { return res.status === 404 ? null : res.json(); })
                         .subscribe(function (json) {
                         _this.isLoading = false;
@@ -142,10 +141,9 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/
                         selector: "customers",
                         templateUrl: "./src/app/components/customers/list.html",
                         styleUrls: ["./src/app/components/customers/customers.css"],
-                        providers: [api_service_1.ApiService],
                         directives: [common_1.CORE_DIRECTIVES, common_1.FORM_DIRECTIVES, router_1.ROUTER_DIRECTIVES]
                     }), 
-                    __metadata('design:paramtypes', [http_1.Http, api_service_1.ApiService, router_1.Router])
+                    __metadata('design:paramtypes', [http_1.Http, router_1.Router])
                 ], CustomersComponent);
                 return CustomersComponent;
             }());

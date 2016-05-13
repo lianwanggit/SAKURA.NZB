@@ -2,8 +2,9 @@
 
 import {Component, OnInit} from "angular2/core";
 import {CORE_DIRECTIVES, FORM_DIRECTIVES} from "angular2/common";
+import {Http, Headers} from 'angular2/http';
 import {Router, RouteParams, ROUTER_DIRECTIVES} from 'angular2/router';
-import {ApiService} from "../api.service";
+import {CUSTOMERS_ENDPOINT} from "../api.service";
 import {AlphaIndexerDirective, Element} from "../../directives/alphaIndexer.directive";
 
 import '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js';
@@ -40,7 +41,6 @@ export class Customer {
     selector: "customer-edit",
     templateUrl: "./src/app/components/customers/edit.html",
 	styleUrls: ["./src/app/components/customers/customers.css"],
-    providers: [ApiService],
     directives: [CORE_DIRECTIVES, FORM_DIRECTIVES, ROUTER_DIRECTIVES, AlphaIndexerDirective]
 })
 export class CustomerEditComponent implements OnInit {
@@ -52,13 +52,17 @@ export class CustomerEditComponent implements OnInit {
 	});
 
 	editMode = false;
+	isCustomerLoading = true;
+	isListLoading = true;
 	private customerId: string;
 
-
-    constructor(private service: ApiService, private router: Router, params: RouteParams) {
+    constructor(private http: Http, private router: Router, params: RouteParams) {
 		this.customerId = params.get("id");
 		if (this.customerId) {
 			this.editMode = true;
+		} else {
+			this.isCustomerLoading = false;
+			this.isListLoading = false;
 		}
 	}
 
@@ -72,18 +76,29 @@ export class CustomerEditComponent implements OnInit {
 	getCustomer(id: string) {
 		var that = this;
 
-        this.service.getCustomer(id, json => {
-            if (json) {
-                that.model = new Customer(json);
-            }
-        });
+		this.http.get(CUSTOMERS_ENDPOINT + id)
+			.map(res => res.status === 404 ? null : res.json())
+			.subscribe(json => {
+				this.isCustomerLoading = false;
+				if (!json) return;
+
+				that.model = new Customer(json);
+			},
+			error => {
+				this.isCustomerLoading = false;
+				console.log(error);
+			});
 	}
 
 	getCustomers() {
 		var that = this;
 
-		this.service.getCustomers(json => {
-			if (json) {
+		this.http.get(CUSTOMERS_ENDPOINT)
+			.map(res => res.status === 404 ? null : res.json())
+			.subscribe(json => {
+				this.isListLoading = false;
+				if (!json) return;
+
 				var list = [].ToList<Element>();
 				json.forEach(x => {
 					var c = new Customer(x);
@@ -91,8 +106,11 @@ export class CustomerEditComponent implements OnInit {
 				});
 
 				that.elementSource = list.ToArray();
-			}
-		});
+			},
+			error => {
+				this.isListLoading = false;
+				console.log(error);
+			});
 	}
 
 	onElementSelected(id: string) {
@@ -101,21 +119,28 @@ export class CustomerEditComponent implements OnInit {
 
 	onSubmit() {
 		var that = this;
+		var headers = new Headers();
+		headers.append('Content-Type', 'application/json');
 
 		if (!this.editMode)
-			this.service.postCustomer(JSON.stringify(this.model, this.emptyStringToNull))
-				.subscribe(response  => { this.router.navigate(['客户']);
-			});
+			this.http
+				.post(CUSTOMERS_ENDPOINT, JSON.stringify(this.model, this.emptyStringToNull), { headers: headers })
+				.map(res => res.json())
+				.subscribe(
+					response => this.router.navigate(['客户']),
+					error => console.error(error));
 		else
-			this.service.putCustomer(this.customerId, JSON.stringify(this.model, this.emptyStringToNull))
-				.subscribe(response  => { this.router.navigate(['客户']);
-			});
+			this.http.put(CUSTOMERS_ENDPOINT + this.customerId, JSON.stringify(this.model, this.emptyStringToNull), { headers: headers })
+				.subscribe(
+					response => this.router.navigate(['客户']),
+					error => console.error(error));
 	}
 
-	emptyStringToNull(key: string, value:string) {
+	emptyStringToNull(key: string, value: string) {
 		return value === "" ? null : value;
 	}
 
 	get data() { return JSON.stringify(this.model); }
 	get title() { return (this.model && this.editMode) ? "编辑用户 - " + this.model.fullName : "新建用户"; }
+	get isLoading() { return this.isCustomerLoading || this.isListLoading; }
 }
