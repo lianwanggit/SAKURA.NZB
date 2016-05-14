@@ -24,6 +24,7 @@
         <li *ngFor="#c of searchList; #i = index">
             <div class="clickable" (click)="onClick(c.id)" [ngClass]="{'selected': c.selected}">
                 <div class="delete text-right">
+                    <i class="fa fa-edit" aria-hidden="true" *ngIf="c.selected"></i>
                     <i class="fa fa-times" aria-hidden="true" *ngIf="c.selected && c.count == 0"></i>
                 </div>               
                 <h3 class="font-weight-300 margin-top-5 text-ellipsis">{{c.name}}</h3>
