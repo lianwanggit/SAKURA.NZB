@@ -14,7 +14,10 @@ namespace SAKURA.NZB.Website.Controllers
 
 		public IActionResult Index()
         {
-			ViewData["CurrencyRate"] = _config.GetCurrentRate();
+			ViewData["LiveRate"] = _config.GetCurrentRate();
+			ViewData["HighRate"] = _config.GetFixedRateHigh();
+			ViewData["LowRate"] = _config.GetFixedRateLow();
+
 			return View();
         }
 

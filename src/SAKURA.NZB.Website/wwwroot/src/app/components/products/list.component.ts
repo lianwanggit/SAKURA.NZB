@@ -2,6 +2,7 @@
 
 import {Component, OnInit} from "angular2/core";
 import {CORE_DIRECTIVES, FORM_DIRECTIVES} from "angular2/common";
+import {Http} from 'angular2/http';
 import {Router, ROUTER_DIRECTIVES} from 'angular2/router';
 import {ApiService} from "../api.service";
 import {Category, Brand, Supplier, Product, BaseType} from "./models";
@@ -60,13 +61,12 @@ export class ProductsComponent implements OnInit {
 	brandAmount = 0;
 	supplierAmount = 0;
 
-	fixedRateHigh: number;
-	fixedRateLow: number;
-	currentRate: number;
+	fixedRateHigh: number = (<any>window).nzb.rate.high;
+	fixedRateLow: number = (<any>window).nzb.rate.low;
+	currentRate: number = (<any>window).nzb.rate.live;
 
 	private _filterText = '';
 	private _isProductsLoaded = false;
-	private _isRatesLoaded = false;
 
     constructor(private service: ApiService, private router: Router) { }
 
@@ -77,17 +77,17 @@ export class ProductsComponent implements OnInit {
     get() {
 		var that = this;
 
-		this.service.getLatestExchangeRates(json => {
-			if (json) {
-				that.fixedRateHigh = json.fixedRateHigh;
-				that.fixedRateLow = json.fixedRateLow;
-				that.currentRate = json.currentRate.toFixed(2);
-				that._isRatesLoaded = true;
+		//this.service.getLatestExchangeRates(json => {
+		//	if (json) {
+		//		that.fixedRateHigh = json.fixedRateHigh;
+		//		that.fixedRateLow = json.fixedRateLow;
+		//		that.currentRate = json.currentRate.toFixed(2);
+		//		that._isRatesLoaded = true;
 
-				if (that._isProductsLoaded)
-					that.addProductsToSearchList(that.productList);
-			}
-		});
+		//		if (that._isProductsLoaded)
+		//			that.addProductsToSearchList(that.productList);
+		//	}
+		//});
 
         this.service.getProducts(json => {
             if (json) {
@@ -98,8 +98,7 @@ export class ProductsComponent implements OnInit {
 				that.totalAmount = that.productList.Count();
 				that._isProductsLoaded = true;
 
-				if (that._isRatesLoaded)
-					that.addProductsToSearchList(that.productList);
+				that.addProductsToSearchList(that.productList);
             }
         });
 

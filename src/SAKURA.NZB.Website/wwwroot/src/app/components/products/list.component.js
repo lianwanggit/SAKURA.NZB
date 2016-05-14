@@ -90,25 +90,27 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     this.categoryAmount = 0;
                     this.brandAmount = 0;
                     this.supplierAmount = 0;
+                    this.fixedRateHigh = window.nzb.rate.high;
+                    this.fixedRateLow = window.nzb.rate.low;
+                    this.currentRate = window.nzb.rate.live;
                     this._filterText = '';
                     this._isProductsLoaded = false;
-                    this._isRatesLoaded = false;
                 }
                 ProductsComponent.prototype.ngOnInit = function () {
                     this.get();
                 };
                 ProductsComponent.prototype.get = function () {
                     var that = this;
-                    this.service.getLatestExchangeRates(function (json) {
-                        if (json) {
-                            that.fixedRateHigh = json.fixedRateHigh;
-                            that.fixedRateLow = json.fixedRateLow;
-                            that.currentRate = json.currentRate.toFixed(2);
-                            that._isRatesLoaded = true;
-                            if (that._isProductsLoaded)
-                                that.addProductsToSearchList(that.productList);
-                        }
-                    });
+                    //this.service.getLatestExchangeRates(json => {
+                    //	if (json) {
+                    //		that.fixedRateHigh = json.fixedRateHigh;
+                    //		that.fixedRateLow = json.fixedRateLow;
+                    //		that.currentRate = json.currentRate.toFixed(2);
+                    //		that._isRatesLoaded = true;
+                    //		if (that._isProductsLoaded)
+                    //			that.addProductsToSearchList(that.productList);
+                    //	}
+                    //});
                     this.service.getProducts(function (json) {
                         if (json) {
                             json.forEach(function (c) {
@@ -116,8 +118,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                             });
                             that.totalAmount = that.productList.Count();
                             that._isProductsLoaded = true;
-                            if (that._isRatesLoaded)
-                                that.addProductsToSearchList(that.productList);
+                            that.addProductsToSearchList(that.productList);
                         }
                     });
                     this.service.getCategories(function (json) {

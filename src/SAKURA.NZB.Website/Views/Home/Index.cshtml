@@ -19,7 +19,7 @@
             </div>
             <i class="fa fa-exchange"></i>
             <div class="input-group">               
-                <input id="cny" class="form-control" placeholder="CNY" value="@Html.Raw(ViewBag.CurrencyRate)" />
+                <input id="cny" class="form-control" placeholder="CNY" value="@Html.Raw(ViewBag.LiveRate)" />
                 <div class="input-group-addon">CNY</div>
             </div>
         </form>
@@ -31,7 +31,18 @@
     </div>
 </div>
 <script>
-    var rate = @Html.Raw(ViewBag.CurrencyRate);
+    var rate = @Html.Raw(ViewBag.LiveRate);
+    var highRate = @Html.Raw(ViewBag.HighRate);
+    var lowRate = @Html.Raw(ViewBag.LowRate);
+
+    window.nzb = {
+        rate: {
+            live: rate,
+            high: highRate,
+            low: lowRate
+        }
+    };
+
     $('#nzd').on('input',function(e){
         var source = e.target.value;
         if ($.isNumeric(source)){

@@ -4,6 +4,7 @@ import {Injectable} from "angular2/core";
 
 export const CUSTOMERS_ENDPOINT = "api/customers/";
 export const BRANDS_ENDPOINT = "api/brands/";
+export const PRODUCTS_ENDPOINT = "api/products/";
 export const PRODUCTS_GET_BY_BRAND_ENDPOINT = "api/products/get-by-brand/";
 
 @Injectable()
