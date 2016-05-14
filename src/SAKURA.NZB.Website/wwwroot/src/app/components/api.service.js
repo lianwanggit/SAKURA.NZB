@@ -11,7 +11,7 @@ System.register(["rxjs/Rx", "angular2/http", "angular2/core"], function(exports_
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
     var http_1, core_1;
-    var CUSTOMERS_ENDPOINT, BRANDS_ENDPOINT, ApiService;
+    var CUSTOMERS_ENDPOINT, BRANDS_ENDPOINT, PRODUCTS_GET_BY_BRAND_ENDPOINT, ApiService;
     return {
         setters:[
             function (_1) {},
@@ -24,6 +24,7 @@ System.register(["rxjs/Rx", "angular2/http", "angular2/core"], function(exports_
         execute: function() {
             exports_1("CUSTOMERS_ENDPOINT", CUSTOMERS_ENDPOINT = "api/customers/");
             exports_1("BRANDS_ENDPOINT", BRANDS_ENDPOINT = "api/brands/");
+            exports_1("PRODUCTS_GET_BY_BRAND_ENDPOINT", PRODUCTS_GET_BY_BRAND_ENDPOINT = "api/products/get-by-brand/");
             ApiService = (function () {
                 function ApiService(http) {
                     this.http = http;

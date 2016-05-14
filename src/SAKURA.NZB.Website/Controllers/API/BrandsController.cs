@@ -2,6 +2,7 @@
 using Microsoft.AspNet.Mvc;
 using SAKURA.NZB.Data;
 using SAKURA.NZB.Domain;
+using System;
 
 namespace SAKURA.NZB.Website.Controllers.API
 {
@@ -18,7 +19,12 @@ namespace SAKURA.NZB.Website.Controllers.API
 		[HttpGet]
 		public IActionResult Get()
 		{
-			return new ObjectResult(_context.Brands.OrderBy(b => b.Name).ToList());
+			var brands = from b in _context.Brands
+						 join p in _context.Products on b.Id equals p.BrandId into joined
+						 orderby b.Name
+						 select new {Id = b.Id, Name = b.Name, Count = joined.Count() };
+
+			return new ObjectResult(brands);
 		}
 
 		[HttpGet("{id:int}", Name = "GetBrand")]
@@ -43,6 +49,9 @@ namespace SAKURA.NZB.Website.Controllers.API
 			if (!ModelState.IsValid)
 				return HttpBadRequest();
 
+			if (_context.Brands.Any(b => b.Name == value.Name))
+				return HttpBadRequest("name taken");
+
 			_context.Brands.Add(value);
 			_context.SaveChanges();
 
@@ -57,6 +66,9 @@ namespace SAKURA.NZB.Website.Controllers.API
 
 			if (!ModelState.IsValid)
 				return HttpBadRequest();
+
+			if (_context.Brands.Any(b => b.Name == value.Name && b.Id != value.Id))
+				return HttpBadRequest("name taken");
 
 			var item = _context.Brands.FirstOrDefault(x => x.Id == id);
 			if (item == null)

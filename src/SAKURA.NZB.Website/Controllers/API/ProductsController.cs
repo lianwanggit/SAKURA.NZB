@@ -40,6 +40,15 @@ namespace SAKURA.NZB.Website.Controllers.API
 				.ToList());
 		}
 
+		[HttpGet("get-by-brand/{id:int}")]
+		public IActionResult GetByBrand(int? id)
+		{
+			return new ObjectResult(_context.Products
+				.Where(p => p.BrandId == id)
+				.OrderBy(p => p.Name)
+				.Select(p => p.Name));
+		}
+
 		[HttpGet("{id:int}", Name = "GetProduct")]
 		public IActionResult Get(int? id)
 		{

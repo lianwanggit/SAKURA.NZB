@@ -23,7 +23,10 @@
     <ul class="customers-list">
         <li *ngFor="#c of searchList; #i = index">
             <div class="clickable" (click)="onClick(c.id)" [ngClass]="{'selected': c.selected}">
-                <h3 class="font-weight-300 margin-top-10 text-ellipsis">{{c.name}}</h3>
+                <div class="delete text-right">
+                    <i class="fa fa-times" aria-hidden="true" *ngIf="c.selected && c.count == 0"></i>
+                </div>               
+                <h3 class="font-weight-300 margin-top-5 text-ellipsis">{{c.name}}</h3>
             </div>
         </li>
     </ul>
@@ -50,9 +53,26 @@
                             </div>-->
                         </div>
                     </div>
+
+                    <div class="alert alert-warning alert-dismissible" role="alert" *ngIf="duplicatedNameAlert">
+                        <strong><i class="fa fa-warning"></i></strong> 无法保存品牌，当前命名与已有品牌名称重复
+                    </div>
+
+                    <table class="table table-condensed table-hover table-bordered margin-top-15" *ngIf="editMode">
+                        <tr class="active">
+                            <th>产品列表</th>
+                        </tr>
+                        <tr *ngIf="products.length == 0">
+                            <td>暂无任何产品数据</td>
+                        </tr>
+                        <tr *ngFor="#p of products; #i = index">
+                            <td>{{i + 1}} <span class="padding-left-15">{{p}}</span></td>
+                        </tr>
+                    </table>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal" [disabled]="!canDelete" (click)="onDelete()">删除</button>
                     <button type="submit" class="btn btn-success" [disabled]="!myForm.form.valid">保存</button>
                 </div>
             </form>

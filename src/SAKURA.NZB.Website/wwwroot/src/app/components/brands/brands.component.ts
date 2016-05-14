@@ -3,7 +3,7 @@
 import {Component, OnInit} from "angular2/core";
 import {CORE_DIRECTIVES, FORM_DIRECTIVES, FormBuilder, ControlGroup, Control, Validators} from "angular2/common";
 import {Http, Headers} from 'angular2/http';
-import {BRANDS_ENDPOINT} from "../api.service";
+import {BRANDS_ENDPOINT, PRODUCTS_GET_BY_BRAND_ENDPOINT} from "../api.service";
 
 import '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js';
 
@@ -11,7 +11,7 @@ declare var $: any;
 
 class Brand {
 	public selected: boolean = false;
-	constructor(public id: string, public name: string) { }
+	constructor(public id: string, public name: string, public count: number) { }
 }
 
 @Component({
@@ -27,9 +27,13 @@ export class BrandsComponent implements OnInit {
 	filterText = '';
 	totalAmount = 0;
 
-	private _editMode = false;
+	editMode = false;
+
 	private _filterText = '';
 	private _selectedBrand: Brand;
+
+	products: string[] = [];
+	duplicatedNameAlert = false;
 
 	isLoading = true;
 	brandForm: ControlGroup;
@@ -68,16 +72,30 @@ export class BrandsComponent implements OnInit {
 
 	onCreate() {
 		(<any>this.brandForm.controls['brand']).updateValue(null);
-		this._editMode = false;
+		this.editMode = false;
 		$('#myModal').modal('show');
 	}
 
 	onClick(id: string) {
+		this.products = [];
+		this.duplicatedNameAlert = false;
+
 		this.searchList.forEach(b => {
 			if (b.id == id) {
 				if (b.selected) {
+					this.http.get(PRODUCTS_GET_BY_BRAND_ENDPOINT + id)
+						.map(res => res.status === 404 ? null : res.json())
+						.subscribe(json => {
+							if (!json) return;
+
+							json.forEach(p => {
+								this.products.push(p);
+							});
+						}
+					);
+
 					(<any>this.brandForm.controls['brand']).updateValue(this._selectedBrand.name);
-					this._editMode = true;
+					this.editMode = true;
 					$('#myModal').modal('show');
 				}
 
@@ -89,25 +107,59 @@ export class BrandsComponent implements OnInit {
 	}
 
 	onSubmit() {
-		$('#myModal').modal('hide');
+
 		var that = this;
 		var name = this.brandForm.value.brand;
 		var headers = new Headers();
 		headers.append('Content-Type', 'application/json');
 	
-		if (!this._editMode)
+		if (!this.editMode)
 			this.http
-				.post(BRANDS_ENDPOINT, JSON.stringify(new Brand("0", name)), { headers: headers })
+				.post(BRANDS_ENDPOINT, JSON.stringify(new Brand("0", name, 0)), { headers: headers })
 				.subscribe(
-					response => this.get(),
-					error => console.error(error));
+					response => {
+						$('#myModal').modal('hide');
+						this.get();
+					},
+					error => {
+						console.error(error);
+
+						if (error._body == 'name taken') {
+							this.duplicatedNameAlert = true;
+							return;
+						}
+
+						$('#myModal').modal('hide');
+					});
 		else {
-			var brand = new Brand(this._selectedBrand.id, name);
+			var brand = new Brand(this._selectedBrand.id, name, 0);
 			this.http.put(BRANDS_ENDPOINT + brand.id, JSON.stringify(brand), { headers: headers })
 				.subscribe(
+					response => {
+						$('#myModal').modal('hide');
+						this.get()
+					},
+					error => {
+						console.error(error);
+
+						if (error._body == 'name taken') {
+							this.duplicatedNameAlert = true;
+							return;
+						}
+
+						$('#myModal').modal('hide');
+					});
+		}
+	}
+
+	onDelete() {
+		$('#myModal').modal('hide');
+
+		if (this.editMode)
+			this.http.delete(BRANDS_ENDPOINT + this._selectedBrand.id)
+				.subscribe(
 					response => this.get(),
 					error => console.error(error));
-		}
 	}
 
 	get() {
@@ -121,7 +173,7 @@ export class BrandsComponent implements OnInit {
 				if (!json) return;
 
 				json.forEach(c => {
-					that.brandList.push(new Brand(c.id, c.name));
+					that.brandList.push(new Brand(c.id, c.name, c.count));
 				});
 
 				that.totalAmount = that.brandList.length;
@@ -150,5 +202,9 @@ export class BrandsComponent implements OnInit {
 	};
 
 	get amount() { return this.searchList.length; }
-	get dialogTitle() { return this._editMode ? "编辑品牌" : "新建品牌"; }
+	get dialogTitle() { return this.editMode ? "编辑品牌" : "新建品牌"; }
+	get canDelete() {
+		if (!this._selectedBrand) return false;
+		return this._selectedBrand.count == 0;
+	}
 }

@@ -7,7 +7,6 @@
 .customers-list li {
     float: left;
     width: 33%;
-    height: 75px;
     padding: 5px;
     line-height: 1.4;
     text-align: center;
@@ -19,7 +18,8 @@
 }
 
 .customers-list li > div {
-    padding: 10px 5px;
+    height: 80px;
+    padding: 3px 5px 10px 5px;
     border: 1px solid #aaa;
     border-radius: 3px;
 }
@@ -40,6 +40,10 @@
     background-color: #00aedb;
     color: #fff;
     border: 1px solid #fff !important;
+}
+
+.customers-list .delete {
+    height: 19px;
 }
 
 
