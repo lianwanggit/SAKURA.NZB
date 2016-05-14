@@ -118,6 +118,8 @@ namespace SAKURA.NZB.Business.ExpressTracking
 
 		private static Func<string, DateTime?> StringToDateTime = (str) =>
 		{
+			if (string.IsNullOrEmpty(str)) return null;
+
 			// 2016-4-28 9：20
 			str = str.Replace("：", ":");
 			// 2016/4/28/9:20
