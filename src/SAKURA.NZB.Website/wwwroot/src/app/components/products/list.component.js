@@ -1,5 +1,5 @@
 /// <reference path="../../../../lib/TypeScript-Linq/Scripts/typings/System/Collections/Generic/List.ts" />
-System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.service", "./models", '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js'], function(exports_1, context_1) {
+System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/router', "../api.service", "./models", '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -11,7 +11,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, common_1, router_1, api_service_1, models_1;
+    var core_1, common_1, http_1, router_1, api_service_1, models_1;
     var ProductListItem, QuoteListItem, QuoteHeader, ProductsComponent;
     return {
         setters:[
@@ -20,6 +20,9 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
             },
             function (common_1_1) {
                 common_1 = common_1_1;
+            },
+            function (http_1_1) {
+                http_1 = http_1_1;
             },
             function (router_1_1) {
                 router_1 = router_1_1;
@@ -77,8 +80,8 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                 return QuoteHeader;
             }());
             ProductsComponent = (function () {
-                function ProductsComponent(service, router) {
-                    this.service = service;
+                function ProductsComponent(http, router) {
+                    this.http = http;
                     this.router = router;
                     this.productList = [].ToList();
                     this.searchList = [];
@@ -88,11 +91,13 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     this.filterText = '';
                     this.totalAmount = 0;
                     this.categoryAmount = 0;
-                    this.brandAmount = 0;
                     this.supplierAmount = 0;
                     this.fixedRateHigh = window.nzb.rate.high;
                     this.fixedRateLow = window.nzb.rate.low;
                     this.currentRate = window.nzb.rate.live;
+                    this.isProductsLoading = true;
+                    this.isCategoriesLoading = true;
+                    this.isSuppliersLoading = true;
                     this._filterText = '';
                     this._isProductsLoaded = false;
                 }
@@ -100,38 +105,45 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     this.get();
                 };
                 ProductsComponent.prototype.get = function () {
+                    var _this = this;
                     var that = this;
-                    //this.service.getLatestExchangeRates(json => {
-                    //	if (json) {
-                    //		that.fixedRateHigh = json.fixedRateHigh;
-                    //		that.fixedRateLow = json.fixedRateLow;
-                    //		that.currentRate = json.currentRate.toFixed(2);
-                    //		that._isRatesLoaded = true;
-                    //		if (that._isProductsLoaded)
-                    //			that.addProductsToSearchList(that.productList);
-                    //	}
-                    //});
-                    this.service.getProducts(function (json) {
-                        if (json) {
-                            json.forEach(function (c) {
-                                that.productList.Add(new models_1.Product(c));
-                            });
-                            that.totalAmount = that.productList.Count();
-                            that._isProductsLoaded = true;
-                            that.addProductsToSearchList(that.productList);
-                        }
+                    this.http.get(api_service_1.PRODUCTS_ENDPOINT)
+                        .map(function (res) { return res.status === 404 ? null : res.json(); })
+                        .subscribe(function (json) {
+                        _this.isProductsLoading = false;
+                        if (!json)
+                            return;
+                        json.forEach(function (c) {
+                            that.productList.Add(new models_1.Product(c));
+                        });
+                        that.totalAmount = that.productList.Count();
+                        that._isProductsLoaded = true;
+                        that.addProductsToSearchList(that.productList);
+                    }, function (error) {
+                        _this.isProductsLoading = false;
+                        console.log(error);
                     });
-                    this.service.getCategories(function (json) {
-                        if (json)
-                            that.categoryAmount = json.length;
+                    this.http.get(api_service_1.CATEGORIES_ENDPOINT)
+                        .map(function (res) { return res.status === 404 ? null : res.json(); })
+                        .subscribe(function (json) {
+                        _this.isCategoriesLoading = false;
+                        if (!json)
+                            return;
+                        that.categoryAmount = json.length;
+                    }, function (error) {
+                        _this.isCategoriesLoading = false;
+                        console.log(error);
                     });
-                    this.service.getBrands(function (json) {
-                        if (json)
-                            that.brandAmount = json.length;
-                    });
-                    this.service.getSuppliers(function (json) {
-                        if (json)
-                            that.supplierAmount = json.length;
+                    this.http.get(api_service_1.SUPPLIERS_ENDPOINT)
+                        .map(function (res) { return res.status === 404 ? null : res.json(); })
+                        .subscribe(function (json) {
+                        _this.isSuppliersLoading = false;
+                        if (!json)
+                            return;
+                        that.supplierAmount = json.length;
+                    }, function (error) {
+                        _this.isSuppliersLoading = false;
+                        console.log(error);
                     });
                 };
                 ProductsComponent.prototype.onClearFilter = function () {
@@ -139,11 +151,8 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                 };
                 ProductsComponent.prototype.onSearch = function (value) {
                     var _this = this;
-                    // Sync value for the special cases, for example,
-                    // select value from the historical inputs dropdown list
                     if (this.filterText !== value)
                         this.filterText = value;
-                    // Avoid multiple submissions
                     if (this.filterText === this._filterText)
                         return;
                     this.searchList = [];
@@ -206,15 +215,19 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     enumerable: true,
                     configurable: true
                 });
+                Object.defineProperty(ProductsComponent.prototype, "isLoading", {
+                    get: function () { return this.isProductsLoading || this.isCategoriesLoading || this.isSuppliersLoading; },
+                    enumerable: true,
+                    configurable: true
+                });
                 ProductsComponent = __decorate([
                     core_1.Component({
                         selector: "products",
                         templateUrl: "./src/app/components/products/list.html",
                         styleUrls: ["./src/app/components/products/products.css"],
-                        providers: [api_service_1.ApiService],
                         directives: [common_1.CORE_DIRECTIVES, common_1.FORM_DIRECTIVES, router_1.ROUTER_DIRECTIVES]
                     }), 
-                    __metadata('design:paramtypes', [api_service_1.ApiService, router_1.Router])
+                    __metadata('design:paramtypes', [http_1.Http, router_1.Router])
                 ], ProductsComponent);
                 return ProductsComponent;
             }());

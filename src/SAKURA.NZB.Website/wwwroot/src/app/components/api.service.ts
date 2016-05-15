@@ -6,6 +6,8 @@ export const CUSTOMERS_ENDPOINT = "api/customers/";
 export const BRANDS_ENDPOINT = "api/brands/";
 export const PRODUCTS_ENDPOINT = "api/products/";
 export const PRODUCTS_GET_BY_BRAND_ENDPOINT = "api/products/get-by-brand/";
+export const CATEGORIES_ENDPOINT = "api/categories/";
+export const SUPPLIERS_ENDPOINT = "api/suppliers/";
 
 @Injectable()
 export class ApiService {

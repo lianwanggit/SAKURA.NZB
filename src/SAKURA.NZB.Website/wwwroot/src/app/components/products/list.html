@@ -1,5 +1,6 @@
-﻿<div class="grey-border">
+﻿<div class="loading" *ngIf="isLoading">Loading&#8230;</div>
 
+<div class="grey-border" *ngIf="!isLoading">
     <h2 class="page-header">
         产品 <small>({{amount}} / {{totalAmount}})</small>
 
@@ -7,9 +8,6 @@
             <button type="button" class="btn btn-info hidden-xs" [routerLink]="['PbeEdit', {type: 'category'}]">
                 类别 <span class="badge">{{categoryAmount}}</span>
             </button>
-            <!--<button type="button" class="btn btn-info hidden-xs" [routerLink]="['PbeEdit', {type: 'brand'}]">
-                品牌 <span class="badge">{{brandAmount}}</span>
-            </button>-->
             <button type="button" class="btn btn-info hidden-xs" [routerLink]="['PbeEdit', {type: 'supplier'}]">
                 供应商 <span class="badge">{{supplierAmount}}</span>
             </button>
@@ -26,10 +24,6 @@
                 <h4>{{categoryAmount}}</h4>
                 类别
             </li>
-            <!--<li [routerLink]="['PbeEdit', {type: 'brand'}]">
-                <h4>{{brandAmount}}</h4>
-                品牌
-            </li>-->
             <li [routerLink]="['PbeEdit', {type: 'supplier'}]">
                 <h4>{{supplierAmount}}</h4>
                 供应商

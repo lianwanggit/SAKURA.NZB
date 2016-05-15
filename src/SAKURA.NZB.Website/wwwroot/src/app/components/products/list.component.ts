@@ -4,7 +4,7 @@ import {Component, OnInit} from "angular2/core";
 import {CORE_DIRECTIVES, FORM_DIRECTIVES} from "angular2/common";
 import {Http} from 'angular2/http';
 import {Router, ROUTER_DIRECTIVES} from 'angular2/router';
-import {ApiService} from "../api.service";
+import {PRODUCTS_ENDPOINT, CATEGORIES_ENDPOINT, SUPPLIERS_ENDPOINT} from "../api.service";
 import {Category, Brand, Supplier, Product, BaseType} from "./models";
 
 import '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js';
@@ -44,7 +44,6 @@ class QuoteHeader {
     selector: "products",
     templateUrl: "./src/app/components/products/list.html",
 	styleUrls: ["./src/app/components/products/products.css"],
-    providers: [ApiService],
     directives: [CORE_DIRECTIVES, FORM_DIRECTIVES, ROUTER_DIRECTIVES]
 })
 export class ProductsComponent implements OnInit {
@@ -58,17 +57,20 @@ export class ProductsComponent implements OnInit {
 	totalAmount = 0;
 
 	categoryAmount = 0;
-	brandAmount = 0;
 	supplierAmount = 0;
 
 	fixedRateHigh: number = (<any>window).nzb.rate.high;
 	fixedRateLow: number = (<any>window).nzb.rate.low;
 	currentRate: number = (<any>window).nzb.rate.live;
 
+	isProductsLoading = true;
+	isCategoriesLoading = true;
+	isSuppliersLoading = true;
+
 	private _filterText = '';
 	private _isProductsLoaded = false;
 
-    constructor(private service: ApiService, private router: Router) { }
+    constructor(private http: Http, private router: Router) { }
 
     ngOnInit() {
         this.get();
@@ -77,21 +79,13 @@ export class ProductsComponent implements OnInit {
     get() {
 		var that = this;
 
-		//this.service.getLatestExchangeRates(json => {
-		//	if (json) {
-		//		that.fixedRateHigh = json.fixedRateHigh;
-		//		that.fixedRateLow = json.fixedRateLow;
-		//		that.currentRate = json.currentRate.toFixed(2);
-		//		that._isRatesLoaded = true;
+		this.http.get(PRODUCTS_ENDPOINT)
+			.map(res => res.status === 404 ? null : res.json())
+			.subscribe(json => {
+				this.isProductsLoading = false;
+				if (!json) return;
 
-		//		if (that._isProductsLoaded)
-		//			that.addProductsToSearchList(that.productList);
-		//	}
-		//});
-
-        this.service.getProducts(json => {
-            if (json) {
-                json.forEach(c => {
+				json.forEach(c => {
 					that.productList.Add(new Product(c));
 				});
 
@@ -99,21 +93,37 @@ export class ProductsComponent implements OnInit {
 				that._isProductsLoaded = true;
 
 				that.addProductsToSearchList(that.productList);
-            }
-        });
+			},
+			error => {
+				this.isProductsLoading = false;
+				console.log(error);
+			});
 
-		this.service.getCategories(json => {
-			if (json)
+		this.http.get(CATEGORIES_ENDPOINT)
+			.map(res => res.status === 404 ? null : res.json())
+			.subscribe(json => {
+				this.isCategoriesLoading = false;
+				if (!json) return;
+
 				that.categoryAmount = json.length;
-		});
-		this.service.getBrands(json => {
-			if (json)
-				that.brandAmount = json.length;
-		});
-		this.service.getSuppliers(json => {
-			if (json)
+			},
+			error => {
+				this.isCategoriesLoading = false;
+				console.log(error);
+			});
+
+		this.http.get(SUPPLIERS_ENDPOINT)
+			.map(res => res.status === 404 ? null : res.json())
+			.subscribe(json => {
+				this.isSuppliersLoading = false;
+				if (!json) return;
+
 				that.supplierAmount = json.length;
-		});
+			},
+			error => {
+				this.isSuppliersLoading = false;
+				console.log(error);
+			});
     }
 
 	onClearFilter() {
@@ -121,12 +131,9 @@ export class ProductsComponent implements OnInit {
 	}
 
 	onSearch(value: string) {
-		// Sync value for the special cases, for example,
-		// select value from the historical inputs dropdown list
 		if (this.filterText !== value)
 			this.filterText = value;
 
-		// Avoid multiple submissions
 		if (this.filterText === this._filterText)
 			return;
 
@@ -202,4 +209,5 @@ export class ProductsComponent implements OnInit {
 	}
 
 	get amount() { return this.searchList.ToList<ProductListItem>().Where(p => !p.isCategoryItem).Count(); }
+	get isLoading() { return this.isProductsLoading || this.isCategoriesLoading || this.isSuppliersLoading; }
 }
