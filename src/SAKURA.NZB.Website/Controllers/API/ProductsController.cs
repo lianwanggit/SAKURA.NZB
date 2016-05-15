@@ -4,17 +4,23 @@ using Microsoft.Data.Entity;
 using SAKURA.NZB.Data;
 using SAKURA.NZB.Domain;
 using System.Collections.Generic;
+using SAKURA.NZB.Website.Models;
+using SAKURA.NZB.Business.Configuration;
+using System;
+using System.Web.Http;
 
 namespace SAKURA.NZB.Website.Controllers.API
-{
+{ 
 	[Route("api/[controller]")]
 	public class ProductsController : Controller
 	{
 		private NZBContext _context;
+		private int _itemsPerPage;
 
-		public ProductsController(NZBContext context)
+		public ProductsController(NZBContext context, Config config)
 		{
 			_context = context;
+			_itemsPerPage = config.GetItemsPerPage();
 		}
 
 		[HttpGet]
@@ -31,11 +37,40 @@ namespace SAKURA.NZB.Website.Controllers.API
 				.ToList());
 		}
 
+		[HttpGet("search")]
+		public IActionResult Search([FromUri]SearchOptions options)
+		{
+			Func<Product, bool> categoryPredicate = (p) => true; 
+			if (options.category.HasValue)
+			{
+				categoryPredicate = (p) => p.CategoryId == options.category;
+			}
+
+			Func<Product, bool> keywordPredicate = (p) => true;
+			if (!string.IsNullOrEmpty(options.keyword))
+			{
+				keywordPredicate = (p) => p.Brand.Name.StartsWith(options.keyword, StringComparison.OrdinalIgnoreCase) ||
+					p.Name.StartsWith(options.keyword, StringComparison.OrdinalIgnoreCase);
+			}
+
+			var products = _context.Products
+				.Include(p => p.Category)
+				.Include(p => p.Brand)
+				.Include(p => p.Quotes).ThenInclude(q => q.Supplier)
+				.Include(p => p.Images)
+				.Where(p => categoryPredicate(p) && keywordPredicate(p))
+				.OrderBy(p => p.CategoryId)
+				.ThenBy(p => p.Brand.Name)
+				.ThenBy(p => p.Name);
+
+			return new ObjectResult(new ProductsPagingModel(products, _itemsPerPage, options.index.GetValueOrDefault()));
+		}
+
 		[HttpGet("get-brief")]
 		public IActionResult GetBrief()
 		{
 			return new ObjectResult(_context.Products
-				.Include(p => p.Brand)				
+				.Include(p => p.Brand)
 				.Select(p => new { Id = p.Id, Name = p.Name, Brand = p.Brand.Name })
 				.ToList());
 		}
@@ -111,7 +146,7 @@ namespace SAKURA.NZB.Website.Controllers.API
 			{
 				item.Quotes.Add(new ProductQuote
 				{
-					ProductId =  q.ProductId,
+					ProductId = q.ProductId,
 					SupplierId = q.SupplierId,
 					Price = q.Price
 				});
@@ -168,5 +203,12 @@ namespace SAKURA.NZB.Website.Controllers.API
 				return hashCode;
 			}
 		}
+	}
+
+	public class SearchOptions
+	{
+		public int? index { get; set; }
+		public int? category { get; set; }
+		public string keyword { get; set; }
 	}
 }

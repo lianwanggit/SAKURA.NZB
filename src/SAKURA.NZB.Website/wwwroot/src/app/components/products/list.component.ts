@@ -1,11 +1,12 @@
 ﻿/// <reference path="../../../../lib/TypeScript-Linq/Scripts/typings/System/Collections/Generic/List.ts" />
 
-import {Component, OnInit} from "angular2/core";
+import {Component, OnInit, ViewEncapsulation} from "angular2/core";
 import {CORE_DIRECTIVES, FORM_DIRECTIVES} from "angular2/common";
 import {Http} from 'angular2/http';
 import {Router, ROUTER_DIRECTIVES} from 'angular2/router';
-import {PRODUCTS_ENDPOINT, CATEGORIES_ENDPOINT, SUPPLIERS_ENDPOINT} from "../api.service";
+import {PRODUCTS_ENDPOINT, PRODUCTS_SEARCH_ENDPOINT, CATEGORIES_ENDPOINT, SUPPLIERS_ENDPOINT} from "../api.service";
 import {Category, Brand, Supplier, Product, BaseType} from "./models";
+import { PAGINATION_DIRECTIVES } from 'ng2-bootstrap/ng2-bootstrap';
 
 import '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js';
 
@@ -44,7 +45,8 @@ class QuoteHeader {
     selector: "products",
     templateUrl: "./src/app/components/products/list.html",
 	styleUrls: ["./src/app/components/products/products.css"],
-    directives: [CORE_DIRECTIVES, FORM_DIRECTIVES, ROUTER_DIRECTIVES]
+    directives: [CORE_DIRECTIVES, FORM_DIRECTIVES, ROUTER_DIRECTIVES, PAGINATION_DIRECTIVES],
+	encapsulation: ViewEncapsulation.None
 })
 export class ProductsComponent implements OnInit {
     productList = [].ToList<Product>();
@@ -52,7 +54,9 @@ export class ProductsComponent implements OnInit {
 	selectedItem: ProductListItem = null;
 	quoteHeader1: QuoteHeader = new QuoteHeader(null, null, null);
 	quoteHeader2: QuoteHeader = new QuoteHeader(null, null, null);
+	categories: Category[] = [];
 
+	filterCategory = '';
 	filterText = '';
 	totalAmount = 0;
 
@@ -67,8 +71,15 @@ export class ProductsComponent implements OnInit {
 	isCategoriesLoading = true;
 	isSuppliersLoading = true;
 
+	page = 1;
+	prevItems = [].ToList<Product>();
+	nextItems = [].ToList<Product>();
+	itemsPerPage = 0;
+	totalItemCount = 0;
+
 	private _filterText = '';
-	private _isProductsLoaded = false;
+	private _isPrevItemsLoaded = false;
+	private _isNextItemsLoaded = false;
 
     constructor(private http: Http, private router: Router) { }
 
@@ -79,31 +90,16 @@ export class ProductsComponent implements OnInit {
     get() {
 		var that = this;
 
-		this.http.get(PRODUCTS_ENDPOINT)
-			.map(res => res.status === 404 ? null : res.json())
-			.subscribe(json => {
-				this.isProductsLoading = false;
-				if (!json) return;
-
-				json.forEach(c => {
-					that.productList.Add(new Product(c));
-				});
-
-				that.totalAmount = that.productList.Count();
-				that._isProductsLoaded = true;
-
-				that.addProductsToSearchList(that.productList);
-			},
-			error => {
-				this.isProductsLoading = false;
-				console.log(error);
-			});
-
+		this.getProductsByPage();
 		this.http.get(CATEGORIES_ENDPOINT)
 			.map(res => res.status === 404 ? null : res.json())
 			.subscribe(json => {
 				this.isCategoriesLoading = false;
 				if (!json) return;
+
+				json.forEach(c => {
+					that.categories.push(new Category(c));
+				});
 
 				that.categoryAmount = json.length;
 			},
@@ -127,10 +123,10 @@ export class ProductsComponent implements OnInit {
     }
 
 	onClearFilter() {
-		this.onSearch('');
+		this.onSearchKeyword('');
 	}
 
-	onSearch(value: string) {
+	onSearchKeyword(value: string) {
 		if (this.filterText !== value)
 			this.filterText = value;
 
@@ -139,15 +135,19 @@ export class ProductsComponent implements OnInit {
 
 		this.searchList = [];
 		if (/^$|^[\u4e00-\u9fa5_a-zA-Z0-9 ]+$/g.test(this.filterText)) {
-			var result = this.productList
-				.Where(x => this.startsWith(x.name, this.filterText) ||
-					this.startsWith(x.category.name, this.filterText) ||
-					this.startsWith(x.brand.name.toLowerCase(), this.filterText.toLowerCase()));
-
-			this.addProductsToSearchList(result);
+			this.page = 1;
+			this.getProductsByPage();
 		}
 
 		this._filterText = this.filterText;
+	}
+
+	onSearchCategory(value: string) {
+		if (this.filterCategory !== value)
+			this.filterCategory = value;
+
+		this.page = 1;
+		this.getProductsByPage();
 	}
 
 	onSelect(id: number) {
@@ -176,6 +176,78 @@ export class ProductsComponent implements OnInit {
 		}
 	}
 
+	onPageChanged(event: any): void {
+		var loadSearchList = true;
+		this.searchList = [];
+
+		if (this.page - 1 == event.page && this._isPrevItemsLoaded) {
+			this.addProductsToSearchList(this.prevItems);
+			loadSearchList = false;
+		}
+		if (this.page + 1 == event.page && this._isNextItemsLoaded) {
+			this.addProductsToSearchList(this.nextItems);
+			loadSearchList = false;
+		}
+
+		this.page = event.page;
+		this.getProductsByPage(loadSearchList);
+	};
+
+	getProductsByPage(loadSearchList = true) {
+		this.productList = [].ToList<Product>();
+		this.prevItems = [].ToList<Product>();
+		this.nextItems = [].ToList<Product>();
+		this._isPrevItemsLoaded = false;
+		this._isNextItemsLoaded = false;
+
+		var that = this;
+		var url = PRODUCTS_SEARCH_ENDPOINT + '?index=' + this.page;
+		if (this.filterCategory)
+			url += '&category=' + this.filterCategory;
+		if (this.filterText)
+			url += '&keyword=' + this.filterText;
+
+		this.http.get(url)
+			.map(res => res.status === 404 ? null : res.json())
+			.subscribe(json => {
+				this.isProductsLoading = false;
+				if (!json) return;
+
+				if (json.items) {
+					json.items.forEach(c => {
+						that.productList.Add(new Product(c));
+					});
+				}
+
+				if (json.prevItems) {
+					json.prevItems.forEach(c => {
+						that.prevItems.Add(new Product(c));
+					});
+					that._isPrevItemsLoaded = true;
+				}
+
+				if (json.nextItems) {
+					json.nextItems.forEach(c => {
+						that.nextItems.Add(new Product(c));
+					});
+					that._isNextItemsLoaded = true;
+				}
+
+				that.itemsPerPage = json.itemsPerPage;
+				that.totalItemCount = json.totalItemCount;
+
+				if (!that.filterCategory && !that.filterText)
+					that.totalAmount = that.totalItemCount;
+
+				if (loadSearchList)
+					that.addProductsToSearchList(that.productList);
+			},
+			error => {
+				this.isProductsLoading = false;
+				console.log(error);
+			});
+	}
+
 	addProductsToSearchList(products: List<Product>) {
 		var list = [].ToList<ProductListItem>();
 		var category = '';
@@ -200,14 +272,9 @@ export class ProductsComponent implements OnInit {
 		this.searchList = list.ToArray();
 	}
 
-	startsWith(str: string, searchString: string) {
-		return str.substr(0, searchString.length) === searchString;
-	};
-
 	currencyConvert(rate: number, price: number) {
 		return !price || isNaN(price) ? '' : '¥ ' + (price * rate).toFixed(2).toString().replace(/\.?0+$/, "");
 	}
 
-	get amount() { return this.searchList.ToList<ProductListItem>().Where(p => !p.isCategoryItem).Count(); }
 	get isLoading() { return this.isProductsLoading || this.isCategoriesLoading || this.isSuppliersLoading; }
 }

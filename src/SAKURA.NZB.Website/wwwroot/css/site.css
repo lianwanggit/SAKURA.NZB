@@ -304,6 +304,10 @@ select.no-border:focus {
     padding-right: 8px;
 }
 
+.padding-bottom-0 {
+    padding-bottom: 0 !important;
+}
+
 .margin-left-10 {
     margin-left: 10px !important;
 }

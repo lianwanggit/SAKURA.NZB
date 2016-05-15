@@ -1,5 +1,5 @@
 /// <reference path="../../../../lib/TypeScript-Linq/Scripts/typings/System/Collections/Generic/List.ts" />
-System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/router', "../api.service", "./models", '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js'], function(exports_1, context_1) {
+System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/router', "../api.service", "./models", 'ng2-bootstrap/ng2-bootstrap', '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -11,7 +11,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, common_1, http_1, router_1, api_service_1, models_1;
+    var core_1, common_1, http_1, router_1, api_service_1, models_1, ng2_bootstrap_1;
     var ProductListItem, QuoteListItem, QuoteHeader, ProductsComponent;
     return {
         setters:[
@@ -32,6 +32,9 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/
             },
             function (models_1_1) {
                 models_1 = models_1_1;
+            },
+            function (ng2_bootstrap_1_1) {
+                ng2_bootstrap_1 = ng2_bootstrap_1_1;
             },
             function (_1) {}],
         execute: function() {
@@ -88,6 +91,8 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/
                     this.selectedItem = null;
                     this.quoteHeader1 = new QuoteHeader(null, null, null);
                     this.quoteHeader2 = new QuoteHeader(null, null, null);
+                    this.categories = [];
+                    this.filterCategory = '';
                     this.filterText = '';
                     this.totalAmount = 0;
                     this.categoryAmount = 0;
@@ -98,8 +103,14 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/
                     this.isProductsLoading = true;
                     this.isCategoriesLoading = true;
                     this.isSuppliersLoading = true;
+                    this.page = 1;
+                    this.prevItems = [].ToList();
+                    this.nextItems = [].ToList();
+                    this.itemsPerPage = 0;
+                    this.totalItemCount = 0;
                     this._filterText = '';
-                    this._isProductsLoaded = false;
+                    this._isPrevItemsLoaded = false;
+                    this._isNextItemsLoaded = false;
                 }
                 ProductsComponent.prototype.ngOnInit = function () {
                     this.get();
@@ -107,28 +118,16 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/
                 ProductsComponent.prototype.get = function () {
                     var _this = this;
                     var that = this;
-                    this.http.get(api_service_1.PRODUCTS_ENDPOINT)
-                        .map(function (res) { return res.status === 404 ? null : res.json(); })
-                        .subscribe(function (json) {
-                        _this.isProductsLoading = false;
-                        if (!json)
-                            return;
-                        json.forEach(function (c) {
-                            that.productList.Add(new models_1.Product(c));
-                        });
-                        that.totalAmount = that.productList.Count();
-                        that._isProductsLoaded = true;
-                        that.addProductsToSearchList(that.productList);
-                    }, function (error) {
-                        _this.isProductsLoading = false;
-                        console.log(error);
-                    });
+                    this.getProductsByPage();
                     this.http.get(api_service_1.CATEGORIES_ENDPOINT)
                         .map(function (res) { return res.status === 404 ? null : res.json(); })
                         .subscribe(function (json) {
                         _this.isCategoriesLoading = false;
                         if (!json)
                             return;
+                        json.forEach(function (c) {
+                            that.categories.push(new models_1.Category(c));
+                        });
                         that.categoryAmount = json.length;
                     }, function (error) {
                         _this.isCategoriesLoading = false;
@@ -147,23 +146,25 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/
                     });
                 };
                 ProductsComponent.prototype.onClearFilter = function () {
-                    this.onSearch('');
+                    this.onSearchKeyword('');
                 };
-                ProductsComponent.prototype.onSearch = function (value) {
-                    var _this = this;
+                ProductsComponent.prototype.onSearchKeyword = function (value) {
                     if (this.filterText !== value)
                         this.filterText = value;
                     if (this.filterText === this._filterText)
                         return;
                     this.searchList = [];
                     if (/^$|^[\u4e00-\u9fa5_a-zA-Z0-9 ]+$/g.test(this.filterText)) {
-                        var result = this.productList
-                            .Where(function (x) { return _this.startsWith(x.name, _this.filterText) ||
-                            _this.startsWith(x.category.name, _this.filterText) ||
-                            _this.startsWith(x.brand.name.toLowerCase(), _this.filterText.toLowerCase()); });
-                        this.addProductsToSearchList(result);
+                        this.page = 1;
+                        this.getProductsByPage();
                     }
                     this._filterText = this.filterText;
+                };
+                ProductsComponent.prototype.onSearchCategory = function (value) {
+                    if (this.filterCategory !== value)
+                        this.filterCategory = value;
+                    this.page = 1;
+                    this.getProductsByPage();
                 };
                 ProductsComponent.prototype.onSelect = function (id) {
                     this.selectedItem = null;
@@ -186,6 +187,69 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/
                         this.quoteHeader2.empty();
                     }
                 };
+                ProductsComponent.prototype.onPageChanged = function (event) {
+                    var loadSearchList = true;
+                    this.searchList = [];
+                    if (this.page - 1 == event.page && this._isPrevItemsLoaded) {
+                        this.addProductsToSearchList(this.prevItems);
+                        loadSearchList = false;
+                    }
+                    if (this.page + 1 == event.page && this._isNextItemsLoaded) {
+                        this.addProductsToSearchList(this.nextItems);
+                        loadSearchList = false;
+                    }
+                    this.page = event.page;
+                    this.getProductsByPage(loadSearchList);
+                };
+                ;
+                ProductsComponent.prototype.getProductsByPage = function (loadSearchList) {
+                    var _this = this;
+                    if (loadSearchList === void 0) { loadSearchList = true; }
+                    this.productList = [].ToList();
+                    this.prevItems = [].ToList();
+                    this.nextItems = [].ToList();
+                    this._isPrevItemsLoaded = false;
+                    this._isNextItemsLoaded = false;
+                    var that = this;
+                    var url = api_service_1.PRODUCTS_SEARCH_ENDPOINT + '?index=' + this.page;
+                    if (this.filterCategory)
+                        url += '&category=' + this.filterCategory;
+                    if (this.filterText)
+                        url += '&keyword=' + this.filterText;
+                    this.http.get(url)
+                        .map(function (res) { return res.status === 404 ? null : res.json(); })
+                        .subscribe(function (json) {
+                        _this.isProductsLoading = false;
+                        if (!json)
+                            return;
+                        if (json.items) {
+                            json.items.forEach(function (c) {
+                                that.productList.Add(new models_1.Product(c));
+                            });
+                        }
+                        if (json.prevItems) {
+                            json.prevItems.forEach(function (c) {
+                                that.prevItems.Add(new models_1.Product(c));
+                            });
+                            that._isPrevItemsLoaded = true;
+                        }
+                        if (json.nextItems) {
+                            json.nextItems.forEach(function (c) {
+                                that.nextItems.Add(new models_1.Product(c));
+                            });
+                            that._isNextItemsLoaded = true;
+                        }
+                        that.itemsPerPage = json.itemsPerPage;
+                        that.totalItemCount = json.totalItemCount;
+                        if (!that.filterCategory && !that.filterText)
+                            that.totalAmount = that.totalItemCount;
+                        if (loadSearchList)
+                            that.addProductsToSearchList(that.productList);
+                    }, function (error) {
+                        _this.isProductsLoading = false;
+                        console.log(error);
+                    });
+                };
                 ProductsComponent.prototype.addProductsToSearchList = function (products) {
                     var list = [].ToList();
                     var category = '';
@@ -203,18 +267,9 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/
                     });
                     this.searchList = list.ToArray();
                 };
-                ProductsComponent.prototype.startsWith = function (str, searchString) {
-                    return str.substr(0, searchString.length) === searchString;
-                };
-                ;
                 ProductsComponent.prototype.currencyConvert = function (rate, price) {
                     return !price || isNaN(price) ? '' : '¥ ' + (price * rate).toFixed(2).toString().replace(/\.?0+$/, "");
                 };
-                Object.defineProperty(ProductsComponent.prototype, "amount", {
-                    get: function () { return this.searchList.ToList().Where(function (p) { return !p.isCategoryItem; }).Count(); },
-                    enumerable: true,
-                    configurable: true
-                });
                 Object.defineProperty(ProductsComponent.prototype, "isLoading", {
                     get: function () { return this.isProductsLoading || this.isCategoriesLoading || this.isSuppliersLoading; },
                     enumerable: true,
@@ -225,7 +280,8 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/
                         selector: "products",
                         templateUrl: "./src/app/components/products/list.html",
                         styleUrls: ["./src/app/components/products/products.css"],
-                        directives: [common_1.CORE_DIRECTIVES, common_1.FORM_DIRECTIVES, router_1.ROUTER_DIRECTIVES]
+                        directives: [common_1.CORE_DIRECTIVES, common_1.FORM_DIRECTIVES, router_1.ROUTER_DIRECTIVES, ng2_bootstrap_1.PAGINATION_DIRECTIVES],
+                        encapsulation: core_1.ViewEncapsulation.None
                     }), 
                     __metadata('design:paramtypes', [http_1.Http, router_1.Router])
                 ], ProductsComponent);

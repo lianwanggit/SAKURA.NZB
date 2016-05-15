@@ -2,7 +2,7 @@
 
 <div class="grey-border" *ngIf="!isLoading">
     <h2 class="page-header">
-        产品 <small>({{amount}} / {{totalAmount}})</small>
+        产品 <small>({{totalItemCount}} / {{totalAmount}})</small>
 
         <div class="pull-right">
             <button type="button" class="btn btn-info hidden-xs" [routerLink]="['PbeEdit', {type: 'category'}]">
@@ -31,19 +31,38 @@
         </ul>
     </div>
   
-    <div>
-        <div class="form-group input-group">
-            <input type="text" class="form-control" placeholder="搜索产品名或品牌"
-                   [(ngModel)]="filterText" (keyup)="onSearch($event.target.value)" (input)="onSearch($event.target.value)" />
-            <div class="input-group-btn">
-                <button type="button" class="btn btn-default" aria-label="Clear" (click)="onClearFilter()">
-                    <span class="glyphicon glyphicon-remove"></span>
-                </button>
+    <div class="row product-search">
+        <div class="col-xs-12 col-sm-8">
+            <div class="form-group input-group margin-bottom-0">
+                <input type="text" class="form-control" placeholder="搜索产品名或品牌"
+                       [(ngModel)]="filterText" (keyup)="onSearchKeyword($event.target.value)" (input)="onSearchKeyword($event.target.value)" />
+                <div class="input-group-btn">
+                    <button type="button" class="btn btn-default" aria-label="Clear" (click)="onClearFilter()">
+                        <span class="glyphicon glyphicon-remove"></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-4">
+            <select class="form-control" [(ngModel)]="filterCategory" (change)="onSearchCategory($event.target.value)">
+                <option value="" selected default>产品类别</option>
+                <option *ngFor="#c of categories" value="{{c.id}}">{{c.name}}</option>
+            </select>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="pull-right">
+                <pagination [totalItems]="totalItemCount" [(ngModel)]="pageIndex" [itemsPerPage]="itemsPerPage" [maxSize]="10"
+                            [boundaryLinks]="true" [rotate]="false"
+                            (pageChanged)="onPageChanged($event)"></pagination>
             </div>
         </div>
     </div>
 
-    <table class="table table-hover table-bordered table-condensed">
+    <table class="table table-hover table-bordered table-condensed margin-top-0">
         <thead>
             <tr>
                 <th>类别 / 产品</th>
@@ -72,6 +91,10 @@
                 <td *ngIf="!s.isCategoryItem" class="hidden-xs hidden-sm">{{s.quotes[1]?.priceFixedRateHigh}}</td>              
                 <td *ngIf="!s.isCategoryItem" class="text-center clickable" [routerLink]="['PEdit', { id: s.id }]"><i class="fa fa-pencil-square-o fa-lg"></i></td>
             </tr>
+            <tr *ngIf="searchList.length == 0">
+                <td colspan="9" class="warning">当前没有任何符合查询条件的产品...</td>
+            </tr>
         </tbody>
     </table>
+    
 </div>

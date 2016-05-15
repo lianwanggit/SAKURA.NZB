@@ -11,7 +11,7 @@ System.register(["rxjs/Rx", "angular2/http", "angular2/core"], function(exports_
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
     var http_1, core_1;
-    var CUSTOMERS_ENDPOINT, BRANDS_ENDPOINT, PRODUCTS_ENDPOINT, PRODUCTS_GET_BY_BRAND_ENDPOINT, CATEGORIES_ENDPOINT, SUPPLIERS_ENDPOINT, ApiService;
+    var CUSTOMERS_ENDPOINT, BRANDS_ENDPOINT, PRODUCTS_ENDPOINT, PRODUCTS_SEARCH_ENDPOINT, PRODUCTS_GET_BY_BRAND_ENDPOINT, CATEGORIES_ENDPOINT, SUPPLIERS_ENDPOINT, ApiService;
     return {
         setters:[
             function (_1) {},
@@ -25,6 +25,7 @@ System.register(["rxjs/Rx", "angular2/http", "angular2/core"], function(exports_
             exports_1("CUSTOMERS_ENDPOINT", CUSTOMERS_ENDPOINT = "api/customers/");
             exports_1("BRANDS_ENDPOINT", BRANDS_ENDPOINT = "api/brands/");
             exports_1("PRODUCTS_ENDPOINT", PRODUCTS_ENDPOINT = "api/products/");
+            exports_1("PRODUCTS_SEARCH_ENDPOINT", PRODUCTS_SEARCH_ENDPOINT = "api/products/search/");
             exports_1("PRODUCTS_GET_BY_BRAND_ENDPOINT", PRODUCTS_GET_BY_BRAND_ENDPOINT = "api/products/get-by-brand/");
             exports_1("CATEGORIES_ENDPOINT", CATEGORIES_ENDPOINT = "api/categories/");
             exports_1("SUPPLIERS_ENDPOINT", SUPPLIERS_ENDPOINT = "api/suppliers/");

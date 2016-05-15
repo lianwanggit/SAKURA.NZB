@@ -30,6 +30,8 @@ namespace SAKURA.NZB.Business.Configuration
 		public string GetExpressTrackerUri() => GetByKey(ConfigKeys.ExpressTrackerUri);
 		public string GetExpressTrackerCode() => GetByKey(ConfigKeys.ExpressTrackerCode);
 
+		public int GetItemsPerPage() => GetIntByKey(ConfigKeys.ItemsPerPage);
+
 		public void EnsureDefaults()
 		{
 			if (!Exists(ConfigKeys.ApiLayerAccessKey))
@@ -55,11 +57,15 @@ namespace SAKURA.NZB.Business.Configuration
 
 			if (!Exists(ConfigKeys.ExpressTrackerCode))
 				Set(ConfigKeys.ExpressTrackerCode, "");
+
+			if (!Exists(ConfigKeys.ItemsPerPage))
+				Set(ConfigKeys.ItemsPerPage, "30");
 		}
 
 		private bool Exists(string key) => _context.Configs.Any(c => c.Key == key);
 		private string GetByKey(string key) => _context.Configs.FirstOrDefault(x => x.Key == key)?.Value;
 		private float GetFloatByKey(string key) => float.Parse(_context.Configs.FirstOrDefault(x => x.Key == key)?.Value);
+		private int GetIntByKey(string key) => int.Parse(_context.Configs.FirstOrDefault(x => x.Key == key)?.Value);
 
 		private void Set(string key, string value)
 		{
