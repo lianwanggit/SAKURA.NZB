@@ -53,7 +53,7 @@ namespace SAKURA.NZB.Website.Controllers.API
 					p.Name.StartsWith(options.keyword, StringComparison.OrdinalIgnoreCase);
 			}
 
-			var products = _context.Products
+			var products = (_context.Products
 				.Include(p => p.Category)
 				.Include(p => p.Brand)
 				.Include(p => p.Quotes).ThenInclude(q => q.Supplier)
@@ -61,9 +61,28 @@ namespace SAKURA.NZB.Website.Controllers.API
 				.Where(p => categoryPredicate(p) && keywordPredicate(p))
 				.OrderBy(p => p.CategoryId)
 				.ThenBy(p => p.Brand.Name)
-				.ThenBy(p => p.Name);
+				.ThenBy(p => p.Name)).ToList();
 
-			return new ObjectResult(new ProductsPagingModel(products, _itemsPerPage, options.index.GetValueOrDefault()));
+			var orders = _context.Orders.Include(o => o.Products).ToList();
+			var orderProducts = orders.SelectMany(o => o.Products);
+
+			var d = from p in products
+					join op in orderProducts on p.Id equals op.ProductId into pg
+					select new ProductSummaryModel
+					{
+						Id = p.Id,
+						Name = p.Name,
+						Brand = p.Brand.Name,
+						Category = p.Category.Name,
+						Price = p.Price,
+						Quote = p.Quotes.Count > 0 ? p.Quotes.Min(q => q.Price) : default(float?),
+						SoldHighPrice = pg.Count() > 0 ? pg.Max(g => g.Price) : default(float?),
+						SoldLowPrice = pg.Count() > 0 ? pg.Min(g => g.Price) : default(float?),
+						SoldCount = pg.Count() > 0 ? pg.Sum(g => g.Qty) : default(int?)
+					};
+
+
+			return new ObjectResult(new ProductsPagingModel(d.ToList(), _itemsPerPage, options.page.GetValueOrDefault()));
 		}
 
 		[HttpGet("get-brief")]
@@ -207,7 +226,7 @@ namespace SAKURA.NZB.Website.Controllers.API
 
 	public class SearchOptions
 	{
-		public int? index { get; set; }
+		public int? page { get; set; }
 		public int? category { get; set; }
 		public string keyword { get; set; }
 	}

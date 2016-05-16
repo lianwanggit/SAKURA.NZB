@@ -66,29 +66,28 @@
         <thead>
             <tr>
                 <th>类别 / 产品</th>
-                <th class="hidden-xs" width="80">定价</th>
-                <th class="hidden-xs" width="95">{{quoteHeader1.supplier}}</th>
-                <th class="hidden-xs" width="80">{{quoteHeader1.fixedRateLow}}</th>
-                <th class="hidden-xs" width="80">{{quoteHeader1.fixedRateHigh}}</th>
-                <th class="hidden-xs hidden-sm" width="95">{{quoteHeader2.supplier}}</th>
-                <th class="hidden-xs hidden-sm" width="80">{{quoteHeader2.fixedRateLow}}</th>
-                <th class="hidden-xs hidden-sm" width="80">{{quoteHeader2.fixedRateHigh}}</th>
-                <th></th>
+                <th class="hidden-xs" width="80">成本价</th>          
+                <th class="hidden-xs" width="80">{{fixedRateLow}}</th>
+                <th class="hidden-xs" width="80">{{fixedRateHigh}}</th>
+                <th class="hidden-xs" width="80">定价</th>  
+                <th class="hidden-xs hidden-sm" width="80">售出价 <i class="fa fa-arrow-circle-down"></i></th>
+                <th class="hidden-xs hidden-sm" width="80">售出价 <i class="fa fa-arrow-circle-up"></i></th>
+                <th class="hidden-xs hidden-sm" width="60">售出量</th>
+                <th width="45"></th>
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="#s of searchList; #i = index" (click)="onSelect(s.id)" [ngClass]="{'info': s.selected}">
+            <tr *ngFor="#s of searchList; #i = index" (click)="onSelect(s.id)">
                 <td *ngIf="s.isCategoryItem" colspan="9" class="bg-primary opacity-60">{{s.category}}</td>
 
                 <td *ngIf="!s.isCategoryItem">{{s.brand}} {{s.name}}</td>
-                <td *ngIf="!s.isCategoryItem" class="hidden-xs">{{s.price}}</td>
-
-                <td *ngIf="!s.isCategoryItem" class="hidden-xs">{{s.quotes[0]?.price}}</td>
-                <td *ngIf="!s.isCategoryItem" class="hidden-xs">{{s.quotes[0]?.priceFixedRateLow}}</td>
-                <td *ngIf="!s.isCategoryItem" class="hidden-xs">{{s.quotes[0]?.priceFixedRateHigh}}</td>
-                <td *ngIf="!s.isCategoryItem" class="hidden-xs hidden-sm">{{s.quotes[1]?.price}}</td>
-                <td *ngIf="!s.isCategoryItem" class="hidden-xs hidden-sm">{{s.quotes[1]?.priceFixedRateLow}}</td>
-                <td *ngIf="!s.isCategoryItem" class="hidden-xs hidden-sm">{{s.quotes[1]?.priceFixedRateHigh}}</td>              
+                <td *ngIf="!s.isCategoryItem" class="hidden-xs warning">{{ s.quoteText }}</td>  
+                <td *ngIf="!s.isCategoryItem" class="hidden-xs warning">{{s.quoteFixedRateLow}}</td>
+                <td *ngIf="!s.isCategoryItem" class="hidden-xs warning">{{s.quoteFixedRateHight}}</td>
+                <td *ngIf="!s.isCategoryItem" class="hidden-xs success">{{s.priceText}}</td>
+                <td *ngIf="!s.isCategoryItem" class="hidden-xs hidden-sm success">{{s.soldLowPriceText}}</td>
+                <td *ngIf="!s.isCategoryItem" class="hidden-xs hidden-sm success">{{s.soldHighPriceText}}</td>
+                <td *ngIf="!s.isCategoryItem" class="hidden-xs hidden-sm success">{{s.soldCount}}</td>              
                 <td *ngIf="!s.isCategoryItem" class="text-center clickable" [routerLink]="['PEdit', { id: s.id }]"><i class="fa fa-pencil-square-o fa-lg"></i></td>
             </tr>
             <tr *ngIf="searchList.length == 0">

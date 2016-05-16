@@ -5,39 +5,47 @@ import {CORE_DIRECTIVES, FORM_DIRECTIVES} from "angular2/common";
 import {Http} from 'angular2/http';
 import {Router, ROUTER_DIRECTIVES} from 'angular2/router';
 import {PRODUCTS_ENDPOINT, PRODUCTS_SEARCH_ENDPOINT, CATEGORIES_ENDPOINT, SUPPLIERS_ENDPOINT} from "../api.service";
-import {Category, Brand, Supplier, Product, BaseType} from "./models";
+import {Category, Supplier} from "./models";
 import { PAGINATION_DIRECTIVES } from 'ng2-bootstrap/ng2-bootstrap';
 
 import '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js';
 
-class ProductListItem {
+declare var jQuery: any;
+
+class ProductSummary {
+	public quoteText: string;
+	public priceText: string;
+	public soldHighPriceText: string;
+	public soldLowPriceText: string;
+
+	public quoteFixedRateHight: string;
+	public quoteFixedRateLow: string;
+	public isCategoryItem = false;
+	public selected = false;
+
 	constructor(public id: number, public name: string, public category: string, public brand: string,
-		public price: string, public quotes: QuoteListItem[] = [],
-		public isCategoryItem = false,
-		public selected = false) {
-	}
-}
-
-class QuoteListItem {
-	constructor(public supplier: string, public price: string,
-		public priceFixedRateHigh: string, public priceFixedRateLow: string) {
-	}
-}
-
-class QuoteHeader {
-	constructor(public supplier: string, public fixedRateHigh: number, public fixedRateLow: number) {
-	};
-
-	reset(supplier: string, fixedRateHigh: number, fixedRateLow: number) {
-		this.supplier = supplier;
-		this.fixedRateLow = fixedRateLow;
-		this.fixedRateHigh = fixedRateHigh;
+		public quote: number, price: number, soldHighPrice: number, soldLowPrice: number, public soldCount: number) {
+		this.quoteText = this.toNzdText(this.quote);
+		this.priceText = this.toCnyText(price);
+		this.soldHighPriceText = this.toCnyText(soldHighPrice);
+		this.soldLowPriceText = this.toCnyText(soldLowPrice);
 	}
 
-	empty() {
-		this.supplier = null;
-		this.fixedRateHigh = null;
-		this.fixedRateLow = null;
+	calculateQuoteWithRate(fixedRateHigh: number, fixedRateLow: number) {
+		this.quoteFixedRateHight = this.currencyConvert(fixedRateHigh, this.quote);
+		this.quoteFixedRateLow = this.currencyConvert(fixedRateLow, this.quote);
+	}
+
+	private toNzdText(value: number) {
+		return !jQuery.isNumeric(value) ? '' : '$ ' + value.toFixed(2).toString().replace(/\.?0+$/, "");
+	}
+
+	private toCnyText(value: number) {
+		return !jQuery.isNumeric(value) ? '' : '¥ ' + value.toFixed(2).toString().replace(/\.?0+$/, "");
+	}
+
+	private currencyConvert(rate: number, price: number) {
+		return !jQuery.isNumeric(price) ? '' : '¥ ' + (price * rate).toFixed(2).toString().replace(/\.?0+$/, "");
 	}
 }
 
@@ -49,11 +57,9 @@ class QuoteHeader {
 	encapsulation: ViewEncapsulation.None
 })
 export class ProductsComponent implements OnInit {
-    productList = [].ToList<Product>();
-	searchList: ProductListItem[] = [];
-	selectedItem: ProductListItem = null;
-	quoteHeader1: QuoteHeader = new QuoteHeader(null, null, null);
-	quoteHeader2: QuoteHeader = new QuoteHeader(null, null, null);
+	productList = [].ToList<ProductSummary>();
+	searchList: ProductSummary[] = [];
+	selectedItem: ProductSummary = null;
 	categories: Category[] = [];
 
 	filterCategory = '';
@@ -72,8 +78,8 @@ export class ProductsComponent implements OnInit {
 	isSuppliersLoading = true;
 
 	page = 1;
-	prevItems = [].ToList<Product>();
-	nextItems = [].ToList<Product>();
+	prevItems = [].ToList<ProductSummary>();
+	nextItems = [].ToList<ProductSummary>();
 	itemsPerPage = 0;
 	totalItemCount = 0;
 
@@ -160,20 +166,6 @@ export class ProductsComponent implements OnInit {
 			if (x.selected)
 				that.selectedItem = x;
 		});
-
-		if (this.selectedItem && this.selectedItem.quotes.length > 0) {
-			this.quoteHeader1.reset(this.selectedItem.quotes[0].supplier, this.fixedRateHigh, this.fixedRateLow);
-		}
-		else {
-			this.quoteHeader1.empty();
-		}
-
-		if (this.selectedItem && this.selectedItem.quotes.length > 1) {
-			this.quoteHeader2.reset(this.selectedItem.quotes[1].supplier, this.fixedRateHigh, this.fixedRateLow);
-		}
-		else {
-			this.quoteHeader2.empty();
-		}
 	}
 
 	onPageChanged(event: any): void {
@@ -194,14 +186,14 @@ export class ProductsComponent implements OnInit {
 	};
 
 	getProductsByPage(loadSearchList = true) {
-		this.productList = [].ToList<Product>();
-		this.prevItems = [].ToList<Product>();
-		this.nextItems = [].ToList<Product>();
+		this.productList = [].ToList<ProductSummary>();
+		this.prevItems = [].ToList<ProductSummary>();
+		this.nextItems = [].ToList<ProductSummary>();
 		this._isPrevItemsLoaded = false;
 		this._isNextItemsLoaded = false;
 
 		var that = this;
-		var url = PRODUCTS_SEARCH_ENDPOINT + '?index=' + this.page;
+		var url = PRODUCTS_SEARCH_ENDPOINT + '?page=' + this.page;
 		if (this.filterCategory)
 			url += '&category=' + this.filterCategory;
 		if (this.filterText)
@@ -215,20 +207,20 @@ export class ProductsComponent implements OnInit {
 
 				if (json.items) {
 					json.items.forEach(c => {
-						that.productList.Add(new Product(c));
+						that.productList.Add(new ProductSummary(c.id, c.name, c.category, c.brand, c.quote, c.price, c.soldHighPrice, c.soldLowPrice, c.soldCount));
 					});
 				}
 
 				if (json.prevItems) {
 					json.prevItems.forEach(c => {
-						that.prevItems.Add(new Product(c));
+						that.prevItems.Add(new ProductSummary(c.id, c.name, c.category, c.brand, c.quote, c.price, c.soldHighPrice, c.soldLowPrice, c.soldCount));
 					});
 					that._isPrevItemsLoaded = true;
 				}
 
 				if (json.nextItems) {
 					json.nextItems.forEach(c => {
-						that.nextItems.Add(new Product(c));
+						that.nextItems.Add(new ProductSummary(c.id, c.name, c.category, c.brand, c.quote, c.price, c.soldHighPrice, c.soldLowPrice, c.soldCount));
 					});
 					that._isNextItemsLoaded = true;
 				}
@@ -248,32 +240,25 @@ export class ProductsComponent implements OnInit {
 			});
 	}
 
-	addProductsToSearchList(products: List<Product>) {
-		var list = [].ToList<ProductListItem>();
+	addProductsToSearchList(products: List<ProductSummary>) {
+		var list = [].ToList<ProductSummary>();
 		var category = '';
 		var that = this;
 
 		products.ForEach(p => {
-			if (p.category.name !== category) {
-				list.Add(new ProductListItem(null, null, p.category.name, null, null, null, true));
-				category = p.category.name;
+			if (p.category !== category) {
+				var ps = new ProductSummary(null, null, p.category, null, null, null, null, null, null);
+				ps.isCategoryItem = true;
+
+				list.Add(ps);
+				category = p.category;
 			}
 
-			var quoteItemList: QuoteListItem[] = [];
-			p.quotes.forEach(q => {
-				quoteItemList.push(new QuoteListItem(q.supplier.name, '$ ' + q.price,
-					that.currencyConvert(that.fixedRateHigh, q.price),
-					that.currencyConvert(that.fixedRateLow, q.price)));
-			});
-
-			list.Add(new ProductListItem(p.id, p.name, p.category.name, p.brand.name, '¥ ' + p.price, quoteItemList));
+			p.calculateQuoteWithRate(that.fixedRateHigh, that.fixedRateLow);
+			list.Add(p);
 		});
 
 		this.searchList = list.ToArray();
-	}
-
-	currencyConvert(rate: number, price: number) {
-		return !price || isNaN(price) ? '' : '¥ ' + (price * rate).toFixed(2).toString().replace(/\.?0+$/, "");
 	}
 
 	get isLoading() { return this.isProductsLoading || this.isCategoriesLoading || this.isSuppliersLoading; }

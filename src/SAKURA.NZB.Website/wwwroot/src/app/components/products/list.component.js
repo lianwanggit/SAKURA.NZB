@@ -12,7 +12,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
     var core_1, common_1, http_1, router_1, api_service_1, models_1, ng2_bootstrap_1;
-    var ProductListItem, QuoteListItem, QuoteHeader, ProductsComponent;
+    var ProductSummary, ProductsComponent;
     return {
         setters:[
             function (core_1_1) {
@@ -38,49 +38,35 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/
             },
             function (_1) {}],
         execute: function() {
-            ProductListItem = (function () {
-                function ProductListItem(id, name, category, brand, price, quotes, isCategoryItem, selected) {
-                    if (quotes === void 0) { quotes = []; }
-                    if (isCategoryItem === void 0) { isCategoryItem = false; }
-                    if (selected === void 0) { selected = false; }
+            ProductSummary = (function () {
+                function ProductSummary(id, name, category, brand, quote, price, soldHighPrice, soldLowPrice, soldCount) {
                     this.id = id;
                     this.name = name;
                     this.category = category;
                     this.brand = brand;
-                    this.price = price;
-                    this.quotes = quotes;
-                    this.isCategoryItem = isCategoryItem;
-                    this.selected = selected;
+                    this.quote = quote;
+                    this.soldCount = soldCount;
+                    this.isCategoryItem = false;
+                    this.selected = false;
+                    this.quoteText = this.toNzdText(this.quote);
+                    this.priceText = this.toCnyText(price);
+                    this.soldHighPriceText = this.toCnyText(soldHighPrice);
+                    this.soldLowPriceText = this.toCnyText(soldLowPrice);
                 }
-                return ProductListItem;
-            }());
-            QuoteListItem = (function () {
-                function QuoteListItem(supplier, price, priceFixedRateHigh, priceFixedRateLow) {
-                    this.supplier = supplier;
-                    this.price = price;
-                    this.priceFixedRateHigh = priceFixedRateHigh;
-                    this.priceFixedRateLow = priceFixedRateLow;
-                }
-                return QuoteListItem;
-            }());
-            QuoteHeader = (function () {
-                function QuoteHeader(supplier, fixedRateHigh, fixedRateLow) {
-                    this.supplier = supplier;
-                    this.fixedRateHigh = fixedRateHigh;
-                    this.fixedRateLow = fixedRateLow;
-                }
-                ;
-                QuoteHeader.prototype.reset = function (supplier, fixedRateHigh, fixedRateLow) {
-                    this.supplier = supplier;
-                    this.fixedRateLow = fixedRateLow;
-                    this.fixedRateHigh = fixedRateHigh;
+                ProductSummary.prototype.calculateQuoteWithRate = function (fixedRateHigh, fixedRateLow) {
+                    this.quoteFixedRateHight = this.currencyConvert(fixedRateHigh, this.quote);
+                    this.quoteFixedRateLow = this.currencyConvert(fixedRateLow, this.quote);
                 };
-                QuoteHeader.prototype.empty = function () {
-                    this.supplier = null;
-                    this.fixedRateHigh = null;
-                    this.fixedRateLow = null;
+                ProductSummary.prototype.toNzdText = function (value) {
+                    return !jQuery.isNumeric(value) ? '' : '$ ' + value.toFixed(2).toString().replace(/\.?0+$/, "");
                 };
-                return QuoteHeader;
+                ProductSummary.prototype.toCnyText = function (value) {
+                    return !jQuery.isNumeric(value) ? '' : '¥ ' + value.toFixed(2).toString().replace(/\.?0+$/, "");
+                };
+                ProductSummary.prototype.currencyConvert = function (rate, price) {
+                    return !jQuery.isNumeric(price) ? '' : '¥ ' + (price * rate).toFixed(2).toString().replace(/\.?0+$/, "");
+                };
+                return ProductSummary;
             }());
             ProductsComponent = (function () {
                 function ProductsComponent(http, router) {
@@ -89,8 +75,6 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/
                     this.productList = [].ToList();
                     this.searchList = [];
                     this.selectedItem = null;
-                    this.quoteHeader1 = new QuoteHeader(null, null, null);
-                    this.quoteHeader2 = new QuoteHeader(null, null, null);
                     this.categories = [];
                     this.filterCategory = '';
                     this.filterText = '';
@@ -174,18 +158,6 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/
                         if (x.selected)
                             that.selectedItem = x;
                     });
-                    if (this.selectedItem && this.selectedItem.quotes.length > 0) {
-                        this.quoteHeader1.reset(this.selectedItem.quotes[0].supplier, this.fixedRateHigh, this.fixedRateLow);
-                    }
-                    else {
-                        this.quoteHeader1.empty();
-                    }
-                    if (this.selectedItem && this.selectedItem.quotes.length > 1) {
-                        this.quoteHeader2.reset(this.selectedItem.quotes[1].supplier, this.fixedRateHigh, this.fixedRateLow);
-                    }
-                    else {
-                        this.quoteHeader2.empty();
-                    }
                 };
                 ProductsComponent.prototype.onPageChanged = function (event) {
                     var loadSearchList = true;
@@ -211,7 +183,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/
                     this._isPrevItemsLoaded = false;
                     this._isNextItemsLoaded = false;
                     var that = this;
-                    var url = api_service_1.PRODUCTS_SEARCH_ENDPOINT + '?index=' + this.page;
+                    var url = api_service_1.PRODUCTS_SEARCH_ENDPOINT + '?page=' + this.page;
                     if (this.filterCategory)
                         url += '&category=' + this.filterCategory;
                     if (this.filterText)
@@ -224,18 +196,18 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/
                             return;
                         if (json.items) {
                             json.items.forEach(function (c) {
-                                that.productList.Add(new models_1.Product(c));
+                                that.productList.Add(new ProductSummary(c.id, c.name, c.category, c.brand, c.quote, c.price, c.soldHighPrice, c.soldLowPrice, c.soldCount));
                             });
                         }
                         if (json.prevItems) {
                             json.prevItems.forEach(function (c) {
-                                that.prevItems.Add(new models_1.Product(c));
+                                that.prevItems.Add(new ProductSummary(c.id, c.name, c.category, c.brand, c.quote, c.price, c.soldHighPrice, c.soldLowPrice, c.soldCount));
                             });
                             that._isPrevItemsLoaded = true;
                         }
                         if (json.nextItems) {
                             json.nextItems.forEach(function (c) {
-                                that.nextItems.Add(new models_1.Product(c));
+                                that.nextItems.Add(new ProductSummary(c.id, c.name, c.category, c.brand, c.quote, c.price, c.soldHighPrice, c.soldLowPrice, c.soldCount));
                             });
                             that._isNextItemsLoaded = true;
                         }
@@ -255,20 +227,16 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/
                     var category = '';
                     var that = this;
                     products.ForEach(function (p) {
-                        if (p.category.name !== category) {
-                            list.Add(new ProductListItem(null, null, p.category.name, null, null, null, true));
-                            category = p.category.name;
+                        if (p.category !== category) {
+                            var ps = new ProductSummary(null, null, p.category, null, null, null, null, null, null);
+                            ps.isCategoryItem = true;
+                            list.Add(ps);
+                            category = p.category;
                         }
-                        var quoteItemList = [];
-                        p.quotes.forEach(function (q) {
-                            quoteItemList.push(new QuoteListItem(q.supplier.name, '$ ' + q.price, that.currencyConvert(that.fixedRateHigh, q.price), that.currencyConvert(that.fixedRateLow, q.price)));
-                        });
-                        list.Add(new ProductListItem(p.id, p.name, p.category.name, p.brand.name, '¥ ' + p.price, quoteItemList));
+                        p.calculateQuoteWithRate(that.fixedRateHigh, that.fixedRateLow);
+                        list.Add(p);
                     });
                     this.searchList = list.ToArray();
-                };
-                ProductsComponent.prototype.currencyConvert = function (rate, price) {
-                    return !price || isNaN(price) ? '' : '¥ ' + (price * rate).toFixed(2).toString().replace(/\.?0+$/, "");
                 };
                 Object.defineProperty(ProductsComponent.prototype, "isLoading", {
                     get: function () { return this.isProductsLoading || this.isCategoriesLoading || this.isSuppliersLoading; },
