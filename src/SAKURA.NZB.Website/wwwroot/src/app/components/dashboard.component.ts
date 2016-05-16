@@ -377,7 +377,7 @@ export class DashboardComponent implements OnInit {
 		this.changeAnnualSalesChartData();
 	}
 
-	ontopSaleProductsChartSelected(e) {
+	onTopSaleProductsChartSelected(e) {
 		this.selectedTopProductIndex = parseInt(e.activeLabel, 10) + 1;
 		this.selectedTopProductName = this.topSaleProductsChartNames[e.activeLabel];
 		this.selectedTopProductCount = e.activePoints[0].value;

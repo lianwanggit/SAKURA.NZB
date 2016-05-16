@@ -181,7 +181,7 @@
                                 [colours]="topSaleProductsChartColours"
                                 [legend]="topSaleProductsChartLegend"
                                 [chartType]="topSaleProductsChartType"
-                                (chartClick)="ontopSaleProductsChartSelected($event)"></base-chart>
+                                (chartHover)="onTopSaleProductsChartSelected($event)"></base-chart>
 
                     <p class="md-display-05 font-weight-100 margin-top-10 margin-bottom-0 padding-left-8 md-min-height-68">
                         #{{selectedTopProductIndex}} {{selectedTopProductName}}

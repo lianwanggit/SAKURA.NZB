@@ -390,7 +390,7 @@ System.register(["angular2/core", 'angular2/common', "./api.service", "./orders/
                     this.annualSalesChartSwitch = value;
                     this.changeAnnualSalesChartData();
                 };
-                DashboardComponent.prototype.ontopSaleProductsChartSelected = function (e) {
+                DashboardComponent.prototype.onTopSaleProductsChartSelected = function (e) {
                     this.selectedTopProductIndex = parseInt(e.activeLabel, 10) + 1;
                     this.selectedTopProductName = this.topSaleProductsChartNames[e.activeLabel];
                     this.selectedTopProductCount = e.activePoints[0].value;
