@@ -87,7 +87,7 @@ export class OrderModel {
 				if (p)
 					p.qty += op.qty;
 				else
-					products.Add(new Product(op.productId, op.productBrand + ' ' + op.productName, op.qty));
+					products.Add(new Product(op.productId, op.productName, op.qty));
 			});
 		});
 
