@@ -2,8 +2,9 @@
 
 import {Component, OnInit} from "angular2/core";
 import {CORE_DIRECTIVES, FORM_DIRECTIVES, ControlGroup, Control, Validators} from "angular2/common";
+import {Http, Headers} from 'angular2/http';
 import {Router, RouteParams, ROUTER_DIRECTIVES} from 'angular2/router';
-import {ApiService} from "../api.service";
+import {PRODUCTS_ENDPOINT, CATEGORIES_ENDPOINT, BRANDS_ENDPOINT, SUPPLIERS_ENDPOINT} from "../api.service";
 import {Category, Brand, Supplier, Product, Quote} from "./models";
 import {SelectValidator, ValidationResult} from "../../validators/selectValidator";
 
@@ -14,7 +15,6 @@ import '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.
     selector: "product-edit",
     templateUrl: "./src/app/components/products/edit.html",
 	styleUrls: ["./src/app/components/products/products.css"],
-    providers: [ApiService],
     directives: [CORE_DIRECTIVES, FORM_DIRECTIVES, ROUTER_DIRECTIVES, TYPEAHEAD_DIRECTIVES]
 })
 export class ProductEditComponent implements OnInit {
@@ -24,9 +24,9 @@ export class ProductEditComponent implements OnInit {
 
 	public selectedBrandName: string = '';
 
-	fixedRateHigh: number;
-	fixedRateLow: number;
-	currentRate: number;
+	fixedRateHigh: number = (<any>window).nzb.rate.high;
+	fixedRateLow: number = (<any>window).nzb.rate.low;
+	currentRate: number = (<any>window).nzb.rate.live;
 
 	model: Product = new Product({
 		"id": 0, "name": null, "desc": null, "categoryId": 0, "category": null,
@@ -34,13 +34,20 @@ export class ProductEditComponent implements OnInit {
 	});
 	productForm: ControlGroup;
 
+	isProductLoading = true;
+	isCategoriesLoading = true;
+	isBrandsLoading = true;
+	isSuppliersLoading = true;
+
 	private editMode = false;
 	private productId: string;
 
-    constructor(private service: ApiService, private router: Router, params: RouteParams) {
+    constructor(private http: Http, private router: Router, params: RouteParams) {
 		this.productId = params.get("id");
 		if (this.productId) {
 			this.editMode = true;
+		} else {
+			this.isProductLoading = false;
 		}
 
 		this.productForm = new ControlGroup({
@@ -55,35 +62,58 @@ export class ProductEditComponent implements OnInit {
     ngOnInit() {
 		var that = this;
 
-		this.service.getCategories(json => {
-			if (json)
+		this.http.get(CATEGORIES_ENDPOINT)
+			.map(res => res.status === 404 ? null : res.json())
+			.subscribe(json => {
+				this.isCategoriesLoading = false;
+				if (!json) return;
+
 				json.forEach(c => {
 					that.categories.push(new Category(c));
 				});
-		});
-		this.service.getBrands(json => {
-			if (json)
+			},
+			error => {
+				this.isCategoriesLoading = false;
+				console.log(error);
+			});
+
+		this.http.get(BRANDS_ENDPOINT)
+			.map(res => res.status === 404 ? null : res.json())
+			.subscribe(json => {
+				this.isBrandsLoading = false;
+				if (!json) return;
+
 				json.forEach(b => {
 					that.brands.push(new Brand(b));
 				});
-		});
-		this.service.getSuppliers(json => {
-			if (json)
+			},
+			error => {
+				this.isBrandsLoading = false;
+				console.log(error);
+			});
+
+		this.http.get(SUPPLIERS_ENDPOINT)
+			.map(res => res.status === 404 ? null : res.json())
+			.subscribe(json => {
+				this.isSuppliersLoading = false;
+				if (!json) return;
+
 				json.forEach(s => {
 					that.suppliers.push(new Supplier(s));
 				});
-		});
-		this.service.getLatestExchangeRates(json => {
-			if (json) {
-				that.fixedRateHigh = json.fixedRateHigh;
-				that.fixedRateLow = json.fixedRateLow;
-				that.currentRate = json.currentRate.toFixed(2);
-			}
-		});
+			},
+			error => {
+				this.isSuppliersLoading = false;
+				console.log(error);
+			});
 
 		if (this.editMode) {
-			this.service.getProduct(this.productId, json => {
-				if (json) {
+			this.http.get(PRODUCTS_ENDPOINT + this.productId)
+				.map(res => res.status === 404 ? null : res.json())
+				.subscribe(json => {
+					this.isProductLoading = false;
+					if (!json) return;
+
 					that.model = new Product(json);
 					var categoryControl: any;
 					categoryControl = that.productForm.controls['category'];
@@ -106,8 +136,11 @@ export class ProductEditComponent implements OnInit {
 					descControl.updateValue(that.model.desc);
 
 					that.selectedBrandName = that.model.brand.name;
-				}
-			});
+				},
+				error => {
+					this.isProductLoading = false;
+					console.log(error);
+				});
 		}
 	}
 
@@ -150,6 +183,9 @@ export class ProductEditComponent implements OnInit {
 	}
 
 	onSubmit() {
+		var headers = new Headers();
+		headers.append('Content-Type', 'application/json');
+
 		var form = this.productForm.value;
 		var p = new Product({
 			"id": 0, "name": form.name, "desc": form.desc, "categoryId": form.category, "category": null,
@@ -157,16 +193,18 @@ export class ProductEditComponent implements OnInit {
 		});
 
 		if (!this.editMode) {
-			this.service.postProduct(JSON.stringify(p, this.emptyStringToNull))
-				.subscribe(response  => {
-					this.router.navigate(['产品']);
-				});
+			this.http
+				.post(PRODUCTS_ENDPOINT, JSON.stringify(p, this.emptyStringToNull), { headers: headers })
+				.subscribe(
+					response => this.router.navigate(['产品']),
+					error => console.error(error));
 		} else {
 			p.id = parseInt(this.productId);
-			this.service.putProduct(this.productId, JSON.stringify(p, this.emptyStringToNull))
-				.subscribe(response  => {
-					this.router.navigate(['产品']);
-				});
+			this.http
+				.put(PRODUCTS_ENDPOINT + this.productId, JSON.stringify(p, this.emptyStringToNull), { headers: headers })
+				.subscribe(
+					response => this.router.navigate(['产品']),
+					error => console.error(error));
 		}
 	}
 
@@ -174,6 +212,7 @@ export class ProductEditComponent implements OnInit {
 		return value === "" ? null : value;
 	}
 
+	get isLoading() { return this.isProductLoading || this.isCategoriesLoading || this.isBrandsLoading || this.isSuppliersLoading; }
 	get title() { return (this.model && this.editMode) ? "编辑产品 - " + this.model.name : "新建产品"; }
 	get canAddQuote() { return !this.model.quotes || (this.model.quotes.length < this.suppliers.length); }
 	get isQuotesValid() { return this.model.quotes.ToList<Quote>().All(q => q.isValid); }
@@ -194,7 +233,7 @@ export class ProductEditComponent implements OnInit {
 		if (price && this.model.quotes.length > 0) {
 			var lowQuote = this.model.quotes.ToList<Quote>().Min(q => q.price);
 			if (lowQuote) {
-				return (price - lowQuote * this.currentRate).toFixed(2);
+				return (price - lowQuote * this.fixedRateLow).toFixed(2);
 			}
 		}
 
