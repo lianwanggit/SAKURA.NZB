@@ -4,12 +4,16 @@ import {Component, OnInit} from "angular2/core";
 import {CORE_DIRECTIVES, FORM_DIRECTIVES, ControlGroup, Control, Validators} from "angular2/common";
 import {Http, Headers} from 'angular2/http';
 import {Router, RouteParams, ROUTER_DIRECTIVES} from 'angular2/router';
-import {PRODUCTS_ENDPOINT, CATEGORIES_ENDPOINT, BRANDS_ENDPOINT, SUPPLIERS_ENDPOINT} from "../api.service";
+import {PRODUCTS_ENDPOINT, CATEGORIES_ENDPOINT, BRANDS_ENDPOINT, SUPPLIERS_ENDPOINT, ORDER_GET_LATEST_BY_PRODUCT} from "../api.service";
 import {Category, Brand, Supplier, Product, Quote} from "./models";
 import {SelectValidator, ValidationResult} from "../../validators/selectValidator";
 
 import {TYPEAHEAD_DIRECTIVES} from "ng2-bootstrap/ng2-bootstrap";
 import '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js';
+
+class LatestOrder {
+	constructor(public waybill: string, public customer: string, public orderTime: string) { }
+}
 
 @Component({
     selector: "product-edit",
@@ -35,13 +39,16 @@ export class ProductEditComponent implements OnInit {
 	productForm: ControlGroup;
 
 	isProductLoading = true;
+	isLatestOrderLoading = true;
 	isCategoriesLoading = true;
 	isBrandsLoading = true;
 	isSuppliersLoading = true;
 
 	duplicatedNameAlert = false;
+	latestOrder: LatestOrder = null;
+	canDelete = true;
+	editMode = false;
 
-	private editMode = false;
 	private productId: string;
 
     constructor(private http: Http, private router: Router, params: RouteParams) {
@@ -50,6 +57,7 @@ export class ProductEditComponent implements OnInit {
 			this.editMode = true;
 		} else {
 			this.isProductLoading = false;
+			this.isLatestOrderLoading = false;
 		}
 
 		this.productForm = new ControlGroup({
@@ -143,6 +151,20 @@ export class ProductEditComponent implements OnInit {
 					this.isProductLoading = false;
 					console.log(error);
 				});
+
+			this.http.get(ORDER_GET_LATEST_BY_PRODUCT + this.productId)
+				.map(res => res.status === 404 ? null : res.json())
+				.subscribe(json => {
+					this.isLatestOrderLoading = false;
+					if (!json) return;
+
+					this.canDelete = false;
+					this.latestOrder = new LatestOrder(json.waybill, json.customer, json.orderTime);
+				},
+				error => {
+					this.isLatestOrderLoading = false;
+					console.log(error);
+				});
 		}
 	}
 
@@ -224,11 +246,19 @@ export class ProductEditComponent implements OnInit {
 		}
 	}
 
+	onDelete() {
+		if (this.editMode)
+			this.http.delete(PRODUCTS_ENDPOINT + this.productId)
+				.subscribe(
+				response => this.router.navigate(['产品']),
+				error => console.error(error));
+	}
+
 	emptyStringToNull(key: string, value: string) {
 		return value === "" ? null : value;
 	}
 
-	get isLoading() { return this.isProductLoading || this.isCategoriesLoading || this.isBrandsLoading || this.isSuppliersLoading; }
+	get isLoading() { return this.isProductLoading || this.isLatestOrderLoading || this.isCategoriesLoading || this.isBrandsLoading || this.isSuppliersLoading; }
 	get title() { return (this.model && this.editMode) ? "编辑产品 - " + this.model.name : "新建产品"; }
 	get canAddQuote() { return !this.model.quotes || (this.model.quotes.length < this.suppliers.length); }
 	get isQuotesValid() { return this.model.quotes.ToList<Quote>().All(q => q.isValid); }

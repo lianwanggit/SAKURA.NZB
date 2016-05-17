@@ -9,6 +9,7 @@ export const PRODUCTS_SEARCH_ENDPOINT = "api/products/search/";
 export const PRODUCTS_GET_BY_BRAND_ENDPOINT = "api/products/get-by-brand/";
 export const CATEGORIES_ENDPOINT = "api/categories/";
 export const SUPPLIERS_ENDPOINT = "api/suppliers/";
+export const ORDER_GET_LATEST_BY_PRODUCT = "api/orders/get-latest-by-product/";
 
 @Injectable()
 export class ApiService {

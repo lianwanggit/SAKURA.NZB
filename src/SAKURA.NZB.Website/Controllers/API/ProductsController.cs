@@ -66,7 +66,7 @@ namespace SAKURA.NZB.Website.Controllers.API
 			var orders = _context.Orders.Include(o => o.Products).ToList();
 			var orderProducts = orders.SelectMany(o => o.Products);
 
-			var d = from p in products
+			var models = from p in products
 					join op in orderProducts on p.Id equals op.ProductId into pg
 					select new ProductSummaryModel
 					{
@@ -82,7 +82,7 @@ namespace SAKURA.NZB.Website.Controllers.API
 					};
 
 
-			return new ObjectResult(new ProductsPagingModel(d.ToList(), _itemsPerPage, options.page.GetValueOrDefault()));
+			return new ObjectResult(new ProductsPagingModel(models.ToList(), _itemsPerPage, options.page.GetValueOrDefault()));
 		}
 
 		[HttpGet("get-brief")]
@@ -179,6 +179,17 @@ namespace SAKURA.NZB.Website.Controllers.API
 			_context.SaveChanges();
 
 			return new NoContentResult();
+		}
+
+		[HttpDelete("{id}")]
+		public void Delete(int id)
+		{
+			var item = _context.Products.Include(p => p.Quotes).FirstOrDefault(x => x.Id == id);
+			if (item != null)
+			{
+				_context.Products.Remove(item);
+				_context.SaveChanges();
+			}
 		}
 
 		private bool Validate(Product product)

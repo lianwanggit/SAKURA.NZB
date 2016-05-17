@@ -12,7 +12,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
     var core_1, common_1, http_1, router_1, api_service_1, models_1, selectValidator_1, ng2_bootstrap_1;
-    var ProductEditComponent;
+    var LatestOrder, ProductEditComponent;
     return {
         setters:[
             function (core_1_1) {
@@ -41,6 +41,14 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/
             },
             function (_1) {}],
         execute: function() {
+            LatestOrder = (function () {
+                function LatestOrder(waybill, customer, orderTime) {
+                    this.waybill = waybill;
+                    this.customer = customer;
+                    this.orderTime = orderTime;
+                }
+                return LatestOrder;
+            }());
             ProductEditComponent = (function () {
                 function ProductEditComponent(http, router, params) {
                     this.http = http;
@@ -57,10 +65,13 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/
                         "brandId": 0, "brand": null, "images": null, "quotes": [], "price": null
                     });
                     this.isProductLoading = true;
+                    this.isLatestOrderLoading = true;
                     this.isCategoriesLoading = true;
                     this.isBrandsLoading = true;
                     this.isSuppliersLoading = true;
                     this.duplicatedNameAlert = false;
+                    this.latestOrder = null;
+                    this.canDelete = true;
                     this.editMode = false;
                     this.productId = params.get("id");
                     if (this.productId) {
@@ -68,6 +79,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/
                     }
                     else {
                         this.isProductLoading = false;
+                        this.isLatestOrderLoading = false;
                     }
                     this.productForm = new common_1.ControlGroup({
                         category: new common_1.Control(this.model.categoryId, selectValidator_1.SelectValidator.unselected),
@@ -147,6 +159,18 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/
                             _this.isProductLoading = false;
                             console.log(error);
                         });
+                        this.http.get(api_service_1.ORDER_GET_LATEST_BY_PRODUCT + this.productId)
+                            .map(function (res) { return res.status === 404 ? null : res.json(); })
+                            .subscribe(function (json) {
+                            _this.isLatestOrderLoading = false;
+                            if (!json)
+                                return;
+                            _this.canDelete = false;
+                            _this.latestOrder = new LatestOrder(json.waybill, json.customer, json.orderTime);
+                        }, function (error) {
+                            _this.isLatestOrderLoading = false;
+                            console.log(error);
+                        });
                     }
                 };
                 ProductEditComponent.prototype.onAddQuote = function () {
@@ -215,11 +239,17 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/
                         });
                     }
                 };
+                ProductEditComponent.prototype.onDelete = function () {
+                    var _this = this;
+                    if (this.editMode)
+                        this.http.delete(api_service_1.PRODUCTS_ENDPOINT + this.productId)
+                            .subscribe(function (response) { return _this.router.navigate(['产品']); }, function (error) { return console.error(error); });
+                };
                 ProductEditComponent.prototype.emptyStringToNull = function (key, value) {
                     return value === "" ? null : value;
                 };
                 Object.defineProperty(ProductEditComponent.prototype, "isLoading", {
-                    get: function () { return this.isProductLoading || this.isCategoriesLoading || this.isBrandsLoading || this.isSuppliersLoading; },
+                    get: function () { return this.isProductLoading || this.isLatestOrderLoading || this.isCategoriesLoading || this.isBrandsLoading || this.isSuppliersLoading; },
                     enumerable: true,
                     configurable: true
                 });

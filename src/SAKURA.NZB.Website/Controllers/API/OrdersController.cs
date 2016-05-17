@@ -62,6 +62,27 @@ namespace SAKURA.NZB.Website.Controllers
 			return new ObjectResult(new { Sender = _sender, SenderPhone = _senderPhone });
 		}
 
+		[HttpGet("get-latest-by-product/{id:int}")]
+		public IActionResult GetLatestByProduct(int? id)
+		{
+			var orders = (_context.Orders .Include(o => o.Products).ThenInclude(p => p.Customer)).ToList();
+			var order = (from o in orders
+						 from p in o.Products
+						 where p.ProductId == id
+						 orderby o.OrderTime descending
+						 select new
+						 {
+							 Waybill = o.WaybillNumber,
+							 Customer =p.Customer.FullName.Trim(),
+							 OrderTime = o.OrderTime.ToString("d")
+						 }).FirstOrDefault();
+
+			if (order == null)
+				return new HttpNotFoundResult();
+
+			return new ObjectResult(order);
+		}
+
 		[HttpGet("search/{keyword?}")]
 		public IActionResult Search(string keyword, [FromQuery]string orderState, [FromQuery]string paymentState)
 		{
