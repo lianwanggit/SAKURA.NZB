@@ -162,11 +162,21 @@
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
+                <div class="alert alert-warning alert-dismissible" role="alert" *ngIf="duplicatedNameAlert">
+                    <strong><i class="fa fa-warning"></i></strong> 无法保存产品，当前命名与已有产品名称重复
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
                 <button type="button" class="btn btn-default" [routerLink]="['产品']">返回列表</button>
                 <button type="submit" class="btn btn-success left-spacer"
                         [disabled]="!myForm.form.valid || !isQuotesValid || !brand.valid">
                     保存 <i class="fa fa-floppy-o fa-lg"></i>
                 </button>
+
+
             </div>
         </div>
     </form>

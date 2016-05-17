@@ -39,6 +39,8 @@ export class ProductEditComponent implements OnInit {
 	isBrandsLoading = true;
 	isSuppliersLoading = true;
 
+	duplicatedNameAlert = false;
+
 	private editMode = false;
 	private productId: string;
 
@@ -197,14 +199,28 @@ export class ProductEditComponent implements OnInit {
 				.post(PRODUCTS_ENDPOINT, JSON.stringify(p, this.emptyStringToNull), { headers: headers })
 				.subscribe(
 					response => this.router.navigate(['产品']),
-					error => console.error(error));
+					error => {
+						console.error(error);
+
+						if (error._body == 'name taken') {
+							this.duplicatedNameAlert = true;
+							return;
+						}
+					});
 		} else {
 			p.id = parseInt(this.productId);
 			this.http
 				.put(PRODUCTS_ENDPOINT + this.productId, JSON.stringify(p, this.emptyStringToNull), { headers: headers })
 				.subscribe(
 					response => this.router.navigate(['产品']),
-					error => console.error(error));
+					error => {
+						console.error(error);
+
+						if (error._body == 'name taken') {
+							this.duplicatedNameAlert = true;
+							return;
+						}
+					});
 		}
 	}
 

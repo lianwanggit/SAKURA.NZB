@@ -60,6 +60,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/
                     this.isCategoriesLoading = true;
                     this.isBrandsLoading = true;
                     this.isSuppliersLoading = true;
+                    this.duplicatedNameAlert = false;
                     this.editMode = false;
                     this.productId = params.get("id");
                     if (this.productId) {
@@ -193,13 +194,25 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/
                     if (!this.editMode) {
                         this.http
                             .post(api_service_1.PRODUCTS_ENDPOINT, JSON.stringify(p, this.emptyStringToNull), { headers: headers })
-                            .subscribe(function (response) { return _this.router.navigate(['产品']); }, function (error) { return console.error(error); });
+                            .subscribe(function (response) { return _this.router.navigate(['产品']); }, function (error) {
+                            console.error(error);
+                            if (error._body == 'name taken') {
+                                _this.duplicatedNameAlert = true;
+                                return;
+                            }
+                        });
                     }
                     else {
                         p.id = parseInt(this.productId);
                         this.http
                             .put(api_service_1.PRODUCTS_ENDPOINT + this.productId, JSON.stringify(p, this.emptyStringToNull), { headers: headers })
-                            .subscribe(function (response) { return _this.router.navigate(['产品']); }, function (error) { return console.error(error); });
+                            .subscribe(function (response) { return _this.router.navigate(['产品']); }, function (error) {
+                            console.error(error);
+                            if (error._body == 'name taken') {
+                                _this.duplicatedNameAlert = true;
+                                return;
+                            }
+                        });
                     }
                 };
                 ProductEditComponent.prototype.emptyStringToNull = function (key, value) {

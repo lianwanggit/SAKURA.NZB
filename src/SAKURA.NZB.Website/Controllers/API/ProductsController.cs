@@ -131,6 +131,9 @@ namespace SAKURA.NZB.Website.Controllers.API
 			if (!Validate(product))
 				return HttpBadRequest();
 
+			if (_context.Products.Any(p => p.Name == product.Name))
+				return HttpBadRequest("name taken");
+
 			_context.Products.Add(product);
 			_context.SaveChanges();
 
@@ -151,6 +154,9 @@ namespace SAKURA.NZB.Website.Controllers.API
 			{
 				return HttpNotFound();
 			}
+
+			if (_context.Products.Any(p => p.Name == product.Name && p.Id != product.Id))
+				return HttpBadRequest("name taken");
 
 			item.Name = product.Name;
 			item.CategoryId = product.CategoryId;
