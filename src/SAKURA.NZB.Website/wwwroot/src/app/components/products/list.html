@@ -55,7 +55,7 @@
     <div class="row">
         <div class="col-xs-12">
             <div class="pull-right">
-                <pagination [totalItems]="totalItemCount" [(ngModel)]="pageIndex" [itemsPerPage]="itemsPerPage" [maxSize]="10"
+                <pagination [totalItems]="totalItemCount" [(ngModel)]="page" [itemsPerPage]="itemsPerPage" [maxSize]="10"
                             [boundaryLinks]="true" [rotate]="false"
                             (pageChanged)="onPageChanged($event)"></pagination>
             </div>
