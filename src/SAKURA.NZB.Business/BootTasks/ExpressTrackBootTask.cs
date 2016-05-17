@@ -36,7 +36,9 @@ namespace SAKURA.NZB.Business.BootTasks
 		{
 			_logger.Information("Start tracking the live express");
 
-			var waybills = _context.Orders.Where(o => !string.IsNullOrEmpty(o.WaybillNumber) && !o.WaybillNumber.StartsWith("ST")
+			var waybills = _context.Orders.Where(o => !string.IsNullOrEmpty(o.WaybillNumber) 
+						&& !o.WaybillNumber.StartsWith("ST") && !o.WaybillNumber.StartsWith("NZ") 
+						&& !o.WaybillNumber.StartsWith("EF") && !o.WaybillNumber.StartsWith("ZY")
 						&& (o.OrderState == Domain.OrderState.Delivered || o.OrderState == Domain.OrderState.Received))
 					.Select(o => o.WaybillNumber).ToList();
 
