@@ -2,8 +2,9 @@
 
 import {Component, OnInit} from "angular2/core";
 import {CORE_DIRECTIVES, FORM_DIRECTIVES} from "angular2/common";
+import {Http, Headers} from 'angular2/http';
 import {Router, RouteParams, ROUTER_DIRECTIVES} from 'angular2/router';
-import {ApiService} from "../api.service";
+import {CATEGORIES_ENDPOINT, SUPPLIERS_ENDPOINT} from "../api.service";
 import {Category, Brand, Supplier, Product} from "./models";
 
 import '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js';
@@ -23,7 +24,6 @@ export class NameList {
     selector: "product-base-edit",
     templateUrl: "./src/app/components/products/baseEdit.html",
 	styleUrls: ["./src/app/components/products/products.css"],
-    providers: [ApiService],
     directives: [CORE_DIRECTIVES, FORM_DIRECTIVES, ROUTER_DIRECTIVES]
 })
 export class ProductBaseEditComponent implements OnInit {
@@ -36,10 +36,11 @@ export class ProductBaseEditComponent implements OnInit {
 	brands = [].ToList<Brand>();
 	suppliers = [].ToList<Supplier>();
 
+	isLoading = true;
 	private editType: string;
 	private editMode = true;
 
-    constructor(private service: ApiService, private router: Router, params: RouteParams) {
+    constructor(private http: Http, private router: Router, params: RouteParams) {
 		this.editType = params.get("type");
 	}
 
@@ -47,8 +48,12 @@ export class ProductBaseEditComponent implements OnInit {
 		var that = this;
 
 		if (this.isCategory) {
-			this.service.getCategories(json => {
-				if (json) {
+			this.http.get(CATEGORIES_ENDPOINT)
+				.map(res => res.status === 404 ? null : res.json())
+				.subscribe(json => {
+					that.isLoading = false;
+					if (!json) return;
+
 					json.forEach(x => {
 						that.namelist.push(new NameList(x.id, x.name));
 						that.categories.Add(new Category(x));
@@ -56,25 +61,20 @@ export class ProductBaseEditComponent implements OnInit {
 
 					if (that.namelist.length > 0)
 						that.onSelect(that.namelist[0].id);
-				}
-			});
-		}
-		if (this.isBrand) {
-			this.service.getBrands(json => {
-				if (json) {
-					json.forEach(x => {
-						that.namelist.push(new NameList(x.id, x.name));
-						that.brands.Add(new Brand(x));
-					});
-
-					if (that.namelist.length > 0)
-						that.onSelect(that.namelist[0].id);
-				}
-			});
+				},
+				error => {
+					this.isLoading = false;
+					console.log(error);
+				});
 		}
 		if (this.isSupplier) {
-			this.service.getSuppliers(json => {
-				if (json) {
+
+			this.http.get(SUPPLIERS_ENDPOINT)
+				.map(res => res.status === 404 ? null : res.json())
+				.subscribe(json => {
+					that.isLoading = false;
+					if (!json) return;
+
 					json.forEach(x => {
 						that.namelist.push(new NameList(x.id, x.name));
 						that.suppliers.Add(new Supplier(x));
@@ -82,8 +82,11 @@ export class ProductBaseEditComponent implements OnInit {
 
 					if (that.namelist.length > 0)
 						that.onSelect(that.namelist[0].id);
-				}
-			});
+				},
+				error => {
+					this.isLoading = false;
+					console.log(error);
+				});
 		}
     }
 
@@ -119,41 +122,44 @@ export class ProductBaseEditComponent implements OnInit {
 
 	onSubmit() {
 		var that = this;
+		var headers = new Headers();
+		headers.append('Content-Type', 'application/json');
 
 		if (this.isCategory) {
 			if (this.editMode) 
-				this.service.putCategory(this.categoryModel.id.toString(), JSON.stringify(this.categoryModel))
-					.subscribe(x => this.router.navigate(['产品']));		
+				this.http
+					.put(CATEGORIES_ENDPOINT + this.categoryModel.id, JSON.stringify(this.categoryModel), { headers: headers })
+					.subscribe(
+					response => this.router.navigate(['产品']),
+					error => console.error(error));
 			else 
-				this.service.postCategory(JSON.stringify(this.categoryModel))
-					.subscribe(x => this.router.navigate(['产品']));				
-		}
-		if (this.isBrand) {
-			if (this.editMode)
-				this.service.putBrand(this.brandModel.id.toString(), JSON.stringify(this.brandModel))
-					.subscribe(x => this.router.navigate(['产品']));
-			else 
-				this.service.postBrand(JSON.stringify(this.brandModel))
-					.subscribe(x => this.router.navigate(['产品']));			
+				this.http
+					.post(CATEGORIES_ENDPOINT, JSON.stringify(this.categoryModel), { headers: headers })
+					.subscribe(
+					response => this.router.navigate(['产品']),
+					error => console.error(error));			
 		}
 		if (this.isSupplier) {
 			if (this.editMode)
-				this.service.putSupplier(this.supplierModel.id.toString(), JSON.stringify(this.supplierModel))
-					.subscribe(x => this.router.navigate(['产品']));
-			else 
-				this.service.postSupplier(JSON.stringify(this.supplierModel))
-					.subscribe(x => this.router.navigate(['产品']));
+				this.http
+					.put(SUPPLIERS_ENDPOINT + this.supplierModel.id, JSON.stringify(this.supplierModel), { headers: headers })
+					.subscribe(
+					response => this.router.navigate(['产品']),
+					error => console.error(error));
+			else
+				this.http
+					.post(SUPPLIERS_ENDPOINT, JSON.stringify(this.supplierModel), { headers: headers })
+					.subscribe(
+					response => this.router.navigate(['产品']),
+					error => console.error(error));	
 		}
 	}
 
 	get isCategory() { return this.editType == "category"; }
-	get isBrand() { return this.editType == "brand"; }
 	get isSupplier() { return this.editType == "supplier"; }
 	get title() {
 		if (this.isCategory)
 			return "产品类别";
-		if (this.isBrand)
-			return "品牌";
 		if (this.isSupplier)
 			return "供应商";
 		return "";

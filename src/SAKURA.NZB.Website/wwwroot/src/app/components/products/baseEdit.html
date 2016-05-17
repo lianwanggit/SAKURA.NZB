@@ -1,5 +1,6 @@
-﻿
-<div class="grey-border">
+﻿<div class="loading" *ngIf="isLoading">Loading&#8230;</div>
+
+<div class="grey-border" *ngIf="!isLoading">
     <div class="row">
 
         <div class="col-xs-12 col-sm-4 col-md-3">

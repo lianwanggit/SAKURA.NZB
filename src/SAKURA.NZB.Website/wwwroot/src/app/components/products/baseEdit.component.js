@@ -1,5 +1,5 @@
 /// <reference path="../../../../lib/TypeScript-Linq/Scripts/typings/System/Collections/Generic/List.ts" />
-System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.service", "./models", '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js'], function(exports_1, context_1) {
+System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/router', "../api.service", "./models", '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -11,7 +11,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, common_1, router_1, api_service_1, models_1;
+    var core_1, common_1, http_1, router_1, api_service_1, models_1;
     var NameList, ProductBaseEditComponent;
     return {
         setters:[
@@ -20,6 +20,9 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
             },
             function (common_1_1) {
                 common_1 = common_1_1;
+            },
+            function (http_1_1) {
+                http_1 = http_1_1;
             },
             function (router_1_1) {
                 router_1 = router_1_1;
@@ -42,8 +45,8 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
             }());
             exports_1("NameList", NameList);
             ProductBaseEditComponent = (function () {
-                function ProductBaseEditComponent(service, router, params) {
-                    this.service = service;
+                function ProductBaseEditComponent(http, router, params) {
+                    this.http = http;
                     this.router = router;
                     this.categoryModel = new models_1.Category({ "id": 0, "name": null });
                     this.brandModel = new models_1.Brand({ "id": 0, "name": null });
@@ -52,45 +55,47 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     this.categories = [].ToList();
                     this.brands = [].ToList();
                     this.suppliers = [].ToList();
+                    this.isLoading = true;
                     this.editMode = true;
                     this.editType = params.get("type");
                 }
                 ProductBaseEditComponent.prototype.ngOnInit = function () {
+                    var _this = this;
                     var that = this;
                     if (this.isCategory) {
-                        this.service.getCategories(function (json) {
-                            if (json) {
-                                json.forEach(function (x) {
-                                    that.namelist.push(new NameList(x.id, x.name));
-                                    that.categories.Add(new models_1.Category(x));
-                                });
-                                if (that.namelist.length > 0)
-                                    that.onSelect(that.namelist[0].id);
-                            }
-                        });
-                    }
-                    if (this.isBrand) {
-                        this.service.getBrands(function (json) {
-                            if (json) {
-                                json.forEach(function (x) {
-                                    that.namelist.push(new NameList(x.id, x.name));
-                                    that.brands.Add(new models_1.Brand(x));
-                                });
-                                if (that.namelist.length > 0)
-                                    that.onSelect(that.namelist[0].id);
-                            }
+                        this.http.get(api_service_1.CATEGORIES_ENDPOINT)
+                            .map(function (res) { return res.status === 404 ? null : res.json(); })
+                            .subscribe(function (json) {
+                            that.isLoading = false;
+                            if (!json)
+                                return;
+                            json.forEach(function (x) {
+                                that.namelist.push(new NameList(x.id, x.name));
+                                that.categories.Add(new models_1.Category(x));
+                            });
+                            if (that.namelist.length > 0)
+                                that.onSelect(that.namelist[0].id);
+                        }, function (error) {
+                            _this.isLoading = false;
+                            console.log(error);
                         });
                     }
                     if (this.isSupplier) {
-                        this.service.getSuppliers(function (json) {
-                            if (json) {
-                                json.forEach(function (x) {
-                                    that.namelist.push(new NameList(x.id, x.name));
-                                    that.suppliers.Add(new models_1.Supplier(x));
-                                });
-                                if (that.namelist.length > 0)
-                                    that.onSelect(that.namelist[0].id);
-                            }
+                        this.http.get(api_service_1.SUPPLIERS_ENDPOINT)
+                            .map(function (res) { return res.status === 404 ? null : res.json(); })
+                            .subscribe(function (json) {
+                            that.isLoading = false;
+                            if (!json)
+                                return;
+                            json.forEach(function (x) {
+                                that.namelist.push(new NameList(x.id, x.name));
+                                that.suppliers.Add(new models_1.Supplier(x));
+                            });
+                            if (that.namelist.length > 0)
+                                that.onSelect(that.namelist[0].id);
+                        }, function (error) {
+                            _this.isLoading = false;
+                            console.log(error);
                         });
                     }
                 };
@@ -121,38 +126,31 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                 ProductBaseEditComponent.prototype.onSubmit = function () {
                     var _this = this;
                     var that = this;
+                    var headers = new http_1.Headers();
+                    headers.append('Content-Type', 'application/json');
                     if (this.isCategory) {
                         if (this.editMode)
-                            this.service.putCategory(this.categoryModel.id.toString(), JSON.stringify(this.categoryModel))
-                                .subscribe(function (x) { return _this.router.navigate(['产品']); });
+                            this.http
+                                .put(api_service_1.CATEGORIES_ENDPOINT + this.categoryModel.id, JSON.stringify(this.categoryModel), { headers: headers })
+                                .subscribe(function (response) { return _this.router.navigate(['产品']); }, function (error) { return console.error(error); });
                         else
-                            this.service.postCategory(JSON.stringify(this.categoryModel))
-                                .subscribe(function (x) { return _this.router.navigate(['产品']); });
-                    }
-                    if (this.isBrand) {
-                        if (this.editMode)
-                            this.service.putBrand(this.brandModel.id.toString(), JSON.stringify(this.brandModel))
-                                .subscribe(function (x) { return _this.router.navigate(['产品']); });
-                        else
-                            this.service.postBrand(JSON.stringify(this.brandModel))
-                                .subscribe(function (x) { return _this.router.navigate(['产品']); });
+                            this.http
+                                .post(api_service_1.CATEGORIES_ENDPOINT, JSON.stringify(this.categoryModel), { headers: headers })
+                                .subscribe(function (response) { return _this.router.navigate(['产品']); }, function (error) { return console.error(error); });
                     }
                     if (this.isSupplier) {
                         if (this.editMode)
-                            this.service.putSupplier(this.supplierModel.id.toString(), JSON.stringify(this.supplierModel))
-                                .subscribe(function (x) { return _this.router.navigate(['产品']); });
+                            this.http
+                                .put(api_service_1.SUPPLIERS_ENDPOINT + this.supplierModel.id, JSON.stringify(this.supplierModel), { headers: headers })
+                                .subscribe(function (response) { return _this.router.navigate(['产品']); }, function (error) { return console.error(error); });
                         else
-                            this.service.postSupplier(JSON.stringify(this.supplierModel))
-                                .subscribe(function (x) { return _this.router.navigate(['产品']); });
+                            this.http
+                                .post(api_service_1.SUPPLIERS_ENDPOINT, JSON.stringify(this.supplierModel), { headers: headers })
+                                .subscribe(function (response) { return _this.router.navigate(['产品']); }, function (error) { return console.error(error); });
                     }
                 };
                 Object.defineProperty(ProductBaseEditComponent.prototype, "isCategory", {
                     get: function () { return this.editType == "category"; },
-                    enumerable: true,
-                    configurable: true
-                });
-                Object.defineProperty(ProductBaseEditComponent.prototype, "isBrand", {
-                    get: function () { return this.editType == "brand"; },
                     enumerable: true,
                     configurable: true
                 });
@@ -165,8 +163,6 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     get: function () {
                         if (this.isCategory)
                             return "产品类别";
-                        if (this.isBrand)
-                            return "品牌";
                         if (this.isSupplier)
                             return "供应商";
                         return "";
@@ -179,10 +175,9 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                         selector: "product-base-edit",
                         templateUrl: "./src/app/components/products/baseEdit.html",
                         styleUrls: ["./src/app/components/products/products.css"],
-                        providers: [api_service_1.ApiService],
                         directives: [common_1.CORE_DIRECTIVES, common_1.FORM_DIRECTIVES, router_1.ROUTER_DIRECTIVES]
                     }), 
-                    __metadata('design:paramtypes', [api_service_1.ApiService, router_1.Router, router_1.RouteParams])
+                    __metadata('design:paramtypes', [http_1.Http, router_1.Router, router_1.RouteParams])
                 ], ProductBaseEditComponent);
                 return ProductBaseEditComponent;
             }());
