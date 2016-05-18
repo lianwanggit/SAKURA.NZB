@@ -153,7 +153,7 @@ System.register([], function(exports_1, context_1) {
                     this.cost = cost;
                     this.income = income;
                     this.profit = profit;
-                    this.month = moment().month(month).format('MMM');
+                    this.month = moment().month(month - 1).format('MMM');
                 }
                 return MonthSale;
             }());
