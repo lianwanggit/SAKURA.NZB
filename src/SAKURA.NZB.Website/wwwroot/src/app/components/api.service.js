@@ -11,7 +11,7 @@ System.register(["rxjs/Rx", "angular2/http", "angular2/core"], function(exports_
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
     var http_1, core_1;
-    var CUSTOMERS_ENDPOINT, BRANDS_ENDPOINT, PRODUCTS_ENDPOINT, PRODUCTS_SEARCH_ENDPOINT, PRODUCTS_GET_BY_BRAND_ENDPOINT, CATEGORIES_ENDPOINT, SUPPLIERS_ENDPOINT, ORDER_GET_LATEST_BY_PRODUCT, ApiService;
+    var CUSTOMERS_ENDPOINT, BRANDS_ENDPOINT, PRODUCTS_ENDPOINT, PRODUCTS_SEARCH_ENDPOINT, PRODUCTS_GET_BY_BRAND_ENDPOINT, CATEGORIES_ENDPOINT, SUPPLIERS_ENDPOINT, ORDERS_SEARCH_ENDPOINT, ORDER_DELIVER_ENDPOINT, ORDER_UPDATE_STATUS_ENDPOINT, ORDER_GET_LATEST_BY_PRODUCT_ENDPOINT, EXPRESS_TRACK_ENDPOINT, ApiService;
     return {
         setters:[
             function (_1) {},
@@ -29,7 +29,11 @@ System.register(["rxjs/Rx", "angular2/http", "angular2/core"], function(exports_
             exports_1("PRODUCTS_GET_BY_BRAND_ENDPOINT", PRODUCTS_GET_BY_BRAND_ENDPOINT = "api/products/get-by-brand/");
             exports_1("CATEGORIES_ENDPOINT", CATEGORIES_ENDPOINT = "api/categories/");
             exports_1("SUPPLIERS_ENDPOINT", SUPPLIERS_ENDPOINT = "api/suppliers/");
-            exports_1("ORDER_GET_LATEST_BY_PRODUCT", ORDER_GET_LATEST_BY_PRODUCT = "api/orders/get-latest-by-product/");
+            exports_1("ORDERS_SEARCH_ENDPOINT", ORDERS_SEARCH_ENDPOINT = "api/orders/search/");
+            exports_1("ORDER_DELIVER_ENDPOINT", ORDER_DELIVER_ENDPOINT = "api/orders/deliver/");
+            exports_1("ORDER_UPDATE_STATUS_ENDPOINT", ORDER_UPDATE_STATUS_ENDPOINT = "api/orders/update-order-status/");
+            exports_1("ORDER_GET_LATEST_BY_PRODUCT_ENDPOINT", ORDER_GET_LATEST_BY_PRODUCT_ENDPOINT = "api/orders/get-latest-by-product/");
+            exports_1("EXPRESS_TRACK_ENDPOINT", EXPRESS_TRACK_ENDPOINT = "api/expresstrack/");
             ApiService = (function () {
                 function ApiService(http) {
                     this.http = http;

@@ -159,7 +159,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/
                             _this.isProductLoading = false;
                             console.log(error);
                         });
-                        this.http.get(api_service_1.ORDER_GET_LATEST_BY_PRODUCT + this.productId)
+                        this.http.get(api_service_1.ORDER_GET_LATEST_BY_PRODUCT_ENDPOINT + this.productId)
                             .map(function (res) { return res.status === 404 ? null : res.json(); })
                             .subscribe(function (json) {
                             _this.isLatestOrderLoading = false;

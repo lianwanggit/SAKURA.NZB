@@ -14,8 +14,8 @@ namespace SAKURA.NZB.Website.Controllers.API
 	[Route("api/[controller]")]
 	public class ProductsController : Controller
 	{
-		private NZBContext _context;
-		private int _itemsPerPage;
+		private readonly NZBContext _context;
+		private readonly int _itemsPerPage;
 
 		public ProductsController(NZBContext context, Config config)
 		{

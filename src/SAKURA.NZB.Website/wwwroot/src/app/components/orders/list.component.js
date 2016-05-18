@@ -1,5 +1,5 @@
 /// <reference path="../../../../lib/TypeScript-Linq/Scripts/typings/System/Collections/Generic/List.ts" />
-System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.service", "./models", "../../validators/numberValidator", '../../directives/clipboard.directive', '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js'], function(exports_1, context_1) {
+System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/router', "../api.service", "./models", "../../validators/numberValidator", '../../directives/clipboard.directive', 'ng2-bootstrap/ng2-bootstrap', '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -11,8 +11,8 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, common_1, router_1, api_service_1, models_1, numberValidator_1, clipboard_directive_1;
-    var YearGroup, MonthGroup, OrderDeliveryModel, OrdersComponent;
+    var core_1, common_1, http_1, router_1, api_service_1, models_1, numberValidator_1, clipboard_directive_1, ng2_bootstrap_1;
+    var OrderDeliveryModel, OrdersComponent;
     return {
         setters:[
             function (core_1_1) {
@@ -20,6 +20,9 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
             },
             function (common_1_1) {
                 common_1 = common_1_1;
+            },
+            function (http_1_1) {
+                http_1 = http_1_1;
             },
             function (router_1_1) {
                 router_1 = router_1_1;
@@ -36,30 +39,11 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
             function (clipboard_directive_1_1) {
                 clipboard_directive_1 = clipboard_directive_1_1;
             },
+            function (ng2_bootstrap_1_1) {
+                ng2_bootstrap_1 = ng2_bootstrap_1_1;
+            },
             function (_1) {}],
         execute: function() {
-            YearGroup = (function () {
-                function YearGroup(year, monthGroups) {
-                    this.year = year;
-                    this.monthGroups = monthGroups;
-                }
-                return YearGroup;
-            }());
-            MonthGroup = (function () {
-                function MonthGroup(month, models) {
-                    this.month = month;
-                    this.models = models;
-                    this.updateSummary();
-                }
-                MonthGroup.prototype.updateSummary = function () {
-                    var list = this.models.ToList();
-                    this.totalCost = (list.Sum(function (om) { return om.totalCost; })).toFixed(2);
-                    this.totalPrice = (list.Sum(function (om) { return om.totalPrice; })).toFixed(2);
-                    var tp = list.Sum(function (om) { return om.totalProfit; });
-                    this.totalProfit = models_1.formatCurrency(tp, tp.toFixed(2));
-                };
-                return MonthGroup;
-            }());
             OrderDeliveryModel = (function () {
                 function OrderDeliveryModel(orderId, waybillNumber, weight, freight) {
                     this.orderId = orderId;
@@ -70,13 +54,13 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                 return OrderDeliveryModel;
             }());
             OrdersComponent = (function () {
-                function OrdersComponent(service, router) {
-                    this.service = service;
+                function OrdersComponent(http, router) {
+                    this.http = http;
                     this.router = router;
-                    this.data = [];
+                    this.orderList = [].ToList();
                     this.deliveryModel = null;
                     this.expressTrackInfo = null;
-                    this.filteredData = [];
+                    this.searchList = [];
                     this.filterText = '';
                     this.orderState = '';
                     this.paymentState = '';
@@ -87,8 +71,18 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     this.totalAmount = 0;
                     this.amount = 0;
                     this.thisYear = moment().year();
-                    this._filterText = '';
+                    this.freightRate = window.nzb.express.freightRate;
+                    this.page = 1;
+                    this.prevItems = [].ToList();
+                    this.nextItems = [].ToList();
+                    this.itemsPerPage = 0;
+                    this.totalItemCount = 0;
+                    this.isLoading = true;
                     this.colorSheet = ['bg-red', 'bg-pink', 'bg-purple', 'bg-deeppurple', 'bg-indigo', 'bg-blue', 'bg-teal', 'bg-green', 'bg-orange', 'bg-deeporange', 'bg-brown', 'bg-bluegrey'];
+                    this._filterText = '';
+                    this._isPrevItemsLoaded = false;
+                    this._isNextItemsLoaded = false;
+                    this._headers = new http_1.Headers();
                     this.deliveryModel = new OrderDeliveryModel(null, '', null, null);
                     this.expressTrackInfo = new models_1.ExpressTrack(null, null, null, null, null, null, null, []);
                     this.deliveryForm = new common_1.ControlGroup({
@@ -102,27 +96,57 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     for (var key in this.paymentStates) {
                         this.paymentStateKeys.push(key);
                     }
+                    this._headers.append('Content-Type', 'application/json');
                 }
                 OrdersComponent.prototype.ngOnInit = function () {
                     this.get();
                 };
-                OrdersComponent.prototype.get = function () {
+                OrdersComponent.prototype.get = function (loadSearchList) {
+                    var _this = this;
+                    if (loadSearchList === void 0) { loadSearchList = true; }
+                    this.orderList = [].ToList();
+                    this.prevItems = [].ToList();
+                    this.nextItems = [].ToList();
+                    this._isPrevItemsLoaded = false;
+                    this._isNextItemsLoaded = false;
                     var that = this;
-                    this.service.getLatestExchangeRates(function (json) {
-                        if (json) {
-                            that.fixedRateHigh = json.fixedRateHigh;
-                            that.fixedRateLow = json.fixedRateLow;
-                            that.currentRate = json.currentRate.toFixed(2);
-                            that.freightRate = json.freightRate;
-                            that.loadOrders();
+                    var url = api_service_1.ORDERS_SEARCH_ENDPOINT + '?page=' + this.page;
+                    if (this.orderState)
+                        url += '&state=' + this.orderState;
+                    if (this.paymentState)
+                        url += '&payment=' + this.paymentState;
+                    this.http.get(url)
+                        .map(function (res) { return res.status === 404 ? null : res.json(); })
+                        .subscribe(function (json) {
+                        _this.isLoading = false;
+                        if (!json)
+                            return;
+                        if (json.items) {
+                            json.items.forEach(function (c) {
+                                that.orderList.Add(that.map(c));
+                            });
                         }
-                    });
-                };
-                OrdersComponent.prototype.loadOrders = function () {
-                    var that = this;
-                    this.service.getOrders(function (json) {
-                        if (json)
-                            that.map(json, that, true);
+                        if (json.prevItems) {
+                            json.prevItems.forEach(function (c) {
+                                that.prevItems.Add(that.map(c));
+                            });
+                            that._isPrevItemsLoaded = true;
+                        }
+                        if (json.nextItems) {
+                            json.nextItems.forEach(function (c) {
+                                that.nextItems.Add(that.map(c));
+                            });
+                            that._isNextItemsLoaded = true;
+                        }
+                        that.itemsPerPage = json.itemsPerPage;
+                        that.totalItemCount = json.totalItemCount;
+                        if (!that.orderState && !that.paymentState)
+                            that.totalAmount = that.totalItemCount;
+                        if (loadSearchList)
+                            that.addToSearchList(that.orderList);
+                    }, function (error) {
+                        _this.isLoading = false;
+                        console.log(error);
                     });
                 };
                 OrdersComponent.prototype.onClearFilter = function () {
@@ -133,16 +157,23 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                         this.filterText = value;
                     if (this.filterText === this._filterText)
                         return;
-                    if (/^$|^[\u4e00-\u9fa5_a-zA-Z0-9 ]+$/g.test(this.filterText))
-                        this.onSearch(this.orderState, this.paymentState);
+                    if (/^$|^[\u4e00-\u9fa5_a-zA-Z0-9 ]+$/g.test(this.filterText)) {
+                        this.page = 1;
+                        this.get();
+                    }
                     this._filterText = this.filterText;
                 };
-                OrdersComponent.prototype.onSearch = function (orderState, paymentState) {
-                    var that = this;
-                    this.service.getSearchOrders(this.filterText, orderState, paymentState, function (json) {
-                        if (json)
-                            that.map(json, that, false);
-                    });
+                OrdersComponent.prototype.onSearchByState = function (state) {
+                    if (state !== this.orderState)
+                        this.orderState = state;
+                    this.page = 1;
+                    this.get();
+                };
+                OrdersComponent.prototype.onSearchByPayment = function (payment) {
+                    if (payment !== this.paymentState)
+                        this.paymentState = payment;
+                    this.page = 1;
+                    this.get();
                 };
                 OrdersComponent.prototype.onDeliverOpen = function (orderId) {
                     this.deliveryModel = new OrderDeliveryModel(orderId, '100001', null, null);
@@ -160,120 +191,101 @@ System.register(["angular2/core", "angular2/common", 'angular2/router', "../api.
                     this.deliveryModel.waybillNumber = this.deliveryForm.value.waybillNumber;
                     this.deliveryModel.weight = this.deliveryForm.value.weight;
                     this.deliveryModel.freight = this.deliveryForm.value.freight;
-                    this.service.postDeliverOrder(JSON.stringify(this.deliveryModel), function (json) {
-                        if (json) {
-                            var id = json.orderId;
-                            var orderState = json.orderState;
-                            var waybillNumber = json.waybillNumber;
-                            var weight = json.weight;
-                            var freight = json.freight;
-                            _this.data.forEach(function (yg) {
-                                yg.monthGroups.forEach(function (mg) {
-                                    var found = false;
-                                    mg.models.forEach(function (om) {
-                                        if (om.id == id) {
-                                            om.orderState = orderState;
-                                            om.waybillNumber = waybillNumber;
-                                            om.weight = weight;
-                                            om.freight = freight;
-                                            om.updateSummary();
-                                            om.updateStatus();
-                                            found = true;
-                                        }
-                                    });
-                                    if (found) {
-                                        mg.updateSummary();
-                                        return;
-                                    }
-                                });
-                            });
-                        }
-                        ;
-                    });
+                    this.http
+                        .post(api_service_1.ORDER_DELIVER_ENDPOINT, JSON.stringify(this.deliveryModel), { headers: this._headers })
+                        .map(function (res) { return res.status === 404 ? null : res.json(); })
+                        .subscribe(function (json) {
+                        if (!json)
+                            return;
+                        _this.get();
+                    }, function (error) { return console.error(error); });
                 };
                 OrdersComponent.prototype.onOrderAction = function (orderId, action) {
                     var _this = this;
                     var model = { orderId: orderId, action: action };
-                    this.service.postUpdateOrderStatus(JSON.stringify(model), function (json) {
-                        if (json) {
-                            var id = json.orderId;
-                            var orderState = json.orderState;
-                            var paymentState = json.paymentState;
-                            _this.data.forEach(function (yg) {
-                                yg.monthGroups.forEach(function (mg) {
-                                    mg.models.forEach(function (om) {
-                                        if (om.id == id) {
-                                            om.paymentState = paymentState;
-                                            om.orderState = orderState;
-                                            om.updateStatus();
-                                            return;
-                                        }
-                                    });
-                                });
-                            });
-                        }
-                        ;
-                    });
+                    this.http
+                        .post(api_service_1.ORDER_UPDATE_STATUS_ENDPOINT, JSON.stringify(model), { headers: this._headers })
+                        .map(function (res) { return res.status === 404 ? null : res.json(); })
+                        .subscribe(function (json) {
+                        if (!json)
+                            return;
+                        _this.get();
+                    }, function (error) { return console.error(error); });
                 };
                 OrdersComponent.prototype.onOpenExpressTrack = function (waybillNumber) {
+                    var _this = this;
                     var that = this;
                     this.expressTrackInfo = new models_1.ExpressTrack(waybillNumber, null, null, null, null, null, null, []);
-                    this.service.getExpressTrack(waybillNumber, function (json) {
-                        if (json) {
-                            that.expressTrackInfo.waybillNumber = json.waybillNumber;
-                            that.expressTrackInfo.from = json.from;
-                            that.expressTrackInfo.destination = json.destination;
-                            that.expressTrackInfo.itemCount = json.itemCount;
-                            that.expressTrackInfo.status = json.status;
-                            that.expressTrackInfo.isEmpty = false;
-                            if (json.arrivedTime)
-                                that.expressTrackInfo.arrivedTime = json.arrivedTime;
-                            that.expressTrackInfo.recipient = json.recipient;
-                            json.details.forEach(function (d) {
-                                that.expressTrackInfo.details.push(new models_1.ExpressTrackRecord(moment(d.when).format('YYYY-MM-DD HH:mm'), d.where, d.content));
-                            });
-                        }
-                    });
+                    this.http.get(api_service_1.EXPRESS_TRACK_ENDPOINT + waybillNumber)
+                        .map(function (res) { return res.status === 404 ? null : res.json(); })
+                        .subscribe(function (json) {
+                        _this.isLoading = false;
+                        if (!json)
+                            return;
+                        that.expressTrackInfo.waybillNumber = json.waybillNumber;
+                        that.expressTrackInfo.from = json.from;
+                        that.expressTrackInfo.destination = json.destination;
+                        that.expressTrackInfo.itemCount = json.itemCount;
+                        that.expressTrackInfo.status = json.status;
+                        that.expressTrackInfo.isEmpty = false;
+                        if (json.arrivedTime)
+                            that.expressTrackInfo.arrivedTime = json.arrivedTime;
+                        that.expressTrackInfo.recipient = json.recipient;
+                        json.details.forEach(function (d) {
+                            that.expressTrackInfo.details.push(new models_1.ExpressTrackRecord(moment(d.when).format('YYYY-MM-DD HH:mm'), d.where, d.content));
+                        });
+                    }, function (error) { return console.log(error); });
                     $('#expressTrackModal').modal('show');
                 };
-                OrdersComponent.prototype.map = function (json, that, initial) {
-                    var yearGroups = [].ToList();
-                    var orderCount = 0;
-                    that.data = [];
-                    json.forEach(function (c) {
-                        var monthGroups = [].ToList();
-                        c.monthGroups.forEach(function (mg) {
-                            var orders = [].ToList();
-                            mg.models.forEach(function (om) {
-                                var customers = [].ToList();
-                                om.customerOrders.forEach(function (co) {
-                                    var products = [].ToList();
-                                    co.orderProducts.forEach(function (op) {
-                                        products.Add(new models_1.OrderProduct(op.productId, op.productBrand, op.productName, op.cost, op.price, op.qty, op.purchased, that.currentRate));
-                                    });
-                                    customers.Add(new models_1.CustomerOrder(co.customerId, co.customerName, products.ToArray()));
-                                });
-                                orders.Add(new models_1.OrderModel(om.id, moment(om.orderTime).format('DD/MM/YYYY'), om.deliveryTime, om.receiveTime, om.orderState, om.paymentState, om.waybillNumber, om.weight, om.freight, om.recipient, om.phone, om.address, om.sender, om.senderPhone, that.currentRate, that.orderStates, customers.ToArray()));
-                                orderCount += 1;
-                            });
-                            monthGroups.Add(new MonthGroup(mg.month, orders.ToArray()));
+                OrdersComponent.prototype.onPageChanged = function (event) {
+                    var loadSearchList = true;
+                    this.searchList = [];
+                    if (this.page - 1 == event.page && this._isPrevItemsLoaded) {
+                        this.addToSearchList(this.prevItems);
+                        loadSearchList = false;
+                    }
+                    if (this.page + 1 == event.page && this._isNextItemsLoaded) {
+                        this.addToSearchList(this.nextItems);
+                        loadSearchList = false;
+                    }
+                    this.page = event.page;
+                    this.get(loadSearchList);
+                };
+                ;
+                OrdersComponent.prototype.map = function (json) {
+                    var monthSale = new models_1.MonthSale(json.monthSale.month, json.monthSale.count, json.monthSale.cost, json.monthSale.income, json.monthSale.profit);
+                    var customers = [].ToList();
+                    json.customerOrders.forEach(function (co) {
+                        var products = [].ToList();
+                        co.orderProducts.forEach(function (op) {
+                            products.Add(new models_1.OrderProduct(op.productId, op.productBrand, op.productName, op.cost, op.price, op.qty, op.purchased));
                         });
-                        yearGroups.Add(new YearGroup(c.year, monthGroups.ToArray()));
-                        that.data = yearGroups.ToArray();
+                        customers.Add(new models_1.CustomerOrder(co.customerId, co.customerName, products.ToArray()));
                     });
-                    if (initial)
-                        that.totalAmount = orderCount;
-                    that.amount = orderCount;
+                    return new models_1.OrderModel(json.id, moment(json.orderTime).format('DD/MM/YYYY'), json.deliveryTime, json.receiveTime, json.orderState, json.paymentState, json.waybillNumber, json.weight, json.freight, json.recipient, json.phone, json.address, monthSale, this.orderStates, customers.ToArray());
+                };
+                OrdersComponent.prototype.addToSearchList = function (orders) {
+                    var list = [].ToList();
+                    var month = '';
+                    var that = this;
+                    orders.ForEach(function (o) {
+                        if (o.monthSale.month != month) {
+                            var monthSaleItem = new models_1.OrderModel(null, null, null, null, null, null, null, null, null, null, null, null, o.monthSale, null, [], true);
+                            list.Add(monthSaleItem);
+                            month = o.monthSale.month;
+                        }
+                        list.Add(o);
+                    });
+                    this.searchList = list.ToArray();
                 };
                 OrdersComponent = __decorate([
                     core_1.Component({
                         selector: "customers",
                         templateUrl: "./src/app/components/orders/list.html",
                         styleUrls: ["./src/app/components/orders/orders.css"],
-                        providers: [api_service_1.ApiService],
-                        directives: [common_1.CORE_DIRECTIVES, common_1.FORM_DIRECTIVES, router_1.ROUTER_DIRECTIVES, clipboard_directive_1.ClipboardDirective]
+                        directives: [common_1.CORE_DIRECTIVES, common_1.FORM_DIRECTIVES, router_1.ROUTER_DIRECTIVES, clipboard_directive_1.ClipboardDirective, ng2_bootstrap_1.PAGINATION_DIRECTIVES]
                     }), 
-                    __metadata('design:paramtypes', [api_service_1.ApiService, router_1.Router])
+                    __metadata('design:paramtypes', [http_1.Http, router_1.Router])
                 ], OrdersComponent);
                 return OrdersComponent;
             }());

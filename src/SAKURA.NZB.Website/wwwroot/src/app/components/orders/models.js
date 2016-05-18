@@ -1,13 +1,13 @@
 System.register([], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
-    var Dict, OrderModel, CustomerOrder, OrderProduct, Product, ExpressTrack, ExpressTrackRecord;
+    var Dict, OrderModel, MonthSale, CustomerOrder, OrderProduct, Product, ExpressTrack, ExpressTrackRecord;
     function map(order) {
         var o = {
             id: order.id, orderTime: order.orderTime, deliveryTime: order.deliveryTime, receiveTime: order.receiveTime,
             orderState: order.orderState, paymentState: order.paymentState, waybillNumber: order.waybillNumber, weight: order.weight,
             freight: order.freight, waybill: null, description: null, recipient: order.recipient,
-            phone: order.phone, address: order.address, sender: order.sender, senderPhone: order.senderPhone, customerOrders: []
+            phone: order.phone, address: order.address, monthSale: null, customerOrders: []
         };
         order.customerOrders.forEach(function (co) {
             var c = { customerId: co.customerId, customerName: co.customerName, orderProducts: [] };
@@ -44,7 +44,8 @@ System.register([], function(exports_1, context_1) {
             }());
             exports_1("Dict", Dict);
             OrderModel = (function () {
-                function OrderModel(id, orderTime, deliveryTime, receiveTime, orderState, paymentState, waybillNumber, weight, freight, recipient, phone, address, sender, senderPhone, exchangeRate, orderStates, customerOrders) {
+                function OrderModel(id, orderTime, deliveryTime, receiveTime, orderState, paymentState, waybillNumber, weight, freight, recipient, phone, address, monthSale, orderStates, customerOrders, isMonthSaleItem) {
+                    if (isMonthSaleItem === void 0) { isMonthSaleItem = false; }
                     this.id = id;
                     this.orderTime = orderTime;
                     this.deliveryTime = deliveryTime;
@@ -57,16 +58,17 @@ System.register([], function(exports_1, context_1) {
                     this.recipient = recipient;
                     this.phone = phone;
                     this.address = address;
-                    this.sender = sender;
-                    this.senderPhone = senderPhone;
-                    this.exchangeRate = exchangeRate;
+                    this.monthSale = monthSale;
                     this.orderStates = orderStates;
                     this.customerOrders = customerOrders;
+                    this.isMonthSaleItem = isMonthSaleItem;
                     this.isCustomersValid = false;
                     this.isExpressValid = false;
-                    this.updateSummary();
-                    this.updateStatus();
-                    this.updateExpressText();
+                    if (!isMonthSaleItem) {
+                        this.updateSummary();
+                        this.updateStatus();
+                        this.updateExpressText();
+                    }
                 }
                 Object.defineProperty(OrderModel.prototype, "deliverable", {
                     get: function () { return this.recipient && this.phone && this.address; },
@@ -112,7 +114,7 @@ System.register([], function(exports_1, context_1) {
                     this.totalCost = list.Sum(function (co) { return co.totalCost; }) + this.freight;
                     this.totalPrice = list.Sum(function (co) { return co.totalPrice; });
                     this.totalQty = list.Sum(function (co) { return co.totalQty; });
-                    this.totalProfit = this.totalPrice - this.totalCost * this.exchangeRate;
+                    this.totalProfit = this.totalPrice - this.totalCost * window.nzb.rate.live;
                     this.strTotalProfit = formatCurrency(this.totalProfit, this.totalProfit.toFixed(2));
                 };
                 OrderModel.prototype.updateExpressText = function () {
@@ -129,7 +131,7 @@ System.register([], function(exports_1, context_1) {
                     });
                     var productsText = '';
                     products.OrderBy(function (p) { return p.name; }).ForEach(function (e, index) { productsText += '  ' + e.name + ' x' + e.qty + '\n'; });
-                    this.expressText = '【寄件人】' + this.sender + '\n【寄件人電話】' + this.senderPhone + '\n【訂單內容】\n' + productsText + '【收件人】'
+                    this.expressText = '【寄件人】' + window.nzb.express.sender + '\n【寄件人電話】' + window.nzb.express.senderPhone + '\n【訂單內容】\n' + productsText + '【收件人】'
                         + this.recipient + '\n【收件地址】' + this.address + '\n【聯繫電話】' + this.phone;
                 };
                 Object.defineProperty(OrderModel.prototype, "isProductsValid", {
@@ -145,6 +147,17 @@ System.register([], function(exports_1, context_1) {
                 return OrderModel;
             }());
             exports_1("OrderModel", OrderModel);
+            MonthSale = (function () {
+                function MonthSale(month, count, cost, income, profit) {
+                    this.month = month;
+                    this.count = count;
+                    this.cost = cost;
+                    this.income = income;
+                    this.profit = profit;
+                }
+                return MonthSale;
+            }());
+            exports_1("MonthSale", MonthSale);
             CustomerOrder = (function () {
                 function CustomerOrder(customerId, customerName, orderProducts) {
                     this.customerId = customerId;
@@ -169,7 +182,7 @@ System.register([], function(exports_1, context_1) {
             }());
             exports_1("CustomerOrder", CustomerOrder);
             OrderProduct = (function () {
-                function OrderProduct(productId, productBrand, productName, cost, price, qty, purchased, exchangeRate) {
+                function OrderProduct(productId, productBrand, productName, cost, price, qty, purchased) {
                     this.productId = productId;
                     this.productBrand = productBrand;
                     this.productName = productName;
@@ -177,11 +190,10 @@ System.register([], function(exports_1, context_1) {
                     this.price = price;
                     this.qty = qty;
                     this.purchased = purchased;
-                    this.exchangeRate = exchangeRate;
-                    this.calculateProfit(this.exchangeRate);
+                    this.calculateProfit();
                 }
-                OrderProduct.prototype.calculateProfit = function (rate) {
-                    this.profit = (this.price - this.cost * rate) * this.qty;
+                OrderProduct.prototype.calculateProfit = function () {
+                    this.profit = (this.price - this.cost * window.nzb.rate.live) * this.qty;
                     this.strProfit = formatCurrency(this.profit, this.profit.toFixed(2));
                 };
                 Object.defineProperty(OrderProduct.prototype, "isValid", {

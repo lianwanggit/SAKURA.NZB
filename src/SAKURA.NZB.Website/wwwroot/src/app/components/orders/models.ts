@@ -31,12 +31,14 @@ export class OrderModel {
 	constructor(public id: number, public orderTime: any, public deliveryTime: Date, public receiveTime: Date,
 		public orderState: string, public paymentState: string, public waybillNumber: string, public weight: number,
 		public freight: number, public recipient: string, public phone: string, public address: string,
-		public sender: string, public senderPhone: string, public exchangeRate: number, public orderStates: Object,
-		public customerOrders: CustomerOrder[]) {
+		public monthSale: MonthSale, public orderStates: Object,
+		public customerOrders: CustomerOrder[], public isMonthSaleItem: boolean = false) {
 
-		this.updateSummary();
-		this.updateStatus();
-		this.updateExpressText();
+		if (!isMonthSaleItem){
+			this.updateSummary();
+			this.updateStatus();
+			this.updateExpressText();
+		}	
 	}
 
 	get deliverable() { return this.recipient && this.phone && this.address; }
@@ -74,7 +76,7 @@ export class OrderModel {
 		this.totalCost = list.Sum(co => co.totalCost) + this.freight;
 		this.totalPrice = list.Sum(co => co.totalPrice);
 		this.totalQty = list.Sum(co => co.totalQty);
-		this.totalProfit = this.totalPrice - this.totalCost * this.exchangeRate;
+		this.totalProfit = this.totalPrice - this.totalCost * (<any>window).nzb.rate.live;
 		this.strTotalProfit = formatCurrency(this.totalProfit, this.totalProfit.toFixed(2));
 	}
 
@@ -94,12 +96,16 @@ export class OrderModel {
 		var productsText = '';
 		products.OrderBy(p => p.name).ForEach((e, index) => { productsText += '  ' + e.name + ' x' + e.qty + '\n'; });
 
-		this.expressText = '【寄件人】' + this.sender + '\n【寄件人電話】' + this.senderPhone + '\n【訂單內容】\n' + productsText + '【收件人】'
+		this.expressText = '【寄件人】' + (<any>window).nzb.express.sender + '\n【寄件人電話】' + (<any>window).nzb.express.senderPhone + '\n【訂單內容】\n' + productsText + '【收件人】'
 			+ this.recipient + '\n【收件地址】' + this.address + '\n【聯繫電話】' + this.phone;
 	}
 
 	get isProductsValid() { return this.customerOrders.length && this.customerOrders.ToList<CustomerOrder>().All(co => co.isProductsValid); }
 	get isValid() { return this.isCustomersValid && this.isExpressValid && this.isProductsValid; }
+}
+
+export class MonthSale {
+	constructor(public month: string, public count: number, public cost: string, public income:string, public profit: string){}
 }
 
 export class CustomerOrder {
@@ -130,12 +136,12 @@ export class OrderProduct {
 	strProfit: string;
 
 	constructor(public productId: number, public productBrand: string, public productName: string, public cost: number,
-		public price: number, public qty: number, public purchased: boolean, public exchangeRate: number) {
-		this.calculateProfit(this.exchangeRate);
+		public price: number, public qty: number, public purchased: boolean) {
+		this.calculateProfit();
 	}
 
-	calculateProfit(rate: number) {
-		this.profit = (this.price - this.cost * rate) * this.qty;
+	calculateProfit() {
+		this.profit = (this.price - this.cost * (<any>window).nzb.rate.live) * this.qty;
 		this.strProfit = formatCurrency(this.profit, this.profit.toFixed(2));
 	}
 
@@ -184,7 +190,7 @@ export function map(order: OrderModel) {
 		id: order.id, orderTime: order.orderTime, deliveryTime: order.deliveryTime, receiveTime: order.receiveTime,
 		orderState: order.orderState, paymentState: order.paymentState, waybillNumber: order.waybillNumber, weight: order.weight,
 		freight: order.freight, waybill: null, description: null, recipient: order.recipient,
-		phone: order.phone, address: order.address, sender: order.sender, senderPhone: order.senderPhone, customerOrders: []
+		phone: order.phone, address: order.address, monthSale: null, customerOrders: []
 	};
 
 	order.customerOrders.forEach(co => {

@@ -18,6 +18,10 @@ namespace SAKURA.NZB.Website.Controllers
 			ViewData["HighRate"] = _config.GetFixedRateHigh();
 			ViewData["LowRate"] = _config.GetFixedRateLow();
 
+			ViewData["Sender"] = _config.GetSender();
+			ViewData["SenderPhone"] = _config.GetSenderPhone();
+			ViewData["FreightRate"] = _config.GetFreightRate();
+
 			return View();
         }
 

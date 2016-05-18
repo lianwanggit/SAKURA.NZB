@@ -1,5 +1,4 @@
-﻿using SAKURA.NZB.Domain;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace SAKURA.NZB.Website.Models
 {

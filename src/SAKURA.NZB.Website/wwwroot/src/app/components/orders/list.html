@@ -1,4 +1,6 @@
-﻿<div class="grey-border">
+﻿<div class="loading" *ngIf="isLoading">Loading&#8230;</div>
+
+<div class="grey-border" *ngIf="!isLoading">
     <h2 class="page-header">
         Orders <small>({{amount}} / {{totalAmount}})</small>
         <button type="button" class="btn btn-info pull-right" [routerLink]="['OAdd']">
@@ -6,11 +8,10 @@
         </button>
     </h2>
 
-    <form class="form-inline">
-        <div class="form-group">
-            <label for="key">关键字</label>
+    <div class="row order-search">
+        <div class="col-xs-12 col-sm-6">
             <div class="input-group">
-                <input type="text" class="form-control" id="keyword" placeholder="客户姓名, 拼音, 品牌, 订单号" [(ngModel)]="filterText"
+                <input type="text" class="form-control" id="keyword" placeholder="客户姓名拼音, 品牌, 订单号" [(ngModel)]="filterText"
                        (keyup)="onSearchByKeyword($event.target.value)" (input)="onSearchByKeyword($event.target.value)">
                 <div class="input-group-btn">
                     <button type="button" class="btn btn-default" aria-label="Clear" (click)="onClearFilter()">
@@ -19,124 +20,125 @@
                 </div>
             </div>
         </div>
-        <div class="form-group">
-            <label for="orderstate">订单状态</label>
-            <select id="orderstate" class="form-control" [(ngModel)]="orderState" (change)="onSearch($event.target.value, paymentState)">
-                <option value=""></option>
+        <div class="col-xs-6 col-sm-3">
+            <select id="orderstate" class="form-control" [(ngModel)]="orderState" (change)="onSearchByState($event.target.value)">
+                <option value="" selected default>订单状态</option>
                 <option *ngFor="#key of orderStateKeys" value="{{key}}">{{orderStates[key]}}</option>
             </select>
         </div>
-        <div class="form-group">
-            <label for="paymentstate">支付状态</label>
-            <select id="paymentstate" class="form-control" [(ngModel)]="paymentState" (change)="onSearch(orderState, $event.target.value)">
-                <option value=""></option>
+        <div class="col-xs-6 col-sm-3">
+            <select id="paymentstate" class="form-control" [(ngModel)]="paymentState" (change)="onSearchByPayment($event.target.value)">
+                <option value="" selected default>支付状态</option>
                 <option *ngFor="#key of paymentStateKeys" value="{{key}}">{{paymentStates[key]}}</option>
             </select>
         </div>
-    </form>
+    </div>
 
-    <div *ngFor="#y of data">
-        <h3 class="text-center bg-cyan year-header" *ngIf="thisYear != y.year">{{y.year}}</h3>
-        <div *ngFor="#m of y.monthGroups; #img = index">
-            <div class="month-header clearfix bg-info-dark">
-                <span class="pull-left">{{m.month}}</span>
-                <div class="pull-right">
-                    <table class="font-weight-300">
-                        <tr>
-                            <td><i class="fa fa-shopping-cart"></i> {{m.models.length}}</td>
-                            <td class="hidden-xs"><i class="fa fa-dollar"></i> {{m.totalCost}}</td>
-                            <td class="hidden-xs"><i class="fa fa-yen"></i> {{m.totalPrice}}</td>
-                            <td><i class="fa fa-money"></i> {{m.totalProfit}}</td>
-                        </tr>
-                    </table>
-                </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="pull-right">
+                <pagination [totalItems]="totalItemCount" [(ngModel)]="page" [itemsPerPage]="itemsPerPage" [maxSize]="10"
+                            [boundaryLinks]="true" [rotate]="false"
+                            (pageChanged)="onPageChanged($event)"></pagination>
             </div>
+        </div>
+    </div>
 
-            <div class="details">
-                <div *ngFor="#md of m.models; #imd = index">
-                    <div class="row vertical-align-parent order-header">
-                        <div class="col-xs-6 vertical-align"><span class="text-muted">{{md.orderTime}}</span></div>
-                        <div class="col-xs-6 vertical-align order-action">
-                            <div class="dropdown ">
-                                <button class="btn btn-info btn-xs dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <i class="fa fa-edit"></i>
-                                    <span class="caret"></span>
-                                </button>
-                                <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu2">
-                                    <li><a [routerLink]="['OView', { id: md.id }]"><i class="fa fa-folder-open-o"></i>查看</a></li>
-                                    <li *ngIf="md.orderState != 'Completed'"><a [routerLink]="['OEdit', { id: md.id }]"><i class="fa fa-edit"></i>编辑</a></li>
-                                    <li *ngIf="md.orderState == 'Created'"><a (click)="onOrderAction(md.id, 'ToConfirmed')"><i class="fa fa-check-square-o"></i>确认订单</a></li>
-                                    <li *ngIf="md.orderState == 'Confirmed'"><a (click)="onDeliverOpen(md.id)"><i class="fa fa-truck"></i>发货</a></li>
-                                    <li *ngIf="md.orderState == 'Delivered'"><a (click)="onOrderAction(md.id, 'ToReceived')"><i class="fa fa-hand-peace-o"></i>客户签收</a></li>
-                                    <li *ngIf="md.orderState == 'Received' && md.paymentState == 'Paid'"><a (click)="onOrderAction(md.id, 'ToCompleted')"><i class="fa fa-smile-o"></i>结束订单</a></li>
-                                    <li role="separator" class="divider" *ngIf="md.paymentState == 'Unpaid'"></li>
-                                    <li *ngIf="md.paymentState == 'Unpaid'"><a (click)="onOrderAction(md.id, 'ToPaid')"><i class="fa fa-credit-card"></i>客户付款</a></li>
-                                    <li role="separator" class="divider"></li>
-                                    <li><a [clipboard]="md.expressText"><i class="fa fa-clipboard"></i>拷贝快递单</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row order">
-                        <div class="col-xs-12 col-sm-10">
-                            <div class="row" *ngFor="#co of md.customerOrders; #ico = index">
-                                <div class="col-xs-4 col-sm-3 col-md-2">
-                                    <div class="customer">
-                                        <i class="widget-icon fa fa-user hidden-xs {{colorSheet[co.customerId % 12]}} opacity-60"></i><span>{{co.customerName}}</span>
-                                    </div>
-                                </div>
-                                <div class="col-xs-8 col-sm-9 col-md-10 product-list">
-                                    <table class="table">
-                                        <tr *ngIf="ico == 0 && imd == 0">
-                                            <th>产品名</th>
-                                            <th class="hidden-xs">单价($)</th>
-                                            <th class="hidden-xs">售价(¥)</th>
-                                            <th class="hidden-xs">数量</th>
-                                            <th>利润(¥)</th>
-                                        </tr>
-                                        <tr *ngFor="#op of co.orderProducts">
-                                            <td>{{op.productName}}</td>
-                                            <td class="hidden-xs">{{op.cost}}</td>
-                                            <td class="hidden-xs">{{op.price}}</td>
-                                            <td class="hidden-xs">{{op.qty}}</td>
-                                            <td [ngClass]="{up: op.profit > 0, down: op.profit < 0}">{{op.strProfit}}</td>
-                                        </tr>
-                                        <tr class="summary" *ngIf="ico == md.customerOrders.length - 1">
-                                            <td>
-                                                <div class="row">
-                                                    <div class="col-xs-12 col-sm-6 col-md-3" *ngIf="md.weight > 0"><i class="fa fa-balance-scale fa-lg opacity-60"></i> {{md.weight}} kg</div>
-                                                    <div class="col-xs-12 col-sm-6 col-md-3" *ngIf="md.freight > 0"><i class="fa fa-dollar fa-lg opacity-60"></i> {{md.freight}}</div>
-                                                    <div class="col-xs-12 col-sm-12 col-md-6" *ngIf="md.hasExpressWaybill">
-                                                        <a (click)="onOpenExpressTrack(md.waybillNumber)"><i class="fa fa-barcode fa-lg opacity-60"></i>  {{md.waybillNumber}}</a>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td class="hidden-xs">{{(md.totalCost).toFixed(2)}}</td>
-                                            <td class="hidden-xs"><span class="underline">{{md.totalPrice}}</span></td>
-                                            <td class="hidden-xs">{{md.totalQty}}</td>
-                                            <td [ngClass]="{up: md.totalProfit > 0, down: md.totalProfit < 0}"><strong>{{md.strTotalProfit}}</strong></td>
-                                        </tr>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-sm-2 hidden-xs product-status">
-                            <div class="row">
-                                <div class="hidden-xs hidden-sm col-md-4 opacity-80">
-                                    <i class="fa fa-credit-card fa-lg" [ngClass]="{unpaid: md.paymentState != 'Paid', paid: md.paymentState == 'Paid'}"></i>
-                                </div>
-                                <div class="col-md-8">
-                                    <div class="progress-radial progress-{{md.statusRate}} center-block">
-                                        <div class="overlay">{{md.statusText}}</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+    <div *ngFor="#md of searchList">
+        <div class="month-header clearfix bg-info-dark" *ngIf="md.isMonthSaleItem">
+            <span class="pull-left">{{md.monthSale.month}}</span>
+            <div class="pull-right">
+                <table class="font-weight-300">
+                    <tr>
+                        <td><i class="fa fa-shopping-cart"></i> {{md.monthSale.count}}</td>
+                        <td class="hidden-xs"><i class="fa fa-dollar"></i> {{md.monthSale.cost}}</td>
+                        <td class="hidden-xs"><i class="fa fa-yen"></i> {{md.monthSale.income}}</td>
+                        <td><i class="fa fa-money"></i> {{md.monthSale.profit}}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="details" *ngIf="!md.isMonthSaleItem">
+            <div class="row vertical-align-parent order-header">
+                <div class="col-xs-6 vertical-align"><span class="text-muted">{{md.orderTime}}</span></div>
+                <div class="col-xs-6 vertical-align order-action">
+                    <div class="dropdown ">
+                        <button class="btn btn-info btn-xs dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa fa-edit"></i>
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu2">
+                            <li><a [routerLink]="['OView', { id: md.id }]"><i class="fa fa-folder-open-o"></i>查看</a></li>
+                            <li *ngIf="md.orderState != 'Completed'"><a [routerLink]="['OEdit', { id: md.id }]"><i class="fa fa-edit"></i>编辑</a></li>
+                            <li *ngIf="md.orderState == 'Created'"><a (click)="onOrderAction(md.id, 'ToConfirmed')"><i class="fa fa-check-square-o"></i>确认订单</a></li>
+                            <li *ngIf="md.orderState == 'Confirmed'"><a (click)="onDeliverOpen(md.id)"><i class="fa fa-truck"></i>发货</a></li>
+                            <li *ngIf="md.orderState == 'Delivered'"><a (click)="onOrderAction(md.id, 'ToReceived')"><i class="fa fa-hand-peace-o"></i>客户签收</a></li>
+                            <li *ngIf="md.orderState == 'Received' && md.paymentState == 'Paid'"><a (click)="onOrderAction(md.id, 'ToCompleted')"><i class="fa fa-smile-o"></i>结束订单</a></li>
+                            <li role="separator" class="divider" *ngIf="md.paymentState == 'Unpaid'"></li>
+                            <li *ngIf="md.paymentState == 'Unpaid'"><a (click)="onOrderAction(md.id, 'ToPaid')"><i class="fa fa-credit-card"></i>客户付款</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a [clipboard]="md.expressText"><i class="fa fa-clipboard"></i>拷贝快递单</a></li>
+                        </ul>
                     </div>
                 </div>
             </div>
 
+            <div class="row order">
+                <div class="col-xs-12 col-sm-10">
+                    <div class="row" *ngFor="#co of md.customerOrders; #ico = index">
+                        <div class="col-xs-4 col-sm-3 col-md-2">
+                            <div class="customer">
+                                <i class="widget-icon fa fa-user hidden-xs {{colorSheet[co.customerId % 12]}} opacity-60"></i><span>{{co.customerName}}</span>
+                            </div>
+                        </div>
+                        <div class="col-xs-8 col-sm-9 col-md-10 product-list">
+                            <table class="table">
+                                <tr *ngIf="ico == 0 && imd == 0">
+                                    <th>产品名</th>
+                                    <th class="hidden-xs">单价($)</th>
+                                    <th class="hidden-xs">售价(¥)</th>
+                                    <th class="hidden-xs">数量</th>
+                                    <th>利润(¥)</th>
+                                </tr>
+                                <tr *ngFor="#op of co.orderProducts">
+                                    <td>{{op.productName}}</td>
+                                    <td class="hidden-xs">{{op.cost}}</td>
+                                    <td class="hidden-xs">{{op.price}}</td>
+                                    <td class="hidden-xs">{{op.qty}}</td>
+                                    <td [ngClass]="{up: op.profit > 0, down: op.profit < 0}">{{op.strProfit}}</td>
+                                </tr>
+                                <tr class="summary" *ngIf="ico == md.customerOrders.length - 1">
+                                    <td>
+                                        <div class="row">
+                                            <div class="col-xs-12 col-sm-6 col-md-3" *ngIf="md.weight > 0"><i class="fa fa-balance-scale fa-lg opacity-60"></i> {{md.weight}} kg</div>
+                                            <div class="col-xs-12 col-sm-6 col-md-3" *ngIf="md.freight > 0"><i class="fa fa-dollar fa-lg opacity-60"></i> {{md.freight}}</div>
+                                            <div class="col-xs-12 col-sm-12 col-md-6" *ngIf="md.hasExpressWaybill">
+                                                <a (click)="onOpenExpressTrack(md.waybillNumber)"><i class="fa fa-barcode fa-lg opacity-60"></i>  {{md.waybillNumber}}</a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="hidden-xs">{{(md.totalCost).toFixed(2)}}</td>
+                                    <td class="hidden-xs"><span class="underline">{{md.totalPrice}}</span></td>
+                                    <td class="hidden-xs">{{md.totalQty}}</td>
+                                    <td [ngClass]="{up: md.totalProfit > 0, down: md.totalProfit < 0}"><strong>{{md.strTotalProfit}}</strong></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-2 hidden-xs product-status">
+                    <div class="row">
+                        <div class="hidden-xs hidden-sm col-md-4 opacity-80">
+                            <i class="fa fa-credit-card fa-lg" [ngClass]="{unpaid: md.paymentState != 'Paid', paid: md.paymentState == 'Paid'}"></i>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="progress-radial progress-{{md.statusRate}} center-block">
+                                <div class="overlay">{{md.statusText}}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -214,7 +216,8 @@
             <div class="modal-body express-summary">
                 <h3>运单号 {{expressTrackInfo.waybillNumber}}</h3>
 
-                <div class="alert alert-warning" role="alert" *ngIf="expressTrackInfo.isEmpty"><i class="fa fa-warning"></i> 该运单号的跟踪记录不存在。请检查：
+                <div class="alert alert-warning" role="alert" *ngIf="expressTrackInfo.isEmpty">
+                    <i class="fa fa-warning"></i> 该运单号的跟踪记录不存在。请检查：
                     <ul class="margin-top-10">
                         <li class="margin-top-5">该运单号是否有误</li>
                         <li class="margin-top-5">该运单已经超过<b>三个月</b>有效查询期</li>

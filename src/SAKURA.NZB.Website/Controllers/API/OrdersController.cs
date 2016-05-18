@@ -8,6 +8,8 @@ using System.Collections.Generic;
 using System.Globalization;
 using SAKURA.NZB.Business.Configuration;
 using SAKURA.NZB.Website.Models;
+using System.Web.Http;
+using SAKURA.NZB.Business.Sale;
 
 namespace SAKURA.NZB.Website.Controllers
 {
@@ -15,14 +17,15 @@ namespace SAKURA.NZB.Website.Controllers
 	public class OrdersController : Controller
 	{
 		private readonly NZBContext _context;
-		private readonly string _sender;
-		private readonly string _senderPhone;
+		private readonly int _itemsPerPage;
+		private readonly MonthSaleCalculator _monthSaleCalculator;
 
-		public OrdersController(NZBContext context, Config config)
+		public OrdersController(NZBContext context, Config config, MonthSaleCalculator monthSaleCalculator)
 		{
 			_context = context;
-			_sender = config.GetSender();
-			_senderPhone = config.GetSenderPhone();
+			_itemsPerPage = config.GetItemsPerPage();
+
+			_monthSaleCalculator = monthSaleCalculator;
 		}
 
 		[HttpGet]
@@ -39,7 +42,7 @@ namespace SAKURA.NZB.Website.Controllers
 			var models = (from o in orders
 						  orderby o.Products.FirstOrDefault()?.Customer.NamePinYin
 						  orderby o.OrderTime descending
-						  select MapTo(o, _sender, _senderPhone)).ToList();
+						  select MapTo(o)).ToList();
 
 			var groupedModels = from m in models
 								group m by m.OrderTime.Year into yg
@@ -47,19 +50,13 @@ namespace SAKURA.NZB.Website.Controllers
 								new
 								{
 									Year = yg.Key,
-									MonthGroups =
+									MonthGroups = 
 										from o in yg
 										group o by o.OrderTime.ToString("MMMM", CultureInfo.InvariantCulture) into mg
 										select new { Month = mg.Key, Models = mg }
 								};
 
 			return new ObjectResult(groupedModels);
-		}
-
-		[HttpGet("get-sender-info")]
-		public IActionResult GetSenderInfo()
-		{
-			return new ObjectResult(new { Sender = _sender, SenderPhone = _senderPhone });
 		}
 
 		[HttpGet("get-latest-by-product/{id:int}")]
@@ -83,46 +80,92 @@ namespace SAKURA.NZB.Website.Controllers
 			return new ObjectResult(order);
 		}
 
-		[HttpGet("search/{keyword?}")]
-		public IActionResult Search(string keyword, [FromQuery]string orderState, [FromQuery]string paymentState)
+		//[HttpGet("search/{keyword?}")]
+		//public IActionResult Search(string keyword, [FromQuery]string orderState, [FromQuery]string paymentState)
+		//{
+		//	var orders = _context.Orders
+		//		.Include(o => o.Products)
+		//			.ThenInclude(p => p.Customer)
+		//		.Include(o => o.Products)
+		//			.ThenInclude(p => p.Product)
+		//			.ThenInclude(p => p.Brand)
+		//		.Where(o => (string.IsNullOrEmpty(orderState) || (!string.IsNullOrEmpty(orderState) && o.OrderState.ToString() == orderState))
+		//			&& (string.IsNullOrEmpty(paymentState) || (!string.IsNullOrEmpty(paymentState) && o.PaymentState.ToString() == paymentState))
+		//			&& (string.IsNullOrEmpty(keyword) || (!string.IsNullOrEmpty(keyword) 
+		//				&& ((!string.IsNullOrEmpty(o.WaybillNumber) && o.WaybillNumber.StartsWith(keyword))
+		//					|| o.Products.Any(p  => p.Product.Brand.Name.ToLower().StartsWith(keyword.ToLower()))
+		//					|| o.Products.Any(p => p.Customer.NamePinYin.ToLower().StartsWith(keyword.ToLower()) 
+		//						|| p.Customer.FullName.StartsWith(keyword))
+		//					))))
+		//		.OrderByDescending(o => o.OrderTime)
+		//		.ToList();
+
+		//	var models = new List<OrderModel>();
+		//	orders.ForEach(o =>
+		//	{
+		//		var model = MapTo(o, _sender, _senderPhone);
+		//		models.Add(model);
+		//	});
+
+		//	var groupedModels = from m in models
+		//						group m by m.OrderTime.Year into yg
+		//						select
+		//						new
+		//						{
+		//							Year = yg.Key,
+		//							MonthGroups =
+		//								from o in yg
+		//								group o by o.OrderTime.ToString("MMMM", CultureInfo.InvariantCulture) into mg
+		//								select new { Month = mg.Key, Models = mg }
+		//						};
+
+		//	return new ObjectResult(groupedModels);
+		//}
+
+		[HttpGet("search")]
+		public IActionResult Search([FromUri]SearchOptions options)
 		{
+			Func<Order, bool> statePredicate = (p) => true;
+			if (!string.IsNullOrEmpty(options.state))
+			{
+				statePredicate = (o) => o.OrderState.ToString() == options.state;
+			}
+
+			Func<Order, bool> paymentPredicate = (p) => true;
+			if (!string.IsNullOrEmpty(options.payment))
+			{
+				paymentPredicate = (o) => o.PaymentState.ToString() == options.payment;
+			}
+
+			Func<Order, bool> keywordPredicate = (p) => true;
+			if (!string.IsNullOrEmpty(options.keyword))
+			{
+				keywordPredicate = (o) => (!string.IsNullOrEmpty(o.WaybillNumber) && o.WaybillNumber.StartsWith(options.keyword)) 
+									|| o.Products.Any(p => p.Product.Brand.Name.ToLower().StartsWith(options.keyword.ToLower()))
+									|| o.Products.Any(p => p.Customer.NamePinYin.ToLower().StartsWith(options.keyword.ToLower()));
+			}
+
 			var orders = _context.Orders
 				.Include(o => o.Products)
 					.ThenInclude(p => p.Customer)
 				.Include(o => o.Products)
 					.ThenInclude(p => p.Product)
 					.ThenInclude(p => p.Brand)
-				.Where(o => (string.IsNullOrEmpty(orderState) || (!string.IsNullOrEmpty(orderState) && o.OrderState.ToString() == orderState))
-					&& (string.IsNullOrEmpty(paymentState) || (!string.IsNullOrEmpty(paymentState) && o.PaymentState.ToString() == paymentState))
-					&& (string.IsNullOrEmpty(keyword) || (!string.IsNullOrEmpty(keyword) 
-						&& ((!string.IsNullOrEmpty(o.WaybillNumber) && o.WaybillNumber.StartsWith(keyword))
-							|| o.Products.Any(p  => p.Product.Brand.Name.ToLower().StartsWith(keyword.ToLower()))
-							|| o.Products.Any(p => p.Customer.NamePinYin.ToLower().StartsWith(keyword.ToLower()) 
-								|| p.Customer.FullName.StartsWith(keyword))
-							))))
+				.Where(o => keywordPredicate(o) && statePredicate(o) && paymentPredicate(o))
 				.OrderByDescending(o => o.OrderTime)
 				.ToList();
+
+			var monthSaleSummary = _monthSaleCalculator.Aggregate();
 
 			var models = new List<OrderModel>();
 			orders.ForEach(o =>
 			{
-				var model = MapTo(o, _sender, _senderPhone);
+				var model = MapTo(o);
+				model.MonthSale = monthSaleSummary.First(ms => ms.Month == model.OrderTime.Month);
 				models.Add(model);
 			});
 
-			var groupedModels = from m in models
-								group m by m.OrderTime.Year into yg
-								select
-								new
-								{
-									Year = yg.Key,
-									MonthGroups =
-										from o in yg
-										group o by o.OrderTime.ToString("MMMM", CultureInfo.InvariantCulture) into mg
-										select new { Month = mg.Key, Models = mg }
-								};
-
-			return new ObjectResult(groupedModels);
+			return new ObjectResult(new OrdersPagingModel(models.ToList(), 15, options.page.GetValueOrDefault()));
 		}
 
 		[HttpGet("{id:int}", Name = "GetOrder")]
@@ -143,7 +186,7 @@ namespace SAKURA.NZB.Website.Controllers
 			if (item == null)
 				return HttpNotFound();
 
-			return new ObjectResult(MapTo(item, _sender, _senderPhone));
+			return new ObjectResult(MapTo(item));
 		}
 
 		[HttpPost("update-order-status")]
@@ -400,7 +443,7 @@ namespace SAKURA.NZB.Website.Controllers
 			return order;
 		}
 
-		private OrderModel MapTo(Order o, string sender, string senderPhone)
+		private OrderModel MapTo(Order o)
 		{
 			var model = new OrderModel
 			{
@@ -418,8 +461,6 @@ namespace SAKURA.NZB.Website.Controllers
 				Recipient = o.Recipient,
 				Phone = o.Phone,
 				Address = o.Address,
-				Sender = sender,
-				SenderPhone = senderPhone,
 				CustomerOrders = new List<CustomerOrderMode>()
 			};
 
@@ -459,5 +500,13 @@ namespace SAKURA.NZB.Website.Controllers
 
 			return model;
 		}
+	}
+
+	public class SearchOptions
+	{
+		public int? page { get; set; }
+		public string keyword { get; set; }
+		public string state { get; set; }
+		public string payment { get; set; }
 	}
 }

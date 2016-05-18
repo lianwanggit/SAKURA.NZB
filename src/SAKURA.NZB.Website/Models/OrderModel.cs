@@ -1,4 +1,5 @@
-﻿using SAKURA.NZB.Domain;
+﻿using SAKURA.NZB.Business.Sale;
+using SAKURA.NZB.Domain;
 using System;
 using System.Collections.Generic;
 
@@ -22,8 +23,7 @@ namespace SAKURA.NZB.Website.Models
 		public string Phone { get; set; }
 		public string Address { get; set; }
 
-		public string Sender { get; set; }
-		public string SenderPhone { get; set; }
+		public MonthSale MonthSale { get; set; }
 
 		public List<CustomerOrderMode> CustomerOrders { get; set; }
 	}

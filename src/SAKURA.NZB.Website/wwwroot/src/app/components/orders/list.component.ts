@@ -2,39 +2,19 @@
 
 import {Component, OnInit} from "angular2/core";
 import {CORE_DIRECTIVES, FORM_DIRECTIVES, ControlGroup, Control, Validators} from "angular2/common";
+import {Http, Headers} from 'angular2/http';
 import {Router, ROUTER_DIRECTIVES} from 'angular2/router';
-import {ApiService} from "../api.service";
-import {OrderModel, CustomerOrder, OrderProduct, ExpressTrack, ExpressTrackRecord, Dict, formatCurrency} from "./models";
+import {ORDERS_SEARCH_ENDPOINT, ORDER_DELIVER_ENDPOINT, ORDER_UPDATE_STATUS_ENDPOINT, EXPRESS_TRACK_ENDPOINT} from "../api.service";
+import {OrderModel, MonthSale, CustomerOrder, OrderProduct, ExpressTrack, ExpressTrackRecord, Dict, formatCurrency} from "./models";
 import {NumberValidator, PositiveNumberValidator, ValidationResult} from "../../validators/numberValidator";
 import {ClipboardDirective} from '../../directives/clipboard.directive';
+
+import { PAGINATION_DIRECTIVES } from 'ng2-bootstrap/ng2-bootstrap';
 
 import '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js';
 
 declare var moment: any;
 declare var $: any;
-
-class YearGroup {
-	constructor(public year: number, public monthGroups: MonthGroup[]) { }
-}
-
-class MonthGroup {
-	totalCost: string;
-	totalPrice: string;
-	totalProfit: string
-
-	constructor(public month: string, public models: OrderModel[]) {
-		this.updateSummary();
-	}
-
-	updateSummary() {
-		var list = this.models.ToList<OrderModel>();
-		this.totalCost = (list.Sum(om => om.totalCost)).toFixed(2);
-		this.totalPrice = (list.Sum(om => om.totalPrice)).toFixed(2);
-
-		var tp = list.Sum(om => om.totalProfit);
-		this.totalProfit = formatCurrency(tp, tp.toFixed(2));
-	}
-}
 
 class OrderDeliveryModel {
 	constructor(public orderId: number, public waybillNumber: string, public weight: number, public freight: number) { }
@@ -44,17 +24,16 @@ class OrderDeliveryModel {
     selector: "customers",
     templateUrl: "./src/app/components/orders/list.html",
 	styleUrls: ["./src/app/components/orders/orders.css"],
-    providers: [ApiService],
-    directives: [CORE_DIRECTIVES, FORM_DIRECTIVES, ROUTER_DIRECTIVES, ClipboardDirective]
+    directives: [CORE_DIRECTIVES, FORM_DIRECTIVES, ROUTER_DIRECTIVES, ClipboardDirective, PAGINATION_DIRECTIVES]
 })
 export class OrdersComponent implements OnInit {
-	data: YearGroup[] = [];
+	orderList = [].ToList<OrderModel>();
 	deliveryModel: OrderDeliveryModel = null;
 	expressTrackInfo: ExpressTrack = null;
 
 	deliveryForm: ControlGroup;
 
-	filteredData: YearGroup[] = [];
+	searchList: OrderModel[] = [];
 	filterText = '';
 	orderState = '';
 	paymentState = '';
@@ -66,16 +45,23 @@ export class OrdersComponent implements OnInit {
 	totalAmount = 0;
 	amount = 0;
 	thisYear = moment().year();
+	freightRate: number = (<any>window).nzb.express.freightRate;
 
-	fixedRateHigh: number;
-	fixedRateLow: number;
-	currentRate: number;
-	freightRate: number;
+	page = 1;
+	prevItems = [].ToList<OrderModel>();
+	nextItems = [].ToList<OrderModel>();
+	itemsPerPage = 0;
+	totalItemCount = 0;
 
-	private _filterText = '';
+	isLoading = true;
 	colorSheet = ['bg-red', 'bg-pink', 'bg-purple', 'bg-deeppurple', 'bg-indigo', 'bg-blue', 'bg-teal', 'bg-green', 'bg-orange', 'bg-deeporange', 'bg-brown', 'bg-bluegrey'];
 
-    constructor(private service: ApiService, private router: Router) {
+	private _filterText = '';
+	private _isPrevItemsLoaded = false;
+	private _isNextItemsLoaded = false;
+	private _headers: Headers = new Headers();
+
+    constructor(private http: Http, private router: Router) {
 		this.deliveryModel = new OrderDeliveryModel(null, '', null, null);
 		this.expressTrackInfo = new ExpressTrack(null, null, null, null, null, null, null, []);
 
@@ -88,37 +74,71 @@ export class OrdersComponent implements OnInit {
 		for (var key in this.orderStates) {
 			this.orderStateKeys.push(key);
 		}
+
 		for (var key in this.paymentStates) {
 			this.paymentStateKeys.push(key);
 		}
+
+		this._headers.append('Content-Type', 'application/json');
 	}
 
     ngOnInit() {
         this.get();
     }
 
-	get() {
+	get(loadSearchList = true) {
+		this.orderList = [].ToList<OrderModel>();
+		this.prevItems = [].ToList<OrderModel>();
+		this.nextItems = [].ToList<OrderModel>();
+		this._isPrevItemsLoaded = false;
+		this._isNextItemsLoaded = false;
+
 		var that = this;
+		var url = ORDERS_SEARCH_ENDPOINT + '?page=' + this.page;
+		if (this.orderState)
+			url += '&state=' + this.orderState;
+		if (this.paymentState)
+			url += '&payment=' + this.paymentState;
 
-		this.service.getLatestExchangeRates(json => {
-			if (json) {
-				that.fixedRateHigh = json.fixedRateHigh;
-				that.fixedRateLow = json.fixedRateLow;
-				that.currentRate = json.currentRate.toFixed(2);
-				that.freightRate = json.freightRate;
+		this.http.get(url)
+			.map(res => res.status === 404 ? null : res.json())
+			.subscribe(json => {
+				this.isLoading = false;
+				if (!json) return;
 
-				that.loadOrders();
-			}
-		});
-	}
+				if (json.items) {
+					json.items.forEach(c => {
+						that.orderList.Add(that.map(c));
+					});
+				}
 
-	loadOrders() {
-		var that = this;
+				if (json.prevItems) {
+					json.prevItems.forEach(c => {
+						that.prevItems.Add(that.map(c));
+					});
+					that._isPrevItemsLoaded = true;
+				}
 
-		this.service.getOrders(json => {
-			if (json)
-				that.map(json, that, true);
-		});
+				if (json.nextItems) {
+					json.nextItems.forEach(c => {
+						that.nextItems.Add(that.map(c));
+					});
+					that._isNextItemsLoaded = true;
+				}
+
+				that.itemsPerPage = json.itemsPerPage;
+				that.totalItemCount = json.totalItemCount;
+
+				if (!that.orderState && !that.paymentState)
+					that.totalAmount = that.totalItemCount;
+
+				if (loadSearchList)
+					that.addToSearchList(that.orderList);
+			},
+			error => {
+				this.isLoading = false;
+				console.log(error);
+			});
 	}
 
 	onClearFilter() {
@@ -132,20 +152,28 @@ export class OrdersComponent implements OnInit {
 		if (this.filterText === this._filterText)
 			return;
 
-
-		if (/^$|^[\u4e00-\u9fa5_a-zA-Z0-9 ]+$/g.test(this.filterText))
-			this.onSearch(this.orderState, this.paymentState);
+		if (/^$|^[\u4e00-\u9fa5_a-zA-Z0-9 ]+$/g.test(this.filterText)) {
+			this.page = 1;
+			this.get();
+		}
 
 		this._filterText = this.filterText;
 	}
 
-	onSearch(orderState: string, paymentState: string) {
-		var that = this;
+	onSearchByState(state: string) {
+		if (state !== this.orderState)
+			this.orderState = state;
 
-		this.service.getSearchOrders(this.filterText, orderState, paymentState, json => {
-			if (json)
-				that.map(json, that, false);
-		});
+		this.page = 1;
+		this.get();
+	}
+
+	onSearchByPayment(payment: string) {
+		if (payment !== this.paymentState)
+			this.paymentState = payment;
+
+		this.page = 1;
+		this.get();
 	}
 
 	onDeliverOpen(orderId: number) {
@@ -169,71 +197,43 @@ export class OrdersComponent implements OnInit {
 		this.deliveryModel.weight = this.deliveryForm.value.weight;
 		this.deliveryModel.freight = this.deliveryForm.value.freight;
 
-		this.service.postDeliverOrder(JSON.stringify(this.deliveryModel), json => {
-			if (json) {
-				var id = json.orderId;
-				var orderState = json.orderState;
-				var waybillNumber = json.waybillNumber;
-				var weight = json.weight;
-				var freight = json.freight;
+		this.http
+			.post(ORDER_DELIVER_ENDPOINT, JSON.stringify(this.deliveryModel), { headers: this._headers })
+			.map(res => res.status === 404 ? null : res.json())
+			.subscribe(
+				json => {
+					if (!json) return;
 
-				this.data.forEach(yg => {
-					yg.monthGroups.forEach(mg => {
-						var found = false;
-						mg.models.forEach(om => {
-							if (om.id == id) {
-								om.orderState = orderState;
-								om.waybillNumber = waybillNumber;
-								om.weight = weight;
-								om.freight = freight;
-
-								om.updateSummary();
-								om.updateStatus();
-								found = true;
-							}
-						});
-
-						if (found) {
-							mg.updateSummary();
-							return;
-						}
-					});
-				});
-			};
-		});
+					this.get();
+				},
+				error =>  console.error(error));
 	}
 
 	onOrderAction(orderId: string, action: string) {
 		var model = { orderId: orderId, action: action };
-		this.service.postUpdateOrderStatus(JSON.stringify(model), json => {
-			if (json) {
-				var id = json.orderId;
-				var orderState = json.orderState;
-				var paymentState = json.paymentState;
 
-				this.data.forEach(yg => {
-					yg.monthGroups.forEach(mg => {
-						mg.models.forEach(om => {
-							if (om.id == id) {
-								om.paymentState = paymentState;
-								om.orderState = orderState;
-								om.updateStatus();
+		this.http
+			.post(ORDER_UPDATE_STATUS_ENDPOINT, JSON.stringify(model), { headers: this._headers })
+			.map(res => res.status === 404 ? null : res.json())
+			.subscribe(
+			json => {
+				if (!json) return;
 
-								return;
-							}
-						});
-					});
-				});
-			};
-		});
+				this.get();
+			},
+			error => console.error(error));
 	}
 
 	onOpenExpressTrack(waybillNumber) {
 		var that = this;
 
 		this.expressTrackInfo = new ExpressTrack(waybillNumber, null, null, null, null, null, null, []);
-		this.service.getExpressTrack(waybillNumber, json => {
-			if (json) {
+		this.http.get(EXPRESS_TRACK_ENDPOINT + waybillNumber)
+			.map(res => res.status === 404 ? null : res.json())
+			.subscribe(json => {
+				this.isLoading = false;
+				if (!json) return;
+
 				that.expressTrackInfo.waybillNumber = json.waybillNumber;
 				that.expressTrackInfo.from = json.from;
 				that.expressTrackInfo.destination = json.destination;
@@ -248,51 +248,64 @@ export class OrdersComponent implements OnInit {
 				json.details.forEach(d => {
 					that.expressTrackInfo.details.push(new ExpressTrackRecord(moment(d.when).format('YYYY-MM-DD HH:mm'), d.where, d.content));
 				});
-			}
-		});
+			},
+			error => console.log(error));
 
 		$('#expressTrackModal').modal('show');
 	}
 
+	onPageChanged(event: any): void {
+		var loadSearchList = true;
+		this.searchList = [];
 
-	map(json: any, that: OrdersComponent, initial: boolean) {
-		var yearGroups = [].ToList<YearGroup>();
-		var orderCount = 0;
-		that.data = [];
+		if (this.page - 1 == event.page && this._isPrevItemsLoaded) {
+			this.addToSearchList(this.prevItems);
+			loadSearchList = false;
+		}
+		if (this.page + 1 == event.page && this._isNextItemsLoaded) {
+			this.addToSearchList(this.nextItems);
+			loadSearchList = false;
+		}
 
-		json.forEach(c => {
-			var monthGroups = [].ToList<MonthGroup>();
-			c.monthGroups.forEach(mg => {
-				var orders = [].ToList<OrderModel>();
-				mg.models.forEach(om => {
-					var customers = [].ToList<CustomerOrder>();
-					om.customerOrders.forEach(co => {
-						var products = [].ToList<OrderProduct>();
-						co.orderProducts.forEach(op => {
-							products.Add(new OrderProduct(op.productId, op.productBrand, op.productName, op.cost,
-								op.price, op.qty, op.purchased, that.currentRate));
-						});
+		this.page = event.page;
+		this.get(loadSearchList);
+	};
 
-						customers.Add(new CustomerOrder(co.customerId, co.customerName, products.ToArray()));
-					});
+	map(json: any) {
+		var monthSale = new MonthSale(json.monthSale.month, json.monthSale.count, json.monthSale.cost, json.monthSale.income, json.monthSale.profit);
 
-					orders.Add(new OrderModel(om.id, moment(om.orderTime).format('DD/MM/YYYY'), om.deliveryTime, om.receiveTime,
-						om.orderState, om.paymentState, om.waybillNumber, om.weight, om.freight, om.recipient, om.phone, om.address,
-						om.sender, om.senderPhone, that.currentRate, that.orderStates, customers.ToArray()));
-					orderCount += 1;
-				});
+		var customers = [].ToList<CustomerOrder>();
+		json.customerOrders.forEach(co => {
+			var products = [].ToList<OrderProduct>();
+			co.orderProducts.forEach(op => {
+				products.Add(new OrderProduct(op.productId, op.productBrand, op.productName, op.cost,
+					op.price, op.qty, op.purchased));
+			})
 
-				
-				monthGroups.Add(new MonthGroup(mg.month, orders.ToArray()));
-			});
-
-			yearGroups.Add(new YearGroup(c.year, monthGroups.ToArray()));
-			that.data = yearGroups.ToArray();
+			customers.Add(new CustomerOrder(co.customerId, co.customerName, products.ToArray()));
 		});
 
-		if (initial)
-			that.totalAmount = orderCount;
+		return new OrderModel(json.id, moment(json.orderTime).format('DD/MM/YYYY'), json.deliveryTime, json.receiveTime,
+			json.orderState, json.paymentState, json.waybillNumber, json.weight, json.freight, json.recipient, json.phone, json.address,
+			monthSale, this.orderStates, customers.ToArray());
+	}
 
-		that.amount = orderCount;
+	addToSearchList(orders: List<OrderModel>) {
+		var list = [].ToList<OrderModel>();
+		var month = '';
+		var that = this;
+
+		orders.ForEach(o => {
+			if (o.monthSale.month != month) {
+				var monthSaleItem = new OrderModel(null, null, null, null, null, null, null, null, null, null, null, null, o.monthSale, null, [], true);
+
+				list.Add(monthSaleItem);
+				month = o.monthSale.month;
+			}
+
+			list.Add(o);
+		});
+
+		this.searchList = list.ToArray();
 	}
 }

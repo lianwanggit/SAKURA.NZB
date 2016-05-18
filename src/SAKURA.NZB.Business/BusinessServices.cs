@@ -7,6 +7,7 @@ using SAKURA.NZB.Business.Configuration;
 using SAKURA.NZB.Business.CurrencyTracking;
 using SAKURA.NZB.Business.ExpressTracking;
 using SAKURA.NZB.Business.Hangfire;
+using SAKURA.NZB.Business.Sale;
 using SAKURA.NZB.Business.Services;
 using SAKURA.NZB.Data;
 
@@ -40,6 +41,8 @@ namespace SAKURA.NZB.Business
 			services.AddTransient<HangfireHelper>();
 			services.AddTransient<FlywayExpressTracker>();
 			services.AddTransient<CurrencyLayerTracker>();
+			services.AddTransient<MonthSaleCalculator>();
+
 			services.AddScoped<CurrencyTrackBootTask>();
 			services.AddScoped<ExpressTrackBootTask>();
 			services.AddScoped<DbCleanupBootTask>();

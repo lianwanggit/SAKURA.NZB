@@ -248,8 +248,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/
                         selector: "products",
                         templateUrl: "./src/app/components/products/list.html",
                         styleUrls: ["./src/app/components/products/products.css"],
-                        directives: [common_1.CORE_DIRECTIVES, common_1.FORM_DIRECTIVES, router_1.ROUTER_DIRECTIVES, ng2_bootstrap_1.PAGINATION_DIRECTIVES],
-                        encapsulation: core_1.ViewEncapsulation.None
+                        directives: [common_1.CORE_DIRECTIVES, common_1.FORM_DIRECTIVES, router_1.ROUTER_DIRECTIVES, ng2_bootstrap_1.PAGINATION_DIRECTIVES]
                     }), 
                     __metadata('design:paramtypes', [http_1.Http, router_1.Router])
                 ], ProductsComponent);

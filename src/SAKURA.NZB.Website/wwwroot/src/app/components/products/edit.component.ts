@@ -4,7 +4,7 @@ import {Component, OnInit} from "angular2/core";
 import {CORE_DIRECTIVES, FORM_DIRECTIVES, ControlGroup, Control, Validators} from "angular2/common";
 import {Http, Headers} from 'angular2/http';
 import {Router, RouteParams, ROUTER_DIRECTIVES} from 'angular2/router';
-import {PRODUCTS_ENDPOINT, CATEGORIES_ENDPOINT, BRANDS_ENDPOINT, SUPPLIERS_ENDPOINT, ORDER_GET_LATEST_BY_PRODUCT} from "../api.service";
+import {PRODUCTS_ENDPOINT, CATEGORIES_ENDPOINT, BRANDS_ENDPOINT, SUPPLIERS_ENDPOINT, ORDER_GET_LATEST_BY_PRODUCT_ENDPOINT} from "../api.service";
 import {Category, Brand, Supplier, Product, Quote} from "./models";
 import {SelectValidator, ValidationResult} from "../../validators/selectValidator";
 
@@ -152,7 +152,7 @@ export class ProductEditComponent implements OnInit {
 					console.log(error);
 				});
 
-			this.http.get(ORDER_GET_LATEST_BY_PRODUCT + this.productId)
+			this.http.get(ORDER_GET_LATEST_BY_PRODUCT_ENDPOINT + this.productId)
 				.map(res => res.status === 404 ? null : res.json())
 				.subscribe(json => {
 					this.isLatestOrderLoading = false;

@@ -3,6 +3,7 @@
     margin-right: -5px;
 }
 
+.product-search col-xs-12,
 .product-search .col-sm-4,
 .product-search .col-sm-8
  {
@@ -93,10 +94,6 @@
 .quote-card .placeholder,
 .quote-list .placeholder {
     color: #999;
-}
-
-.pagination {
-    margin: 8px 0 3px 0;
 }
 
 select option[default] {

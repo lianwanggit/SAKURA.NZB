@@ -40,6 +40,10 @@
     margin-left: 0;
 }
 
+.pagination {
+    margin: 8px 0 3px 0 !important;
+}
+
 .left-spacer {
     margin-left: 15px;
 }

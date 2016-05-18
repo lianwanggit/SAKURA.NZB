@@ -36,11 +36,21 @@
     var highRate = @Html.Raw(ViewBag.HighRate);
     var lowRate = @Html.Raw(ViewBag.LowRate);
 
+    var sender ='@Html.Raw(ViewBag.Sender)';
+    var senderPhone = @Html.Raw(ViewBag.SenderPhone);
+    var freightRate = @Html.Raw(ViewBag.FreightRate);
+
     window.nzb = {
         rate: {
-            live: rate, 
+            live: rate,
             high: highRate,
             low: lowRate
+        },
+
+        express: {
+            sender: sender,
+            senderPhone: senderPhone,
+            freightRate: freightRate
         }
     };
 

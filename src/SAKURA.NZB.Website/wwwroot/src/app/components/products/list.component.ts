@@ -1,6 +1,6 @@
 ﻿/// <reference path="../../../../lib/TypeScript-Linq/Scripts/typings/System/Collections/Generic/List.ts" />
 
-import {Component, OnInit, ViewEncapsulation} from "angular2/core";
+import {Component, OnInit} from "angular2/core";
 import {CORE_DIRECTIVES, FORM_DIRECTIVES} from "angular2/common";
 import {Http} from 'angular2/http';
 import {Router, ROUTER_DIRECTIVES} from 'angular2/router';
@@ -53,8 +53,7 @@ class ProductSummary {
     selector: "products",
     templateUrl: "./src/app/components/products/list.html",
 	styleUrls: ["./src/app/components/products/products.css"],
-    directives: [CORE_DIRECTIVES, FORM_DIRECTIVES, ROUTER_DIRECTIVES, PAGINATION_DIRECTIVES],
-	encapsulation: ViewEncapsulation.None
+    directives: [CORE_DIRECTIVES, FORM_DIRECTIVES, ROUTER_DIRECTIVES, PAGINATION_DIRECTIVES]
 })
 export class ProductsComponent implements OnInit {
 	productList = [].ToList<ProductSummary>();

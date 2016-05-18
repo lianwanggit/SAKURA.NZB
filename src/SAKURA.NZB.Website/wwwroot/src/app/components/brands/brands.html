@@ -71,7 +71,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                    <button type="button" class="btn btn-danger" data-dismiss="modal" [disabled]="!canDelete" (click)="onDelete()">删除</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal" *ngIf="canDelete" (click)="onDelete()">删除</button>
                     <button type="submit" class="btn btn-success" [disabled]="!myForm.form.valid">保存</button>
                 </div>
             </form>
