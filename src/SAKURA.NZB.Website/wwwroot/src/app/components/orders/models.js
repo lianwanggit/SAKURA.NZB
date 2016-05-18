@@ -149,11 +149,11 @@ System.register([], function(exports_1, context_1) {
             exports_1("OrderModel", OrderModel);
             MonthSale = (function () {
                 function MonthSale(month, count, cost, income, profit) {
-                    this.month = month;
                     this.count = count;
                     this.cost = cost;
                     this.income = income;
                     this.profit = profit;
+                    this.month = moment().month(month).format('MMM');
                 }
                 return MonthSale;
             }());

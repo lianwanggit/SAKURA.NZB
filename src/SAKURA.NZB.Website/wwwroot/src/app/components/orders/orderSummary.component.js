@@ -45,6 +45,7 @@ System.register(["angular2/core", "angular2/common", "../api.service", "./models
             OrderSummaryComponent = (function () {
                 function OrderSummaryComponent(service) {
                     this.service = service;
+                    this.exchangeRate = window.nzb.rate.live;
                 }
                 Object.defineProperty(OrderSummaryComponent.prototype, "productList", {
                     get: function () {
@@ -85,10 +86,6 @@ System.register(["angular2/core", "angular2/common", "../api.service", "./models
                     core_1.Input(), 
                     __metadata('design:type', models_1.OrderModel)
                 ], OrderSummaryComponent.prototype, "orderModel", void 0);
-                __decorate([
-                    core_1.Input(), 
-                    __metadata('design:type', Number)
-                ], OrderSummaryComponent.prototype, "exchangeRate", void 0);
                 OrderSummaryComponent = __decorate([
                     core_1.Component({
                         selector: "order-summary",

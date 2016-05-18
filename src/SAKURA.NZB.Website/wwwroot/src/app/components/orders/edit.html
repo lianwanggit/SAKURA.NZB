@@ -26,7 +26,7 @@
                 <order-customer [(orderModel)]="order" [viewMode]="viewMode"></order-customer>
             </div>
             <div role="tabpanel" class="tab-pane fade" id="product">
-                <order-products [(orderModel)]="order" [viewMode]="viewMode" [exchangeRate]="currentRate"></order-products>
+                <order-products [(orderModel)]="order" [viewMode]="viewMode"></order-products>
             </div>
             <div role="tabpanel" class="tab-pane fade" id="quote">
                 <order-quote [(orderModel)]="order"></order-quote>
@@ -35,7 +35,7 @@
                 <order-invoice [(orderModel)]="order" [viewMode]="viewMode"></order-invoice>
            </div>
             <div role="tabpanel" class="tab-pane fade" id="summary">
-                <order-summary [(orderModel)]="order" [exchangeRate]="currentRate"></order-summary>
+                <order-summary [(orderModel)]="order"></order-summary>
             </div>
         </div>
 

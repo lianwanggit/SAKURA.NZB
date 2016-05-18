@@ -96,10 +96,6 @@
     color: #999;
 }
 
-select option[default] {
-    color: #999;
-}
-
 @media (min-width: 768px) {
     .list-group {
         padding-bottom: 0;

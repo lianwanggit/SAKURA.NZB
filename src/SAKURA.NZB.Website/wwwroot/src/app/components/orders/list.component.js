@@ -69,7 +69,6 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/
                     this.paymentStates = (new models_1.Dict()).paymentStates;
                     this.paymentStateKeys = [];
                     this.totalAmount = 0;
-                    this.amount = 0;
                     this.thisYear = moment().year();
                     this.freightRate = window.nzb.express.freightRate;
                     this.page = 1;
@@ -111,6 +110,8 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/
                     this._isNextItemsLoaded = false;
                     var that = this;
                     var url = api_service_1.ORDERS_SEARCH_ENDPOINT + '?page=' + this.page;
+                    if (this.filterText)
+                        url += '&keyword=' + this.filterText;
                     if (this.orderState)
                         url += '&state=' + this.orderState;
                     if (this.paymentState)

@@ -19,7 +19,6 @@ export class OrderProductsComponent implements OnInit {
 	selectedCustomerId: string = '';
 
 	@Input() orderModel: OrderModel;
-	@Input() exchangeRate: number;
 	@Input() viewMode: boolean;
 
 	constructor(private service: ApiService) { }
@@ -47,7 +46,7 @@ export class OrderProductsComponent implements OnInit {
 				if (product.quotes.length)
 					lowestCost = product.quotes.ToList<Quote>().Min(q => q.price);
 				co.orderProducts.push(new OrderProduct(product.id, product.brand.name, product.brand.name + ' ' + product.name,
-					lowestCost, product.price, 1, false, this.exchangeRate));
+					lowestCost, product.price, 1, false));
 
 				that.onModelChanged(co);
 			}
@@ -74,7 +73,7 @@ export class OrderProductsComponent implements OnInit {
 
 	onModelChanged(co: CustomerOrder, op: OrderProduct = null) {
 		if (op)
-			op.calculateProfit(this.exchangeRate);
+			op.calculateProfit();
 
 		co.updateSummary();
 		this.orderModel.updateSummary();

@@ -35,10 +35,6 @@ export class OrderEditComponent implements OnInit {
 	orderStates = (new Dict()).orderStates;
 	paymentStates = (new Dict()).paymentStates;
 
-	fixedRateHigh: number;
-	fixedRateLow: number;
-	currentRate: number;
-
 	constructor(private service: ApiService, private router: Router, params: RouteParams, data: RouteData) {
 		this.orderId = params.get("id");
 		this.viewMode = data.get("readonly") == true;
@@ -48,22 +44,11 @@ export class OrderEditComponent implements OnInit {
 		}
 
 		this.order = new OrderModel(0, null, null, null, "Created", "Unpaid", null, null, null, null,
-			null, null, null, null, null, this.orderStates, []);
+			null, null, null, this.orderStates, []);
 	}
 
 	ngOnInit() {
-		var that = this;
-
-		this.service.getLatestExchangeRates(json => {
-			if (json) {
-				that.fixedRateHigh = json.fixedRateHigh;
-				that.fixedRateLow = json.fixedRateLow;
-				that.currentRate = json.currentRate.toFixed(2);
-
-				that.order.exchangeRate = that.currentRate;
-				that.loadData();
-			}
-		});
+		this.loadData();
 	}
 
 	onSave() {
@@ -92,15 +77,7 @@ export class OrderEditComponent implements OnInit {
 	loadData() {
 		var that = this;
 
-		if (!this.editMode) {
-			this.service.getSenderInfo(json => {
-				if (json) {
-					that.order.sender = json.sender;
-					that.order.senderPhone = json.senderPhone;
-				}
-			});
-		}
-		else {
+		if (this.editMode) {
 			this.service.getOrder(this.orderId, json => {
 				if (json) {
 					that.order.id = json.id;
@@ -115,16 +92,14 @@ export class OrderEditComponent implements OnInit {
 					that.order.recipient = json.recipient;
 					that.order.phone = json.phone;
 					that.order.address = json.address;
-					that.order.sender = json.sender;
-					that.order.senderPhone = json.senderPhone;
 
 					json.customerOrders.forEach(co => {
 						var c = new CustomerOrder(co.customerId, co.customerName, []);
 						co.orderProducts.forEach(op => {
 							var p = new OrderProduct(op.productId, op.productBrand, op.productName,
-								op.cost, op.price, op.qty, op.purchased, that.currentRate);
+								op.cost, op.price, op.qty, op.purchased);
 
-							p.calculateProfit(that.currentRate);
+							p.calculateProfit();
 							c.orderProducts.push(p);
 						});
 

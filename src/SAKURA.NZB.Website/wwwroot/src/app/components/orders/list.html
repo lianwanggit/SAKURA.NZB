@@ -2,7 +2,7 @@
 
 <div class="grey-border" *ngIf="!isLoading">
     <h2 class="page-header">
-        Orders <small>({{amount}} / {{totalAmount}})</small>
+        Orders <small>({{totalItemCount}} / {{totalAmount}})</small>
         <button type="button" class="btn btn-info pull-right" [routerLink]="['OAdd']">
             新建 <i class="fa fa-shopping-cart fa-lg"></i>
         </button>
@@ -53,7 +53,7 @@
                         <td><i class="fa fa-shopping-cart"></i> {{md.monthSale.count}}</td>
                         <td class="hidden-xs"><i class="fa fa-dollar"></i> {{md.monthSale.cost}}</td>
                         <td class="hidden-xs"><i class="fa fa-yen"></i> {{md.monthSale.income}}</td>
-                        <td><i class="fa fa-money"></i> {{md.monthSale.profit}}</td>
+                        <td class="padding-right-8"><i class="fa fa-money"></i> {{md.monthSale.profit}}</td>
                     </tr>
                 </table>
             </div>

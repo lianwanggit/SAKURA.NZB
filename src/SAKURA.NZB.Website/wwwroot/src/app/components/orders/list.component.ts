@@ -43,7 +43,6 @@ export class OrdersComponent implements OnInit {
 	paymentStateKeys: string[] = [];
 
 	totalAmount = 0;
-	amount = 0;
 	thisYear = moment().year();
 	freightRate: number = (<any>window).nzb.express.freightRate;
 
@@ -95,6 +94,8 @@ export class OrdersComponent implements OnInit {
 
 		var that = this;
 		var url = ORDERS_SEARCH_ENDPOINT + '?page=' + this.page;
+		if (this.filterText)
+			url += '&keyword=' + this.filterText;
 		if (this.orderState)
 			url += '&state=' + this.orderState;
 		if (this.paymentState)
