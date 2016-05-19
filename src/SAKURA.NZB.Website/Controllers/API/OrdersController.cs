@@ -23,7 +23,7 @@ namespace SAKURA.NZB.Website.Controllers
 		public OrdersController(NZBContext context, Config config, MonthSaleCalculator monthSaleCalculator)
 		{
 			_context = context;
-			_itemsPerPage = config.GetItemsPerPage();
+			_itemsPerPage = config.GetOrdersItemsPerPage();
 
 			_monthSaleCalculator = monthSaleCalculator;
 		}
@@ -124,7 +124,7 @@ namespace SAKURA.NZB.Website.Controllers
 				models.Add(model);
 			});
 
-			return new ObjectResult(new OrdersPagingModel(models.ToList(), 10, options.page.GetValueOrDefault()));
+			return new ObjectResult(new OrdersPagingModel(models.ToList(), _itemsPerPage, options.page.GetValueOrDefault()));
 		}
 
 		[HttpGet("{id:int}", Name = "GetOrder")]

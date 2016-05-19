@@ -20,7 +20,7 @@ namespace SAKURA.NZB.Website.Controllers.API
 		public ProductsController(NZBContext context, Config config)
 		{
 			_context = context;
-			_itemsPerPage = config.GetItemsPerPage();
+			_itemsPerPage = config.GetProductsItemsPerPage();
 		}
 
 		[HttpGet]

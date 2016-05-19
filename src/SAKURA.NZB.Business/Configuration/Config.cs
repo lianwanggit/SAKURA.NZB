@@ -30,7 +30,8 @@ namespace SAKURA.NZB.Business.Configuration
 		public string GetExpressTrackerUri() => GetByKey(ConfigKeys.ExpressTrackerUri);
 		public string GetExpressTrackerCode() => GetByKey(ConfigKeys.ExpressTrackerCode);
 
-		public int GetItemsPerPage() => GetIntByKey(ConfigKeys.ItemsPerPage);
+		public int GetProductsItemsPerPage() => GetIntByKey(ConfigKeys.ProductItemsPerPage);
+		public int GetOrdersItemsPerPage() => GetIntByKey(ConfigKeys.OrdersItemsPerPage);
 
 		public void EnsureDefaults()
 		{
@@ -58,8 +59,11 @@ namespace SAKURA.NZB.Business.Configuration
 			if (!Exists(ConfigKeys.ExpressTrackerCode))
 				Set(ConfigKeys.ExpressTrackerCode, "");
 
-			if (!Exists(ConfigKeys.ItemsPerPage))
-				Set(ConfigKeys.ItemsPerPage, "30");
+			if (!Exists(ConfigKeys.ProductItemsPerPage))
+				Set(ConfigKeys.ProductItemsPerPage, "30");
+
+			if (!Exists(ConfigKeys.OrdersItemsPerPage))
+				Set(ConfigKeys.OrdersItemsPerPage, "15");
 		}
 
 		private bool Exists(string key) => _context.Configs.Any(c => c.Key == key);

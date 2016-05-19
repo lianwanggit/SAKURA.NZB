@@ -11,6 +11,7 @@
 		public static string ExpressTrackerUri = "ExpressTracker.Uri";
 		public static string ExpressTrackerCode = "ExpressTracker.Code";
 
-		public static string ItemsPerPage = "ItemsPerPage";
+		public static string ProductItemsPerPage = "Products.ItemsPerPage";
+		public static string OrdersItemsPerPage = "Orders.ItemsPerPage";
 	}
 }
