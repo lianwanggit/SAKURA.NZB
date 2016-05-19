@@ -177,9 +177,6 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/
                 ProductsComponent.prototype.getProductsByPage = function (loadSearchList) {
                     var _this = this;
                     if (loadSearchList === void 0) { loadSearchList = true; }
-                    this.productList = [].ToList();
-                    this.prevItems = [].ToList();
-                    this.nextItems = [].ToList();
                     this._isPrevItemsLoaded = false;
                     this._isNextItemsLoaded = false;
                     var that = this;
@@ -194,6 +191,9 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/
                         _this.isProductsLoading = false;
                         if (!json)
                             return;
+                        that.productList = [].ToList();
+                        that.prevItems = [].ToList();
+                        that.nextItems = [].ToList();
                         if (json.items) {
                             json.items.forEach(function (c) {
                                 that.productList.Add(new ProductSummary(c.id, c.name, c.category, c.brand, c.quote, c.price, c.soldHighPrice, c.soldLowPrice, c.soldCount));

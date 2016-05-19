@@ -185,9 +185,6 @@ export class ProductsComponent implements OnInit {
 	};
 
 	getProductsByPage(loadSearchList = true) {
-		this.productList = [].ToList<ProductSummary>();
-		this.prevItems = [].ToList<ProductSummary>();
-		this.nextItems = [].ToList<ProductSummary>();
 		this._isPrevItemsLoaded = false;
 		this._isNextItemsLoaded = false;
 
@@ -203,6 +200,10 @@ export class ProductsComponent implements OnInit {
 			.subscribe(json => {
 				this.isProductsLoading = false;
 				if (!json) return;
+
+				that.productList = [].ToList<ProductSummary>();
+				that.prevItems = [].ToList<ProductSummary>();
+				that.nextItems = [].ToList<ProductSummary>();
 
 				if (json.items) {
 					json.items.forEach(c => {

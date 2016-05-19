@@ -111,6 +111,7 @@ namespace SAKURA.NZB.Website.Controllers
 					.ThenInclude(p => p.Brand)
 				.Where(o => keywordPredicate(o) && statePredicate(o) && paymentPredicate(o))
 				.OrderByDescending(o => o.OrderTime)
+				.ThenBy(o => o.Products.First().Customer.NamePinYin)
 				.ToList();
 
 			var monthSaleSummary = _monthSaleCalculator.Aggregate();
@@ -123,7 +124,7 @@ namespace SAKURA.NZB.Website.Controllers
 				models.Add(model);
 			});
 
-			return new ObjectResult(new OrdersPagingModel(models.ToList(), 15, options.page.GetValueOrDefault()));
+			return new ObjectResult(new OrdersPagingModel(models.ToList(), 10, options.page.GetValueOrDefault()));
 		}
 
 		[HttpGet("{id:int}", Name = "GetOrder")]

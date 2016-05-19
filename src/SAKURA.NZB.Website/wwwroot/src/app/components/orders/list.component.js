@@ -103,9 +103,6 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/
                 OrdersComponent.prototype.get = function (loadSearchList) {
                     var _this = this;
                     if (loadSearchList === void 0) { loadSearchList = true; }
-                    this.orderList = [].ToList();
-                    this.prevItems = [].ToList();
-                    this.nextItems = [].ToList();
                     this._isPrevItemsLoaded = false;
                     this._isNextItemsLoaded = false;
                     var that = this;
@@ -122,6 +119,9 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/
                         _this.isLoading = false;
                         if (!json)
                             return;
+                        that.orderList = [].ToList();
+                        that.prevItems = [].ToList();
+                        that.nextItems = [].ToList();
                         if (json.items) {
                             json.items.forEach(function (c) {
                                 that.orderList.Add(that.map(c));

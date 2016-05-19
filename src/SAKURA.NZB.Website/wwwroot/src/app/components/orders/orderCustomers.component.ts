@@ -1,7 +1,7 @@
 ﻿import {Component, OnInit, AfterViewInit, Input} from "angular2/core";
 import {CORE_DIRECTIVES, FORM_DIRECTIVES, ControlGroup, Control, Validators} from "angular2/common";
-
-import {ApiService} from "../api.service";
+import {Http} from 'angular2/http';
+import {CUSTOMERS_ENDPOINT} from "../api.service";
 import {AlphaIndexerDirective, Element} from "../../directives/alphaIndexer.directive";
 import {CustomerOrder, OrderProduct, OrderModel} from "./models";
 import {Customer} from "../customers/edit.component";
@@ -20,7 +20,6 @@ export class CustomerKvp {
     selector: "order-customer",
     templateUrl: "./src/app/components/orders/orderCustomers.html",
 	styleUrls: ["./src/app/components/orders/orderCustomers.css"],
-    providers: [ApiService],
     directives: [CORE_DIRECTIVES, FORM_DIRECTIVES, AlphaIndexerDirective, TYPEAHEAD_DIRECTIVES]
 })
 
@@ -36,7 +35,7 @@ export class OrderCustomersComponent implements OnInit, AfterViewInit {
 	@Input() orderModel: OrderModel;
 	@Input() viewMode: boolean;
 
-	constructor(private service: ApiService) {
+	constructor(private http: Http) {
 		var that = this;
 
 		this.recipientGroup = new ControlGroup({
@@ -159,9 +158,14 @@ export class OrderCustomersComponent implements OnInit, AfterViewInit {
 	getCustomer(id: string) {
 		var that = this;
 
-        this.service.getCustomer(id, json => {
-            if (json) {
-                that.selectedCustomer = new Customer(json);
+		this.http
+			.get(CUSTOMERS_ENDPOINT + id)
+			.map(res => res.status === 404 ? null : res.json())
+			.subscribe(
+			json => {
+				if (!json) return;
+
+				that.selectedCustomer = new Customer(json);
 
 				if (that.orderModel.id != 0 && that.orderModel.customerOrders.length
 					&& that.orderModel.customerOrders[0].customerId.toString() == id) {
@@ -190,15 +194,20 @@ export class OrderCustomersComponent implements OnInit, AfterViewInit {
 				(<any>that.expressGroup.controls['waybill']).updateValue(that.orderModel.waybillNumber);
 				(<any>that.expressGroup.controls['weight']).updateValue(that.orderModel.weight);
 				(<any>that.expressGroup.controls['freight']).updateValue(that.orderModel.freight);
-            }
-        });
+			},
+			error => console.error(error));
 	}
 
 	getCustomers() {
 		var that = this;
 
-		this.service.getCustomers(json => {
-			if (json) {
+		this.http
+			.get(CUSTOMERS_ENDPOINT)
+			.map(res => res.status === 404 ? null : res.json())
+			.subscribe(
+			json => {
+				if (!json) return;
+
 				var list = [].ToList<Element>();
 				json.forEach(x => {
 					var c = new Customer(x);
@@ -209,8 +218,8 @@ export class OrderCustomersComponent implements OnInit, AfterViewInit {
 				});
 
 				that.elementSource = list.ToArray();
-			}
-		});
+			},
+			error => console.error(error));
 	}
 
 	get customerId() { return this.orderModel.customerOrders.length ? this.orderModel.customerOrders[0].customerId : ''; }

@@ -1,7 +1,7 @@
 ﻿import {Component, OnInit, EventEmitter, Input, Output} from "angular2/core";
 import {CORE_DIRECTIVES, FORM_DIRECTIVES, ControlGroup, Control, Validators} from "angular2/common";
-
-import {ApiService} from "../api.service";
+import {Http} from 'angular2/http';
+import {PRODUCTS_ENDPOINT, PRODUCTS_BRIEF_ENDPOINT} from "../api.service";
 import {BrandIndexerDirective, Item} from "../../directives/brandIndexer.directive";
 import {CustomerOrder, OrderProduct, OrderModel} from "./models";
 import {Category, Brand, Supplier, Product, Quote} from "../products/models";
@@ -9,8 +9,7 @@ import {Category, Brand, Supplier, Product, Quote} from "../products/models";
 @Component({
     selector: "order-products",
     templateUrl: "./src/app/components/orders/orderProducts.html",
-	styleUrls: ["./src/app/components/orders/orderProducts.css"],
-    providers: [ApiService],
+	styleUrls: ["./src/app/components/orders/orderProducts.css"],    
     directives: [CORE_DIRECTIVES, FORM_DIRECTIVES, BrandIndexerDirective]
 })
 
@@ -21,7 +20,7 @@ export class OrderProductsComponent implements OnInit {
 	@Input() orderModel: OrderModel;
 	@Input() viewMode: boolean;
 
-	constructor(private service: ApiService) { }
+	constructor(private http: Http) { }
 
 	ngOnInit() {
 		this.getProducts();
@@ -38,19 +37,25 @@ export class OrderProductsComponent implements OnInit {
 		var co = coList.First(co => co.customerId.toString() == this.selectedCustomerId);
 		var opList = co.orderProducts.ToList<OrderProduct>();
 		var that = this;
-		this.service.getProduct(id, json => {
-			if (json) {
+
+		this.http
+			.get(PRODUCTS_ENDPOINT + id)
+			.map(res => res.status === 404 ? null : res.json())
+			.subscribe(
+			json => {
+				if (!json) return;
+
 				var product = new Product(json);
 
-				var lowestCost = 0; 
+				var lowestCost = 0;
 				if (product.quotes.length)
 					lowestCost = product.quotes.ToList<Quote>().Min(q => q.price);
 				co.orderProducts.push(new OrderProduct(product.id, product.brand.name, product.brand.name + ' ' + product.name,
 					lowestCost, product.price, 1, false));
 
 				that.onModelChanged(co);
-			}
-		});
+			},
+			error => console.error(error));
 	}
 
 	onRemoveItem(cid: number, pid: number) {
@@ -83,16 +88,21 @@ export class OrderProductsComponent implements OnInit {
 	getProducts() {
 		var that = this;
 
-		this.service.getProductsBrief(json => {
-			if (json) {
-				var list = [].ToList<Item>();
-				json.forEach(x => {
-					list.Add(new Item(x.id, x.name, x.brand));
-				});
+		this.http
+			.get(PRODUCTS_BRIEF_ENDPOINT)
+			.map(res => res.status === 404 ? null : res.json())
+			.subscribe(
+				json => {
+					if (!json) return;
 
-				that.itemSource = list.ToArray();
-			}
-		});
+					var list = [].ToList<Item>();
+					json.forEach(x => {
+						list.Add(new Item(x.id, x.name, x.brand));
+					});
+
+					that.itemSource = list.ToArray();
+				},
+				error => console.error(error));
 	}
 
 	get isLoaded() { return this.orderModel && this.orderModel.customerOrders && this.orderModel.customerOrders.length; }

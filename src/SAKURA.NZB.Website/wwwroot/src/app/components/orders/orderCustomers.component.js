@@ -1,4 +1,4 @@
-System.register(["angular2/core", "angular2/common", "../api.service", "../../directives/alphaIndexer.directive", "./models", "../customers/edit.component", "../../validators/numberValidator", "ng2-bootstrap/ng2-bootstrap"], function(exports_1, context_1) {
+System.register(["angular2/core", "angular2/common", 'angular2/http', "../api.service", "../../directives/alphaIndexer.directive", "./models", "../customers/edit.component", "../../validators/numberValidator", "ng2-bootstrap/ng2-bootstrap"], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -10,7 +10,7 @@ System.register(["angular2/core", "angular2/common", "../api.service", "../../di
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, common_1, api_service_1, alphaIndexer_directive_1, models_1, edit_component_1, numberValidator_1, ng2_bootstrap_1;
+    var core_1, common_1, http_1, api_service_1, alphaIndexer_directive_1, models_1, edit_component_1, numberValidator_1, ng2_bootstrap_1;
     var CustomerKvp, OrderCustomersComponent;
     return {
         setters:[
@@ -19,6 +19,9 @@ System.register(["angular2/core", "angular2/common", "../api.service", "../../di
             },
             function (common_1_1) {
                 common_1 = common_1_1;
+            },
+            function (http_1_1) {
+                http_1 = http_1_1;
             },
             function (api_service_1_1) {
                 api_service_1 = api_service_1_1;
@@ -48,8 +51,8 @@ System.register(["angular2/core", "angular2/common", "../api.service", "../../di
             }());
             exports_1("CustomerKvp", CustomerKvp);
             OrderCustomersComponent = (function () {
-                function OrderCustomersComponent(service) {
-                    this.service = service;
+                function OrderCustomersComponent(http) {
+                    this.http = http;
                     this.selectedCustomer = null;
                     this.selectedExCustomerName = '';
                     this.allCustomers = [];
@@ -157,51 +160,57 @@ System.register(["angular2/core", "angular2/common", "../api.service", "../../di
                 };
                 OrderCustomersComponent.prototype.getCustomer = function (id) {
                     var that = this;
-                    this.service.getCustomer(id, function (json) {
-                        if (json) {
-                            that.selectedCustomer = new edit_component_1.Customer(json);
-                            if (that.orderModel.id != 0 && that.orderModel.customerOrders.length
-                                && that.orderModel.customerOrders[0].customerId.toString() == id) {
-                                that.recipientGroup.controls['recipient'].updateValue(that.orderModel.recipient);
-                                that.recipientGroup.controls['phone'].updateValue(that.orderModel.phone);
-                                that.recipientGroup.controls['address'].updateValue(that.orderModel.address);
-                            }
-                            else {
-                                that.recipientGroup.controls['recipient'].updateValue(that.selectedCustomer.fullName);
-                                that.recipientGroup.controls['phone'].updateValue(that.selectedCustomer.phone1);
-                                that.recipientGroup.controls['address'].updateValue(that.selectedCustomer.address);
-                                var co = new models_1.CustomerOrder(that.selectedCustomer.id, that.selectedCustomer.fullName, []);
-                                that.orderModel.customerOrders = [];
-                                that.orderModel.customerOrders.push(co);
-                                that.onModelChanged(co, true);
-                            }
-                            if (that.orderModel.orderTime) {
-                                jQuery('#orderDate').data("DateTimePicker").date(moment(that.orderModel.orderTime));
-                            }
-                            else {
-                                that.orderModel.orderTime = jQuery('#orderDate').data("DateTimePicker").date().toDate();
-                            }
-                            that.expressGroup.controls['orderTime'].updateValue(that.orderModel.orderTime);
-                            that.expressGroup.controls['waybill'].updateValue(that.orderModel.waybillNumber);
-                            that.expressGroup.controls['weight'].updateValue(that.orderModel.weight);
-                            that.expressGroup.controls['freight'].updateValue(that.orderModel.freight);
+                    this.http
+                        .get(api_service_1.CUSTOMERS_ENDPOINT + id)
+                        .map(function (res) { return res.status === 404 ? null : res.json(); })
+                        .subscribe(function (json) {
+                        if (!json)
+                            return;
+                        that.selectedCustomer = new edit_component_1.Customer(json);
+                        if (that.orderModel.id != 0 && that.orderModel.customerOrders.length
+                            && that.orderModel.customerOrders[0].customerId.toString() == id) {
+                            that.recipientGroup.controls['recipient'].updateValue(that.orderModel.recipient);
+                            that.recipientGroup.controls['phone'].updateValue(that.orderModel.phone);
+                            that.recipientGroup.controls['address'].updateValue(that.orderModel.address);
                         }
-                    });
+                        else {
+                            that.recipientGroup.controls['recipient'].updateValue(that.selectedCustomer.fullName);
+                            that.recipientGroup.controls['phone'].updateValue(that.selectedCustomer.phone1);
+                            that.recipientGroup.controls['address'].updateValue(that.selectedCustomer.address);
+                            var co = new models_1.CustomerOrder(that.selectedCustomer.id, that.selectedCustomer.fullName, []);
+                            that.orderModel.customerOrders = [];
+                            that.orderModel.customerOrders.push(co);
+                            that.onModelChanged(co, true);
+                        }
+                        if (that.orderModel.orderTime) {
+                            jQuery('#orderDate').data("DateTimePicker").date(moment(that.orderModel.orderTime));
+                        }
+                        else {
+                            that.orderModel.orderTime = jQuery('#orderDate').data("DateTimePicker").date().toDate();
+                        }
+                        that.expressGroup.controls['orderTime'].updateValue(that.orderModel.orderTime);
+                        that.expressGroup.controls['waybill'].updateValue(that.orderModel.waybillNumber);
+                        that.expressGroup.controls['weight'].updateValue(that.orderModel.weight);
+                        that.expressGroup.controls['freight'].updateValue(that.orderModel.freight);
+                    }, function (error) { return console.error(error); });
                 };
                 OrderCustomersComponent.prototype.getCustomers = function () {
                     var that = this;
-                    this.service.getCustomers(function (json) {
-                        if (json) {
-                            var list = [].ToList();
-                            json.forEach(function (x) {
-                                var c = new edit_component_1.Customer(x);
-                                list.Add(new alphaIndexer_directive_1.Element(c.id, c.fullName, c.namePinYin));
-                                var kvp = new CustomerKvp(c.id, c.fullName);
-                                that.allCustomers.push(kvp);
-                            });
-                            that.elementSource = list.ToArray();
-                        }
-                    });
+                    this.http
+                        .get(api_service_1.CUSTOMERS_ENDPOINT)
+                        .map(function (res) { return res.status === 404 ? null : res.json(); })
+                        .subscribe(function (json) {
+                        if (!json)
+                            return;
+                        var list = [].ToList();
+                        json.forEach(function (x) {
+                            var c = new edit_component_1.Customer(x);
+                            list.Add(new alphaIndexer_directive_1.Element(c.id, c.fullName, c.namePinYin));
+                            var kvp = new CustomerKvp(c.id, c.fullName);
+                            that.allCustomers.push(kvp);
+                        });
+                        that.elementSource = list.ToArray();
+                    }, function (error) { return console.error(error); });
                 };
                 Object.defineProperty(OrderCustomersComponent.prototype, "customerId", {
                     get: function () { return this.orderModel.customerOrders.length ? this.orderModel.customerOrders[0].customerId : ''; },
@@ -236,10 +245,9 @@ System.register(["angular2/core", "angular2/common", "../api.service", "../../di
                         selector: "order-customer",
                         templateUrl: "./src/app/components/orders/orderCustomers.html",
                         styleUrls: ["./src/app/components/orders/orderCustomers.css"],
-                        providers: [api_service_1.ApiService],
                         directives: [common_1.CORE_DIRECTIVES, common_1.FORM_DIRECTIVES, alphaIndexer_directive_1.AlphaIndexerDirective, ng2_bootstrap_1.TYPEAHEAD_DIRECTIVES]
                     }), 
-                    __metadata('design:paramtypes', [api_service_1.ApiService])
+                    __metadata('design:paramtypes', [http_1.Http])
                 ], OrderCustomersComponent);
                 return OrderCustomersComponent;
             }());

@@ -86,9 +86,6 @@ export class OrdersComponent implements OnInit {
     }
 
 	get(loadSearchList = true) {
-		this.orderList = [].ToList<OrderModel>();
-		this.prevItems = [].ToList<OrderModel>();
-		this.nextItems = [].ToList<OrderModel>();
 		this._isPrevItemsLoaded = false;
 		this._isNextItemsLoaded = false;
 
@@ -106,6 +103,10 @@ export class OrdersComponent implements OnInit {
 			.subscribe(json => {
 				this.isLoading = false;
 				if (!json) return;
+
+				that.orderList = [].ToList<OrderModel>();
+				that.prevItems = [].ToList<OrderModel>();
+				that.nextItems = [].ToList<OrderModel>();
 
 				if (json.items) {
 					json.items.forEach(c => {

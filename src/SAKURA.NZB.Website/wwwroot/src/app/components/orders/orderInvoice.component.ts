@@ -1,7 +1,6 @@
 ﻿import {Component, Input} from "angular2/core";
 import {CORE_DIRECTIVES} from "angular2/common";
 
-import {ApiService} from "../api.service";
 import {CustomerOrder, OrderProduct, OrderModel} from "./models";
 
 class ProductInfo {
@@ -15,7 +14,6 @@ class ProductInfo {
     selector: "order-invoice",
     templateUrl: "./src/app/components/orders/orderInvoice.html",
 	styleUrls: ["./src/app/components/orders/orderInvoice.css"],
-	providers: [ApiService],
     directives: [CORE_DIRECTIVES]
 })
 
@@ -24,7 +22,7 @@ export class OrderInvoiceComponent {
 	@Input() viewMode: boolean;
 	totalCost: string;
 
-	constructor(private service: ApiService) { }
+	constructor() { }
 
 	onPurchasedChanged(id: string) {
 		if (this.viewMode) return;

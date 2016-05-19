@@ -1,4 +1,4 @@
-System.register(["angular2/core", "angular2/common", "../api.service", "../../directives/brandIndexer.directive", "./models", "../products/models"], function(exports_1, context_1) {
+System.register(["angular2/core", "angular2/common", 'angular2/http', "../api.service", "../../directives/brandIndexer.directive", "./models", "../products/models"], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -10,7 +10,7 @@ System.register(["angular2/core", "angular2/common", "../api.service", "../../di
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, common_1, api_service_1, brandIndexer_directive_1, models_1, models_2;
+    var core_1, common_1, http_1, api_service_1, brandIndexer_directive_1, models_1, models_2;
     var OrderProductsComponent;
     return {
         setters:[
@@ -19,6 +19,9 @@ System.register(["angular2/core", "angular2/common", "../api.service", "../../di
             },
             function (common_1_1) {
                 common_1 = common_1_1;
+            },
+            function (http_1_1) {
+                http_1 = http_1_1;
             },
             function (api_service_1_1) {
                 api_service_1 = api_service_1_1;
@@ -34,8 +37,8 @@ System.register(["angular2/core", "angular2/common", "../api.service", "../../di
             }],
         execute: function() {
             OrderProductsComponent = (function () {
-                function OrderProductsComponent(service) {
-                    this.service = service;
+                function OrderProductsComponent(http) {
+                    this.http = http;
                     this.selectedCustomerId = '';
                 }
                 OrderProductsComponent.prototype.ngOnInit = function () {
@@ -51,16 +54,19 @@ System.register(["angular2/core", "angular2/common", "../api.service", "../../di
                     var co = coList.First(function (co) { return co.customerId.toString() == _this.selectedCustomerId; });
                     var opList = co.orderProducts.ToList();
                     var that = this;
-                    this.service.getProduct(id, function (json) {
-                        if (json) {
-                            var product = new models_2.Product(json);
-                            var lowestCost = 0;
-                            if (product.quotes.length)
-                                lowestCost = product.quotes.ToList().Min(function (q) { return q.price; });
-                            co.orderProducts.push(new models_1.OrderProduct(product.id, product.brand.name, product.brand.name + ' ' + product.name, lowestCost, product.price, 1, false));
-                            that.onModelChanged(co);
-                        }
-                    });
+                    this.http
+                        .get(api_service_1.PRODUCTS_ENDPOINT + id)
+                        .map(function (res) { return res.status === 404 ? null : res.json(); })
+                        .subscribe(function (json) {
+                        if (!json)
+                            return;
+                        var product = new models_2.Product(json);
+                        var lowestCost = 0;
+                        if (product.quotes.length)
+                            lowestCost = product.quotes.ToList().Min(function (q) { return q.price; });
+                        co.orderProducts.push(new models_1.OrderProduct(product.id, product.brand.name, product.brand.name + ' ' + product.name, lowestCost, product.price, 1, false));
+                        that.onModelChanged(co);
+                    }, function (error) { return console.error(error); });
                 };
                 OrderProductsComponent.prototype.onRemoveItem = function (cid, pid) {
                     var co = this.orderModel.customerOrders.ToList().FirstOrDefault(function (c) { return c.customerId == cid; });
@@ -87,15 +93,18 @@ System.register(["angular2/core", "angular2/common", "../api.service", "../../di
                 };
                 OrderProductsComponent.prototype.getProducts = function () {
                     var that = this;
-                    this.service.getProductsBrief(function (json) {
-                        if (json) {
-                            var list = [].ToList();
-                            json.forEach(function (x) {
-                                list.Add(new brandIndexer_directive_1.Item(x.id, x.name, x.brand));
-                            });
-                            that.itemSource = list.ToArray();
-                        }
-                    });
+                    this.http
+                        .get(api_service_1.PRODUCTS_BRIEF_ENDPOINT)
+                        .map(function (res) { return res.status === 404 ? null : res.json(); })
+                        .subscribe(function (json) {
+                        if (!json)
+                            return;
+                        var list = [].ToList();
+                        json.forEach(function (x) {
+                            list.Add(new brandIndexer_directive_1.Item(x.id, x.name, x.brand));
+                        });
+                        that.itemSource = list.ToArray();
+                    }, function (error) { return console.error(error); });
                 };
                 Object.defineProperty(OrderProductsComponent.prototype, "isLoaded", {
                     get: function () { return this.orderModel && this.orderModel.customerOrders && this.orderModel.customerOrders.length; },
@@ -120,10 +129,9 @@ System.register(["angular2/core", "angular2/common", "../api.service", "../../di
                         selector: "order-products",
                         templateUrl: "./src/app/components/orders/orderProducts.html",
                         styleUrls: ["./src/app/components/orders/orderProducts.css"],
-                        providers: [api_service_1.ApiService],
                         directives: [common_1.CORE_DIRECTIVES, common_1.FORM_DIRECTIVES, brandIndexer_directive_1.BrandIndexerDirective]
                     }), 
-                    __metadata('design:paramtypes', [api_service_1.ApiService])
+                    __metadata('design:paramtypes', [http_1.Http])
                 ], OrderProductsComponent);
                 return OrderProductsComponent;
             }());

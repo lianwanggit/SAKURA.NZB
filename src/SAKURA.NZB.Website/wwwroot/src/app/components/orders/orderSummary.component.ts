@@ -1,7 +1,6 @@
 ﻿import {Component, Input} from "angular2/core";
 import {CORE_DIRECTIVES} from "angular2/common";
 
-import {ApiService} from "../api.service";
 import {CustomerOrder, OrderProduct, OrderModel, formatCurrency} from "./models";
 
 class ProductInfo {
@@ -20,7 +19,6 @@ class ProductInfo {
     selector: "order-summary",
     templateUrl: "./src/app/components/orders/orderSummary.html",
 	styleUrls: ["./src/app/components/orders/orderInvoice.css"],
-	providers: [ApiService],
     directives: [CORE_DIRECTIVES]
 })
 
@@ -28,7 +26,7 @@ export class OrderSummaryComponent {
 	@Input() orderModel: OrderModel;
 	exchangeRate = (<any>window).nzb.rate.live;
 
-	constructor(private service: ApiService) { }
+	constructor() { }
 
 	get productList() {
 		if (!this.orderModel || !this.orderModel.customerOrders)

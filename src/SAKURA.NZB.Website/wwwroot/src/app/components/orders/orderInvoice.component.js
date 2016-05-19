@@ -1,4 +1,4 @@
-System.register(["angular2/core", "angular2/common", "../api.service", "./models"], function(exports_1, context_1) {
+System.register(["angular2/core", "angular2/common", "./models"], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -10,7 +10,7 @@ System.register(["angular2/core", "angular2/common", "../api.service", "./models
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, common_1, api_service_1, models_1;
+    var core_1, common_1, models_1;
     var ProductInfo, OrderInvoiceComponent;
     return {
         setters:[
@@ -19,9 +19,6 @@ System.register(["angular2/core", "angular2/common", "../api.service", "./models
             },
             function (common_1_1) {
                 common_1 = common_1_1;
-            },
-            function (api_service_1_1) {
-                api_service_1 = api_service_1_1;
             },
             function (models_1_1) {
                 models_1 = models_1_1;
@@ -39,8 +36,7 @@ System.register(["angular2/core", "angular2/common", "../api.service", "./models
                 return ProductInfo;
             }());
             OrderInvoiceComponent = (function () {
-                function OrderInvoiceComponent(service) {
-                    this.service = service;
+                function OrderInvoiceComponent() {
                 }
                 OrderInvoiceComponent.prototype.onPurchasedChanged = function (id) {
                     if (this.viewMode)
@@ -87,10 +83,9 @@ System.register(["angular2/core", "angular2/common", "../api.service", "./models
                         selector: "order-invoice",
                         templateUrl: "./src/app/components/orders/orderInvoice.html",
                         styleUrls: ["./src/app/components/orders/orderInvoice.css"],
-                        providers: [api_service_1.ApiService],
                         directives: [common_1.CORE_DIRECTIVES]
                     }), 
-                    __metadata('design:paramtypes', [api_service_1.ApiService])
+                    __metadata('design:paramtypes', [])
                 ], OrderInvoiceComponent);
                 return OrderInvoiceComponent;
             }());

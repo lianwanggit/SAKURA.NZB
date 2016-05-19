@@ -6,9 +6,12 @@ export const CUSTOMERS_ENDPOINT = "api/customers/";
 export const BRANDS_ENDPOINT = "api/brands/";
 export const PRODUCTS_ENDPOINT = "api/products/";
 export const PRODUCTS_SEARCH_ENDPOINT = "api/products/search/";
+export const PRODUCTS_BRIEF_ENDPOINT = "api/products/get-brief/";
 export const PRODUCTS_GET_BY_BRAND_ENDPOINT = "api/products/get-by-brand/";
 export const CATEGORIES_ENDPOINT = "api/categories/";
 export const SUPPLIERS_ENDPOINT = "api/suppliers/";
+
+export const ORDERS_ENDPOINT = "api/orders/";
 export const ORDERS_SEARCH_ENDPOINT = "api/orders/search/";
 export const ORDER_DELIVER_ENDPOINT = "api/orders/deliver/";
 export const ORDER_UPDATE_STATUS_ENDPOINT = "api/orders/update-order-status/";
