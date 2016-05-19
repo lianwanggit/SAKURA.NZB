@@ -11,7 +11,7 @@ System.register(["rxjs/Rx", "angular2/http", "angular2/core"], function(exports_
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
     var http_1, core_1;
-    var CUSTOMERS_ENDPOINT, BRANDS_ENDPOINT, PRODUCTS_ENDPOINT, PRODUCTS_SEARCH_ENDPOINT, PRODUCTS_BRIEF_ENDPOINT, PRODUCTS_GET_BY_BRAND_ENDPOINT, CATEGORIES_ENDPOINT, SUPPLIERS_ENDPOINT, ORDERS_ENDPOINT, ORDERS_SEARCH_ENDPOINT, ORDER_DELIVER_ENDPOINT, ORDER_UPDATE_STATUS_ENDPOINT, ORDER_GET_LATEST_BY_PRODUCT_ENDPOINT, EXPRESS_TRACK_ENDPOINT, ApiService;
+    var CUSTOMERS_ENDPOINT, BRANDS_ENDPOINT, PRODUCTS_ENDPOINT, PRODUCTS_SEARCH_ENDPOINT, PRODUCTS_BRIEF_ENDPOINT, PRODUCTS_GET_BY_BRAND_ENDPOINT, CATEGORIES_ENDPOINT, SUPPLIERS_ENDPOINT, ORDERS_ENDPOINT, ORDERS_SEARCH_ENDPOINT, ORDERS_STATUS_ENDPOINT, ORDER_DELIVER_ENDPOINT, ORDER_UPDATE_STATUS_ENDPOINT, ORDER_GET_LATEST_BY_PRODUCT_ENDPOINT, EXPRESS_TRACK_ENDPOINT, DASHBOARD_SUMMARY_ENDPOINT, DASHBOARD_ANNUAL_SALES_ENDPOINT, DASHBOARD_TOP_SALE_PRODUCTS_ENDPOINT, DASHBOARD_TOP_SALE_BRANDS_ENDPOINT, DASHBOARD_PAST_30_DAYS_PROFIT_ENDPOINT, DASHBOARD_PAST_30_DAYS_EXCHANGE_ENDPOINT, ApiService;
     return {
         setters:[
             function (_1) {},
@@ -32,155 +32,23 @@ System.register(["rxjs/Rx", "angular2/http", "angular2/core"], function(exports_
             exports_1("SUPPLIERS_ENDPOINT", SUPPLIERS_ENDPOINT = "api/suppliers/");
             exports_1("ORDERS_ENDPOINT", ORDERS_ENDPOINT = "api/orders/");
             exports_1("ORDERS_SEARCH_ENDPOINT", ORDERS_SEARCH_ENDPOINT = "api/orders/search/");
+            exports_1("ORDERS_STATUS_ENDPOINT", ORDERS_STATUS_ENDPOINT = "api/dashboard/order-status/");
             exports_1("ORDER_DELIVER_ENDPOINT", ORDER_DELIVER_ENDPOINT = "api/orders/deliver/");
             exports_1("ORDER_UPDATE_STATUS_ENDPOINT", ORDER_UPDATE_STATUS_ENDPOINT = "api/orders/update-order-status/");
             exports_1("ORDER_GET_LATEST_BY_PRODUCT_ENDPOINT", ORDER_GET_LATEST_BY_PRODUCT_ENDPOINT = "api/orders/get-latest-by-product/");
             exports_1("EXPRESS_TRACK_ENDPOINT", EXPRESS_TRACK_ENDPOINT = "api/expresstrack/");
+            exports_1("DASHBOARD_SUMMARY_ENDPOINT", DASHBOARD_SUMMARY_ENDPOINT = "api/dashboard/summary/");
+            exports_1("DASHBOARD_ANNUAL_SALES_ENDPOINT", DASHBOARD_ANNUAL_SALES_ENDPOINT = "api/dashboard/annual-sales/");
+            exports_1("DASHBOARD_TOP_SALE_PRODUCTS_ENDPOINT", DASHBOARD_TOP_SALE_PRODUCTS_ENDPOINT = "api/dashboard/top-sale-products/");
+            exports_1("DASHBOARD_TOP_SALE_BRANDS_ENDPOINT", DASHBOARD_TOP_SALE_BRANDS_ENDPOINT = "api/dashboard/top-sale-brands/");
+            exports_1("DASHBOARD_PAST_30_DAYS_PROFIT_ENDPOINT", DASHBOARD_PAST_30_DAYS_PROFIT_ENDPOINT = "api/dashboard/past-30days-profit/");
+            exports_1("DASHBOARD_PAST_30_DAYS_EXCHANGE_ENDPOINT", DASHBOARD_PAST_30_DAYS_EXCHANGE_ENDPOINT = "api/dashboard/past-30days-exchange/");
             ApiService = (function () {
                 function ApiService(http) {
                     this.http = http;
                 }
                 ApiService.prototype.get = function (onNext) {
                     this.http.get("api/random").map(function (response) { return response.json(); }).subscribe(onNext);
-                };
-                ApiService.prototype.getCustomers = function (onNext) {
-                    this.http.get("api/customers").map(function (response) { return response.json(); }).subscribe(onNext);
-                };
-                ApiService.prototype.getCustomer = function (id, onNext) {
-                    this.http.get("api/customers/" + id).map(function (response) { return response.json(); }).subscribe(onNext);
-                };
-                ApiService.prototype.postCustomer = function (data) {
-                    var headers = new http_1.Headers();
-                    headers.append('Content-Type', 'application/json');
-                    return this.http.post('api/customers', data, { headers: headers });
-                };
-                ApiService.prototype.putCustomer = function (id, data) {
-                    var headers = new http_1.Headers();
-                    headers.append('Content-Type', 'application/json');
-                    return this.http.put('api/customers/' + id, data, { headers: headers });
-                };
-                ApiService.prototype.getProducts = function (onNext) {
-                    this.http.get("api/products").map(function (response) { return response.json(); }).subscribe(onNext);
-                };
-                ApiService.prototype.getProduct = function (id, onNext) {
-                    this.http.get("api/products/" + id).map(function (response) { return response.json(); }).subscribe(onNext);
-                };
-                ApiService.prototype.getProductsBrief = function (onNext) {
-                    this.http.get("api/products/get-brief").map(function (response) { return response.json(); }).subscribe(onNext);
-                };
-                ApiService.prototype.postProduct = function (data) {
-                    var headers = new http_1.Headers();
-                    headers.append('Content-Type', 'application/json');
-                    return this.http.post('api/products', data, { headers: headers });
-                };
-                ApiService.prototype.putProduct = function (id, data) {
-                    var headers = new http_1.Headers();
-                    headers.append('Content-Type', 'application/json');
-                    return this.http.put('api/products/' + id, data, { headers: headers });
-                };
-                ApiService.prototype.getCategories = function (onNext) {
-                    this.http.get("api/categories").map(function (response) { return response.json(); }).subscribe(onNext);
-                };
-                ApiService.prototype.postCategory = function (data) {
-                    var headers = new http_1.Headers();
-                    headers.append('Content-Type', 'application/json');
-                    return this.http.post('api/categories', data, { headers: headers });
-                };
-                ApiService.prototype.putCategory = function (id, data) {
-                    var headers = new http_1.Headers();
-                    headers.append('Content-Type', 'application/json');
-                    return this.http.put('api/categories/' + id, data, { headers: headers });
-                };
-                ApiService.prototype.getBrands = function (onNext) {
-                    this.http.get("api/brands").map(function (response) { return response.json(); }).subscribe(onNext);
-                };
-                ApiService.prototype.postBrand = function (data) {
-                    var headers = new http_1.Headers();
-                    headers.append('Content-Type', 'application/json');
-                    return this.http.post('api/brands', data, { headers: headers });
-                };
-                ApiService.prototype.putBrand = function (id, data) {
-                    var headers = new http_1.Headers();
-                    headers.append('Content-Type', 'application/json');
-                    return this.http.put('api/brands/' + id, data, { headers: headers });
-                };
-                ApiService.prototype.getSuppliers = function (onNext) {
-                    this.http.get("api/suppliers").map(function (response) { return response.json(); }).subscribe(onNext);
-                };
-                ApiService.prototype.postSupplier = function (data) {
-                    var headers = new http_1.Headers();
-                    headers.append('Content-Type', 'application/json');
-                    return this.http.post('api/suppliers', data, { headers: headers });
-                };
-                ApiService.prototype.putSupplier = function (id, data) {
-                    var headers = new http_1.Headers();
-                    headers.append('Content-Type', 'application/json');
-                    return this.http.put('api/suppliers/' + id, data, { headers: headers });
-                };
-                ApiService.prototype.getLatestExchangeRates = function (onNext) {
-                    this.http.get("api/exchangerates/latest").map(function (response) { return response.json(); }).subscribe(onNext);
-                };
-                ApiService.prototype.getOrders = function (onNext) {
-                    this.http.get("api/orders").map(function (response) { return response.json(); }).subscribe(onNext);
-                };
-                ApiService.prototype.getOrder = function (id, onNext) {
-                    this.http.get("api/orders/" + id).map(function (response) { return response.json(); }).subscribe(onNext);
-                };
-                ApiService.prototype.getSenderInfo = function (onNext) {
-                    this.http.get("api/orders/get-sender-info").map(function (response) { return response.json(); }).subscribe(onNext);
-                };
-                ApiService.prototype.getSearchOrders = function (keyword, orderState, paymentState, onNext) {
-                    this.http.get("api/orders/search/" + keyword + '?orderState=' + orderState + '&paymentState=' + paymentState)
-                        .map(function (response) { return response.json(); }).subscribe(onNext);
-                };
-                ApiService.prototype.postUpdateOrderStatus = function (data, onNext) {
-                    var headers = new http_1.Headers();
-                    headers.append('Content-Type', 'application/json');
-                    this.http.post('api/orders/update-order-status', data, { headers: headers })
-                        .map(function (response) { return response.json(); }).subscribe(onNext);
-                };
-                ApiService.prototype.postDeliverOrder = function (data, onNext) {
-                    var headers = new http_1.Headers();
-                    headers.append('Content-Type', 'application/json');
-                    this.http.post('api/orders/deliver', data, { headers: headers })
-                        .map(function (response) { return response.json(); }).subscribe(onNext);
-                };
-                ApiService.prototype.postOrder = function (data) {
-                    var headers = new http_1.Headers();
-                    headers.append('Content-Type', 'application/json');
-                    return this.http.post('api/orders', data, { headers: headers });
-                };
-                ApiService.prototype.putOrder = function (id, data) {
-                    var headers = new http_1.Headers();
-                    headers.append('Content-Type', 'application/json');
-                    return this.http.put('api/orders/' + id, data, { headers: headers });
-                };
-                ApiService.prototype.deleteOrder = function (id) {
-                    return this.http.delete('api/orders/' + id);
-                };
-                ApiService.prototype.getDashboardSummary = function (onNext) {
-                    this.http.get("api/dashboard/summary").map(function (response) { return response.json(); }).subscribe(onNext);
-                };
-                ApiService.prototype.getDashboardAnnualSales = function (onNext) {
-                    this.http.get("api/dashboard/annual-sales").map(function (response) { return response.json(); }).subscribe(onNext);
-                };
-                ApiService.prototype.getDashboardTopSaleProducts = function (onNext) {
-                    this.http.get("api/dashboard/top-sale-products").map(function (response) { return response.json(); }).subscribe(onNext);
-                };
-                ApiService.prototype.getDashboardTopSaleBrands = function (onNext) {
-                    this.http.get("api/dashboard/top-sale-brands").map(function (response) { return response.json(); }).subscribe(onNext);
-                };
-                ApiService.prototype.getDashboardPast30DaysProfit = function (onNext) {
-                    this.http.get("api/dashboard/past-30days-profit").map(function (response) { return response.json(); }).subscribe(onNext);
-                };
-                ApiService.prototype.getDashboardPast30DaysExchange = function (onNext) {
-                    this.http.get("api/dashboard/past-30days-exchange").map(function (response) { return response.json(); }).subscribe(onNext);
-                };
-                ApiService.prototype.getDashboardOrderStatus = function (onNext) {
-                    this.http.get("api/dashboard/order-status").map(function (response) { return response.json(); }).subscribe(onNext);
-                };
-                ApiService.prototype.getExpressTrack = function (id, onNext) {
-                    this.http.get("api/expresstrack/" + id).map(function (response) { return response.json(); }).subscribe(onNext);
                 };
                 ApiService = __decorate([
                     core_1.Injectable(), 

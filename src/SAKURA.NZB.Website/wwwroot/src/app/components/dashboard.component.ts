@@ -1,6 +1,11 @@
 ﻿import {Component, OnInit, ViewEncapsulation} from "angular2/core";
 import {CORE_DIRECTIVES, FORM_DIRECTIVES, NgClass} from 'angular2/common';
-import {ApiService} from "./api.service";
+import {Http} from 'angular2/http';
+
+import {ORDERS_STATUS_ENDPOINT, DASHBOARD_ANNUAL_SALES_ENDPOINT, DASHBOARD_PAST_30_DAYS_EXCHANGE_ENDPOINT,
+	DASHBOARD_PAST_30_DAYS_PROFIT_ENDPOINT, DASHBOARD_SUMMARY_ENDPOINT, DASHBOARD_TOP_SALE_BRANDS_ENDPOINT,
+	DASHBOARD_TOP_SALE_PRODUCTS_ENDPOINT} from "./api.service";
+
 import {Dict} from "./orders/models";
 
 import {BUTTON_DIRECTIVES} from 'ng2-bootstrap/ng2-bootstrap';
@@ -42,13 +47,12 @@ class Legend {
     selector: "dashboard",
     templateUrl: "./src/app/components/dashboard.html",
 	styleUrls: ["./src/app/components/dashboard.css"],
-	providers: [ApiService],
 	directives: [CHART_DIRECTIVES, BUTTON_DIRECTIVES, NgClass, CORE_DIRECTIVES, FORM_DIRECTIVES],
 	encapsulation: ViewEncapsulation.None
 })
 
 export class DashboardComponent implements OnInit {
-    summary: Summary = new Summary(0, 0, 0, 0, '', '', '', 0, '', '', '', 0, 0, 0 , '');
+    summary: Summary = new Summary(0, 0, 0, 0, '', '', '', 0, '', '', '', 0, 0, 0, '');
 	topSaleProducts = [].ToList<TopProduct>();
 	topSaleBrands = [].ToList<TopBrand>();
 	past30DaysProfit = [].ToList<DaySale>();
@@ -148,7 +152,7 @@ export class DashboardComponent implements OnInit {
 	];
 
 	// lineChart
-	private pastDailyProfitChartData: Array<any> = [[],[]];
+	private pastDailyProfitChartData: Array<any> = [[], []];
 	private pastDailyProfitChartLabels: Array<any> = [];
 	private pastDailyProfitChartSeries: Array<any> = ['利润', '&nbsp;'];
 	private pastDailyProfitChartOptions: any = {
@@ -273,26 +277,34 @@ export class DashboardComponent implements OnInit {
 			highlight: "rgba(33,137,228,1)",
 		}
 	];
+
 	private topSaleBrandsChartLegend: boolean = false;
 	private topSaleBrandsChartCustomLegend = [];
 	private topSaleBrandsChartType = 'Doughnut';
 
-    constructor(private service: ApiService) { }
+    constructor(private http: Http) { }
 
     ngOnInit() {
 		var that = this;
+		this.http.get(DASHBOARD_SUMMARY_ENDPOINT)
+			.map(res => res.status === 404 ? null : res.json())
+			.subscribe(json => {
+				if (!json) return;
 
-        this.service.getDashboardSummary(json => {
-			if (json) {
 				that.summary = new Summary(json.customerCount, json.brandCount, json.productCount, json.orderCount,
 					json.totalCost, json.totalIncome, json.totalProfit, json.unpaidCount, json.unpaidAmount,
 					json.todayProfit, json.profitIncrementRate, json.profitIncrement, json.todayExchange,
 					json.exchangeIncrement, json.exchangeIncrementRate);
-			}
-		});
+			},
+			error => {
+				console.log(error);
+			});
 
-		this.service.getDashboardAnnualSales(json => {
-			if (json) {
+        this.http.get(DASHBOARD_ANNUAL_SALES_ENDPOINT)
+			.map(res => res.status === 404 ? null : res.json())
+			.subscribe(json => {
+				if (!json) return;
+
 				json.forEach(x => {
 					that.costList.Add(x.cost);
 					that.incomeList.Add(x.income);
@@ -301,11 +313,16 @@ export class DashboardComponent implements OnInit {
 				});
 
 				that.changeAnnualSalesChartData();
-			}
-		});
+			},
+			error => {
+				console.log(error);
+			});
 
-		this.service.getDashboardTopSaleProducts(json => {
-			if (json) {
+		this.http.get(DASHBOARD_TOP_SALE_PRODUCTS_ENDPOINT)
+			.map(res => res.status === 404 ? null : res.json())
+			.subscribe(json => {
+				if (!json) return;
+
 				json.forEach(x => {
 					that.topSaleProducts.Add(new TopProduct(x.productName, x.count));
 				});
@@ -319,11 +336,16 @@ export class DashboardComponent implements OnInit {
 					that.firstTopProductName = this.topSaleProductsChartNames[0];
 					that.selectedTopProductCount = this.topSaleProductsChartData[0][0];
 				}
-			}
-		});
+			},
+			error => {
+				console.log(error);
+			});
 
-		this.service.getDashboardTopSaleBrands(json => {
-			if (json) {
+		this.http.get(DASHBOARD_TOP_SALE_BRANDS_ENDPOINT)
+			.map(res => res.status === 404 ? null : res.json())
+			.subscribe(json => {
+				if (!json) return;
+
 				json.forEach(x => {
 					that.topSaleBrands.Add(new TopBrand(x.brandName, x.count));
 				});
@@ -335,39 +357,55 @@ export class DashboardComponent implements OnInit {
 					that.topSaleBrandsChartCustomLegend.push(new Legend(that.topSaleBrandsChartColours[i].color,
 						that.topSaleBrandsChartLabels[i] + ': ' + that.topSaleBrandsChartData[i]));
 				}
-			}
-		});
+			},
+			error => {
+				console.log(error);
+			});
 
-		this.service.getDashboardPast30DaysProfit(json => {
-			if (json) {
+		this.http.get(DASHBOARD_PAST_30_DAYS_PROFIT_ENDPOINT)
+			.map(res => res.status === 404 ? null : res.json())
+			.subscribe(json => {
+				if (!json) return;
+
 				json.forEach(x => {
 					that.past30DaysProfit.Add(new DaySale(x.date, x.orderCount, x.profit));
 				});
 
 				that.pastDailyProfitChartLabels = that.past30DaysProfit.Select(p => p.date).ToArray();
-				that.pastDailyProfitChartData = [that.past30DaysProfit.Select(p => p.profit).ToArray(), []];			
-			}
-		});
+				that.pastDailyProfitChartData = [that.past30DaysProfit.Select(p => p.profit).ToArray(), []];
+			},
+			error => {
+				console.log(error);
+			});
 
-		this.service.getDashboardPast30DaysExchange(json => {
-			if (json) {
+		this.http.get(DASHBOARD_PAST_30_DAYS_EXCHANGE_ENDPOINT)
+			.map(res => res.status === 404 ? null : res.json())
+			.subscribe(json => {
+				if (!json) return;
+
 				json.forEach(x => {
 					that.past30DaysExchange.Add(new DayExchange(x.date, x.exchange));
 				});
 
 				that.pastDailyExchangeChartLabels = that.past30DaysExchange.Select(p => p.date).ToArray();
 				that.pastDailyExchangeChartData = [that.past30DaysExchange.Select(p => p.exchange).ToArray(), []];
-			}
-		});
+			},
+			error => {
+				console.log(error);
+			});
 
-		this.service.getDashboardOrderStatus(json => {
-			if (json) {
+		this.http.get(ORDERS_STATUS_ENDPOINT)
+			.map(res => res.status === 404 ? null : res.json())
+			.subscribe(json => {
+				if (!json) return;
+
 				json.forEach(x => {
 					that.orderStatusSummary.push(new OrderStatus(that.orderStates[x.status], x.count));
 				});
-
-			}
-		});
+			},
+			error => {
+				console.log(error);
+			});
     }
 
 	onSwapAnnualSalesDateSource(value: number) {
@@ -390,7 +428,7 @@ export class DashboardComponent implements OnInit {
 		} else if (this.annualSalesChartSwitch == 1) {
 			this.annualSalesChartData = [this.orderCountList.ToArray(), []];
 			this.annualSalesChartSeries = ['订单数量', '&nbsp;', '&nbsp;'];
-		} else{
+		} else {
 			this.annualSalesChartData = [this.incomeList.ToArray(), []];
 			this.annualSalesChartSeries = ['收入 (CNY)', '&nbsp;', '&nbsp;'];
 		}

@@ -1,4 +1,4 @@
-System.register(["angular2/core", 'angular2/common', "./api.service", "./orders/models", 'ng2-bootstrap/ng2-bootstrap', 'ng2-charts/ng2-charts'], function(exports_1, context_1) {
+System.register(["angular2/core", 'angular2/common', 'angular2/http', "./api.service", "./orders/models", 'ng2-bootstrap/ng2-bootstrap', 'ng2-charts/ng2-charts'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -10,7 +10,7 @@ System.register(["angular2/core", 'angular2/common', "./api.service", "./orders/
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, common_1, api_service_1, models_1, ng2_bootstrap_1, ng2_charts_1;
+    var core_1, common_1, http_1, api_service_1, models_1, ng2_bootstrap_1, ng2_charts_1;
     var Summary, TopProduct, TopBrand, DaySale, DayExchange, OrderStatus, Legend, DashboardComponent;
     return {
         setters:[
@@ -19,6 +19,9 @@ System.register(["angular2/core", 'angular2/common', "./api.service", "./orders/
             },
             function (common_1_1) {
                 common_1 = common_1_1;
+            },
+            function (http_1_1) {
+                http_1 = http_1_1;
             },
             function (api_service_1_1) {
                 api_service_1 = api_service_1_1;
@@ -97,8 +100,8 @@ System.register(["angular2/core", 'angular2/common', "./api.service", "./orders/
                 return Legend;
             }());
             DashboardComponent = (function () {
-                function DashboardComponent(service) {
-                    this.service = service;
+                function DashboardComponent(http) {
+                    this.http = http;
                     this.summary = new Summary(0, 0, 0, 0, '', '', '', 0, '', '', '', 0, 0, 0, '');
                     this.topSaleProducts = [].ToList();
                     this.topSaleBrands = [].ToList();
@@ -315,73 +318,101 @@ System.register(["angular2/core", 'angular2/common', "./api.service", "./orders/
                 DashboardComponent.prototype.ngOnInit = function () {
                     var _this = this;
                     var that = this;
-                    this.service.getDashboardSummary(function (json) {
-                        if (json) {
-                            that.summary = new Summary(json.customerCount, json.brandCount, json.productCount, json.orderCount, json.totalCost, json.totalIncome, json.totalProfit, json.unpaidCount, json.unpaidAmount, json.todayProfit, json.profitIncrementRate, json.profitIncrement, json.todayExchange, json.exchangeIncrement, json.exchangeIncrementRate);
-                        }
+                    this.http.get(api_service_1.DASHBOARD_SUMMARY_ENDPOINT)
+                        .map(function (res) { return res.status === 404 ? null : res.json(); })
+                        .subscribe(function (json) {
+                        if (!json)
+                            return;
+                        that.summary = new Summary(json.customerCount, json.brandCount, json.productCount, json.orderCount, json.totalCost, json.totalIncome, json.totalProfit, json.unpaidCount, json.unpaidAmount, json.todayProfit, json.profitIncrementRate, json.profitIncrement, json.todayExchange, json.exchangeIncrement, json.exchangeIncrementRate);
+                    }, function (error) {
+                        console.log(error);
                     });
-                    this.service.getDashboardAnnualSales(function (json) {
-                        if (json) {
-                            json.forEach(function (x) {
-                                that.costList.Add(x.cost);
-                                that.incomeList.Add(x.income);
-                                that.profitList.Add(x.profit);
-                                that.orderCountList.Add(x.count);
-                            });
-                            that.changeAnnualSalesChartData();
-                        }
+                    this.http.get(api_service_1.DASHBOARD_ANNUAL_SALES_ENDPOINT)
+                        .map(function (res) { return res.status === 404 ? null : res.json(); })
+                        .subscribe(function (json) {
+                        if (!json)
+                            return;
+                        json.forEach(function (x) {
+                            that.costList.Add(x.cost);
+                            that.incomeList.Add(x.income);
+                            that.profitList.Add(x.profit);
+                            that.orderCountList.Add(x.count);
+                        });
+                        that.changeAnnualSalesChartData();
+                    }, function (error) {
+                        console.log(error);
                     });
-                    this.service.getDashboardTopSaleProducts(function (json) {
-                        if (json) {
-                            json.forEach(function (x) {
-                                that.topSaleProducts.Add(new TopProduct(x.productName, x.count));
-                            });
-                            that.topSaleProductsChartData = [that.topSaleProducts.Select(function (s) { return s.count; }).ToArray()];
-                            that.topSaleProductsChartNames = that.topSaleProducts.Select(function (s) { return s.name; }).ToArray();
-                            if (that.topSaleProducts.Count() > 0) {
-                                that.selectedTopProductIndex = 1;
-                                that.selectedTopProductName = _this.topSaleProductsChartNames[0];
-                                that.firstTopProductName = _this.topSaleProductsChartNames[0];
-                                that.selectedTopProductCount = _this.topSaleProductsChartData[0][0];
-                            }
+                    this.http.get(api_service_1.DASHBOARD_TOP_SALE_PRODUCTS_ENDPOINT)
+                        .map(function (res) { return res.status === 404 ? null : res.json(); })
+                        .subscribe(function (json) {
+                        if (!json)
+                            return;
+                        json.forEach(function (x) {
+                            that.topSaleProducts.Add(new TopProduct(x.productName, x.count));
+                        });
+                        that.topSaleProductsChartData = [that.topSaleProducts.Select(function (s) { return s.count; }).ToArray()];
+                        that.topSaleProductsChartNames = that.topSaleProducts.Select(function (s) { return s.name; }).ToArray();
+                        if (that.topSaleProducts.Count() > 0) {
+                            that.selectedTopProductIndex = 1;
+                            that.selectedTopProductName = _this.topSaleProductsChartNames[0];
+                            that.firstTopProductName = _this.topSaleProductsChartNames[0];
+                            that.selectedTopProductCount = _this.topSaleProductsChartData[0][0];
                         }
+                    }, function (error) {
+                        console.log(error);
                     });
-                    this.service.getDashboardTopSaleBrands(function (json) {
-                        if (json) {
-                            json.forEach(function (x) {
-                                that.topSaleBrands.Add(new TopBrand(x.brandName, x.count));
-                            });
-                            that.topSaleBrandsChartData = that.topSaleBrands.Select(function (s) { return s.count; }).ToArray();
-                            that.topSaleBrandsChartLabels = that.topSaleBrands.Select(function (s) { return s.name; }).ToArray();
-                            for (var i = 0; i < that.topSaleBrands.Count(); i++) {
-                                that.topSaleBrandsChartCustomLegend.push(new Legend(that.topSaleBrandsChartColours[i].color, that.topSaleBrandsChartLabels[i] + ': ' + that.topSaleBrandsChartData[i]));
-                            }
+                    this.http.get(api_service_1.DASHBOARD_TOP_SALE_BRANDS_ENDPOINT)
+                        .map(function (res) { return res.status === 404 ? null : res.json(); })
+                        .subscribe(function (json) {
+                        if (!json)
+                            return;
+                        json.forEach(function (x) {
+                            that.topSaleBrands.Add(new TopBrand(x.brandName, x.count));
+                        });
+                        that.topSaleBrandsChartData = that.topSaleBrands.Select(function (s) { return s.count; }).ToArray();
+                        that.topSaleBrandsChartLabels = that.topSaleBrands.Select(function (s) { return s.name; }).ToArray();
+                        for (var i = 0; i < that.topSaleBrands.Count(); i++) {
+                            that.topSaleBrandsChartCustomLegend.push(new Legend(that.topSaleBrandsChartColours[i].color, that.topSaleBrandsChartLabels[i] + ': ' + that.topSaleBrandsChartData[i]));
                         }
+                    }, function (error) {
+                        console.log(error);
                     });
-                    this.service.getDashboardPast30DaysProfit(function (json) {
-                        if (json) {
-                            json.forEach(function (x) {
-                                that.past30DaysProfit.Add(new DaySale(x.date, x.orderCount, x.profit));
-                            });
-                            that.pastDailyProfitChartLabels = that.past30DaysProfit.Select(function (p) { return p.date; }).ToArray();
-                            that.pastDailyProfitChartData = [that.past30DaysProfit.Select(function (p) { return p.profit; }).ToArray(), []];
-                        }
+                    this.http.get(api_service_1.DASHBOARD_PAST_30_DAYS_PROFIT_ENDPOINT)
+                        .map(function (res) { return res.status === 404 ? null : res.json(); })
+                        .subscribe(function (json) {
+                        if (!json)
+                            return;
+                        json.forEach(function (x) {
+                            that.past30DaysProfit.Add(new DaySale(x.date, x.orderCount, x.profit));
+                        });
+                        that.pastDailyProfitChartLabels = that.past30DaysProfit.Select(function (p) { return p.date; }).ToArray();
+                        that.pastDailyProfitChartData = [that.past30DaysProfit.Select(function (p) { return p.profit; }).ToArray(), []];
+                    }, function (error) {
+                        console.log(error);
                     });
-                    this.service.getDashboardPast30DaysExchange(function (json) {
-                        if (json) {
-                            json.forEach(function (x) {
-                                that.past30DaysExchange.Add(new DayExchange(x.date, x.exchange));
-                            });
-                            that.pastDailyExchangeChartLabels = that.past30DaysExchange.Select(function (p) { return p.date; }).ToArray();
-                            that.pastDailyExchangeChartData = [that.past30DaysExchange.Select(function (p) { return p.exchange; }).ToArray(), []];
-                        }
+                    this.http.get(api_service_1.DASHBOARD_PAST_30_DAYS_EXCHANGE_ENDPOINT)
+                        .map(function (res) { return res.status === 404 ? null : res.json(); })
+                        .subscribe(function (json) {
+                        if (!json)
+                            return;
+                        json.forEach(function (x) {
+                            that.past30DaysExchange.Add(new DayExchange(x.date, x.exchange));
+                        });
+                        that.pastDailyExchangeChartLabels = that.past30DaysExchange.Select(function (p) { return p.date; }).ToArray();
+                        that.pastDailyExchangeChartData = [that.past30DaysExchange.Select(function (p) { return p.exchange; }).ToArray(), []];
+                    }, function (error) {
+                        console.log(error);
                     });
-                    this.service.getDashboardOrderStatus(function (json) {
-                        if (json) {
-                            json.forEach(function (x) {
-                                that.orderStatusSummary.push(new OrderStatus(that.orderStates[x.status], x.count));
-                            });
-                        }
+                    this.http.get(api_service_1.ORDERS_STATUS_ENDPOINT)
+                        .map(function (res) { return res.status === 404 ? null : res.json(); })
+                        .subscribe(function (json) {
+                        if (!json)
+                            return;
+                        json.forEach(function (x) {
+                            that.orderStatusSummary.push(new OrderStatus(that.orderStates[x.status], x.count));
+                        });
+                    }, function (error) {
+                        console.log(error);
                     });
                 };
                 DashboardComponent.prototype.onSwapAnnualSalesDateSource = function (value) {
@@ -414,11 +445,10 @@ System.register(["angular2/core", 'angular2/common', "./api.service", "./orders/
                         selector: "dashboard",
                         templateUrl: "./src/app/components/dashboard.html",
                         styleUrls: ["./src/app/components/dashboard.css"],
-                        providers: [api_service_1.ApiService],
                         directives: [ng2_charts_1.CHART_DIRECTIVES, ng2_bootstrap_1.BUTTON_DIRECTIVES, common_1.NgClass, common_1.CORE_DIRECTIVES, common_1.FORM_DIRECTIVES],
                         encapsulation: core_1.ViewEncapsulation.None
                     }), 
-                    __metadata('design:paramtypes', [api_service_1.ApiService])
+                    __metadata('design:paramtypes', [http_1.Http])
                 ], DashboardComponent);
                 return DashboardComponent;
             }());
