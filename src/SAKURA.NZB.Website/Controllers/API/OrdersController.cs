@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using SAKURA.NZB.Business.Configuration;
-using SAKURA.NZB.Website.Models;
+using SAKURA.NZB.Website.ViewModels;
 using System.Web.Http;
 using SAKURA.NZB.Business.Sale;
 

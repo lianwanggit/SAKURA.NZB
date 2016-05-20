@@ -3,7 +3,7 @@ using SAKURA.NZB.Domain;
 using System;
 using System.Collections.Generic;
 
-namespace SAKURA.NZB.Website.Models
+namespace SAKURA.NZB.Website.ViewModels
 {
 	public class OrderModel
 	{

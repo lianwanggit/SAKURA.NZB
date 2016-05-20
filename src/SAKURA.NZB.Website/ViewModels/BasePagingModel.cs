@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SAKURA.NZB.Website.Models
+namespace SAKURA.NZB.Website.ViewModels
 {
 	public abstract class BasePagingModel<T> : IPagingModel<T>
 	{

@@ -22,16 +22,5 @@ namespace SAKURA.NZB.Website.Controllers.API
         {
             return new ObjectResult(_context.ExchangeRates.ToList());
         }
-
-        [HttpGet, Route("latest")]
-        public IActionResult Get(int id)
-        {
-			return new ObjectResult(new {
-				FixedRateHigh = _config.GetFixedRateHigh(),
-				FixedRateLow = _config.GetFixedRateLow(),
-				CurrentRate = _config.GetCurrentRate(),
-				FreightRate = _config.GetFreightRate()
-			});
-		}
     }
 }

@@ -1,5 +1,5 @@
 /// <reference path="../../../lib/TypeScript-Linq/Scripts/typings/System/Collections/Generic/List.ts" />
-System.register(["angular2/core", "angular2/router", "./dashboard.component", "./customers/list.component", "./customers/edit.component", "./products/list.component", "./products/baseEdit.component", "./products/edit.component", "./orders/list.component", "./orders/edit.component", "./brands/brands.component", '../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js'], function(exports_1, context_1) {
+System.register(["angular2/core", "angular2/router", "./dashboard.component", "./customers/list.component", "./customers/edit.component", "./products/list.component", "./products/baseEdit.component", "./products/edit.component", "./orders/list.component", "./orders/edit.component", "./brands/brands.component", "./exchangehistory/list.component", '../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -11,7 +11,7 @@ System.register(["angular2/core", "angular2/router", "./dashboard.component", ".
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, router_1, dashboard_component_1, list_component_1, edit_component_1, list_component_2, baseEdit_component_1, edit_component_2, list_component_3, edit_component_3, brands_component_1;
+    var core_1, router_1, dashboard_component_1, list_component_1, edit_component_1, list_component_2, baseEdit_component_1, edit_component_2, list_component_3, edit_component_3, brands_component_1, list_component_4;
     var AppComponent;
     return {
         setters:[
@@ -48,6 +48,9 @@ System.register(["angular2/core", "angular2/router", "./dashboard.component", ".
             function (brands_component_1_1) {
                 brands_component_1 = brands_component_1_1;
             },
+            function (list_component_4_1) {
+                list_component_4 = list_component_4_1;
+            },
             function (_1) {}],
         execute: function() {
             AppComponent = (function () {
@@ -73,6 +76,7 @@ System.register(["angular2/core", "angular2/router", "./dashboard.component", ".
                             { path: "/customers", component: list_component_1.CustomersComponent, name: "客户", useAsDefault: false },
                             { path: "/customers/add", component: edit_component_1.CustomerEditComponent, name: "CAdd", useAsDefault: false },
                             { path: "/customers/edit/:id", component: edit_component_1.CustomerEditComponent, name: "CEdit", useAsDefault: false },
+                            { path: "/exchangehistories", component: list_component_4.ExchangeHistoriesComponent, name: "换汇记录", useAsDefault: false },
                         ];
                         this.router.config(this.routes);
                         this.menuRoutes = this.routes.ToList()

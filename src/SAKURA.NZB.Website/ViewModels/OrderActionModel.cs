@@ -1,4 +1,4 @@
-﻿namespace SAKURA.NZB.Website.Models
+﻿namespace SAKURA.NZB.Website.ViewModels
 {
 	public enum OrderAction
 	{

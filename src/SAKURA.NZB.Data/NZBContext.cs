@@ -12,6 +12,7 @@ namespace SAKURA.NZB.Data
 		public DbSet<Customer> Customers { get; set; }
 		public DbSet<Order> Orders { get; set; }
 		public DbSet<ExchangeRate> ExchangeRates { get; set; }
+		public DbSet<ExchangeHistory> ExchangeHistories { get; set; }
 		public DbSet<ExpressTrack> ExpressTracks { get; set; }
 
 		public DbSet<AppConfig> Configs { get; set; }

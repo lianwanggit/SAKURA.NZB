@@ -4,7 +4,7 @@ using Microsoft.Data.Entity;
 using SAKURA.NZB.Data;
 using SAKURA.NZB.Domain;
 using System.Collections.Generic;
-using SAKURA.NZB.Website.Models;
+using SAKURA.NZB.Website.ViewModels;
 using SAKURA.NZB.Business.Configuration;
 using System;
 using System.Web.Http;

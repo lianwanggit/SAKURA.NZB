@@ -11,6 +11,7 @@ import {ProductEditComponent} from "./products/edit.component";
 import {OrdersComponent} from "./orders/list.component";
 import {OrderEditComponent} from "./orders/edit.component";
 import {BrandsComponent} from "./brands/brands.component";
+import {ExchangeHistoriesComponent} from "./exchangehistory/list.component";
 
 declare var System: any;
 import '../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js';
@@ -45,6 +46,7 @@ export class AppComponent implements OnInit {
 				{ path: "/customers", component: CustomersComponent, name: "客户", useAsDefault: false },
 				{ path: "/customers/add", component: CustomerEditComponent, name: "CAdd", useAsDefault: false },
 				{ path: "/customers/edit/:id", component: CustomerEditComponent, name: "CEdit", useAsDefault: false },
+				{ path: "/exchangehistories", component: ExchangeHistoriesComponent, name: "换汇记录", useAsDefault: false },
 
                 //new AsyncRoute({
                 //    path: "/sub",

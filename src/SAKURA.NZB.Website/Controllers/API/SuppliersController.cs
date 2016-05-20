@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using Microsoft.AspNet.Mvc;
 using SAKURA.NZB.Data;
 using SAKURA.NZB.Domain;
@@ -10,7 +7,7 @@ using SAKURA.NZB.Domain;
 
 namespace SAKURA.NZB.Website.Controllers.API
 {
-    [Route("api/[controller]")]
+	[Route("api/[controller]")]
     public class SuppliersController : Controller
     {
 		private NZBContext _context;
