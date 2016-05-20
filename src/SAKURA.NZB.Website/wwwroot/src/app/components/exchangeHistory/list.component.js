@@ -1,5 +1,5 @@
 /// <reference path="../../../../lib/TypeScript-Linq/Scripts/typings/System/Collections/Generic/List.ts" />
-System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/router', "../api.service", '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js'], function(exports_1, context_1) {
+System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/router', "../api.service", 'ng2-bootstrap/ng2-bootstrap', '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -11,7 +11,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, common_1, http_1, router_1, api_service_1;
+    var core_1, common_1, http_1, router_1, api_service_1, ng2_bootstrap_1;
     var ExchangeHistory, ExchangeHistoriesComponent;
     return {
         setters:[
@@ -30,6 +30,9 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/
             function (api_service_1_1) {
                 api_service_1 = api_service_1_1;
             },
+            function (ng2_bootstrap_1_1) {
+                ng2_bootstrap_1 = ng2_bootstrap_1_1;
+            },
             function (_1) {}],
         execute: function() {
             ExchangeHistory = (function () {
@@ -39,9 +42,9 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/
                     this.nzd = obj.nzd;
                     this.rate = obj.rate;
                     this.sponsorCharge = obj.sponsorCharge;
-                    this.receiverCharge = obj.sponsorCharge;
+                    this.receiverCharge = obj.receiverCharge;
                     this.agent = obj.agent;
-                    this.createdTime = moment(obj.sponsorCharge).format('YYYY-MM-DD');
+                    this.createdTime = obj.createdTime;
                 }
                 return ExchangeHistory;
             }());
@@ -51,38 +54,75 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/
                     this.http = http;
                     this.router = router;
                     this.historyList = [];
-                    this.filterText = '';
                     this.totalAmount = 0;
                     this.isLoading = true;
-                    this._filterText = '';
+                    this.page = 1;
+                    this.prevItems = [].ToList();
+                    this.nextItems = [].ToList();
+                    this.itemsPerPage = 0;
+                    this.totalItemCount = 0;
+                    this._isPrevItemsLoaded = false;
+                    this._isNextItemsLoaded = false;
                 }
                 ExchangeHistoriesComponent.prototype.ngOnInit = function () {
                     this.get();
                 };
                 ExchangeHistoriesComponent.prototype.get = function () {
                     var _this = this;
+                    this._isPrevItemsLoaded = false;
+                    this._isNextItemsLoaded = false;
                     var that = this;
-                    this.http.get(api_service_1.EXCHANGERATE_ENDPOINT)
+                    this.http.get(api_service_1.EXCHANGEHISTORIES_SEARCH_ENDPOINT + this.page)
                         .map(function (res) { return res.status === 404 ? null : res.json(); })
                         .subscribe(function (json) {
                         _this.isLoading = false;
                         if (!json)
                             return;
-                        json.forEach(function (c) {
-                            that.historyList.push(new ExchangeHistory(c));
-                        });
-                        that.totalAmount = that.historyList.length;
+                        that.historyList = [];
+                        that.prevItems = [].ToList();
+                        that.nextItems = [].ToList();
+                        if (json.items) {
+                            json.items.forEach(function (c) {
+                                that.historyList.push(new ExchangeHistory(c));
+                            });
+                        }
+                        if (json.prevItems) {
+                            json.prevItems.forEach(function (c) {
+                                that.prevItems.Add(new ExchangeHistory(c));
+                            });
+                            that._isPrevItemsLoaded = true;
+                        }
+                        if (json.nextItems) {
+                            json.nextItems.forEach(function (c) {
+                                that.nextItems.Add(new ExchangeHistory(c));
+                            });
+                            that._isNextItemsLoaded = true;
+                        }
+                        that.itemsPerPage = json.itemsPerPage;
+                        that.totalItemCount = json.totalItemCount;
                     }, function (error) {
                         _this.isLoading = false;
                         console.log(error);
                     });
                 };
+                ExchangeHistoriesComponent.prototype.onPageChanged = function (event) {
+                    this.historyList = [];
+                    if (this.page - 1 == event.page && this._isPrevItemsLoaded) {
+                        this.historyList = this.prevItems.ToArray();
+                    }
+                    if (this.page + 1 == event.page && this._isNextItemsLoaded) {
+                        this.historyList = this.nextItems.ToArray();
+                    }
+                    this.page = event.page;
+                    this.get();
+                };
+                ;
                 ExchangeHistoriesComponent = __decorate([
                     core_1.Component({
                         selector: "customers",
                         templateUrl: "./src/app/components/exchangeHistory/list.html",
                         styleUrls: ["./src/app/components/exchangeHistory/list.css"],
-                        directives: [common_1.CORE_DIRECTIVES, common_1.FORM_DIRECTIVES, router_1.ROUTER_DIRECTIVES]
+                        directives: [common_1.CORE_DIRECTIVES, common_1.FORM_DIRECTIVES, router_1.ROUTER_DIRECTIVES, ng2_bootstrap_1.PAGINATION_DIRECTIVES]
                     }), 
                     __metadata('design:paramtypes', [http_1.Http, router_1.Router])
                 ], ExchangeHistoriesComponent);

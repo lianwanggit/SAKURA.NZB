@@ -2,6 +2,9 @@
 using SAKURA.NZB.Business.Configuration;
 using SAKURA.NZB.Data;
 using SAKURA.NZB.Domain;
+using SAKURA.NZB.Website.ViewModels;
+using System;
+using System.Globalization;
 using System.Linq;
 
 namespace SAKURA.NZB.Website.Controllers.API
@@ -11,10 +14,12 @@ namespace SAKURA.NZB.Website.Controllers.API
 	{
 		private NZBContext _context;
 		private Config _config;
+		private readonly int _itemsPerPage;
 
 		public ExchangeHistoriesController(NZBContext context, Config config)
 		{
 			_context = context;
+			_itemsPerPage = config.GetExchangeHistoriesItemsPerPage();
 			_config = config;
 		}
 
@@ -22,6 +27,13 @@ namespace SAKURA.NZB.Website.Controllers.API
 		public IActionResult Get()
 		{
 			return new ObjectResult(_context.ExchangeHistories.OrderByDescending(h => h.CreatedTime).ToList());
+		}
+
+		[HttpGet("search/{page:int}")]
+		public IActionResult Search(int page)
+		{
+			var models = _context.ExchangeHistories.OrderByDescending(h => h.CreatedTime).Select(h => Map(h));
+			return new ObjectResult(new ExchangeHistoriesPagingModel(models.ToList(), _itemsPerPage, page));
 		}
 
 		[HttpGet("{id:int}", Name = "GetExchangeHistory")]
@@ -91,5 +103,28 @@ namespace SAKURA.NZB.Website.Controllers.API
 				_context.SaveChanges();
 			}
 		}
+
+		private ExchangeHistoryModel Map(ExchangeHistory item)
+		{
+			return new ExchangeHistoryModel
+			{
+				Id = item.Id,
+				Cny = currencyToCny(item.Cny),
+				Nzd = currencyToNzd(item.Nzd),
+				SponsorCharge = currencyToCny(item.SponsorCharge),
+				ReceiverCharge = currencyToNzd(item.ReceiverCharge),
+				Agent = item.Agent,
+				Rate = item.Rate.ToString(),
+				CreatedTime = item.CreatedTime.ToString("d")
+			};
+		}
+
+		private Func<float, string> currencyToNzd = (f) => { return f.ToString("C", CultureInfo.CreateSpecificCulture("en-NZ")); };
+		private Func<float, string> currencyToCny = (f) =>
+		{
+			var ci = CultureInfo.CreateSpecificCulture("zh-CN");
+			ci.NumberFormat.CurrencyNegativePattern = 1;
+			return f.ToString("C", ci);
+		};
 	}
 }

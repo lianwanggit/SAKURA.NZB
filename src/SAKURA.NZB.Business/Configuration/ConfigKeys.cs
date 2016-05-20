@@ -13,5 +13,6 @@
 
 		public static string ProductItemsPerPage = "Products.ItemsPerPage";
 		public static string OrdersItemsPerPage = "Orders.ItemsPerPage";
+		public static string ExchangeHistoriesItemsPerPage = "ExchangeHistories.ItemsPerPage";
 	}
 }

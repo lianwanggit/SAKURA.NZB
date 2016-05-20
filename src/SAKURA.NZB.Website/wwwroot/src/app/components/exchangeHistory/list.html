@@ -1,10 +1,52 @@
-﻿<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8" />
-    <title></title>
-</head>
-<body>
+﻿<div class="loading" *ngIf="isLoading">Loading&#8230;</div>
 
-</body>
-</html>
+<div class="grey-border" *ngIf="!isLoading">
+    <h2 class="page-header">
+        换汇记录 <small>({{totalItemCount}} / {{totalAmount}})</small>
+
+        <div class="pull-right">
+            <button type="button" class="btn btn-info">
+                新建 <i class="fa fa-exchange fa-lg"></i>
+            </button>
+        </div>
+    </h2>
+
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="pull-right">
+                <pagination [totalItems]="totalItemCount" [(ngModel)]="page" [itemsPerPage]="itemsPerPage" [maxSize]="10"
+                            [boundaryLinks]="true" [rotate]="false"
+                            (pageChanged)="onPageChanged($event)"></pagination>
+            </div>
+        </div>
+    </div>
+
+    <div class="widget-content clearfix" *ngFor="#h of historyList; #i = index">
+        <div class="scope table-cell">
+            <p class="md-display-05 font-weight-100 margin-bottom-10">{{h.createdTime}}</p>
+            <p><i class="fa fa-exchange fa-3x symbol"></i><span class="md-display-1 font-weight-100 opacity-60 margin-left-10">{{h.rate}}</span></p>
+        </div>
+
+        <div class="scope">
+            <div class="row">
+                <div class="col-xs-12 col-sm-6">
+                    <div class="pull-right">
+                        <p class="md-display-2 font-weight-100 margin-bottom-0">{{h.cny}}</p>
+                        <p class="md-display-05 font-weight-100 margin-bottom-0">{{h.sponsorCharge}}</p>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-6">
+                    <div class="pull-right">
+                        <p class="md-display-2 font-weight-100 margin-bottom-0">{{h.nzd}}</p>
+                        <p class="md-display-05 font-weight-100 margin-bottom-0">{{h.receiverCharge}}</p>
+                    </div>
+                </div>
+            </div>        
+        </div>
+
+        <div class="scope table-cell text-center clickable">
+            <i class="fa fa-angle-right fa-2x margin-left-10"></i>
+        </div>
+
+    </div>
+</div>

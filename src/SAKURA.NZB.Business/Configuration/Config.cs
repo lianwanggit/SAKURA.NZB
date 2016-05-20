@@ -33,6 +33,8 @@ namespace SAKURA.NZB.Business.Configuration
 		public int GetProductsItemsPerPage() => GetIntByKey(ConfigKeys.ProductItemsPerPage);
 		public int GetOrdersItemsPerPage() => GetIntByKey(ConfigKeys.OrdersItemsPerPage);
 
+		public int GetExchangeHistoriesItemsPerPage() => GetIntByKey(ConfigKeys.ExchangeHistoriesItemsPerPage);
+
 		public void EnsureDefaults()
 		{
 			if (!Exists(ConfigKeys.ApiLayerAccessKey))
@@ -64,6 +66,9 @@ namespace SAKURA.NZB.Business.Configuration
 
 			if (!Exists(ConfigKeys.OrdersItemsPerPage))
 				Set(ConfigKeys.OrdersItemsPerPage, "15");
+
+			if (!Exists(ConfigKeys.ExchangeHistoriesItemsPerPage))
+				Set(ConfigKeys.ExchangeHistoriesItemsPerPage, "10");
 		}
 
 		private bool Exists(string key) => _context.Configs.Any(c => c.Key == key);
