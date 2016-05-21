@@ -114,7 +114,7 @@ System.register([], function(exports_1, context_1) {
                     this.totalCost = list.Sum(function (co) { return co.totalCost; }) + this.freight;
                     this.totalPrice = list.Sum(function (co) { return co.totalPrice; });
                     this.totalQty = list.Sum(function (co) { return co.totalQty; });
-                    this.totalProfit = this.totalPrice - this.totalCost * window.nzb.rate.live;
+                    this.totalProfit = this.totalPrice - this.totalCost * window.nzb.rate.history;
                     this.strTotalProfit = formatCurrency(this.totalProfit, this.totalProfit.toFixed(2));
                 };
                 OrderModel.prototype.updateExpressText = function () {
@@ -193,7 +193,7 @@ System.register([], function(exports_1, context_1) {
                     this.calculateProfit();
                 }
                 OrderProduct.prototype.calculateProfit = function () {
-                    this.profit = (this.price - this.cost * window.nzb.rate.live) * this.qty;
+                    this.profit = (this.price - this.cost * window.nzb.rate.history) * this.qty;
                     this.strProfit = formatCurrency(this.profit, this.profit.toFixed(2));
                 };
                 Object.defineProperty(OrderProduct.prototype, "isValid", {

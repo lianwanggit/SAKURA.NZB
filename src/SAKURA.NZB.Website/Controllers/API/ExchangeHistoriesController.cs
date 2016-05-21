@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNet.Mvc;
+﻿using MediatR;
+using Microsoft.AspNet.Mvc;
 using SAKURA.NZB.Business.Cache;
 using SAKURA.NZB.Business.Configuration;
+using SAKURA.NZB.Business.MediatR.Messages;
 using SAKURA.NZB.Data;
 using SAKURA.NZB.Domain;
 using SAKURA.NZB.Website.ViewModels;
@@ -13,15 +15,17 @@ namespace SAKURA.NZB.Website.Controllers.API
 	[Route("api/[controller]")]
 	public class ExchangeHistoriesController : Controller
 	{
-		private NZBContext _context;
-		private Config _config;
+		private readonly NZBContext _context;
+		private readonly Config _config;
+		private readonly IMediator _mediator;
 		private readonly int _itemsPerPage;
 
-		public ExchangeHistoriesController(NZBContext context, Config config)
+		public ExchangeHistoriesController(NZBContext context, Config config, IMediator mediator)
 		{
 			_context = context;
 			_itemsPerPage = config.GetExchangeHistoriesItemsPerPage();
 			_config = config;
+			_mediator = mediator;
 		}
 
 		[HttpGet]
@@ -43,9 +47,10 @@ namespace SAKURA.NZB.Website.Controllers.API
 				totalCny += r.Cny;
 			}
 
-			return new ObjectResult(new {
-				TotalNzd = totalNzd,
-				TotalCny = totalCny,
+			return new ObjectResult(new
+			{
+				TotalNzd = currencyToNzd(totalNzd),
+				TotalCny = currencyToCny(totalCny),
 				Rate = ExchangeRateCache.Rate
 			});
 		}
@@ -81,6 +86,7 @@ namespace SAKURA.NZB.Website.Controllers.API
 
 			_context.ExchangeHistories.Add(history);
 			_context.SaveChanges();
+			_mediator.Publish(new ExchangeRateUpdated());
 
 			return CreatedAtRoute("GetExchangeHistory", new { controller = "ExchangeHistories", id = history.Id }, history);
 		}
@@ -110,6 +116,7 @@ namespace SAKURA.NZB.Website.Controllers.API
 
 			_context.ExchangeHistories.Update(item);
 			_context.SaveChanges();
+			_mediator.Publish(new ExchangeRateUpdated());
 
 			return new NoContentResult();
 		}
@@ -122,6 +129,9 @@ namespace SAKURA.NZB.Website.Controllers.API
 			{
 				_context.ExchangeHistories.Remove(item);
 				_context.SaveChanges();
+				_mediator.Publish(new ExchangeRateUpdated());
+
+				_mediator.Publish(new ExchangeRateUpdated());
 			}
 		}
 

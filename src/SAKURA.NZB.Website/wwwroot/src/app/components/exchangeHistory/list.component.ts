@@ -32,6 +32,18 @@ export class ExchangeHistory {
 	}
 }
 
+export class ExchangeSummary {
+	totalNzd: string;
+	totalCny: string;
+	rate: number;
+
+	constructor(obj) {
+		this.totalNzd = obj.totalNzd;
+		this.totalCny = obj.totalCny;
+		this.rate = obj.rate;
+	}
+}
+
 @Component({
     selector: "customers",
     templateUrl: "./src/app/components/exchangeHistory/list.html",
@@ -40,9 +52,11 @@ export class ExchangeHistory {
 })
 export class ExchangeHistoriesComponent implements OnInit {
     historyList: ExchangeHistory[] = [];
+	historySummary: ExchangeSummary = null;
 	totalAmount = 0;
 
-	isLoading = true;
+	isListLoading = true;
+	isSummaryLoading = true;
 
 	page = 1;
 	prevItems = [].ToList<ExchangeHistory>();
@@ -67,7 +81,7 @@ export class ExchangeHistoriesComponent implements OnInit {
 		this.http.get(EXCHANGEHISTORIES_SEARCH_ENDPOINT + this.page)
 			.map(res => res.status === 404 ? null : res.json())
 			.subscribe(json => {
-				this.isLoading = false;
+				this.isListLoading = false;
 				if (!json) return;
 
 				that.historyList = [];
@@ -98,7 +112,20 @@ export class ExchangeHistoriesComponent implements OnInit {
 				that.totalItemCount = json.totalItemCount;
 			},
 			error => {
-				this.isLoading = false;
+				this.isListLoading = false;
+				console.log(error);
+			});
+
+		this.http.get(EXCHANGEHISTORIES_SUMMARY_ENDPOINT)
+			.map(res => res.status === 404 ? null : res.json())
+			.subscribe(json => {
+				this.isSummaryLoading = false;
+				if (!json) return;
+
+				that.historySummary = new ExchangeSummary(json);
+			},
+			error => {
+				this.isSummaryLoading = false;
 				console.log(error);
 			});
     }
@@ -116,4 +143,6 @@ export class ExchangeHistoriesComponent implements OnInit {
 		this.page = event.page;
 		this.get();
 	};
+
+	get isLoading() { return this.isListLoading || this.isSummaryLoading; }
 }

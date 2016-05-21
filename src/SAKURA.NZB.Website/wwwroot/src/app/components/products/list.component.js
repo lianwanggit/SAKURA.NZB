@@ -83,7 +83,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/
                     this.supplierAmount = 0;
                     this.fixedRateHigh = window.nzb.rate.high;
                     this.fixedRateLow = window.nzb.rate.low;
-                    this.currentRate = window.nzb.rate.live;
+                    this.currentRate = window.nzb.rate.history;
                     this.isProductsLoading = true;
                     this.isCategoriesLoading = true;
                     this.isSuppliersLoading = true;

@@ -16,6 +16,11 @@ namespace SAKURA.NZB.Business.Configuration
 		public string GetApiLayerAccessKey() => GetByKey(ConfigKeys.ApiLayerAccessKey);
 		public float GetFixedRateHigh() => GetFloatByKey(ConfigKeys.FixedRateHigh);
 		public float GetFixedRateLow() => GetFloatByKey(ConfigKeys.FixedRateLow);
+		public float GetCurrentRate()
+		{
+			var rate = _context.ExchangeRates.OrderByDescending(e => e.ModifiedTime).FirstOrDefault();
+			return rate?.NZDCNY ?? GetFixedRateLow();
+		}
 
 		public string GetSender() => GetByKey(ConfigKeys.Sender);
 		public string GetSenderPhone() => GetByKey(ConfigKeys.SenderPhone);

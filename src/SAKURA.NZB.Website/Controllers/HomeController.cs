@@ -15,7 +15,8 @@ namespace SAKURA.NZB.Website.Controllers
 
 		public IActionResult Index()
         {
-			ViewData["LiveRate"] = ExchangeRateCache.Rate.Value;
+			ViewData["HistoryRate"] = ExchangeRateCache.Rate.Value;
+			ViewData["LiveRate"] = _config.GetCurrentRate();
 			ViewData["HighRate"] = _config.GetFixedRateHigh();
 			ViewData["LowRate"] = _config.GetFixedRateLow();
 

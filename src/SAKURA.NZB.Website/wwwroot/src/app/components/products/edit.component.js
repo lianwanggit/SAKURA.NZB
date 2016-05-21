@@ -59,7 +59,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/
                     this.selectedBrandName = '';
                     this.fixedRateHigh = window.nzb.rate.high;
                     this.fixedRateLow = window.nzb.rate.low;
-                    this.currentRate = window.nzb.rate.live;
+                    this.currentRate = window.nzb.rate.history;
                     this.model = new models_1.Product({
                         "id": 0, "name": null, "desc": null, "categoryId": 0, "category": null,
                         "brandId": 0, "brand": null, "images": null, "quotes": [], "price": null
@@ -288,7 +288,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/
                         if (price && this.model.quotes.length > 0) {
                             var lowQuote = this.model.quotes.ToList().Min(function (q) { return q.price; });
                             if (lowQuote) {
-                                return (price - lowQuote * this.fixedRateLow).toFixed(2);
+                                return (price - lowQuote * this.currentRate).toFixed(2);
                             }
                         }
                         return '';

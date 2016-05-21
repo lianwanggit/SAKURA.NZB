@@ -2,7 +2,7 @@
 
 <div class="grey-border" *ngIf="!isLoading">
     <h2 class="page-header">
-        换汇记录 <small>({{totalItemCount}} / {{totalAmount}})</small>
+        换汇记录 <small>({{historyList.length}} / {{totalItemCount}})</small>
 
         <div class="pull-right">
             <button type="button" class="btn btn-info">
@@ -10,6 +10,45 @@
             </button>
         </div>
     </h2>
+
+    <div class="row margin-bottom-10 summary">
+        <div class="col-xs-12 col-sm-4 text-center">
+            <div class="widget-content clearfix bg-info-light">
+                <div class="scope table-cell">
+                    <i class="fa fa-cloud-download fa-4x opacity-60"></i>
+                </div>
+
+                <div class="scope table-cell text-right">
+                    <p class="md-display-2 font-weight-100">{{historySummary.totalNzd}}</p>
+                    <p class="md-body-2 opacity-60">总汇出</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-4 text-center">
+            <div class="widget-content clearfix bg-info-light">
+                <div class="scope table-cell">
+                    <i class="fa fa-exchange fa-4x opacity-60"></i>
+                </div>
+
+                <div class="scope table-cell text-right">
+                    <p class="md-display-2 font-weight-100">{{historySummary.rate}}</p>
+                    <p class="md-body-2 opacity-60">平均汇率</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-4 text-center">
+            <div class="widget-content clearfix bg-info-light">
+                <div class="scope table-cell">
+                    <i class="fa fa-cloud-upload fa-4x opacity-60"></i>
+                </div>
+
+                <div class="scope table-cell text-right">
+                    <p class="md-display-2 font-weight-100">{{historySummary.totalCny}}</p>
+                    <p class="md-body-2 opacity-60">总汇入</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div class="row">
         <div class="col-xs-12">
@@ -21,47 +60,22 @@
         </div>
     </div>
 
-    <div class="history-list">
+    <div class="history-list margin-top-10">
         <div class="widget-content clearfix" *ngFor="#h of historyList; #i = index">
-            <!--<div class="scope table-cell">
-                <p class="md-display-05 font-weight-100 margin-bottom-10">{{h.createdTime}}</p>
-                <p><i class="fa fa-exchange fa-3x symbol"></i><span class="md-display-1 font-weight-100 opacity-60 margin-left-10">{{h.rate}}</span></p>
-            </div>
-
-            <div class="scope table-cell">
-                <div class="row">
-                    <div class="col-xs-12 col-sm-6">
-                        <div class="pull-right">
-                            <p class="md-display-2 font-weight-100 margin-bottom-0">{{h.cny}}</p>
-                            <p class="md-display-05 font-weight-100 margin-bottom-0">{{h.sponsorCharge}}</p>
-                        </div>
-                    </div>
-                    <div class="col-xs-12 col-sm-6">
-                        <div class="pull-right">
-                            <p class="md-display-2 font-weight-100 margin-bottom-0">{{h.nzd}}</p>
-                            <p class="md-display-05 font-weight-100 margin-bottom-0">{{h.receiverCharge}}</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="scope table-cell text-center clickable">
-                <i class="fa fa-angle-right fa-2x margin-left-10"></i>
-            </div>-->
             <div class="scope table-cell">
                 <span class="md-display-05 font-weight-100 margin-bottom-10">{{h.createdTime}}</span>
             </div>
-                   
-            <div class="scope table-cell">                
-                <p class="md-display-2 font-weight-100 margin-bottom-0">{{h.nzd}}</p>
+
+            <div class="scope table-cell">
+                <p class="md-display-1 font-weight-100 margin-bottom-0">{{h.nzd}}</p>
             </div>
 
             <div class="scope table-cell text-center">
-                <i class="fa fa-exchange fa-3x symbol"></i><span class="md-display-1 font-weight-100 opacity-60 margin-left-10">{{h.rate}}</span>
+                <i class="fa fa-exchange fa-3x opacity-30"></i><span class="md-display-1 font-weight-100 opacity-60 margin-left-10">{{h.rate}}</span>
             </div>
 
             <div class="scope table-cell">
-                <p class="md-display-2 font-weight-100 margin-bottom-0">{{h.cny}}</p>
+                <p class="md-display-1 font-weight-100 margin-bottom-0">{{h.cny}}</p>
             </div>
 
             <div class="scope table-cell text-center clickable">

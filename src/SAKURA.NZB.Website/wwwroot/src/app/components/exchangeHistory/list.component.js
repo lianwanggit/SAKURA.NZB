@@ -12,7 +12,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
     var core_1, common_1, http_1, router_1, api_service_1, ng2_bootstrap_1;
-    var ExchangeHistory, ExchangeHistoriesComponent;
+    var ExchangeHistory, ExchangeSummary, ExchangeHistoriesComponent;
     return {
         setters:[
             function (core_1_1) {
@@ -49,13 +49,24 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/
                 return ExchangeHistory;
             }());
             exports_1("ExchangeHistory", ExchangeHistory);
+            ExchangeSummary = (function () {
+                function ExchangeSummary(obj) {
+                    this.totalNzd = obj.totalNzd;
+                    this.totalCny = obj.totalCny;
+                    this.rate = obj.rate;
+                }
+                return ExchangeSummary;
+            }());
+            exports_1("ExchangeSummary", ExchangeSummary);
             ExchangeHistoriesComponent = (function () {
                 function ExchangeHistoriesComponent(http, router) {
                     this.http = http;
                     this.router = router;
                     this.historyList = [];
+                    this.historySummary = null;
                     this.totalAmount = 0;
-                    this.isLoading = true;
+                    this.isListLoading = true;
+                    this.isSummaryLoading = true;
                     this.page = 1;
                     this.prevItems = [].ToList();
                     this.nextItems = [].ToList();
@@ -75,7 +86,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/
                     this.http.get(api_service_1.EXCHANGEHISTORIES_SEARCH_ENDPOINT + this.page)
                         .map(function (res) { return res.status === 404 ? null : res.json(); })
                         .subscribe(function (json) {
-                        _this.isLoading = false;
+                        _this.isListLoading = false;
                         if (!json)
                             return;
                         that.historyList = [];
@@ -101,7 +112,18 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/
                         that.itemsPerPage = json.itemsPerPage;
                         that.totalItemCount = json.totalItemCount;
                     }, function (error) {
-                        _this.isLoading = false;
+                        _this.isListLoading = false;
+                        console.log(error);
+                    });
+                    this.http.get(api_service_1.EXCHANGEHISTORIES_SUMMARY_ENDPOINT)
+                        .map(function (res) { return res.status === 404 ? null : res.json(); })
+                        .subscribe(function (json) {
+                        _this.isSummaryLoading = false;
+                        if (!json)
+                            return;
+                        that.historySummary = new ExchangeSummary(json);
+                    }, function (error) {
+                        _this.isSummaryLoading = false;
                         console.log(error);
                     });
                 };
@@ -117,6 +139,11 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/
                     this.get();
                 };
                 ;
+                Object.defineProperty(ExchangeHistoriesComponent.prototype, "isLoading", {
+                    get: function () { return this.isListLoading || this.isSummaryLoading; },
+                    enumerable: true,
+                    configurable: true
+                });
                 ExchangeHistoriesComponent = __decorate([
                     core_1.Component({
                         selector: "customers",

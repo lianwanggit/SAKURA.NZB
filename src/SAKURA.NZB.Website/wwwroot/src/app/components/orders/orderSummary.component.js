@@ -41,7 +41,7 @@ System.register(["angular2/core", "angular2/common", "./models"], function(expor
             }());
             OrderSummaryComponent = (function () {
                 function OrderSummaryComponent() {
-                    this.exchangeRate = window.nzb.rate.live;
+                    this.exchangeRate = window.nzb.rate.history;
                 }
                 Object.defineProperty(OrderSummaryComponent.prototype, "productList", {
                     get: function () {

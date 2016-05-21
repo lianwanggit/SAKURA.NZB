@@ -32,7 +32,8 @@
 </div>
 
 <script>
-    var rate = @Html.Raw(ViewBag.LiveRate);
+    var historyRate = @Html.Raw(ViewBag.HistoryRate);
+    var liveRate = @Html.Raw(ViewBag.LiveRate);
     var highRate = @Html.Raw(ViewBag.HighRate);
     var lowRate = @Html.Raw(ViewBag.LowRate);
 
@@ -42,7 +43,8 @@
 
     window.nzb = {
         rate: {
-            live: rate,
+            history: historyRate,
+            live: liveRate,
             high: highRate,
             low: lowRate
         },
@@ -57,7 +59,7 @@
     $('#nzd').on('input',function(e){
         var source = e.target.value;
         if ($.isNumeric(source)){
-            var result = (parseFloat(source) * rate).toFixed(4);
+            var result = (parseFloat(source) * liveRate).toFixed(4);
             $('#cny').val(result);
         }else{
             $('#cny').val('');
@@ -66,7 +68,7 @@
     $('#cny').on('input',function(e){
         var source = e.target.value;
         if ($.isNumeric(source)){
-            var result = (parseFloat(source) / rate).toFixed(4);
+            var result = (parseFloat(source) / liveRate).toFixed(4);
             $('#nzd').val(result);
         }
     });

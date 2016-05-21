@@ -53,7 +53,6 @@ namespace SAKURA.NZB.Business
 				return new Mediator(serviceType => multiFactory(serviceType).First(), multiFactory);
 			});
 
-			services.AddMediator();
 			services.AddTransient<Config>();
 
 			// Add application services.
@@ -64,7 +63,6 @@ namespace SAKURA.NZB.Business
 			services.AddTransient<HangfireHelper>();
 			services.AddTransient<FlywayExpressTracker>();
 			services.AddTransient<CurrencyLayerTracker>();
-			services.AddTransient<MonthSaleCache>();
 
 			services.AddTransient<OrderUpdatedHandler>();
 			services.AddTransient<ExchangeRateUpdatedHandler>();
@@ -75,6 +73,7 @@ namespace SAKURA.NZB.Business
 			services.AddScoped<CurrencyTrackBootTask>();
 			services.AddScoped<ExpressTrackBootTask>();
 			services.AddScoped<DbCleanupBootTask>();
+			services.AddScoped<CacheInitializationBootTask>();
 
 			services.AddScoped<IBootTask, AppConfigBootTask>();
 			services.AddScoped<IBootTask, CurrencyTrackBootTask>();

@@ -70,7 +70,7 @@ export class ProductsComponent implements OnInit {
 
 	fixedRateHigh: number = (<any>window).nzb.rate.high;
 	fixedRateLow: number = (<any>window).nzb.rate.low;
-	currentRate: number = (<any>window).nzb.rate.live;
+	currentRate: number = (<any>window).nzb.rate.history;
 
 	isProductsLoading = true;
 	isCategoriesLoading = true;

@@ -30,7 +30,7 @@ export class ProductEditComponent implements OnInit {
 
 	fixedRateHigh: number = (<any>window).nzb.rate.high;
 	fixedRateLow: number = (<any>window).nzb.rate.low;
-	currentRate: number = (<any>window).nzb.rate.live;
+	currentRate: number = (<any>window).nzb.rate.history;
 
 	model: Product = new Product({
 		"id": 0, "name": null, "desc": null, "categoryId": 0, "category": null,
@@ -279,7 +279,7 @@ export class ProductEditComponent implements OnInit {
 		if (price && this.model.quotes.length > 0) {
 			var lowQuote = this.model.quotes.ToList<Quote>().Min(q => q.price);
 			if (lowQuote) {
-				return (price - lowQuote * this.fixedRateLow).toFixed(2);
+				return (price - lowQuote * this.currentRate).toFixed(2);
 			}
 		}
 

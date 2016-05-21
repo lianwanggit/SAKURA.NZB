@@ -24,7 +24,7 @@ class ProductInfo {
 
 export class OrderSummaryComponent {
 	@Input() orderModel: OrderModel;
-	exchangeRate = (<any>window).nzb.rate.live;
+	exchangeRate = (<any>window).nzb.rate.history;
 
 	constructor() { }
 
