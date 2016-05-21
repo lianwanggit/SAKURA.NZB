@@ -85,7 +85,7 @@ export class OrderModel {
 		var products = [].ToList<Product>();
 		this.customerOrders.forEach(co => {
 			co.orderProducts.forEach(op => {
-				var p = products.FirstOrDefault(x => x.id == op.productId);
+				var p = products.FirstOrDefault(x => x.id == op.productId && x.name == op.productName);
 				if (p)
 					p.qty += op.qty;
 				else

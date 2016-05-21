@@ -122,7 +122,7 @@ System.register([], function(exports_1, context_1) {
                     var products = [].ToList();
                     this.customerOrders.forEach(function (co) {
                         co.orderProducts.forEach(function (op) {
-                            var p = products.FirstOrDefault(function (x) { return x.id == op.productId; });
+                            var p = products.FirstOrDefault(function (x) { return x.id == op.productId && x.name == op.productName; });
                             if (p)
                                 p.qty += op.qty;
                             else
