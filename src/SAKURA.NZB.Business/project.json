@@ -18,6 +18,7 @@
     "pinyin4net": "1.0.0",
     "Hangfire.Core": "1.5.2",
     "Hangfire.SqlServer": "1.5.2",
+    "MediatR": "2.0.2",
     "Microsoft.AspNet.Owin": "1.0.0-rc1-final",
     "Microsoft.AspNet.WebApi.Client": "5.2.2",
     "Newtonsoft.Json": "8.0.2",

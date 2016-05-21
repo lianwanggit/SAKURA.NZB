@@ -4,7 +4,7 @@ import {Component, OnInit} from "angular2/core";
 import {CORE_DIRECTIVES, FORM_DIRECTIVES} from "angular2/common";
 import {Http} from 'angular2/http';
 import {Router, ROUTER_DIRECTIVES} from 'angular2/router';
-import {EXCHANGEHISTORIES_SEARCH_ENDPOINT} from "../api.service";
+import {EXCHANGEHISTORIES_SEARCH_ENDPOINT, EXCHANGEHISTORIES_SUMMARY_ENDPOINT} from "../api.service";
 import { PAGINATION_DIRECTIVES } from 'ng2-bootstrap/ng2-bootstrap';
 
 import '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js';

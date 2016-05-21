@@ -1,26 +1,30 @@
 ﻿using Microsoft.Data.Entity;
-using SAKURA.NZB.Business.Configuration;
 using SAKURA.NZB.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SAKURA.NZB.Business.Sale
+namespace SAKURA.NZB.Business.Cache
 {
-	public class MonthSaleCalculator
-    {
-		private NZBContext _context;
-		private float _exchangeRate;
+	public class MonthSaleCache : ICache
+	{
+		private readonly NZBContext _context;
+		public static List<MonthSale> MonthSaleList { get;  private set;}
 
-		public MonthSaleCalculator(NZBContext context, Config config)
+		public MonthSaleCache(NZBContext context)
 		{
 			_context = context;
-			_exchangeRate = config.GetCurrentRate();
 		}
 
-		public List<MonthSale> Aggregate()
+		public void Update()
+		{
+			MonthSaleList = Aggregate();
+		}
+
+		private List<MonthSale> Aggregate()
 		{
 			var result = new List<MonthSale>();
+			if (!ExchangeRateCache.Rate.HasValue) return result;
 
 			foreach (var o in _context.Orders.Include(o => o.Products).Where(o => o.OrderTime.Year == DateTime.Now.Year))
 			{
@@ -35,7 +39,7 @@ namespace SAKURA.NZB.Business.Sale
 				}
 
 				cost += (o.Freight ?? 0F);
-				var profit = income - cost * _exchangeRate;
+				var profit = income - cost * ExchangeRateCache.Rate.Value;
 
 				var sale = result.FirstOrDefault(s => s.Month == month);
 				if (sale != null)

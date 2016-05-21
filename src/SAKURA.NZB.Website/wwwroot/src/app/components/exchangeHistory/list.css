@@ -1,16 +1,32 @@
-﻿.widget-content {
-    padding: 8px;
+﻿.history-list {
+   margin-top: 10px;
+}
+
+.history-list > div:last-child {
+   border-bottom: 1px solid #ccc;
+}
+
+.widget-content {
     font-family: 'Roboto', sans-serif;
     width: 100%;
     display: table;
-    margin-top: 10px;
-    margin-bottom: 15px;
     border-top: 1px solid #ccc;
-    border-bottom: 1px solid #ccc;
 }
 
 .widget-content .symbol {
     color: rgb(0,188,212);
+}
+
+.widget-content > div:nth-of-type(1) {
+    width: 150px;
+}
+
+.widget-content > div:nth-of-type(2) {
+    width: 260px;
+}
+
+.widget-content > div:nth-of-type(3) {
+    width: 240px;
 }
 
 .scope {

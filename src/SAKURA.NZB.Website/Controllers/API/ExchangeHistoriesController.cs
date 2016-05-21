@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNet.Mvc;
+using SAKURA.NZB.Business.Cache;
 using SAKURA.NZB.Business.Configuration;
 using SAKURA.NZB.Data;
 using SAKURA.NZB.Domain;
@@ -27,6 +28,26 @@ namespace SAKURA.NZB.Website.Controllers.API
 		public IActionResult Get()
 		{
 			return new ObjectResult(_context.ExchangeHistories.OrderByDescending(h => h.CreatedTime).ToList());
+		}
+
+		[HttpGet("summary")]
+		public IActionResult GetSummary()
+		{
+			var records = _context.ExchangeHistories.ToList();
+			float totalNzd = 0;
+			float totalCny = 0;
+
+			foreach (var r in records)
+			{
+				totalNzd += r.Nzd;
+				totalCny += r.Cny;
+			}
+
+			return new ObjectResult(new {
+				TotalNzd = totalNzd,
+				TotalCny = totalCny,
+				Rate = ExchangeRateCache.Rate
+			});
 		}
 
 		[HttpGet("search/{page:int}")]
@@ -115,7 +136,7 @@ namespace SAKURA.NZB.Website.Controllers.API
 				ReceiverCharge = currencyToNzd(item.ReceiverCharge),
 				Agent = item.Agent,
 				Rate = item.Rate.ToString(),
-				CreatedTime = item.CreatedTime.ToString("d")
+				CreatedTime = item.CreatedTime.ToString("dd/MM/yyyy")
 			};
 		}
 

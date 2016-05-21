@@ -1,4 +1,4 @@
-﻿using SAKURA.NZB.Business.Sale;
+﻿using SAKURA.NZB.Business.Cache;
 using SAKURA.NZB.Domain;
 using System;
 using System.Collections.Generic;

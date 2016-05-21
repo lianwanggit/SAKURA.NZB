@@ -1,15 +1,20 @@
 ﻿using Hangfire;
+using MediatR;
 using Microsoft.Data.Entity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SAKURA.NZB.Business.BootTasks;
+using SAKURA.NZB.Business.Cache;
 using SAKURA.NZB.Business.Configuration;
 using SAKURA.NZB.Business.CurrencyTracking;
 using SAKURA.NZB.Business.ExpressTracking;
 using SAKURA.NZB.Business.Hangfire;
-using SAKURA.NZB.Business.Sale;
+using SAKURA.NZB.Business.MediatR;
+using SAKURA.NZB.Business.MediatR.MessageHandlers;
 using SAKURA.NZB.Business.Services;
 using SAKURA.NZB.Data;
+using System;
+using System.Linq;
 
 namespace SAKURA.NZB.Business
 {
@@ -31,6 +36,24 @@ namespace SAKURA.NZB.Business
 				.AddDbContext<NZBContext>(options => options.UseSqlServer(_config["Data:DefaultConnection:NZB"]))
 				.AddDbContext<HangfireContext>(options => options.UseSqlServer(_config["Data:DefaultConnection:Hangfire"]));
 
+			services.AddSingleton<IMediator>(serviceProvider =>
+			{
+				MultiInstanceFactory multiFactory = serviceType => AppDomain.CurrentDomain.GetAssemblies()
+					.Where(a => a.FullName.StartsWith("SAKURA.NZB"))
+					.SelectMany(s => s.GetTypes())
+					.Where(serviceType.IsAssignableFrom)
+					.Select(type =>
+					{
+						var service = serviceProvider.GetService(type);  
+						if (service == null)
+							throw new InvalidOperationException($"The service provider doesn't know about '{type}'.");
+						return service;
+					});
+
+				return new Mediator(serviceType => multiFactory(serviceType).First(), multiFactory);
+			});
+
+			services.AddMediator();
 			services.AddTransient<Config>();
 
 			// Add application services.
@@ -41,7 +64,13 @@ namespace SAKURA.NZB.Business
 			services.AddTransient<HangfireHelper>();
 			services.AddTransient<FlywayExpressTracker>();
 			services.AddTransient<CurrencyLayerTracker>();
-			services.AddTransient<MonthSaleCalculator>();
+			services.AddTransient<MonthSaleCache>();
+
+			services.AddTransient<OrderUpdatedHandler>();
+			services.AddTransient<ExchangeRateUpdatedHandler>();
+
+			services.AddTransient<ICache, MonthSaleCache>();
+			services.AddTransient<ICache, ExchangeRateCache>();
 
 			services.AddScoped<CurrencyTrackBootTask>();
 			services.AddScoped<ExpressTrackBootTask>();
@@ -51,6 +80,9 @@ namespace SAKURA.NZB.Business
 			services.AddScoped<IBootTask, CurrencyTrackBootTask>();
 			services.AddScoped<IBootTask, ExpressTrackBootTask>();
 			services.AddScoped<IBootTask, DbCleanupBootTask>();
+			services.AddScoped<IBootTask, CacheInitializationBootTask>();
 		}
-    }
+
+
+	}
 }

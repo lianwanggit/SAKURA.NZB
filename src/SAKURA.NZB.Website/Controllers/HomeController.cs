@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNet.Mvc;
+using SAKURA.NZB.Business.Cache;
 using SAKURA.NZB.Business.Configuration;
 
 namespace SAKURA.NZB.Website.Controllers
@@ -14,7 +15,7 @@ namespace SAKURA.NZB.Website.Controllers
 
 		public IActionResult Index()
         {
-			ViewData["LiveRate"] = _config.GetCurrentRate();
+			ViewData["LiveRate"] = ExchangeRateCache.Rate.Value;
 			ViewData["HighRate"] = _config.GetFixedRateHigh();
 			ViewData["LowRate"] = _config.GetFixedRateLow();
 

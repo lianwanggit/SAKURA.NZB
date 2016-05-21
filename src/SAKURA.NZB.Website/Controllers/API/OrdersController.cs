@@ -9,7 +9,9 @@ using System.Globalization;
 using SAKURA.NZB.Business.Configuration;
 using SAKURA.NZB.Website.ViewModels;
 using System.Web.Http;
-using SAKURA.NZB.Business.Sale;
+using SAKURA.NZB.Business.Cache;
+using MediatR;
+using SAKURA.NZB.Business.MediatR.Messages;
 
 namespace SAKURA.NZB.Website.Controllers
 {
@@ -18,14 +20,13 @@ namespace SAKURA.NZB.Website.Controllers
 	{
 		private readonly NZBContext _context;
 		private readonly int _itemsPerPage;
-		private readonly MonthSaleCalculator _monthSaleCalculator;
+		private readonly IMediator _mediator;
 
-		public OrdersController(NZBContext context, Config config, MonthSaleCalculator monthSaleCalculator)
+		public OrdersController(NZBContext context, Config config, IMediator mediator)
 		{
 			_context = context;
 			_itemsPerPage = config.GetOrdersItemsPerPage();
-
-			_monthSaleCalculator = monthSaleCalculator;
+			_mediator = mediator;
 		}
 
 		[HttpGet]
@@ -114,7 +115,7 @@ namespace SAKURA.NZB.Website.Controllers
 				.ThenBy(o => o.Products.First().Customer.NamePinYin)
 				.ToList();
 
-			var monthSaleSummary = _monthSaleCalculator.Aggregate();
+			var monthSaleSummary = MonthSaleCache.MonthSaleList;
 
 			var models = new List<OrderModel>();
 			orders.ForEach(o =>
@@ -211,6 +212,7 @@ namespace SAKURA.NZB.Website.Controllers
 			_context.Orders.Add(Map(model));
 			_context.SaveChanges();
 
+			_mediator.Publish(new OrderUpdated());
 			return CreatedAtRoute("GetOrder", new { controller = "Orders", id = model.Id }, model);
 		}
 
@@ -289,6 +291,7 @@ namespace SAKURA.NZB.Website.Controllers
 				});
 			}
 			_context.SaveChanges();
+			_mediator.Publish(new OrderUpdated());
 
 			return new NoContentResult();
 		}
@@ -301,6 +304,8 @@ namespace SAKURA.NZB.Website.Controllers
 			{
 				_context.Orders.Remove(item);
 				_context.SaveChanges();
+
+				_mediator.Publish(new OrderUpdated());
 			}
 		}
 

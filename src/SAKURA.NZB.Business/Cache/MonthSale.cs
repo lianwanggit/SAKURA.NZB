@@ -1,4 +1,4 @@
-﻿namespace SAKURA.NZB.Business.Sale
+﻿namespace SAKURA.NZB.Business.Cache
 {
 	public class MonthSale
     {

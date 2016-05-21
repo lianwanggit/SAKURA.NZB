@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNet.Mvc;
 using Microsoft.Data.Entity;
+using SAKURA.NZB.Business.Cache;
 using SAKURA.NZB.Business.Configuration;
-using SAKURA.NZB.Business.Sale;
 using SAKURA.NZB.Data;
 using SAKURA.NZB.Domain;
 using System;
@@ -16,15 +16,11 @@ namespace SAKURA.NZB.Website.Controllers.API
 	{
 		private readonly NZBContext _context;
 		private readonly Config _config;
-		private readonly float _exchangeRate;
-		private readonly MonthSaleCalculator _monthSaleCalculator;
 
-		public DashboardController(NZBContext context, Config config, MonthSaleCalculator monthSaleCalculator)
+		public DashboardController(NZBContext context, Config config)
 		{
 			_context = context;
 			_config = config;
-			_exchangeRate = _config.GetCurrentRate();
-			_monthSaleCalculator = monthSaleCalculator;
 		}
 
 		[HttpGet("summary")]
@@ -64,16 +60,16 @@ namespace SAKURA.NZB.Website.Controllers.API
 
 				if (o.OrderTime.Date == yesterday)
 				{
-					yesterdayProfit += (income - cost * _exchangeRate);
+					yesterdayProfit += (income - cost * ExchangeRateCache.Rate.Value);
 				}
 
 				if (o.OrderTime.Date == today)
 				{
-					todayProfit += (income - cost * _exchangeRate);
+					todayProfit += (income - cost * ExchangeRateCache.Rate.Value);
 				}
 			}
 
-			totalProfit = totalIncome - totalCost * _exchangeRate;
+			totalProfit = totalIncome - totalCost * ExchangeRateCache.Rate.Value;
 			profitIncrement = todayProfit - yesterdayProfit;
 			profitIncrementRate = Math.Abs(yesterdayProfit == 0 ? 0 : profitIncrement / yesterdayProfit);
 
@@ -107,7 +103,7 @@ namespace SAKURA.NZB.Website.Controllers.API
 		[HttpGet("annual-sales")]
 		public IActionResult GetAnnualSales()
 		{
-			return new ObjectResult(_monthSaleCalculator.Aggregate().OrderBy(s => s.Month));
+			return new ObjectResult(MonthSaleCache.MonthSaleList.OrderBy(s => s.Month));
 		}
 
 		[HttpGet("top-sale-products")]
@@ -129,7 +125,7 @@ namespace SAKURA.NZB.Website.Controllers.API
 			var result = from o in orders
 						 from op in o.Products
 						 group op by op.Product.Brand into bg
-						 select new { BrandName = bg.Key.Name, Count = (float)Math.Round(bg.Sum(x => x.Qty * (x.Price - x.Cost * _exchangeRate)), 2) };
+						 select new { BrandName = bg.Key.Name, Count = (float)Math.Round(bg.Sum(x => x.Qty * (x.Price - x.Cost * ExchangeRateCache.Rate.Value)), 2) };
 
 			return new ObjectResult(result.OrderByDescending(r => r.Count).Take(10));
 		}
@@ -158,7 +154,7 @@ namespace SAKURA.NZB.Website.Controllers.API
 
 					count += 1;
 					cost += (o.Freight ?? 0F);
-					profit += (income - cost * _exchangeRate);
+					profit += (income - cost * ExchangeRateCache.Rate.Value);
 				}
 
 				result.Add(new DaySale { Date = d.ToShortDateString(), OrderCount = count, Profit = (float)Math.Round(profit, 2) });
