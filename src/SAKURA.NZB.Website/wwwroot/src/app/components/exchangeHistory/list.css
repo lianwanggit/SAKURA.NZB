@@ -28,11 +28,15 @@
 }
 
 .widget-content > div:nth-of-type(2) {
-    width: 180px;
+    width: 220px;
 }
 
 .widget-content > div:nth-of-type(3) {
-    width: 240px;
+    width: 200px;
+}
+
+.widget-content > div:nth-of-type(4) {
+    width: 220px;
 }
 
 .scope {
