@@ -71,9 +71,9 @@
                                 </div>
                                 <table class="table table-bordered">
                                     <tr>
-                                        <td class="text-center info">{{currentRate}} <i class="fa fa-refresh fa-spin"></i></td>
-                                        <td class="text-center success">{{fixedRateLow}} <i class="fa fa-angle-down"></i></td>
-                                        <td class="text-center success">{{fixedRateHigh}} <i class="fa fa-angle-up"></i></td>
+                                        <td class="text-center info">{{currentRate}} <i class="fa fa-arrow-circle-right"></i></td>
+                                        <td class="text-center success">{{fixedRateLow}} <i class="fa fa-arrow-circle-down"></i></td>
+                                        <td class="text-center success">{{fixedRateHigh}} <i class="fa fa-arrow-circle-up"></i></td>
                                     </tr>
                                     <tr>
                                         <td class="text-center" [ngClass]="{placeholder: !q.price}">{{q.currencyConvert(currentRate)}}</td>
@@ -105,9 +105,9 @@
                             <tr>
                                 <td>供应商</td>
                                 <td style="width:15%">报价</td>
-                                <td class="text-center info">实时汇率: <b>{{currentRate}}</b> <i class="fa fa-refresh fa-spin"></i></td>
-                                <td class="text-center success">固定汇率: <b>{{fixedRateLow}}</b> <i class="fa fa-angle-down"></i></td>
-                                <td class="text-center success">固定汇率: <b>{{fixedRateHigh}}</b> <i class="fa fa-angle-up"></i></td>
+                                <td class="text-center info">平均汇率: <b>{{currentRate}}</b> <i class="fa fa-arrow-circle-right"></i></td>
+                                <td class="text-center success">固定汇率: <b>{{fixedRateLow}}</b> <i class="fa fa-arrow-circle-down"></i></td>
+                                <td class="text-center success">固定汇率: <b>{{fixedRateHigh}}</b> <i class="fa fa-arrow-circle-up"></i></td>
                                 <td style="width:40px"></td>
                             </tr>
                         </thead>
