@@ -51,7 +51,7 @@ namespace SAKURA.NZB.Website.Controllers
 								new
 								{
 									Year = yg.Key,
-									MonthGroups = 
+									MonthGroups =
 										from o in yg
 										group o by o.OrderTime.ToString("MMMM", CultureInfo.InvariantCulture) into mg
 										select new { Month = mg.Key, Models = mg }
@@ -63,7 +63,7 @@ namespace SAKURA.NZB.Website.Controllers
 		[HttpGet("get-latest-by-product/{id:int}")]
 		public IActionResult GetLatestByProduct(int? id)
 		{
-			var orders = (_context.Orders .Include(o => o.Products).ThenInclude(p => p.Customer)).ToList();
+			var orders = (_context.Orders.Include(o => o.Products).ThenInclude(p => p.Customer)).ToList();
 			var order = (from o in orders
 						 from p in o.Products
 						 where p.ProductId == id
@@ -71,7 +71,7 @@ namespace SAKURA.NZB.Website.Controllers
 						 select new
 						 {
 							 Waybill = o.WaybillNumber,
-							 Customer =p.Customer.FullName.Trim(),
+							 Customer = p.Customer.FullName.Trim(),
 							 OrderTime = o.OrderTime.ToString("d")
 						 }).FirstOrDefault();
 
@@ -99,7 +99,7 @@ namespace SAKURA.NZB.Website.Controllers
 			Func<Order, bool> keywordPredicate = (p) => true;
 			if (!string.IsNullOrEmpty(options.keyword))
 			{
-				keywordPredicate = (o) => (!string.IsNullOrEmpty(o.WaybillNumber) && o.WaybillNumber.StartsWith(options.keyword)) 
+				keywordPredicate = (o) => (!string.IsNullOrEmpty(o.WaybillNumber) && o.WaybillNumber.StartsWith(options.keyword))
 									|| o.Products.Any(p => p.Product.Brand.Name.ToLower().StartsWith(options.keyword.ToLower()))
 									|| o.Products.Any(p => p.Customer.NamePinYin.ToLower().StartsWith(options.keyword.ToLower()));
 			}
@@ -116,7 +116,6 @@ namespace SAKURA.NZB.Website.Controllers
 				.ToList();
 
 			var monthSaleSummary = MonthSaleCache.MonthSaleList;
-
 			var models = new List<OrderModel>();
 			orders.ForEach(o =>
 			{
@@ -160,7 +159,7 @@ namespace SAKURA.NZB.Website.Controllers
 
 			OrderAction oa;
 			if (!Enum.TryParse(model.Action, out oa))
-				 return HttpBadRequest();
+				return HttpBadRequest();
 
 			switch (oa)
 			{
@@ -193,7 +192,8 @@ namespace SAKURA.NZB.Website.Controllers
 
 			_context.SaveChanges();
 
-			return new ObjectResult(new UpdateOrderStatusResultModel {
+			return new ObjectResult(new UpdateOrderStatusResultModel
+			{
 				OrderId = item.Id,
 				OrderState = item.OrderState.ToString(),
 				PaymentState = item.PaymentState.ToString()
@@ -233,7 +233,8 @@ namespace SAKURA.NZB.Website.Controllers
 
 			_context.SaveChanges();
 
-			return new ObjectResult(new OrderDeliveryResultModel {
+			return new ObjectResult(new OrderDeliveryResultModel
+			{
 				OrderId = item.Id,
 				WaybillNumber = item.WaybillNumber,
 				Weight = item.Weight,
@@ -334,7 +335,7 @@ namespace SAKURA.NZB.Website.Controllers
 		}
 
 
-		static Func<string, OrderState> StringToOrderState = (str) => 
+		static Func<string, OrderState> StringToOrderState = (str) =>
 		{
 			OrderState state;
 			if (Enum.TryParse(str, out state))
@@ -353,7 +354,7 @@ namespace SAKURA.NZB.Website.Controllers
 		static Func<DateTime?, DateTimeOffset?> NullableDateTimeToOffset = (dt) => { return dt.HasValue ? dt.Value.ToLocalTime() : (DateTimeOffset?)null; };
 
 		private static Order Map(OrderModel model)
-		{			
+		{
 			var order = new Order
 			{
 				Id = model.Id,
@@ -398,7 +399,7 @@ namespace SAKURA.NZB.Website.Controllers
 						p.Qty = op.Qty;
 						p.Purchased = op.Purchased;
 						p.ProductId = op.ProductId;
-						p.CustomerId = co.CustomerId;						
+						p.CustomerId = co.CustomerId;
 					}
 
 				}
@@ -449,10 +450,10 @@ namespace SAKURA.NZB.Website.Controllers
 					{
 						CustomerId = p.CustomerId,
 						CustomerName = p.Customer.FullName,
-						OrderProducts = new List<OrderProductModel>()
-					{
-						orderProductModel
-					}
+						OrderProducts = new List<OrderProductModel>
+						{
+							orderProductModel
+						}
 					};
 					model.CustomerOrders.Add(customer);
 				}

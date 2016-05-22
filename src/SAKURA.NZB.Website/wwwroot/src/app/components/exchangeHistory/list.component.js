@@ -48,7 +48,6 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/
                 }
                 return ExchangeHistory;
             }());
-            exports_1("ExchangeHistory", ExchangeHistory);
             ExchangeSummary = (function () {
                 function ExchangeSummary(obj) {
                     this.totalNzd = obj.totalNzd;
@@ -57,7 +56,6 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/
                 }
                 return ExchangeSummary;
             }());
-            exports_1("ExchangeSummary", ExchangeSummary);
             ExchangeHistoriesComponent = (function () {
                 function ExchangeHistoriesComponent(http, router) {
                     this.http = http;

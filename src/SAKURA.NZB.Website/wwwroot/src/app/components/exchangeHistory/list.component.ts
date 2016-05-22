@@ -10,7 +10,7 @@ import { PAGINATION_DIRECTIVES } from 'ng2-bootstrap/ng2-bootstrap';
 import '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js';
 declare var moment: any;
 
-export class ExchangeHistory {
+class ExchangeHistory {
 	id: number;
 	cny: number;
 	nzd: number;
@@ -32,7 +32,7 @@ export class ExchangeHistory {
 	}
 }
 
-export class ExchangeSummary {
+class ExchangeSummary {
 	totalNzd: string;
 	totalCny: string;
 	rate: number;

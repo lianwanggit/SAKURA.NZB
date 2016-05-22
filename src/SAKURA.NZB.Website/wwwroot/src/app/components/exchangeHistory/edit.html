@@ -1,0 +1,101 @@
+﻿<div class="loading" *ngIf="isLoading">Loading&#8230;</div>
+
+<div class="grey-border" [hidden]="isLoading">
+    <h2 class="page-header">{{title}}</h2>
+
+    <form class="form-horizontal" (ngSubmit)="onSubmit()" #myForm="ngForm">
+        <div class="form-group">
+            <label for="createdDate" class="col-md-2">换汇时间</label>
+            <div class="col-md-10">
+                <div class="input-group date" id="createdDate" [class.has-error]="!isCreatedDateValid">
+                    <input type="text" class="form-control" style="background-color:#FFF" readonly="readonly" required />
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-md-2" for="cny">汇入金额</label>
+            <div class="col-md-10">
+                <div class="input-group">
+                    <input id="cny" type="number" class="form-control" step="0.01" min="1" required
+                           [(ngModel)]="model.cny" ngControl="cny" #cny="ngForm" />
+                    <span class="input-group-addon">¥</span>
+                </div>
+
+                <div [hidden]="cny.valid || cny.pristine" class="alert alert-danger">
+                    汇入金额不能为空
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-md-2" for="sponsorCharge">汇入费用</label>
+            <div class="col-md-10">
+                <div class="input-group">
+                    <input id="sponsorCharge" type="number" class="form-control" step="0.01" min="1" required
+                           [(ngModel)]="model.sponsorCharge" ngControl="sponsorCharge" #sponsorCharge="ngForm" />
+                    <span class="input-group-addon">¥</span>
+                </div>
+
+                <div [hidden]="sponsorCharge.valid || sponsorCharge.pristine" class="alert alert-danger">
+                    汇入费用不能为空
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-md-2" for="nzd">汇出金额</label>
+            <div class="col-md-10">
+                <div class="input-group">
+                    <input id="nzd" type="number" class="form-control" step="0.01" min="1" required
+                           [(ngModel)]="model.nzd" ngControl="nzd" #nzd="ngForm" />
+                    <span class="input-group-addon">$</span>
+                </div>
+
+                <div [hidden]="nzd.valid || nzd.pristine" class="alert alert-danger">
+                    汇出金额不能为空
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-md-2" for="receiverCharge">汇出费用</label>
+            <div class="col-md-10">
+                <div class="input-group">
+                    <input id="receiverCharge" type="number" class="form-control" step="0.01" min="1" required
+                           [(ngModel)]="model.receiverCharge" ngControl="receivercharge" #receiverCharge="ngForm" />
+                    <span class="input-group-addon">$</span>
+                </div>
+
+                <div [hidden]="receiverCharge.valid || receiverCharge.pristine" class="alert alert-danger">
+                    汇出费用不能为空
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-md-2" for="agent">代理人</label>
+            <div class="col-md-10">
+                <input id="agent" type="text" class="form-control" required maxlength="10"
+                       [(ngModel)]="model.agent" ngControl="agent" #agent="ngForm" />
+                <div [hidden]="agent.valid || agent.pristine" class="alert alert-danger">
+                    代理人不能为空
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <button type="button" class="btn btn-default" [routerLink]="['换汇记录']">返回列表</button>
+                <button type="button" class="btn btn-danger left-spacer" (click)="onDelete()" *ngIf="editMode">删除 <i class="fa fa-trash fa-lg"></i></button>
+                <button type="submit" class="btn btn-success left-spacer"
+                        [disabled]="!myForm.form.valid || !isCreatedDateValid">
+                    保存 <i class="fa fa-floppy-o fa-lg"></i>
+                </button>
+            </div>
+        </div>
+    </form>
+</div>

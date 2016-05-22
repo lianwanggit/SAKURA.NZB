@@ -14,6 +14,7 @@
 /// <reference path="src/app/components/customers/edit.component.js" />
 /// <reference path="src/app/components/customers/list.component.js" />
 /// <reference path="src/app/components/dashboard.component.js" />
+/// <reference path="src/app/components/exchangehistory/edit.component.js" />
 /// <reference path="src/app/components/exchangehistory/list.component.js" />
 /// <reference path="src/app/components/mvc.component.js" />
 /// <reference path="src/app/components/orders/edit.component.js" />

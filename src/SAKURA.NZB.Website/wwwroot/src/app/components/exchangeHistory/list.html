@@ -5,7 +5,7 @@
         换汇记录 <small>({{historyList.length}} / {{totalItemCount}})</small>
 
         <div class="pull-right">
-            <button type="button" class="btn btn-info">
+            <button type="button" class="btn btn-info" [routerLink]="['EHAdd']">
                 新建 <i class="fa fa-history fa-lg"></i>
             </button>
         </div>
@@ -82,7 +82,7 @@
                 <p class="md-body-2 margin-bottom-0 opacity-60">汇出</p>
             </div>
 
-            <div class="scope table-cell text-right clickable">
+            <div class="scope table-cell text-right clickable" [routerLink]="['EHEdit', { id: h.id }]">
                 <i class="fa fa-angle-right fa-2x padding-right-8"></i>
             </div>
         </div>

@@ -19,6 +19,7 @@ export const ORDER_UPDATE_STATUS_ENDPOINT = "api/orders/update-order-status/";
 export const ORDER_GET_LATEST_BY_PRODUCT_ENDPOINT = "api/orders/get-latest-by-product/";
 
 export const EXPRESS_TRACK_ENDPOINT = "api/expresstrack/";
+export const EXCHANGEHISTORIES_ENDPOINT = "api/exchangehistories/";
 export const EXCHANGEHISTORIES_SUMMARY_ENDPOINT = "api/exchangehistories/summary/";
 export const EXCHANGEHISTORIES_SEARCH_ENDPOINT = "api/exchangehistories/search/";
 
