@@ -3,5 +3,6 @@
 	public interface ICache
     {
 		void Update();
+		int Order { get; }
     }
 }

@@ -61,16 +61,16 @@ namespace SAKURA.NZB.Website.Controllers.API
 
 				if (o.OrderTime.Date == yesterday)
 				{
-					yesterdayProfit += (income - cost * ExchangeRateCache.Rate.Value);
+					yesterdayProfit += (income - cost * ExchangeRateCache.Rate);
 				}
 
 				if (o.OrderTime.Date == today)
 				{
-					todayProfit += (income - cost * ExchangeRateCache.Rate.Value);
+					todayProfit += (income - cost * ExchangeRateCache.Rate);
 				}
 			}
 
-			totalProfit = totalIncome - totalCost * ExchangeRateCache.Rate.Value;
+			totalProfit = totalIncome - totalCost * ExchangeRateCache.Rate;
 			profitIncrement = todayProfit - yesterdayProfit;
 			profitIncrementRate = Math.Abs(yesterdayProfit == 0 ? 0 : profitIncrement / yesterdayProfit);
 
@@ -126,7 +126,7 @@ namespace SAKURA.NZB.Website.Controllers.API
 			var result = from o in orders
 						 from op in o.Products
 						 group op by op.Product.Brand into bg
-						 select new { BrandName = bg.Key.Name, Count = (float)Math.Round(bg.Sum(x => x.Qty * (x.Price - x.Cost * ExchangeRateCache.Rate.Value)), 2) };
+						 select new { BrandName = bg.Key.Name, Count = (float)Math.Round(bg.Sum(x => x.Qty * (x.Price - x.Cost * ExchangeRateCache.Rate)), 2) };
 
 			return new ObjectResult(result.OrderByDescending(r => r.Count).Take(10));
 		}
@@ -155,7 +155,7 @@ namespace SAKURA.NZB.Website.Controllers.API
 
 					count += 1;
 					cost += (o.Freight ?? 0F);
-					profit += (income - cost * ExchangeRateCache.Rate.Value);
+					profit += (income - cost * ExchangeRateCache.Rate);
 				}
 
 				result.Add(new DaySale { Date = d.ToShortDateString(), OrderCount = count, Profit = (float)Math.Round(profit, 2) });

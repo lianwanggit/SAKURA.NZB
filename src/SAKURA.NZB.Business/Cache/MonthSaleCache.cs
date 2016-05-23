@@ -10,6 +10,7 @@ namespace SAKURA.NZB.Business.Cache
 	{
 		private readonly NZBContext _context;
 		public static List<MonthSale> MonthSaleList { get;  private set;}
+		public int Order => 2;
 
 		public MonthSaleCache(NZBContext context)
 		{
@@ -23,8 +24,7 @@ namespace SAKURA.NZB.Business.Cache
 
 		private List<MonthSale> Aggregate()
 		{
-			var result = new List<MonthSale>();
-			if (!ExchangeRateCache.Rate.HasValue) return result;
+			var result = new List<MonthSale>();			
 
 			foreach (var o in _context.Orders.Include(o => o.Products).Where(o => o.OrderTime.Year == DateTime.Now.Year))
 			{
@@ -39,7 +39,7 @@ namespace SAKURA.NZB.Business.Cache
 				}
 
 				cost += (o.Freight ?? 0F);
-				var profit = income - cost * ExchangeRateCache.Rate.Value;
+				var profit = income - cost * ExchangeRateCache.Rate;
 
 				var sale = result.FirstOrDefault(s => s.Month == month);
 				if (sale != null)

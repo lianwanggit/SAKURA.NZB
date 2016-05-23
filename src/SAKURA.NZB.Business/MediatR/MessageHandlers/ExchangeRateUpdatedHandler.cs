@@ -3,6 +3,7 @@ using SAKURA.NZB.Business.Cache;
 using SAKURA.NZB.Business.MediatR.Messages;
 using Serilog;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SAKURA.NZB.Business.MediatR.MessageHandlers
 {
@@ -18,10 +19,10 @@ namespace SAKURA.NZB.Business.MediatR.MessageHandlers
 
 		public void Handle(ExchangeRateUpdated notification)
 		{
-			foreach (var cache in _caches)
+			var orderedCaches = _caches.OrderBy(c => c.Order).ToList();
+			foreach (var cache in orderedCaches)
 			{
-				if (cache is MonthSaleCache)
-					cache.Update();
+				cache.Update();
 			}
 		}
 	}

@@ -51,7 +51,7 @@ namespace SAKURA.NZB.Website.Controllers.API
 			{
 				TotalNzd = currencyToNzd(totalNzd),
 				TotalCny = currencyToCny(totalCny),
-				Rate = ExchangeRateCache.Rate
+				Rate = (float)Math.Round(ExchangeRateCache.Rate, 4)
 			});
 		}
 
@@ -148,7 +148,7 @@ namespace SAKURA.NZB.Website.Controllers.API
 				SponsorCharge = currencyToCny(item.SponsorCharge),
 				ReceiverCharge = currencyToNzd(item.ReceiverCharge),
 				Agent = item.Agent,
-				Rate = item.Rate.ToString(),
+				Rate = Math.Round(item.Rate, 4).ToString(),
 				CreatedTime = item.CreatedTime.ToString("dd/MM/yyyy")
 			};
 		}

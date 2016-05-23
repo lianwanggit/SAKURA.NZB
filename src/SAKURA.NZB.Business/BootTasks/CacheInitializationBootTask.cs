@@ -1,5 +1,6 @@
 ﻿using SAKURA.NZB.Business.Cache;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SAKURA.NZB.Business.BootTasks
 {
@@ -14,7 +15,8 @@ namespace SAKURA.NZB.Business.BootTasks
 
 		public void Run()
 		{
-			foreach (var cache in _caches)
+			var orderedCaches = _caches.OrderBy(c => c.Order).ToList();
+			foreach (var cache in orderedCaches)
 			{
 				cache.Update();
 			}
