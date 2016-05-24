@@ -232,6 +232,7 @@ namespace SAKURA.NZB.Website.Controllers
 			item.DeliveryTime = DateTimeOffset.Now;
 
 			_context.SaveChanges();
+			_mediator.Publish(new OrderUpdated());
 
 			return new ObjectResult(new OrderDeliveryResultModel
 			{
