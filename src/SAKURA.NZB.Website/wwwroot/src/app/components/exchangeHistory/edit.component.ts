@@ -1,10 +1,11 @@
 ﻿/// <reference path="../../../../lib/TypeScript-Linq/Scripts/typings/System/Collections/Generic/List.ts" />
 
 import {Component, OnInit, AfterViewInit} from "angular2/core";
-import {CORE_DIRECTIVES, FORM_DIRECTIVES} from "angular2/common";
+import {CORE_DIRECTIVES, FORM_DIRECTIVES, FormBuilder, ControlGroup, Control, Validators} from "angular2/common";
 import {Http, Headers} from 'angular2/http';
 import {Router, RouteParams, ROUTER_DIRECTIVES} from 'angular2/router';
 import {EXCHANGEHISTORIES_ENDPOINT} from "../api.service";
+import {NumberValidator, PositiveNumberValidator, ValidationResult } from "../../validators/numberValidator";
 
 import '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js';
 
@@ -49,13 +50,23 @@ export class ExchangeHistoryEditComponent implements OnInit, AfterViewInit {
 	editMode = false;
 	isLoading = true;
 	isCreatedDateValid = true;
+	historyForm: ControlGroup;
+
 	private historyId: string;
 
-    constructor(private http: Http, private router: Router, params: RouteParams) {
+    constructor(private http: Http, fb: FormBuilder, private router: Router, params: RouteParams) {
 		this.historyId = params.get("id");
 		if (this.historyId) {
 			this.editMode = true;
 		} else { this.isLoading = false; }
+
+		this.historyForm = fb.group({
+			cny: [null, PositiveNumberValidator.unspecified],
+			sponsorCharge: [null, NumberValidator.unspecified],
+			nzd: [null, PositiveNumberValidator.unspecified],
+			receiverCharge: [null, NumberValidator.unspecified],
+			agent: [null, Validators.required],
+		});
 	}
 
     ngOnInit() {
@@ -79,6 +90,12 @@ export class ExchangeHistoryEditComponent implements OnInit, AfterViewInit {
 
 				that.model = new ExchangeHistory(json);
 				jQuery('#createdDate').data("DateTimePicker").date(moment(that.model.createdTime));
+
+				(<any>that.historyForm.controls['cny']).updateValue(that.model.cny);
+				(<any>that.historyForm.controls['sponsorCharge']).updateValue(that.model.sponsorCharge);
+				(<any>that.historyForm.controls['nzd']).updateValue(that.model.nzd);
+				(<any>that.historyForm.controls['receiverCharge']).updateValue(that.model.receiverCharge);
+				(<any>that.historyForm.controls['agent']).updateValue(that.model.agent);
 			},
 			error => {
 				this.isLoading = false;
@@ -88,6 +105,13 @@ export class ExchangeHistoryEditComponent implements OnInit, AfterViewInit {
 
 	onSubmit() {
 		var that = this;
+
+		this.model.cny = this.historyForm.value.cny;
+		this.model.sponsorCharge = this.historyForm.value.sponsorCharge;
+		this.model.nzd = this.historyForm.value.nzd;
+		this.model.receiverCharge = this.historyForm.value.receiverCharge;
+		this.model.agent = this.historyForm.value.agent;
+
 		var headers = new Headers();
 		headers.append('Content-Type', 'application/json');
 

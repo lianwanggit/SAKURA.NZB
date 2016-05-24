@@ -1,5 +1,5 @@
 /// <reference path="../../../../lib/TypeScript-Linq/Scripts/typings/System/Collections/Generic/List.ts" />
-System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/router', "../api.service", '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js'], function(exports_1, context_1) {
+System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/router', "../api.service", "../../validators/numberValidator", '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -11,7 +11,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, common_1, http_1, router_1, api_service_1;
+    var core_1, common_1, http_1, router_1, api_service_1, numberValidator_1;
     var ExchangeHistory, ExchangeHistoryEditComponent;
     return {
         setters:[
@@ -30,6 +30,9 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/
             function (api_service_1_1) {
                 api_service_1 = api_service_1_1;
             },
+            function (numberValidator_1_1) {
+                numberValidator_1 = numberValidator_1_1;
+            },
             function (_1) {}],
         execute: function() {
             ExchangeHistory = (function () {
@@ -47,7 +50,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/
             }());
             exports_1("ExchangeHistory", ExchangeHistory);
             ExchangeHistoryEditComponent = (function () {
-                function ExchangeHistoryEditComponent(http, router, params) {
+                function ExchangeHistoryEditComponent(http, fb, router, params) {
                     this.http = http;
                     this.router = router;
                     this.model = new ExchangeHistory({
@@ -64,6 +67,13 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/
                     else {
                         this.isLoading = false;
                     }
+                    this.historyForm = fb.group({
+                        cny: [null, numberValidator_1.PositiveNumberValidator.unspecified],
+                        sponsorCharge: [null, numberValidator_1.NumberValidator.unspecified],
+                        nzd: [null, numberValidator_1.PositiveNumberValidator.unspecified],
+                        receiverCharge: [null, numberValidator_1.NumberValidator.unspecified],
+                        agent: [null, common_1.Validators.required],
+                    });
                 }
                 ExchangeHistoryEditComponent.prototype.ngOnInit = function () {
                     if (this.editMode) {
@@ -84,6 +94,11 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/
                             return;
                         that.model = new ExchangeHistory(json);
                         jQuery('#createdDate').data("DateTimePicker").date(moment(that.model.createdTime));
+                        that.historyForm.controls['cny'].updateValue(that.model.cny);
+                        that.historyForm.controls['sponsorCharge'].updateValue(that.model.sponsorCharge);
+                        that.historyForm.controls['nzd'].updateValue(that.model.nzd);
+                        that.historyForm.controls['receiverCharge'].updateValue(that.model.receiverCharge);
+                        that.historyForm.controls['agent'].updateValue(that.model.agent);
                     }, function (error) {
                         _this.isLoading = false;
                         console.log(error);
@@ -92,6 +107,11 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/
                 ExchangeHistoryEditComponent.prototype.onSubmit = function () {
                     var _this = this;
                     var that = this;
+                    this.model.cny = this.historyForm.value.cny;
+                    this.model.sponsorCharge = this.historyForm.value.sponsorCharge;
+                    this.model.nzd = this.historyForm.value.nzd;
+                    this.model.receiverCharge = this.historyForm.value.receiverCharge;
+                    this.model.agent = this.historyForm.value.agent;
                     var headers = new http_1.Headers();
                     headers.append('Content-Type', 'application/json');
                     if (!this.editMode)
@@ -156,7 +176,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/
                         styleUrls: ["./src/app/components/exchangehistory/edit.css"],
                         directives: [common_1.CORE_DIRECTIVES, common_1.FORM_DIRECTIVES, router_1.ROUTER_DIRECTIVES]
                     }), 
-                    __metadata('design:paramtypes', [http_1.Http, router_1.Router, router_1.RouteParams])
+                    __metadata('design:paramtypes', [http_1.Http, common_1.FormBuilder, router_1.Router, router_1.RouteParams])
                 ], ExchangeHistoryEditComponent);
                 return ExchangeHistoryEditComponent;
             }());

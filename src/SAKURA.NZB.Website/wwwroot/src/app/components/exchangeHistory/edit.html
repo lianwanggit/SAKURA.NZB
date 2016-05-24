@@ -3,7 +3,7 @@
 <div class="grey-border" [hidden]="isLoading">
     <h2 class="page-header">{{title}}</h2>
 
-    <form class="form-horizontal" (ngSubmit)="onSubmit()" #myForm="ngForm">
+    <form class="form-horizontal" (ngSubmit)="onSubmit()" #myForm="ngForm" [ngFormModel]="historyForm">
         <div class="form-group">
             <label for="createdDate" class="col-md-2">换汇时间</label>
             <div class="col-md-10">
@@ -21,7 +21,7 @@
             <div class="col-md-10">
                 <div class="input-group">
                     <input id="cny" type="number" class="form-control" step="0.01" min="1" required
-                           [(ngModel)]="model.cny" ngControl="cny" #cny="ngForm" />
+                           ngControl="cny" #cny="ngForm" />
                     <span class="input-group-addon">¥</span>
                 </div>
 
@@ -36,7 +36,7 @@
             <div class="col-md-10">
                 <div class="input-group">
                     <input id="sponsorCharge" type="number" class="form-control" step="0.01" min="1" required
-                           [(ngModel)]="model.sponsorCharge" ngControl="sponsorCharge" #sponsorCharge="ngForm" />
+                           ngControl="sponsorCharge" #sponsorCharge="ngForm" />
                     <span class="input-group-addon">¥</span>
                 </div>
 
@@ -51,7 +51,7 @@
             <div class="col-md-10">
                 <div class="input-group">
                     <input id="nzd" type="number" class="form-control" step="0.01" min="1" required
-                           [(ngModel)]="model.nzd" ngControl="nzd" #nzd="ngForm" />
+                           ngControl="nzd" #nzd="ngForm" />
                     <span class="input-group-addon">$</span>
                 </div>
 
@@ -66,7 +66,7 @@
             <div class="col-md-10">
                 <div class="input-group">
                     <input id="receiverCharge" type="number" class="form-control" step="0.01" min="1" required
-                           [(ngModel)]="model.receiverCharge" ngControl="receivercharge" #receiverCharge="ngForm" />
+                           ngControl="receiverCharge" #receiverCharge="ngForm" />
                     <span class="input-group-addon">$</span>
                 </div>
 
@@ -80,7 +80,7 @@
             <label class="col-md-2" for="agent">代理人</label>
             <div class="col-md-10">
                 <input id="agent" type="text" class="form-control" required maxlength="10"
-                       [(ngModel)]="model.agent" ngControl="agent" #agent="ngForm" />
+                       ngControl="agent" #agent="ngForm" />
                 <div [hidden]="agent.valid || agent.pristine" class="alert alert-danger">
                     代理人不能为空
                 </div>
