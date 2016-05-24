@@ -84,7 +84,7 @@ namespace SAKURA.NZB.Website.Controllers.API
 			if (!TryValidateModel(history))
 				return HttpBadRequest();
 
-			history.Rate = (history.Cny + history.SponsorCharge) / (history.Nzd + history.ReceiverCharge);
+			history.Rate = (history.Cny) / (history.Nzd);
 			history.CreatedTime = history.CreatedTime.ToLocalTime();
 
 			_context.ExchangeHistories.Add(history);
@@ -111,7 +111,7 @@ namespace SAKURA.NZB.Website.Controllers.API
 
 			item.Cny = history.Cny;
 			item.Nzd = history.Nzd;
-			item.Rate = (history.Cny + history.SponsorCharge) / (history.Nzd + history.ReceiverCharge);
+			item.Rate = (history.Cny) / (history.Nzd);
 			item.SponsorCharge = history.SponsorCharge;
 			item.ReceiverCharge = history.ReceiverCharge;
 			item.Agent = history.Agent;
