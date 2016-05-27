@@ -12,15 +12,15 @@ namespace SAKURA.NZB.Business.BootTasks
 	public class ExpressTrackBootTask : IBootTask
 	{
 		private readonly NZBContext _context;
-		private readonly FlywayExpressTracker _expressTracker;
+		private readonly IExpressDistributor _distributor;
 		private readonly IBackgroundJobClient _jobClient;
-		public const int seconds = 5;
+		public const int seconds = 2;
 		public readonly ILogger _logger = Log.ForContext<ExpressTrackBootTask>();
 
-		public ExpressTrackBootTask(NZBContext context, FlywayExpressTracker expressTracker, IBackgroundJobClient jobClient)
+		public ExpressTrackBootTask(NZBContext context, IExpressDistributor distributor, IBackgroundJobClient jobClient)
 		{
 			_context = context;
-			_expressTracker = expressTracker;
+			_distributor = distributor;
 			_jobClient = jobClient;
 		}
 
@@ -36,15 +36,13 @@ namespace SAKURA.NZB.Business.BootTasks
 		{
 			_logger.Information("Start tracking the live express");
 
-			var waybills = _context.Orders.Where(o => !string.IsNullOrEmpty(o.WaybillNumber) 
-						&& !o.WaybillNumber.StartsWith("ST") && !o.WaybillNumber.StartsWith("NZ") 
-						&& !o.WaybillNumber.StartsWith("EF") && !o.WaybillNumber.StartsWith("ZY")
+			var waybills = _context.Orders.Where(o => !string.IsNullOrEmpty(o.WaybillNumber)
 						&& (o.OrderState == Domain.OrderState.Delivered || o.OrderState == Domain.OrderState.Received))
 					.Select(o => o.WaybillNumber).ToList();
 
 			foreach (var wb in waybills)
 			{
-				var result = _expressTracker.Track(wb);
+				var result = _distributor.Track(wb.TrimStart());
 				if (result == null)
 				{
 					_logger.Warning("Can't track the waybill: {0}", wb);

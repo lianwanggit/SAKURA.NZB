@@ -27,8 +27,10 @@ namespace SAKURA.NZB.Business.Configuration
 
 		public float GetFreightRate() => GetFloatByKey(ConfigKeys.FreightRate);
 
-		public string GetExpressTrackerUri() => GetByKey(ConfigKeys.ExpressTrackerUri);
-		public string GetExpressTrackerCode() => GetByKey(ConfigKeys.ExpressTrackerCode);
+		public string GetFlywayUri() => GetByKey(ConfigKeys.ExpressTrackerUri_Flyway);
+		public string GetFlywayCode() => GetByKey(ConfigKeys.ExpressTrackerCode_Flyway);
+
+		public string GetEfsPostUri() => GetByKey(ConfigKeys.ExpressTrackerUri_EfsPost);
 
 		public int GetProductsItemsPerPage() => GetIntByKey(ConfigKeys.ProductItemsPerPage);
 		public int GetOrdersItemsPerPage() => GetIntByKey(ConfigKeys.OrdersItemsPerPage);
@@ -54,12 +56,6 @@ namespace SAKURA.NZB.Business.Configuration
 
 			if (!Exists(ConfigKeys.SenderPhone))
 				Set(ConfigKeys.SenderPhone, "");
-
-			if (!Exists(ConfigKeys.ExpressTrackerUri))
-				Set(ConfigKeys.ExpressTrackerUri, "");
-
-			if (!Exists(ConfigKeys.ExpressTrackerCode))
-				Set(ConfigKeys.ExpressTrackerCode, "");
 
 			if (!Exists(ConfigKeys.ProductItemsPerPage))
 				Set(ConfigKeys.ProductItemsPerPage, "30");
