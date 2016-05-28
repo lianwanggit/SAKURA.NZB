@@ -39,7 +39,6 @@ namespace SAKURA.NZB.Business.BootTasks
 			var waybills = _context.Orders.Where(o => !string.IsNullOrEmpty(o.WaybillNumber)
 						&& (o.OrderState == Domain.OrderState.Delivered || o.OrderState == Domain.OrderState.Received))
 					.Select(o => o.WaybillNumber).ToList();
-
 			foreach (var wb in waybills)
 			{
 				var result = _distributor.Track(wb.TrimStart());

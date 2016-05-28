@@ -66,6 +66,7 @@ namespace SAKURA.NZB.Business
 
 			services.AddTransient<IExpressTracker, FlywayExpressTracker>();
 			services.AddTransient<IExpressTracker, EfspostTracker>();
+			services.AddTransient<IExpressTracker, NZSTExpressTracker>();
 			services.AddSingleton<IExpressDistributor, ExpressDistributor>();
 
 			services.AddTransient<OrderUpdatedHandler>();

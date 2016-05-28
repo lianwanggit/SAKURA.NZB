@@ -56,10 +56,6 @@ namespace SAKURA.NZB.Business.ExpressTracking
 				var trackHeadSpans = children.First(n => n.GetAttributeValue("class", "") == "trackHead")
 					.Descendants("span")
 					.ToArray();
-				var trackContentTrs = children.First(n => n.GetAttributeValue("class", "") == "trackContentTable")
-					.Descendants("tr")
-					.Skip(1)
-					.ToList();
 
 				summary.WaybillNumber = trackHeadSpans.FirstOrDefault(s => s.GetAttributeValue("id", "") == "HeaderNum")?.InnerText.After("：").Trim();
 				summary.From = trackHeadSpans.FirstOrDefault(s => s.GetAttributeValue("id", "") == "HeaderFrom")?.InnerText.After("：").Trim();
@@ -70,17 +66,22 @@ namespace SAKURA.NZB.Business.ExpressTracking
 				summary.Recipient = trackHeadSpans.FirstOrDefault(s => s.GetAttributeValue("id", "") == "HeaderSign")?.InnerText.After("：").Trim();
 
 				summary.Details = new List<ExpressTrackRecord>();
-				foreach (var item in trackContentTrs)
+				var trackContentTable = children.FirstOrDefault(n => n.GetAttributeValue("class", "") == "trackContentTable");
+				if (trackContentTable != null)
 				{
-					var td = item.Descendants("td").ToArray();
-					if (td.Length != 3) continue;
-
-					summary.Details.Add(new ExpressTrackRecord
+					var trackContentTrs = trackContentTable.Descendants("tr").Skip(1).ToList();
+					foreach (var item in trackContentTrs)
 					{
-						When = StringToDateTime(td[0].InnerText),
-						Where = td[1].InnerText.Trim(),
-						Content = td[2].InnerText.Trim(),
-					});
+						var td = item.Descendants("td").ToArray();
+						if (td.Length != 3) continue;
+
+						summary.Details.Add(new ExpressTrackRecord
+						{
+							When = StringToDateTime(td[0].InnerText),
+							Where = td[1].InnerText.Trim(),
+							Content = td[2].InnerText.Trim(),
+						});
+					}
 				}
 
 				return summary;
