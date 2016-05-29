@@ -33,6 +33,7 @@ namespace SAKURA.NZB.Business.Configuration
 		public string GetEfsPostUri() => GetByKey(ConfigKeys.ExpressTrackerUri_EfsPost);
 		public string GetNzstUri() => GetByKey(ConfigKeys.ExpressTrackerUri_Nzst);
 		public string GetNzstCode() => GetByKey(ConfigKeys.ExpressTrackerCode_Nzst);
+		public string GetFtdUri() => GetByKey(ConfigKeys.ExpressTrackerUri_Ftd);
 
 		public int GetProductsItemsPerPage() => GetIntByKey(ConfigKeys.ProductItemsPerPage);
 		public int GetOrdersItemsPerPage() => GetIntByKey(ConfigKeys.OrdersItemsPerPage);

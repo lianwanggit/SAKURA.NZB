@@ -14,11 +14,11 @@ namespace SAKURA.NZB.Business.ExpressTracking
     {
 		private static ILogger _logger = Log.ForContext<EmmisTrackParser>();
 
-		public static async Task<string> PostFormAsync(string uri, string data)
+		public static async Task<string> PostFormAsync(string uri, string data, string charset = "")
 		{
 			using (var client = new WebClient())
 			{
-				client.Headers[HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded";
+				client.Headers[HttpRequestHeader.ContentType] = $"application/x-www-form-urlencoded;{charset}";				
 
 				try
 				{
@@ -28,6 +28,26 @@ namespace SAKURA.NZB.Business.ExpressTracking
 				catch (Exception ex)
 				{
 					_logger.Error(ex, "Failed to post {0} to {1}", data, uri);
+					return default(string);
+				}
+			}
+		}
+
+		public static async Task<string> GetAsync(string url)
+		{
+			using (var client = new WebClient())
+			{
+				client.Headers[HttpRequestHeader.ContentType] = "charset=utf-8";
+
+				try
+				{
+							
+					var response = await client.DownloadStringTaskAsync(url);
+					return response;
+				}
+				catch (Exception ex)
+				{
+					_logger.Error(ex, "Failed to get response from {0}", url);
 					return default(string);
 				}
 			}

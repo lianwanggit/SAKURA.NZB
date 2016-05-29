@@ -39,10 +39,12 @@ namespace SAKURA.NZB.Business.BootTasks
 			var waybills = _context.Orders.Where(o => !string.IsNullOrEmpty(o.WaybillNumber)
 						&& (o.OrderState == Domain.OrderState.Delivered || o.OrderState == Domain.OrderState.Received))
 					.Select(o => o.WaybillNumber).ToList();
+			//var waybills = new string[] { "ST049067NZ", "NZ1685252", "NZ1934339", "NZ1826898" };
+
 			foreach (var wb in waybills)
 			{
 				var result = _distributor.Track(wb.TrimStart());
-				if (result == null)
+				if (result == null || string.IsNullOrEmpty(result.WaybillNumber))
 				{
 					_logger.Warning("Can't track the waybill: {0}", wb);
 					continue;
