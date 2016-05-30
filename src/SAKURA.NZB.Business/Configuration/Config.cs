@@ -13,32 +13,105 @@ namespace SAKURA.NZB.Business.Configuration
 			_context = context;
 		}
 
-		public string GetApiLayerAccessKey() => GetByKey(ConfigKeys.ApiLayerAccessKey);
-		public float GetFixedRateHigh() => GetFloatByKey(ConfigKeys.FixedRateHigh);
-		public float GetFixedRateLow() => GetFloatByKey(ConfigKeys.FixedRateLow);
-		public float GetCurrentRate()
+		public string ApiLayerAccessKey
 		{
-			var rate = _context.ExchangeRates.OrderByDescending(e => e.ModifiedTime).FirstOrDefault();
-			return rate?.NZDCNY ?? GetFixedRateLow();
+			get { return GetByKey(ConfigKeys.ApiLayerAccessKey); }
+			set { Set(ConfigKeys.ApiLayerAccessKey, value); }
 		}
 
-		public string GetSender() => GetByKey(ConfigKeys.Sender);
-		public string GetSenderPhone() => GetByKey(ConfigKeys.SenderPhone);
+		public float FixedRateHigh
+		{
+			get { return GetFloatByKey(ConfigKeys.FixedRateHigh); }
+			set { Set(ConfigKeys.FixedRateHigh, value.ToString()); }
+		}
 
-		public float GetFreightRate() => GetFloatByKey(ConfigKeys.FreightRate);
+		public float FixedRateLow
+		{
+			get { return GetFloatByKey(ConfigKeys.FixedRateLow); }
+			set { Set(ConfigKeys.FixedRateLow, value.ToString()); }
+		}
 
-		public string GetFlywayUri() => GetByKey(ConfigKeys.ExpressTrackerUri_Flyway);
-		public string GetFlywayCode() => GetByKey(ConfigKeys.ExpressTrackerCode_Flyway);
+		public float CurrentRate
+		{
+			get
+			{
+				var rate = _context.ExchangeRates.OrderByDescending(e => e.ModifiedTime).FirstOrDefault();
+				return rate?.NZDCNY ?? FixedRateLow;
+			}
+		}
 
-		public string GetEfsPostUri() => GetByKey(ConfigKeys.ExpressTrackerUri_EfsPost);
-		public string GetNzstUri() => GetByKey(ConfigKeys.ExpressTrackerUri_Nzst);
-		public string GetNzstCode() => GetByKey(ConfigKeys.ExpressTrackerCode_Nzst);
-		public string GetFtdUri() => GetByKey(ConfigKeys.ExpressTrackerUri_Ftd);
+		public float FreightRate
+		{
+			get { return GetFloatByKey(ConfigKeys.FreightRate); }
+			set { Set(ConfigKeys.FreightRate, value.ToString()); }
+		}
 
-		public int GetProductsItemsPerPage() => GetIntByKey(ConfigKeys.ProductItemsPerPage);
-		public int GetOrdersItemsPerPage() => GetIntByKey(ConfigKeys.OrdersItemsPerPage);
+		public string SenderName
+		{
+			get { return GetByKey(ConfigKeys.SenderName); }
+			set { Set(ConfigKeys.SenderName, value); }
+		}
 
-		public int GetExchangeHistoriesItemsPerPage() => GetIntByKey(ConfigKeys.ExchangeHistoriesItemsPerPage);
+		public string SenderPhone
+		{
+			get { return GetByKey(ConfigKeys.SenderPhone); }
+			set { Set(ConfigKeys.SenderPhone, value); }
+		}
+
+		public string FlywayUri
+		{
+			get { return GetByKey(ConfigKeys.ExpressTrackerUri_Flyway); }
+			set { Set(ConfigKeys.ExpressTrackerUri_Flyway, value); }
+		}
+
+		public string FlywayCode
+		{
+			get { return GetByKey(ConfigKeys.ExpressTrackerCode_Flyway); }
+			set { Set(ConfigKeys.ExpressTrackerCode_Flyway, value); }
+		}
+
+		public string EfsPostUri
+		{
+			get { return GetByKey(ConfigKeys.ExpressTrackerUri_EfsPost); }
+			set { Set(ConfigKeys.ExpressTrackerUri_EfsPost, value); }
+		}
+
+		public string NzstUri
+		{
+			get { return GetByKey(ConfigKeys.ExpressTrackerUri_Nzst); }
+			set { Set(ConfigKeys.ExpressTrackerUri_Nzst, value); }
+		}
+
+		public string NzstCode
+		{
+			get { return GetByKey(ConfigKeys.ExpressTrackerCode_Nzst); }
+			set { Set(ConfigKeys.ExpressTrackerCode_Nzst, value); }
+		}
+
+		public string FtdUri
+		{
+			get { return GetByKey(ConfigKeys.ExpressTrackerUri_Ftd); }
+			set { Set(ConfigKeys.ExpressTrackerUri_Ftd, value); }
+		}
+
+		public int ProductItemsPerPage
+		{
+			get { return GetIntByKey(ConfigKeys.ProductItemsPerPage); }
+			set { Set(ConfigKeys.ProductItemsPerPage, value.ToString()); }
+
+		}
+
+		public int OrdersItemsPerPage
+		{
+			get { return GetIntByKey(ConfigKeys.OrdersItemsPerPage); }
+			set { Set(ConfigKeys.OrdersItemsPerPage, value.ToString()); }
+		}
+
+		public int ExchangeHistoriesItemsPerPage
+		{
+			get { return GetIntByKey(ConfigKeys.ExchangeHistoriesItemsPerPage); }
+			set { Set(ConfigKeys.ExchangeHistoriesItemsPerPage, value.ToString()); }
+		}
 
 		public void EnsureDefaults()
 		{
@@ -54,8 +127,8 @@ namespace SAKURA.NZB.Business.Configuration
 			if (!Exists(ConfigKeys.FreightRate))
 				Set(ConfigKeys.FreightRate, Common.FreightRate.ToString());
 
-			if (!Exists(ConfigKeys.Sender))
-				Set(ConfigKeys.Sender, "");
+			if (!Exists(ConfigKeys.SenderName))
+				Set(ConfigKeys.SenderName, "");
 
 			if (!Exists(ConfigKeys.SenderPhone))
 				Set(ConfigKeys.SenderPhone, "");
@@ -68,6 +141,13 @@ namespace SAKURA.NZB.Business.Configuration
 
 			if (!Exists(ConfigKeys.ExchangeHistoriesItemsPerPage))
 				Set(ConfigKeys.ExchangeHistoriesItemsPerPage, "10");
+
+			Save();
+		}
+
+		public void Save()
+		{
+			_context.SaveChanges();
 		}
 
 		private bool Exists(string key) => _context.Configs.Any(c => c.Key == key);
@@ -79,8 +159,6 @@ namespace SAKURA.NZB.Business.Configuration
 		{
 			var setting = EnsureSetting(key);
 			setting.Value = value;
-
-			_context.SaveChanges();
 		}
 
 		private AppConfig EnsureSetting(string key)

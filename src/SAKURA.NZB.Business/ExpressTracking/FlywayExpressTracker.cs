@@ -18,8 +18,8 @@ namespace SAKURA.NZB.Business.ExpressTracking
 
 		public ExpressTrack Track(string waybillNumber)
 		{
-			var uri = _config.GetFlywayUri();
-			var code = _config.GetFlywayCode();
+			var uri = _config.FlywayUri;
+			var code = _config.FlywayCode;
 			var data = $"w={code}&cmodel=&cno={waybillNumber}&ntype=0";
 
 			var response = EmmisTrackParser.PostFormAsync(uri, data);

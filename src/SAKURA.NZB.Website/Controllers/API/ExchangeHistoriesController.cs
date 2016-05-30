@@ -23,7 +23,7 @@ namespace SAKURA.NZB.Website.Controllers.API
 		public ExchangeHistoriesController(NZBContext context, Config config, IMediator mediator)
 		{
 			_context = context;
-			_itemsPerPage = config.GetExchangeHistoriesItemsPerPage();
+			_itemsPerPage = config.ExchangeHistoriesItemsPerPage;
 			_config = config;
 			_mediator = mediator;
 		}

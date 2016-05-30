@@ -21,7 +21,7 @@ namespace SAKURA.NZB.Business.ExpressTracking
 
 		public ExpressTrack Track(string waybillNumber)
 		{
-			var uri = _config.GetFtdUri();
+			var uri = _config.FtdUri;
 			var data = $"codes={waybillNumber}&x=41&y=24";
 			var response = EmmisTrackParser.PostFormAsync(uri, data, "charset=utf-8");
 			var dom = response.Result;

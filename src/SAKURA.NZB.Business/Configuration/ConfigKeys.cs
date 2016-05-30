@@ -5,7 +5,7 @@
 		public static string FixedRateLow = "ExchangeRate.LowLimit";
 		public static string FixedRateHigh = "ExchangeRate.HighLimit";
 		public static string ApiLayerAccessKey = "currencylayer.AccessKey";
-		public static string Sender = "Sender.Name";
+		public static string SenderName = "Sender.Name";
 		public static string SenderPhone = "Sender.Phone";
 		public static string FreightRate = "FreightRate";
 

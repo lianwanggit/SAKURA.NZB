@@ -16,13 +16,13 @@ namespace SAKURA.NZB.Website.Controllers
 		public IActionResult Index()
         {
 			ViewData["HistoryRate"] = ExchangeRateCache.Rate;
-			ViewData["LiveRate"] = _config.GetCurrentRate();
-			ViewData["HighRate"] = _config.GetFixedRateHigh();
-			ViewData["LowRate"] = _config.GetFixedRateLow();
+			ViewData["LiveRate"] = _config.CurrentRate;
+			ViewData["HighRate"] = _config.FixedRateHigh;
+			ViewData["LowRate"] = _config.FixedRateLow;
 
-			ViewData["Sender"] = _config.GetSender();
-			ViewData["SenderPhone"] = _config.GetSenderPhone();
-			ViewData["FreightRate"] = _config.GetFreightRate();
+			ViewData["Sender"] = _config.SenderName;
+			ViewData["SenderPhone"] = _config.SenderPhone;
+			ViewData["FreightRate"] = _config.FreightRate;
 
 			return View();
         }

@@ -25,7 +25,7 @@ namespace SAKURA.NZB.Website.Controllers
 		public OrdersController(NZBContext context, Config config, IMediator mediator)
 		{
 			_context = context;
-			_itemsPerPage = config.GetOrdersItemsPerPage();
+			_itemsPerPage = config.OrdersItemsPerPage;
 			_mediator = mediator;
 		}
 

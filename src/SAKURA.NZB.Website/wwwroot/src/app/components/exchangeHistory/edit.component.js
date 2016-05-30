@@ -69,9 +69,9 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/
                     }
                     this.historyForm = fb.group({
                         cny: [null, numberValidator_1.PositiveNumberValidator.unspecified],
-                        sponsorCharge: [null, numberValidator_1.NumberValidator.unspecified],
+                        sponsorCharge: [150, numberValidator_1.NumberValidator.unspecified],
                         nzd: [null, numberValidator_1.PositiveNumberValidator.unspecified],
-                        receiverCharge: [null, numberValidator_1.NumberValidator.unspecified],
+                        receiverCharge: [20, numberValidator_1.NumberValidator.unspecified],
                         agent: [null, common_1.Validators.required],
                     });
                 }

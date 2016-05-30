@@ -61,7 +61,6 @@ namespace SAKURA.NZB.Business
 
 			services.AddTransient<IBackgroundJobClient>(_ => new BackgroundJobClient());
 			services.AddTransient<HangfireHelper>();
-			services.AddTransient<FlywayExpressTracker>();
 			services.AddTransient<CurrencyLayerTracker>();
 
 			services.AddTransient<IExpressTracker, FlywayExpressTracker>();

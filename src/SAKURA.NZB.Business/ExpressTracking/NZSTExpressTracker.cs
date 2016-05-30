@@ -16,8 +16,8 @@ namespace SAKURA.NZB.Business.ExpressTracking
 
 		public ExpressTrack Track(string waybillNumber)
 		{
-			var uri = _config.GetNzstUri();
-			var code = _config.GetNzstCode();
+			var uri = _config.NzstUri;
+			var code = _config.NzstCode;
 			var data = $"w={code}&cmodel=&cno={waybillNumber}&ntype=0";
 
 			var response = EmmisTrackParser.PostFormAsync(uri, data);

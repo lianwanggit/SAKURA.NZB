@@ -24,7 +24,7 @@ namespace SAKURA.NZB.Business.CurrencyTracking
 
 		public LiveRatesResponse Query()
 		{
-			var accessKey = _config.GetApiLayerAccessKey();
+			var accessKey = _config.ApiLayerAccessKey;
 			var routeUri = $"api/live?access_key={accessKey}&currencies=NZD,CNY&format=1";
 			var response = GetAsync(Source, routeUri);
 					

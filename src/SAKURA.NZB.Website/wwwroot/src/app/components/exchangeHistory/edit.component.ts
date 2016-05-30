@@ -62,9 +62,9 @@ export class ExchangeHistoryEditComponent implements OnInit, AfterViewInit {
 
 		this.historyForm = fb.group({
 			cny: [null, PositiveNumberValidator.unspecified],
-			sponsorCharge: [null, NumberValidator.unspecified],
+			sponsorCharge: [150, NumberValidator.unspecified],
 			nzd: [null, PositiveNumberValidator.unspecified],
-			receiverCharge: [null, NumberValidator.unspecified],
+			receiverCharge: [20, NumberValidator.unspecified],
 			agent: [null, Validators.required],
 		});
 	}

@@ -27,7 +27,7 @@ namespace SAKURA.NZB.Business.Cache
 		{
 			float totalNzd = 0;
 			float totalCny = 0;
-			float averageRate = _config.GetFixedRateLow();
+			float averageRate = _config.FixedRateLow;
 
 			var records = _context.ExchangeHistories.ToList();			
 			foreach (var r in records)
