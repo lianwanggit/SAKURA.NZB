@@ -30,6 +30,7 @@
 /// <reference path="src/app/components/products/edit.component.js" />
 /// <reference path="src/app/components/products/list.component.js" />
 /// <reference path="src/app/components/products/models.js" />
+/// <reference path="src/app/components/settings/settings.component.js" />
 /// <reference path="src/app/directives/alphaindexer.directive.js" />
 /// <reference path="src/app/directives/brandindexer.directive.js" />
 /// <reference path="src/app/directives/clipboard.directive.js" />

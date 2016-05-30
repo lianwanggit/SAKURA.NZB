@@ -4,10 +4,12 @@
 	{
 		public float FixedRateLow { get; set; }
 		public float FixedRateHigh { get; set; }
+		public float FreightRate { get; set; }
 		public string ApiLayerAccessKey { get; set; }
+
 		public string SenderName { get; set; }
 		public string SenderPhone { get; set; }
-		public float FreightRate { get; set; }
+
 
 		public string FlywayUri { get; set; }
 		public string FlywayCode { get; set; }

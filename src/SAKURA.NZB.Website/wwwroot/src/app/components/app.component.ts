@@ -13,6 +13,8 @@ import {OrderEditComponent} from "./orders/edit.component";
 import {BrandsComponent} from "./brands/brands.component";
 import {ExchangeHistoriesComponent} from "./exchangehistory/list.component";
 import {ExchangeHistoryEditComponent} from "./exchangehistory/edit.component";
+import {SettingsComponent} from "./settings/settings.component";
+
 
 declare var System: any;
 import '../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js';
@@ -50,6 +52,7 @@ export class AppComponent implements OnInit {
 				{ path: "/exchangehistories", component: ExchangeHistoriesComponent, name: "换汇记录", useAsDefault: false },
 				{ path: "/exchangehistories/add", component: ExchangeHistoryEditComponent, name: "EHAdd", useAsDefault: false },
 				{ path: "/exchangehistories/edit/:id", component: ExchangeHistoryEditComponent, name: "EHEdit", useAsDefault: false },
+				{ path: "/settings", component: SettingsComponent, name: "设置", useAsDefault: false }
 
                 //new AsyncRoute({
                 //    path: "/sub",

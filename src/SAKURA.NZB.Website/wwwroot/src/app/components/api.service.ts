@@ -30,6 +30,8 @@ export const DASHBOARD_TOP_SALE_BRANDS_ENDPOINT = "api/dashboard/top-sale-brands
 export const DASHBOARD_PAST_30_DAYS_PROFIT_ENDPOINT = "api/dashboard/past-30days-profit/";
 export const DASHBOARD_PAST_30_DAYS_EXCHANGE_ENDPOINT = "api/dashboard/past-30days-exchange/";
 
+export const SETTINGS_ENDPOINT = "api/settings/";
+
 @Injectable()
 export class ApiService {
     constructor(private http: Http) { }

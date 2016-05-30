@@ -1,0 +1,207 @@
+﻿<div class="loading" *ngIf="isLoading">Loading&#8230;</div>
+
+<div class="grey-border" *ngIf="!isLoading">
+    <h2 class="page-header">设置</h2>
+
+    <form (ngSubmit)="onSubmit()" #myForm="ngForm" [ngFormModel]="settingsForm">
+
+        <accordion [closeOthers]="true">
+            <accordion-group heading="汇率" [panelClass]="ag1.isOpen ? 'panel-primary' : 'panel-default'" #ag1>
+                <div class="row">
+                    <div class="col-xs-6 col-sm-6">
+                        <div class="form-group">
+                            <label for="fixedRateLow">固定汇率(低)</label>
+                            <input type="number" class="form-control" id="fixedRateLow" step="0.1" min="1.0" required
+                                   ngControl="fixedRateLow" #fixedRateLow="ngForm">
+                            <div [hidden]="fixedRateLow.valid || fixedRateLow.pristine" class="alert alert-danger">
+                                固定汇率值格式不正确
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-6 col-sm-6">
+                        <div class="form-group">
+                            <label for="fixedRateHigh">固定汇率(高)</label>
+                            <input type="number" class="form-control" id="fixedRateHigh" step="0.1" min="1" required
+                                   ngControl="fixedRateHigh" #fixedRateHigh="ngForm">
+                            <div [hidden]="fixedRateHigh.valid || fixedRateHigh.pristine" class="alert alert-danger">
+                                固定汇率值格式不正确
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="apiLayerAccessKey">实时汇率 Api Key</label>
+                            <input type="text" class="form-control" id="apiLayerAccessKey" required
+                                   ngControl="apiLayerAccessKey" #apiLayerAccessKey="ngForm">
+                            <div [hidden]="apiLayerAccessKey.valid || apiLayerAccessKey.pristine" class="alert alert-danger">
+                                实时汇率 Api Key 不能为空
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </accordion-group>
+
+            <accordion-group heading="运单设置" [panelClass]="ag2.isOpen ? 'panel-primary' : 'panel-default'" #ag2>
+                <div class="row">
+                    <div class="col-xs-12 col-sm-6">
+                        <div class="form-group">
+                            <label for="senderName">发件人</label>
+                            <input type="text" class="form-control" id="senderName" required
+                                   ngControl="senderName" #senderName="ngForm">
+                            <div [hidden]="senderName.valid || senderName.pristine" class="alert alert-danger">
+                                发件人不能为空
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-6">
+                        <div class="form-group">
+                            <label for="senderPhone">发件人电话</label>
+                            <input type="tel" class="form-control" id="senderPhone" required
+                                   ngControl="senderPhone" #senderPhone="ngForm">
+                            <div [hidden]="senderPhone.valid || senderPhone.pristine" class="alert alert-danger">
+                                发件人电话不能为空
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-12">
+                        <div class="form-group">
+                            <label for="freightRate">运费: NZD / Kg</label>
+                            <input type="number" class="form-control" id="freightRate" step="0.1" min="1" required
+                                   ngControl="freightRate" #freightRate="ngForm">
+                            <div [hidden]="freightRate.valid || freightRate.pristine" class="alert alert-danger">
+                                运费格式不正确
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </accordion-group>
+
+            <accordion-group heading="运单追踪" [panelClass]="ag3.isOpen ? 'panel-primary' : 'panel-default'" #ag3>
+                <div class="row">
+                    <div class="col-xs-12 col-sm-6">
+                        <div class="form-group">
+                            <label for="flywayUri">程光 Url</label>
+                            <input type="text" class="form-control" id="flywayUri" required
+                                   ngControl="flywayUri" #flywayUri="ngForm">
+                            <div [hidden]="flywayUri.valid || flywayUri.pristine" class="alert alert-danger">
+                                程光Url不能为空
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-6">
+                        <div class="form-group">
+                            <label for="flywayCode">程光 Code</label>
+                            <input type="tel" class="form-control" id="flywayCode" required
+                                   ngControl="flywayCode" #flywayCode="ngForm">
+                            <div [hidden]="flywayCode.valid || flywayCode.pristine" class="alert alert-danger">
+                                程光Code不能为空
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-xs-12 col-sm-6">
+                        <div class="form-group">
+                            <label for="nzstUri">顺通 Url</label>
+                            <input type="tel" class="form-control" id="nzstUri" required
+                                   ngControl="nzstUri" #nzstUri="ngForm">
+                            <div [hidden]="nzstUri.valid || nzstUri.pristine" class="alert alert-danger">
+                                顺通 Url不能为空
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-6">
+                        <div class="form-group">
+                            <label for="nzstCode">顺通 Code</label>
+                            <input type="text" class="form-control" id="nzstCode" required
+                                   ngControl="nzstCode" #nzstCode="ngForm">
+                            <div [hidden]="nzstCode.valid || nzstCode.pristine" class="alert alert-danger">
+                                顺通 Code不能为空
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="efsPostUri">EFS POST Url</label>
+                            <input type="text" class="form-control" id="efsPostUri" required
+                                   ngControl="efsPostUri" #efsPostUri="ngForm">
+                            <div [hidden]="efsPostUri.valid || efsPostUri.pristine" class="alert alert-danger">
+                                EFS POST Url不能为空
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="ftdUri">富腾达 Url</label>
+                            <input type="text" class="form-control" id="ftdUri" required
+                                   ngControl="ftdUri" #ftdUri="ngForm">
+                            <div [hidden]="ftdUri.valid || ftdUri.pristine" class="alert alert-danger">
+                                富腾达 Url不能为空
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </accordion-group>
+
+            <accordion-group heading="页面显示" [panelClass]="ag4.isOpen ? 'panel-primary' : 'panel-default'" #ag4>
+                <div class="row">
+                    <div class="col-xs-6 col-sm-6">
+                        <div class="form-group">
+                            <label for="productItemsPerPage">每页显示产品</label>
+                            <input type="number" class="form-control" id="productItemsPerPage" step="1" min="1" required
+                                   ngControl="productItemsPerPage" #productItemsPerPage="ngForm">
+                            <div [hidden]="productItemsPerPage.valid || productItemsPerPage.pristine" class="alert alert-danger">
+                                每页显示产品数量格式不正确
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-6 col-sm-6">
+                        <div class="form-group">
+                            <label for="ordersItemsPerPage">每页显示订单</label>
+                            <input type="number" class="form-control" id="ordersItemsPerPage" step="0.1" min="1" required
+                                   ngControl="ordersItemsPerPage" #ordersItemsPerPage="ngForm">
+                            <div [hidden]="ordersItemsPerPage.valid || ordersItemsPerPage.pristine" class="alert alert-danger">
+                                每页显示订单数量格式不正确
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-xs-6 col-sm-6">
+                        <div class="form-group">
+                            <label for="exchangeHistoriesItemsPerPage">每页显示换汇记录</label>
+                            <input type="number" class="form-control" id="exchangeHistoriesItemsPerPage" step="1" min="1" required
+                                   ngControl="exchangeHistoriesItemsPerPage" #exchangeHistoriesItemsPerPage="ngForm">
+                            <div [hidden]="exchangeHistoriesItemsPerPage.valid || exchangeHistoriesItemsPerPage.pristine" class="alert alert-danger">
+                                每页显示换汇记录数量格式不正确
+                            </div>
+                        </div>
+                    </div>
+ 
+                </div>
+            </accordion-group>
+        </accordion>
+
+        <div class="form-group margin-top-15">
+            <div>
+                <button type="button" class="btn btn-default" (click)="onCancel()">取消</button>
+                <button type="submit" class="btn btn-success left-spacer"
+                        [disabled]="!myForm.form.valid">
+                    保存 <i class="fa fa-floppy-o fa-lg"></i>
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
