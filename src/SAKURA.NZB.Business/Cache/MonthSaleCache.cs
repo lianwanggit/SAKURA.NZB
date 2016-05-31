@@ -10,7 +10,7 @@ namespace SAKURA.NZB.Business.Cache
 	{
 		private readonly NZBContext _context;
 		public static List<MonthSale> MonthSaleList { get;  private set;}
-		public int Order => 2;
+		public int Index => 2;
 
 		public MonthSaleCache(NZBContext context)
 		{
@@ -19,14 +19,10 @@ namespace SAKURA.NZB.Business.Cache
 
 		public void Update()
 		{
-			MonthSaleList = Aggregate();
-		}
+			var result = new List<MonthSale>();
+			var orders = _context.Orders.Include(o => o.Products).Where(o => o.OrderTime.Year == DateTime.Now.Year).ToList();
 
-		private List<MonthSale> Aggregate()
-		{
-			var result = new List<MonthSale>();			
-
-			foreach (var o in _context.Orders.Include(o => o.Products).Where(o => o.OrderTime.Year == DateTime.Now.Year))
+			foreach (var o in orders)
 			{
 				var month = o.OrderTime.Month;
 				var cost = 0F;
@@ -84,7 +80,7 @@ namespace SAKURA.NZB.Business.Cache
 				}
 			}
 
-			return result;
+			MonthSaleList = result;
 		}
     }
 }

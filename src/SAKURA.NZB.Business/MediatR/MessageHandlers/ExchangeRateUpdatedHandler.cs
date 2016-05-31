@@ -19,7 +19,7 @@ namespace SAKURA.NZB.Business.MediatR.MessageHandlers
 
 		public void Handle(ExchangeRateUpdated notification)
 		{
-			var orderedCaches = _caches.OrderBy(c => c.Order).ToList();
+			var orderedCaches = _caches.OrderBy(c => c.Index).ToList();
 			foreach (var cache in orderedCaches)
 			{
 				cache.Update();

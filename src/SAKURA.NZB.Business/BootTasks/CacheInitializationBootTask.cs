@@ -15,7 +15,7 @@ namespace SAKURA.NZB.Business.BootTasks
 
 		public void Run()
 		{
-			var orderedCaches = _caches.OrderBy(c => c.Order).ToList();
+			var orderedCaches = _caches.OrderBy(c => c.Index).ToList();
 			foreach (var cache in orderedCaches)
 			{
 				cache.Update();

@@ -44,7 +44,10 @@ namespace SAKURA.NZB.Business
 					.Where(serviceType.IsAssignableFrom)
 					.Select(type =>
 					{
-						var service = serviceProvider.GetService(type);  
+						var scopeFactory = serviceProvider.GetService<IServiceScopeFactory>();
+						var scope = scopeFactory.CreateScope();
+
+						var service = scope.ServiceProvider.GetService(type);
 						if (service == null)
 							throw new InvalidOperationException($"The service provider doesn't know about '{type}'.");
 						return service;

@@ -14,7 +14,7 @@ namespace SAKURA.NZB.Business.Cache
 		private readonly IMediator _mediator;
 
 		public static float Rate { get; private set; }
-		public int Order => 1;
+		public int Index => 1;
 
 		public ExchangeRateCache(NZBContext context, Config config, IMediator mediator)
 		{
