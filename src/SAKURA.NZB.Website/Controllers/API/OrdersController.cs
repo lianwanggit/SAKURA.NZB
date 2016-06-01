@@ -21,12 +21,14 @@ namespace SAKURA.NZB.Website.Controllers
 		private readonly NZBContext _context;
 		private readonly int _itemsPerPage;
 		private readonly IMediator _mediator;
+		private readonly ICacheRepository _cacheRepository;
 
-		public OrdersController(NZBContext context, Config config, IMediator mediator)
+		public OrdersController(NZBContext context, Config config, IMediator mediator, ICacheRepository cacheRepository)
 		{
 			_context = context;
 			_itemsPerPage = config.OrdersItemsPerPage;
 			_mediator = mediator;
+			_cacheRepository = cacheRepository;
 		}
 
 		[HttpGet]
@@ -104,12 +106,7 @@ namespace SAKURA.NZB.Website.Controllers
 									|| o.Products.Any(p => p.Customer.NamePinYin.ToLower().StartsWith(options.keyword.ToLower()));
 			}
 
-			var orders = _context.Orders
-				.Include(o => o.Products)
-					.ThenInclude(p => p.Customer)
-				.Include(o => o.Products)
-					.ThenInclude(p => p.Product)
-					.ThenInclude(p => p.Brand)
+			var orders = OrdersCache.Orders
 				.Where(o => keywordPredicate(o) && statePredicate(o) && paymentPredicate(o))
 				.OrderByDescending(o => o.OrderTime)
 				.ThenBy(o => o.Products.First().Customer.NamePinYin)
@@ -191,6 +188,7 @@ namespace SAKURA.NZB.Website.Controllers
 			}
 
 			_context.SaveChanges();
+			_cacheRepository.UpdateByKey(CacheKey.Orders);
 
 			return new ObjectResult(new UpdateOrderStatusResultModel
 			{
@@ -212,7 +210,9 @@ namespace SAKURA.NZB.Website.Controllers
 			_context.Orders.Add(Map(model));
 			_context.SaveChanges();
 
+			_cacheRepository.UpdateByKey(CacheKey.Orders);
 			_mediator.Publish(new MonthSaleUpdated());
+
 			return CreatedAtRoute("GetOrder", new { controller = "Orders", id = model.Id }, model);
 		}
 
@@ -232,6 +232,8 @@ namespace SAKURA.NZB.Website.Controllers
 			item.DeliveryTime = DateTimeOffset.Now;
 
 			_context.SaveChanges();
+
+			_cacheRepository.UpdateByKey(CacheKey.Orders);
 			_mediator.Publish(new MonthSaleUpdated());
 
 			return new ObjectResult(new OrderDeliveryResultModel
@@ -293,6 +295,8 @@ namespace SAKURA.NZB.Website.Controllers
 				});
 			}
 			_context.SaveChanges();
+
+			_cacheRepository.UpdateByKey(CacheKey.Orders);
 			_mediator.Publish(new MonthSaleUpdated());
 
 			return new NoContentResult();
@@ -307,6 +311,7 @@ namespace SAKURA.NZB.Website.Controllers
 				_context.Orders.Remove(item);
 				_context.SaveChanges();
 
+				_cacheRepository.UpdateByKey(CacheKey.Orders);
 				_mediator.Publish(new MonthSaleUpdated());
 			}
 		}

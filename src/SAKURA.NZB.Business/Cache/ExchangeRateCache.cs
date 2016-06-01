@@ -15,7 +15,7 @@ namespace SAKURA.NZB.Business.Cache
 		public static float Rate { get; private set; }
 
 		public CacheKey Key => CacheKey.ExchangeRate;
-		public int Index => 1;
+		public int Index => 0;
 
 		public ExchangeRateCache(NZBContext context, Config config, IMediator mediator)
 		{
