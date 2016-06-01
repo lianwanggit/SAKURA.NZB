@@ -21,26 +21,19 @@ namespace SAKURA.NZB.Business.ExpressTracking
 
 		public ExpressTrack Track(string waybillNumber)
 		{
+			_emsSnUrl = default(string);
+			_expressTrack = default(ExpressTrack);
+
 			var uri = _config.FtdUri;
 			var data = $"codes={waybillNumber}&x=41&y=24";
 			var response = EmmisTrackParser.PostFormAsync(uri, data, "charset=utf-8");
 			var dom = response.Result;
 
-			if (string.IsNullOrEmpty(dom)) return default(ExpressTrack);
-
-			_emsSnUrl = null;
-			_expressTrack = new ExpressTrack
+			if (!string.IsNullOrEmpty(dom))
 			{
-				Destination = "中国",
-				From = "Auckland",
-				ItemCount = "1",
-				Status = "转运中",
-				WaybillNumber = waybillNumber,
-				Details = new List<ExpressTrackRecord>()
-			};
-
-			ParseFtd(dom);
-
+				ParseFtd(dom, waybillNumber);
+			}
+			
 			if (!string.IsNullOrEmpty(_emsSnUrl))
 			{
 				var address = string.Concat("http://", new Uri(uri).Host + _emsSnUrl);
@@ -53,10 +46,8 @@ namespace SAKURA.NZB.Business.ExpressTracking
 			return _expressTrack;
 		}
 
-		private void ParseFtd(string dom)
-		{
-			if (string.IsNullOrEmpty(dom)) return;
-
+		private void ParseFtd(string dom, string waybillNumber)
+		{			
 			var html = new HtmlDocument();
 			html.LoadHtml(dom);
 
@@ -67,6 +58,16 @@ namespace SAKURA.NZB.Business.ExpressTracking
 
 			var firstChild = qrBox.Element("div");
 			if (!firstChild.GetAttributeValue("class", "").Contains("qRst")) return;
+
+			_expressTrack = new ExpressTrack
+			{
+				Destination = "中国",
+				From = "Auckland",
+				ItemCount = "1",
+				Status = "转运中",
+				WaybillNumber = waybillNumber,
+				Details = new List<ExpressTrackRecord>()
+			};
 
 			var lines = firstChild.Descendants("p").Skip(1).Select(p => p.InnerText);
 			foreach (var line in lines)
