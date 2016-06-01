@@ -2,28 +2,22 @@
 using SAKURA.NZB.Business.Cache;
 using SAKURA.NZB.Business.MediatR.Messages;
 using Serilog;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace SAKURA.NZB.Business.MediatR.MessageHandlers
 {
 	public class ExchangeRateUpdatedHandler : INotificationHandler<ExchangeRateUpdated>
 	{
 		private readonly ILogger _logger = Log.ForContext<ExchangeRateUpdatedHandler>();
-		private readonly IEnumerable<ICache> _caches;
+		private readonly ICacheRepository _cacheRepository;
 
-		public ExchangeRateUpdatedHandler(IEnumerable<ICache> caches)
+		public ExchangeRateUpdatedHandler(ICacheRepository cacheRepository)
 		{
-			_caches = caches;
+			_cacheRepository = cacheRepository;
 		}
 
 		public void Handle(ExchangeRateUpdated notification)
 		{
-			var orderedCaches = _caches.OrderBy(c => c.Index).ToList();
-			foreach (var cache in orderedCaches)
-			{
-				cache.Update();
-			}
+			_cacheRepository.UpdateAll();
 		}
 	}
 }

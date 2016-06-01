@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using SAKURA.NZB.Business.Configuration;
-using SAKURA.NZB.Business.MediatR.Messages;
 using SAKURA.NZB.Data;
 using System;
 using System.Linq;
@@ -14,6 +13,8 @@ namespace SAKURA.NZB.Business.Cache
 		private readonly IMediator _mediator;
 
 		public static float Rate { get; private set; }
+
+		public CacheKey Key => CacheKey.ExchangeRate;
 		public int Index => 1;
 
 		public ExchangeRateCache(NZBContext context, Config config, IMediator mediator)

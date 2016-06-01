@@ -212,7 +212,7 @@ namespace SAKURA.NZB.Website.Controllers
 			_context.Orders.Add(Map(model));
 			_context.SaveChanges();
 
-			_mediator.Publish(new OrderUpdated());
+			_mediator.Publish(new MonthSaleUpdated());
 			return CreatedAtRoute("GetOrder", new { controller = "Orders", id = model.Id }, model);
 		}
 
@@ -232,7 +232,7 @@ namespace SAKURA.NZB.Website.Controllers
 			item.DeliveryTime = DateTimeOffset.Now;
 
 			_context.SaveChanges();
-			_mediator.Publish(new OrderUpdated());
+			_mediator.Publish(new MonthSaleUpdated());
 
 			return new ObjectResult(new OrderDeliveryResultModel
 			{
@@ -293,7 +293,7 @@ namespace SAKURA.NZB.Website.Controllers
 				});
 			}
 			_context.SaveChanges();
-			_mediator.Publish(new OrderUpdated());
+			_mediator.Publish(new MonthSaleUpdated());
 
 			return new NoContentResult();
 		}
@@ -307,7 +307,7 @@ namespace SAKURA.NZB.Website.Controllers
 				_context.Orders.Remove(item);
 				_context.SaveChanges();
 
-				_mediator.Publish(new OrderUpdated());
+				_mediator.Publish(new MonthSaleUpdated());
 			}
 		}
 

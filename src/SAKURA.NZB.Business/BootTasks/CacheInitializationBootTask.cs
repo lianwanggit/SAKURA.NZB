@@ -1,25 +1,19 @@
 ﻿using SAKURA.NZB.Business.Cache;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace SAKURA.NZB.Business.BootTasks
 {
 	public class CacheInitializationBootTask : IBootTask
 	{
-		private readonly IEnumerable<ICache> _caches;
+		private readonly ICacheRepository _cacheRepository;
 
-		public CacheInitializationBootTask(IEnumerable<ICache> caches)
+		public CacheInitializationBootTask(ICacheRepository cacheRepository)
 		{
-			_caches = caches;
+			_cacheRepository = cacheRepository;
 		}
 
 		public void Run()
 		{
-			var orderedCaches = _caches.OrderBy(c => c.Index).ToList();
-			foreach (var cache in orderedCaches)
-			{
-				cache.Update();
-			}
+			_cacheRepository.UpdateAll();
 		}
 	}
 }

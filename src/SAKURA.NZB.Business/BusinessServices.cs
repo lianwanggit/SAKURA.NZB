@@ -72,11 +72,12 @@ namespace SAKURA.NZB.Business
 			services.AddTransient<IExpressTracker, FtdLogisticsTracker>();
 			services.AddSingleton<IExpressDistributor, ExpressDistributor>();
 
-			services.AddTransient<OrderUpdatedHandler>();
+			services.AddTransient<MonthSaleUpdatedHandler>();
 			services.AddTransient<ExchangeRateUpdatedHandler>();
 
 			services.AddTransient<ICache, MonthSaleCache>();
 			services.AddTransient<ICache, ExchangeRateCache>();
+			services.AddTransient<ICacheRepository, CacheRepository>();
 
 			services.AddScoped<CurrencyTrackBootTask>();
 			services.AddScoped<ExpressTrackBootTask>();
