@@ -34,7 +34,7 @@ namespace SAKURA.NZB.Business.BootTasks
 
 		public void CleanExpressTrack()
 		{
-			var toBeRemoved = _context.ExpressTracks.Include(e => e.Details).Where(e => e.ModifiedTime <= DateTimeOffset.Now.AddMonths(-3));
+			var toBeRemoved = _context.ExpressTracks.Include(e => e.Details).Where(e => e.ModifiedTime <= DateTimeOffset.Now.AddMonths(-6));
 			_context.ExpressTracks.RemoveRange(toBeRemoved);
 			_context.SaveChanges();
 		}
