@@ -9,13 +9,15 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('@angular/core');
+var button_1 = require('@angular2-material/button');
 var AppComponent = (function () {
     function AppComponent() {
     }
     AppComponent = __decorate([
         core_1.Component({
             selector: 'my-app',
-            template: '<h1>My First Angular 2 App</h1>'
+            template: "<h1>My First Angular 2 App</h1>\n\t<button md-raised-button color=\"primary\">PRIMARY</button>\n<button md-raised-button color=\"accent\">ACCENT</button>\n<button md-raised-button color=\"warn\">WARN</button>\n",
+            directives: [button_1.MD_BUTTON_DIRECTIVES]
         }), 
         __metadata('design:paramtypes', [])
     ], AppComponent);

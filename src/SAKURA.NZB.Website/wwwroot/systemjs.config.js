@@ -7,6 +7,7 @@
     var map = {
         'app': 'app', // 'dist',
         '@angular': 'lib/@angular',
+        '@angular2-material': 'lib/@angular2-material',
         'angular2-in-memory-web-api': 'lib/angular2-in-memory-web-api',
         'rxjs': 'lib/rxjs',
         'moment': 'lib/moment/min/moment-with-locales.js',
@@ -41,6 +42,22 @@
     var setPackageConfig = System.packageWithIndex ? packIndex : packUmd;
     // Add package entries for angular packages
     ngPackageNames.forEach(setPackageConfig);
+
+    var materialPkgs = [
+      'core',
+      'toolbar',
+      'icon',
+      'button',
+      'sidenav',
+      'list',
+      'card',
+      'input',
+    ];
+
+    materialPkgs.forEach((pkg) => {
+        packages[`@angular2-material/${pkg}`] = { main: `${pkg}.js` };
+    });
+
     var config = {
         map: map,
         packages: packages
