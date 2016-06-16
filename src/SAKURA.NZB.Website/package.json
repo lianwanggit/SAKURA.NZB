@@ -23,9 +23,9 @@
     "d3": "3.5.16",
     "moment": "2.12.0",
     "clipboard": "1.5.10",
-    "ng2-bootstrap": "1.0.13",
+    "ng2-bootstrap": "1.0.17",
+    "ng2-charts": "1.1.0",
     "chart.js": "2.0.2",
-    "ng2-charts": "1.0.2",
     "eonasdan-bootstrap-datetimepicker": "4.15.35"
   },
   "devDependencies": {

@@ -18,10 +18,16 @@ paths.css = paths.webroot + "/css/**/*.css";
 paths.minCss = paths.webroot + "/css/**/*.min.css";
 
 paths.lib = [
-    './node_modules/angular2/bundles/**/*.*',
-    './node_modules/bootstrap/dist/**/*.*',
+    './node_modules/@angular/**/*.*',
+    './node_modules/angular2-in-memory-web-api/**/*.*',
+    './node_modules/@angular2-material/**/*.*',
+    './node_modules/rxjs/**/*.*',
+    './node_modules/core-js/client/**/*.*',
+    './node_modules/zone.js/dist/**/*.*',
+    './node_modules/reflect-metadata/**/*.*',
     './node_modules/systemjs/dist/**/*.*',
-    './node_modules/rxjs/bundles/**/*.*',
+
+    './node_modules/bootstrap/dist/**/*.*',
     './node_modules/typescript/lib/**/*.*',
     './node_modules/jquery/dist/**/*.*',
     './node_modules/d3/*.*',
