@@ -29,7 +29,9 @@ namespace SAKURA.NZB.Business.BootTasks
 			var timezone = TimeZoneInfo.FindSystemTimeZoneById("China Standard Time");
 			RecurringJob.AddOrUpdate("track-express-info-task1", () => DelayTrack(), Cron.Daily(9, 30), timezone);
 			RecurringJob.AddOrUpdate("track-express-info-task2", () => DelayTrack(), Cron.Daily(12, 00), timezone);
-			RecurringJob.AddOrUpdate("track-express-info-task3", () => DelayTrack(), Cron.Daily(15, 30), timezone);
+			//RecurringJob.AddOrUpdate("track-express-info-task3", () => DelayTrack(), Cron.Daily(15, 30), timezone);
+
+			//DelayTrack();
 		}
 
 		public async void DelayTrack()
@@ -37,7 +39,7 @@ namespace SAKURA.NZB.Business.BootTasks
 			_logger.Information("Start tracking the live express");
 
 			var waybills = _context.Orders.Where(o => !string.IsNullOrEmpty(o.WaybillNumber)
-						&& (o.OrderState == Domain.OrderState.Delivered || o.OrderState == Domain.OrderState.Received))
+						&& (o.OrderState != Domain.OrderState.Completed))
 					.Select(o => o.WaybillNumber).ToList();
 			//var waybills = new string[] { "NZ1943730", "NZ1685252", "NZ1934339", "NZ1826898" };
 
