@@ -1,0 +1,220 @@
+﻿<div class="dashboard">
+    <div class="row">
+        <div class="col-xs-12 col-sm-6 col-md-3">
+            <div class="widget widget-content orange shadow clearfix">
+                <div class="scope table-cell">
+                    <i class="fa fa-optin-monster fa-4x opacity-50 margin-left-10"></i>
+                </div>
+
+                <div class="scope pull-right">
+                    <p class="md-display-3 font-weight-100 text-ellipsis margin-bottom-0">{{summary.customerCount}}</p>
+                    <p class="md-body-2 margin-bottom-0 opacity-60">客户</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-6 col-md-3">
+            <div class="widget widget-content purple shadow clearfix">
+                <div class="scope table-cell">
+                    <i class="fa fa-pagelines fa-4x opacity-50 margin-left-10"></i>
+                </div>
+
+                <div class="scope pull-right">
+                    <p class="md-display-3 font-weight-100 text-ellipsis margin-bottom-0">{{summary.productCount}}</p>
+                    <p class="md-body-2 margin-bottom-0 opacity-60">产品</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-6 col-md-3">
+            <div class="widget widget-content blue shadow clearfix">
+                <div class="scope table-cell">
+                    <i class="fa fa-pied-piper-alt fa-5x opacity-50 margin-left-10"></i>
+                </div>
+
+                <div class="scope pull-right">
+                    <p class="md-display-3 font-weight-100 text-ellipsis margin-bottom-0">{{summary.brandCount}}</p>
+                    <p class="md-body-2 margin-bottom-0 opacity-60">品牌</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-6 col-md-3">
+            <div class="widget widget-content green shadow clearfix">
+                <div class="scope table-cell">
+                    <i class="fa fa-paper-plane-o fa-4x opacity-50 margin-left-10"></i>
+                </div>
+
+                <div class="scope pull-right">
+                    <p class="md-display-3 font-weight-100 text-ellipsis margin-bottom-0">{{summary.orderCount}}</p>
+                    <p class="md-body-2 margin-bottom-0 opacity-60">订单</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12 col-sm-6 col-md-8">
+            <div class="widget widget-content shadow margin-top-5 padding-left-15">
+                <div class="chart-head-tab md-table opacity-80">
+                    <div class="clickable md-table-cell-33" (click)="onSwapAnnualSalesDateSource(0)" [ngClass]="{active: annualSalesChartSwitch == 0}">成本 | 利润</div>
+                    <div class="clickable md-table-cell-33" (click)="onSwapAnnualSalesDateSource(1)" [ngClass]="{active: annualSalesChartSwitch == 1}">订单</div>
+                    <div class="clickable md-table-cell-33" (click)="onSwapAnnualSalesDateSource(2)" [ngClass]="{active: annualSalesChartSwitch == 2}">收入</div>
+                </div>
+                <base-chart class="line-chart"
+                            [data]="annualSalesChartData"
+                            [labels]="annualSalesChartLabels"
+                            [options]="annualSalesChartOptions"
+                            [series]="annualSalesChartSeries"
+                            [colours]="annualSalesChartColours"
+                            [legend]="annualSalesChartLegend"
+                            [chartType]="annualSalesChartType"></base-chart>
+            </div>
+        </div>
+
+        <div class="col-xs-12 col-sm-6 col-md-4">
+            <div class="widget widget-content shadow margin-top-5 bg-summary-first">
+                <p class="md-display-2 font-weight-100 margin-bottom-0 text-center">{{summary.totalCost}}</p>
+                <p class="opacity-50 margin-bottom-0 text-center">总成本</p>
+            </div>
+            <div class="widget widget-content shadow bg-summary-second">
+                <p class="md-display-2 font-weight-100 margin-bottom-0 text-center">{{summary.totalIncome}}</p>
+                <p class="opacity-50 margin-bottom-0 text-center">总收入</p>
+            </div>
+            <div class="widget widget-content shadow bg-summary-third">
+                <p class="md-display-2 font-weight-100 margin-bottom-0 text-center">{{summary.totalProfit}}</p>
+                <p class="opacity-50 margin-bottom-0 text-center">总利润</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12 col-md-4">
+            <div class="widget widget-content shadow md-table">
+                <div class="md-table-cell-50">
+                    <p class="md-display-2 font-weight-100 margin-bottom-0 text-center">{{summary.unpaidCount}}</p>
+                    <p class="opacity-50 margin-bottom-0 text-center">未支付订单</p>
+                </div>
+                <div class="md-table-cell-50">
+                    <p class="md-display-1 font-weight-100 margin-bottom-0">{{summary.unpaidAmount}}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12 col-md-8">
+            <div class="widget widget-content shadow">
+                <div class="md-table">
+                    <div class="md-table-cell-20" *ngFor="let s of orderStatusSummary">
+                        <p class="md-display-1 font-weight-100 margin-top-15 margin-bottom-0 text-center">{{s.count}}</p>
+                        <p class="opacity-50 text-center">{{s.status}}<span class="hidden-xs">订单</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12 col-sm-6">
+            <div class="widget widget-content shadow">
+                <div class="md-table">
+                    <div class="md-table-cell-50 padding-left-8">
+                        <p class="md-display-1 font-weight-100 margin-top-15 margin-bottom-0">{{summary.todayProfit}}</p>
+                        <p class="opacity-50">今日利润</p>
+                    </div>
+                    <div class="md-table-cell-50 padding-right-8">
+                        <p class="md-display-05 font-weight-100 margin-bottom-0 text-right" [ngClass]="{up: summary.profitIncrement > 0, down: summary.profitIncrement < 0}">
+                            <i class="fa" [ngClass]="{'fa-caret-up': summary.profitIncrement > 0, 'fa-caret-down': summary.profitIncrement < 0}"></i> {{summary.profitIncrementRate}}
+                        </p>
+                        <p class="md-display-05 font-weight-300 opacity-80 text-right">
+                            <small>{{ summary.profitIncrement > 0 ? '+' + (summary.profitIncrement).toFixed(2) : (summary.profitIncrement).toFixed(2)}}</small>
+                        </p>
+                    </div>
+                </div>
+                <base-chart class="line-chart1"
+                            [data]="pastDailyProfitChartData"
+                            [labels]="pastDailyProfitChartLabels"
+                            [options]="pastDailyProfitChartOptions"
+                            [series]="pastDailyProfitChartSeries"
+                            [colours]="pastDailyProfitChartColours"
+                            [legend]="pastDailyProfitChartLegend"
+                            [chartType]="pastDailyProfitChartType"></base-chart>
+            </div>
+        </div>
+
+        <div class="col-xs-12 col-sm-6">
+            <div class="widget widget-content shadow">
+                <div class="md-table">
+                    <div class="md-table-cell-50 padding-left-8">
+                        <p class="md-display-1 font-weight-100 margin-top-15 margin-bottom-0">{{summary.todayExchange}}</p>
+                        <p class="opacity-50">今日汇率</p>
+                    </div>
+                    <div class="md-table-cell-50 padding-right-8">
+                        <p class="md-display-05 font-weight-100 margin-bottom-0 text-right" [ngClass]="{up: summary.exchangeIncrement > 0, down: summary.exchangeIncrement < 0}">
+                            <i class="fa" [ngClass]="{'fa-caret-up': summary.exchangeIncrement > 0, 'fa-caret-down': summary.exchangeIncrement < 0}"></i> {{summary.exchangeIncrementRate}}
+                        </p>
+                        <p class="md-display-05 font-weight-300 opacity-80 text-right">
+                            <small>{{ summary.exchangeIncrement > 0 ? '+' + (summary.exchangeIncrement).toFixed(2) : (summary.exchangeIncrement).toFixed(2)}}</small>
+                        </p>
+                    </div>
+                </div>
+                <base-chart class="line-chart1"
+                            [data]="pastDailyExchangeChartData"
+                            [labels]="pastDailyExchangeChartLabels"
+                            [options]="pastDailyExchangeChartOptions"
+                            [series]="pastDailyExchangeChartSeries"
+                            [colours]="pastDailyExchangeChartColours"
+                            [legend]="pastDailyExchangeChartLegend"
+                            [chartType]="pastDailyExchangeChartType"></base-chart>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12 col-sm-6">
+            <div class="widget widget-content shadow">
+                <div class="padding-left-8">
+                    <p class="opacity-50 margin-bottom-5">最畅销产品</p>
+                    <p class="md-display-0 font-weight-100 margin-bottom-0 md-min-height-68"> {{firstTopProductName}}</p>
+                </div>
+                <div class="margin-top-5">
+                    <base-chart class="bar-chart"
+                                [data]="topSaleProductsChartData"
+                                [labels]="topSaleProductsChartLabels"
+                                [options]="topSaleProductsChartOptions"
+                                [series]="topSaleProductsChartSeries"
+                                [colours]="topSaleProductsChartColours"
+                                [legend]="topSaleProductsChartLegend"
+                                [chartType]="topSaleProductsChartType"
+                                (chartHover)="onTopSaleProductsChartSelected($event)"></base-chart>
+
+                    <p class="md-display-05 font-weight-100 margin-top-10 margin-bottom-0 padding-left-8 md-min-height-68">
+                        #{{selectedTopProductIndex}} {{selectedTopProductName}}
+                        <small class="padding-left-8 opacity-30 smaller">售出</small> <strong>{{selectedTopProductCount}}</strong>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xs-12 col-sm-6">
+            <div class="widget widget-content shadow">
+                <div class="padding-left-8">
+                    <p class="opacity-50 margin-bottom-5">最高利润品牌</p>
+                </div>
+                <div class="md-table">
+                    <div class="md-table-cell-60">
+                        <base-chart class="doughnut-chart"
+                                    [data]="topSaleBrandsChartData"
+                                    [labels]="topSaleBrandsChartLabels"
+                                    [options]="topSaleBrandsChartOptions"
+                                    [colours]="topSaleBrandsChartColours"
+                                    [legend]="topSaleBrandsChartLegend"
+                                    [chartType]="topSaleBrandsChartType"></base-chart>
+                    </div>
+                    <div class="md-table-cell-40 md-vertical-top padding-left-15 hidden-xs hidden-sm">
+                        <ul class="doughnut-legend">
+                            <li class="font-weight-300" *ngFor="let l of topSaleBrandsChartCustomLegend"><span [ngStyle]="{'background-color': l.color}"></span>{{l.label}}</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

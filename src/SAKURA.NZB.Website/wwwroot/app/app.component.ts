@@ -1,9 +1,12 @@
 ﻿/// <reference path="../lib/TypeScript-Linq/Scripts/typings/System/Collections/Generic/List.ts" />
 
 import { Component, OnInit } from '@angular/core';
-import { Routes, ROUTER_DIRECTIVES, ROUTER_PROVIDERS } from "@angular/router";
+import { Routes, Router, ROUTER_DIRECTIVES, ROUTER_PROVIDERS } from "@angular/router";
+import { Location } from "@angular/common";
+
 
 import { DashboardComponent } from "./components/dashboard/dashboard.component";
+import { BrandListComponent } from "./components/brands/brand-list.component";
 import '../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js';
 
 @Component({
@@ -16,12 +19,15 @@ import '../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js'
 						<img src="./images/favicon_32.png" width="32" height="32" alt="Brand" />
 					</a>
 				</div>
-				//<ul *ngIf="routes != null" class="nav navbar-nav">
-				//	<li *ngFor="let rt of menuRoutes" [class.active]="getLinkStyle(rt)">
-				//		<a [routerLink]="[rt.name]">{{rt.name}}</a>
-				//	</li>
-				//	<li><a (click)="onClickHangfire($event)">Hangfire</a></li>
-				//</ul>
+				<ul class="nav navbar-nav">
+					<li [class.active]="getLinkStyle('index')">
+						<a [routerLink]="['/index']">首页</a>
+					</li>
+					<li [class.active]="getLinkStyle('brands')">
+						<a [routerLink]="['/brands']">品牌</a>
+					</li>
+					<li><a (click)="onClickHangfire($event)">Hangfire</a></li>
+				</ul>
 			</div>
 		</nav>
 		<div class="content padding has-header">
@@ -31,15 +37,16 @@ import '../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js'
 })
 
 @Routes([
-	{ path: "/index", component: DashboardComponent}
+		{ path: "/index", component: DashboardComponent },
+		{ path: "/brands", component: BrandListComponent }
 ])
 
 export class AppComponent implements OnInit {
 //	public routes: RouteDefinition[] = null;
 //	menuRoutes: RouteDefinition[] = null;
 
-//    constructor(private router: Router, private location: Location) {
-//    }
+    constructor(private location: Location, private router: Router) {
+    }
 
 	ngOnInit() {
    //     if (this.routes === null) {
@@ -70,15 +77,15 @@ export class AppComponent implements OnInit {
    //     }
     }
 
-//	onClickHangfire($event: any) {
-//		window.location.href = "/hangfire";
-//		$event.preventDefault();
-//		return false;
-//	}
+	onClickHangfire($event: any) {
+		window.location.href = "/hangfire";
+		$event.preventDefault();
+		return false;
+	}
 
-//    getLinkStyle(route: RouteDefinition) {
-//        return this.location.path().indexOf(route.path) > -1;
-//    }
+    getLinkStyle(route: string) {
+        return this.location.path().indexOf(route) > -1;
+    }
 
 //	getIsMainMenu(route: RouteDefinition) {
 //		return (route.path.match(/\//g) || []).length < 2;

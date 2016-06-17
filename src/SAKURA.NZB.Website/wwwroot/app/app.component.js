@@ -11,15 +11,17 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require('@angular/core');
 var router_1 = require("@angular/router");
+var common_1 = require("@angular/common");
 var dashboard_component_1 = require("./components/dashboard/dashboard.component");
+var brand_list_component_1 = require("./components/brands/brand-list.component");
 require('../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js');
 var AppComponent = (function () {
-    function AppComponent() {
-    }
     //	public routes: RouteDefinition[] = null;
     //	menuRoutes: RouteDefinition[] = null;
-    //    constructor(private router: Router, private location: Location) {
-    //    }
+    function AppComponent(location, router) {
+        this.location = location;
+        this.router = router;
+    }
     AppComponent.prototype.ngOnInit = function () {
         //     if (this.routes === null) {
         //         this.routes = [
@@ -47,16 +49,25 @@ var AppComponent = (function () {
         //	.ToArray();
         //     }
     };
+    AppComponent.prototype.onClickHangfire = function ($event) {
+        window.location.href = "/hangfire";
+        $event.preventDefault();
+        return false;
+    };
+    AppComponent.prototype.getLinkStyle = function (route) {
+        return this.location.path().indexOf(route) > -1;
+    };
     AppComponent = __decorate([
         core_1.Component({
             selector: 'app',
-            template: "\n\t\t<nav class=\"navbar navbar-inverse\">\n\t\t\t<div class=\"container-fluid\">\n\t\t\t\t<div class=\"navbar-header\">\n\t\t\t\t\t<a class=\"navbar-brand\" href=\"#\" style=\"padding: 10px\">\n\t\t\t\t\t\t<img src=\"./images/favicon_32.png\" width=\"32\" height=\"32\" alt=\"Brand\" />\n\t\t\t\t\t</a>\n\t\t\t\t</div>\n\t\t\t\t//<ul *ngIf=\"routes != null\" class=\"nav navbar-nav\">\n\t\t\t\t//\t<li *ngFor=\"let rt of menuRoutes\" [class.active]=\"getLinkStyle(rt)\">\n\t\t\t\t//\t\t<a [routerLink]=\"[rt.name]\">{{rt.name}}</a>\n\t\t\t\t//\t</li>\n\t\t\t\t//\t<li><a (click)=\"onClickHangfire($event)\">Hangfire</a></li>\n\t\t\t\t//</ul>\n\t\t\t</div>\n\t\t</nav>\n\t\t<div class=\"content padding has-header\">\n\t\t\t<router-outlet></router-outlet>\n\t\t</div>",
+            template: "\n\t\t<nav class=\"navbar navbar-inverse\">\n\t\t\t<div class=\"container-fluid\">\n\t\t\t\t<div class=\"navbar-header\">\n\t\t\t\t\t<a class=\"navbar-brand\" href=\"#\" style=\"padding: 10px\">\n\t\t\t\t\t\t<img src=\"./images/favicon_32.png\" width=\"32\" height=\"32\" alt=\"Brand\" />\n\t\t\t\t\t</a>\n\t\t\t\t</div>\n\t\t\t\t<ul class=\"nav navbar-nav\">\n\t\t\t\t\t<li [class.active]=\"getLinkStyle('index')\">\n\t\t\t\t\t\t<a [routerLink]=\"['/index']\">\u9996\u9875</a>\n\t\t\t\t\t</li>\n\t\t\t\t\t<li [class.active]=\"getLinkStyle('brands')\">\n\t\t\t\t\t\t<a [routerLink]=\"['/brands']\">\u54C1\u724C</a>\n\t\t\t\t\t</li>\n\t\t\t\t\t<li><a (click)=\"onClickHangfire($event)\">Hangfire</a></li>\n\t\t\t\t</ul>\n\t\t\t</div>\n\t\t</nav>\n\t\t<div class=\"content padding has-header\">\n\t\t\t<router-outlet></router-outlet>\n\t\t</div>",
             directives: [router_1.ROUTER_DIRECTIVES]
         }),
         router_1.Routes([
-            { path: "/index", component: dashboard_component_1.DashboardComponent }
+            { path: "/index", component: dashboard_component_1.DashboardComponent },
+            { path: "/brands", component: brand_list_component_1.BrandListComponent }
         ]), 
-        __metadata('design:paramtypes', [])
+        __metadata('design:paramtypes', [common_1.Location, router_1.Router])
     ], AppComponent);
     return AppComponent;
 }());
