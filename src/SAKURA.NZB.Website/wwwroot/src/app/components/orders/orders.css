@@ -31,8 +31,8 @@
     padding-left: 10px;
 }
 
-.month-header table td:first-child {
-    width: 35%;
+.month-header table td:nth-of-type(n+1) {
+    padding-left: 8px !important;
 }
 
 .form-group,
@@ -176,16 +176,8 @@
 }
 
 @media (min-width: 768px) {
-    .month-header table td:first-child {
-        width: 19%;
-    }
-
-    .month-header table td:nth-child(2) {
-        width: 27%;
-    }
-
-    .month-header table td:nth-child(3) {
-        width: 27%;
+    .month-header table td:nth-of-type(n+1) {
+        padding-left: 15px !important;
     }
 }
 
