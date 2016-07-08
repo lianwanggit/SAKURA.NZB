@@ -76,6 +76,12 @@ namespace SAKURA.NZB.Business.Configuration
 			set { Set(ConfigKeys.ExpressTrackerUri_EfsPost, value); }
 		}
 
+		public string ZtoUri
+		{
+			get { return GetByKey(ConfigKeys.ExpressTrackerUri_Zto); }
+			set { Set(ConfigKeys.ExpressTrackerUri_Zto, value); }
+		}
+
 		public string NzstUri
 		{
 			get { return GetByKey(ConfigKeys.ExpressTrackerUri_Nzst); }

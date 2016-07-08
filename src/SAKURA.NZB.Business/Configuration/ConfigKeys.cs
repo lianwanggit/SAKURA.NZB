@@ -12,6 +12,7 @@
 		public static string ExpressTrackerUri_Flyway = "ExpressTrackerUri.Flyway";
 		public static string ExpressTrackerCode_Flyway = "ExpressTrackerCode.Flyway";
 		public static string ExpressTrackerUri_EfsPost = "ExpressTrackerUri.EFSPost";
+		public static string ExpressTrackerUri_Zto = "ExpressTrackerUri.ZTO";
 		public static string ExpressTrackerCode_Nzst = "ExpressTrackerCode.NZST";
 		public static string ExpressTrackerUri_Nzst = "ExpressTrackerUri.NZST";
 		public static string ExpressTrackerUri_Ftd = "ExpressTrackerUri.Ftd";
