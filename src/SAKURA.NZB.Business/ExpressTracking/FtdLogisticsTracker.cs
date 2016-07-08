@@ -150,8 +150,12 @@ namespace SAKURA.NZB.Business.ExpressTracking
 			// 2016-05-11 【 新西兰-奥克兰 】 货物进入分拣中心。Arrival at Sorting Center
 			// 2016-05-12 货物离开分拣中心。 Despatching from Sorting Center
 			// 2016-05-23 21:26:49 : 【郴州市】 离开郴州市 发往长沙市
+			// 2016-07-07 18:17:32 : 【天津机场申通项目部】的收件员【新西兰富腾达】已收件
+			// 2016-07-07 21:39:02 : 快件已到达【天津中转部】
+			// 2016-07-07 23:59:56 : 由【天津中转部】发往【河北石家庄中转部】
 
 			var array = text.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+			array = array.Where(x => x != ":").ToArray();
 			if (array.Length < 3) return;
 
 			var datimeText = array[0];
@@ -175,8 +179,10 @@ namespace SAKURA.NZB.Business.ExpressTracking
 			}
 			else
 			{
-				var whereBlockIndex = Array.FindIndex(array, x => x.Contains("【"));
-				if (whereBlockIndex > -1)
+				var whereBlockIndex = Array.FindIndex(array, x => x.Contains("【") && x.Contains("】"));
+				if (whereBlockIndex > -1
+					&& array[whereBlockIndex].IndexOf('【') == 0 
+					&& array[whereBlockIndex].IndexOf('】') == (array[whereBlockIndex].Length - 1) )
 				{
 					Where = array[whereBlockIndex].Replace("【", "");
 					Where = Where.Replace("】", "");

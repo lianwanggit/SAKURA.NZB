@@ -39,7 +39,7 @@ namespace SAKURA.NZB.Business.BootTasks
 			var waybills = _context.Orders.Where(o => !string.IsNullOrEmpty(o.WaybillNumber)
 						&& (o.OrderState == Domain.OrderState.Delivered || o.OrderState == Domain.OrderState.Received))
 					.Select(o => o.WaybillNumber).ToList();
-			//var waybills = new string[] { "NZ1943730", "NZ1685252", "NZ1934339", "NZ1826898" };
+			//var waybills = new string[] { "NZ1861997", "NZ1934339" };
 
 			foreach (var wb in waybills)
 			{
