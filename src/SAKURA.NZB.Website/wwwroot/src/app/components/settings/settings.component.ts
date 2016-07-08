@@ -8,7 +8,8 @@ import { ACCORDION_DIRECTIVES } from 'ng2-bootstrap/ng2-bootstrap';
 class Settings {
 	constructor(public fixedRateLow: number, public fixedRateHigh: number, public freightRate: number,
 		public apiLayerAccessKey: string, public senderName: string, public senderPhone: string,
-		public flywayUri: string, public flywayCode: string, public efsPostUri: string, public nzstCode: string, public nzstUri: string, public ftdUri: string,
+		public flywayUri: string, public flywayCode: string, public efsPostUri: string, public ztoUri: string,
+		public nzstCode: string, public nzstUri: string, public ftdUri: string,
 		public productItemsPerPage: number, public ordersItemsPerPage: number, public exchangeHistoriesItemsPerPage: number) { }
 }
 
@@ -38,6 +39,7 @@ export class SettingsComponent implements OnInit {
 			flywayUri: [null, Validators.required],
 			flywayCode: [null, Validators.required],
 			efsPostUri: [null, Validators.required],
+			ztoUri: [null, Validators.required],
 			nzstCode: [null, Validators.required],
 			nzstUri: [null, Validators.required],
 			ftdUri: [null, Validators.required],
@@ -66,6 +68,7 @@ export class SettingsComponent implements OnInit {
 		this.model.flywayUri = this.settingsForm.value.flywayUri;
 		this.model.flywayCode = this.settingsForm.value.flywayCode;
 		this.model.efsPostUri = this.settingsForm.value.efsPostUri;
+		this.model.ztoUri = this.settingsForm.value.ztoUri;
 		this.model.nzstCode = this.settingsForm.value.nzstCode;
 		this.model.nzstUri = this.settingsForm.value.nzstUri;
 		this.model.ftdUri = this.settingsForm.value.ftdUri;
@@ -97,7 +100,7 @@ export class SettingsComponent implements OnInit {
 
 				this.model = new Settings(json.fixedRateLow, json.fixedRateHigh, json.freightRate,
 					json.apiLayerAccessKey, json.senderName, json.senderPhone,
-					json.flywayUri, json.flywayCode, json.efsPostUri, json.nzstCode, json.nzstUri, json.ftdUri,
+					json.flywayUri, json.flywayCode, json.efsPostUri, json.ztoUri, json.nzstCode, json.nzstUri, json.ftdUri,
 					json.productItemsPerPage, json.ordersItemsPerPage, json.exchangeHistoriesItemsPerPage);
 
 				this.updateForm();		
@@ -120,6 +123,7 @@ export class SettingsComponent implements OnInit {
 		(<any>this.settingsForm.controls['flywayUri']).updateValue(this.model.flywayUri);
 		(<any>this.settingsForm.controls['flywayCode']).updateValue(this.model.flywayCode);
 		(<any>this.settingsForm.controls['efsPostUri']).updateValue(this.model.efsPostUri);
+		(<any>this.settingsForm.controls['ztoUri']).updateValue(this.model.ztoUri);
 		(<any>this.settingsForm.controls['nzstCode']).updateValue(this.model.nzstCode);
 		(<any>this.settingsForm.controls['nzstUri']).updateValue(this.model.nzstUri);
 		(<any>this.settingsForm.controls['ftdUri']).updateValue(this.model.ftdUri);

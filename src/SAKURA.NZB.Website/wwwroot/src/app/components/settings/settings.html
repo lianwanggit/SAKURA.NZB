@@ -143,6 +143,19 @@
                 <div class="row">
                     <div class="col-xs-12">
                         <div class="form-group">
+                            <label for="ztoUri">ZTO中通 Url</label>
+                            <input type="text" class="form-control" id="ztoUri" required
+                                   ngControl="ztoUri" #ztoUri="ngForm">
+                            <div [hidden]="ztoUri.valid || ztoUri.pristine" class="alert alert-danger">
+                                ZTO中通 Url不能为空
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="form-group">
                             <label for="ftdUri">富腾达 Url</label>
                             <input type="text" class="form-control" id="ftdUri" required
                                    ngControl="ftdUri" #ftdUri="ngForm">

@@ -30,6 +30,7 @@ namespace SAKURA.NZB.Website.Controllers.API
 				FlywayUri = _config.FlywayUri,
 				FlywayCode = _config.FlywayCode,
 				EfsPostUri = _config.EfsPostUri,
+				ZtoUri = _config.ZtoUri,
 				NzstCode = _config.NzstCode,
 				NzstUri = _config.NzstUri,
 				FtdUri = _config.FtdUri,
@@ -62,6 +63,7 @@ namespace SAKURA.NZB.Website.Controllers.API
 			_config.FlywayUri = value.FlywayUri;
 			_config.FlywayCode = value.FlywayCode;
 			_config.EfsPostUri = value.EfsPostUri;
+			_config.ZtoUri = value.ZtoUri;
 			_config.NzstCode = value.NzstCode;
 			_config.NzstUri = value.NzstUri;
 			_config.FtdUri = value.FtdUri;

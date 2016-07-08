@@ -34,7 +34,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', "../api.se
             }],
         execute: function() {
             Settings = (function () {
-                function Settings(fixedRateLow, fixedRateHigh, freightRate, apiLayerAccessKey, senderName, senderPhone, flywayUri, flywayCode, efsPostUri, nzstCode, nzstUri, ftdUri, productItemsPerPage, ordersItemsPerPage, exchangeHistoriesItemsPerPage) {
+                function Settings(fixedRateLow, fixedRateHigh, freightRate, apiLayerAccessKey, senderName, senderPhone, flywayUri, flywayCode, efsPostUri, ztoUri, nzstCode, nzstUri, ftdUri, productItemsPerPage, ordersItemsPerPage, exchangeHistoriesItemsPerPage) {
                     this.fixedRateLow = fixedRateLow;
                     this.fixedRateHigh = fixedRateHigh;
                     this.freightRate = freightRate;
@@ -44,6 +44,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', "../api.se
                     this.flywayUri = flywayUri;
                     this.flywayCode = flywayCode;
                     this.efsPostUri = efsPostUri;
+                    this.ztoUri = ztoUri;
                     this.nzstCode = nzstCode;
                     this.nzstUri = nzstUri;
                     this.ftdUri = ftdUri;
@@ -68,6 +69,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', "../api.se
                         flywayUri: [null, common_1.Validators.required],
                         flywayCode: [null, common_1.Validators.required],
                         efsPostUri: [null, common_1.Validators.required],
+                        ztoUri: [null, common_1.Validators.required],
                         nzstCode: [null, common_1.Validators.required],
                         nzstUri: [null, common_1.Validators.required],
                         ftdUri: [null, common_1.Validators.required],
@@ -90,6 +92,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', "../api.se
                     this.model.flywayUri = this.settingsForm.value.flywayUri;
                     this.model.flywayCode = this.settingsForm.value.flywayCode;
                     this.model.efsPostUri = this.settingsForm.value.efsPostUri;
+                    this.model.ztoUri = this.settingsForm.value.ztoUri;
                     this.model.nzstCode = this.settingsForm.value.nzstCode;
                     this.model.nzstUri = this.settingsForm.value.nzstUri;
                     this.model.ftdUri = this.settingsForm.value.ftdUri;
@@ -113,7 +116,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', "../api.se
                         _this.isLoading = false;
                         if (!json)
                             return;
-                        _this.model = new Settings(json.fixedRateLow, json.fixedRateHigh, json.freightRate, json.apiLayerAccessKey, json.senderName, json.senderPhone, json.flywayUri, json.flywayCode, json.efsPostUri, json.nzstCode, json.nzstUri, json.ftdUri, json.productItemsPerPage, json.ordersItemsPerPage, json.exchangeHistoriesItemsPerPage);
+                        _this.model = new Settings(json.fixedRateLow, json.fixedRateHigh, json.freightRate, json.apiLayerAccessKey, json.senderName, json.senderPhone, json.flywayUri, json.flywayCode, json.efsPostUri, json.ztoUri, json.nzstCode, json.nzstUri, json.ftdUri, json.productItemsPerPage, json.ordersItemsPerPage, json.exchangeHistoriesItemsPerPage);
                         _this.updateForm();
                     }, function (error) {
                         _this.isLoading = false;
@@ -130,6 +133,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', "../api.se
                     this.settingsForm.controls['flywayUri'].updateValue(this.model.flywayUri);
                     this.settingsForm.controls['flywayCode'].updateValue(this.model.flywayCode);
                     this.settingsForm.controls['efsPostUri'].updateValue(this.model.efsPostUri);
+                    this.settingsForm.controls['ztoUri'].updateValue(this.model.ztoUri);
                     this.settingsForm.controls['nzstCode'].updateValue(this.model.nzstCode);
                     this.settingsForm.controls['nzstUri'].updateValue(this.model.nzstUri);
                     this.settingsForm.controls['ftdUri'].updateValue(this.model.ftdUri);

@@ -14,6 +14,7 @@
 		public string FlywayUri { get; set; }
 		public string FlywayCode { get; set; }
 		public string EfsPostUri { get; set; }
+		public string ZtoUri { get; set; }
 		public string NzstCode { get; set; }
 		public string NzstUri { get; set; }
 		public string FtdUri { get; set; }
