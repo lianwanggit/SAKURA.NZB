@@ -54,7 +54,7 @@ namespace SAKURA.NZB.Business.Cache
 			}
 
 			if (totalIncome > 0)
-				AverageRate = (averageRate * totalCny + _config.CurrentRate * (totalIncome - totalCny)) / totalIncome + 0.05f;
+				AverageRate = (averageRate * totalCny + CounterRate * (totalIncome - totalCny)) / totalIncome;
 			else
 				AverageRate = CounterRate;
 

@@ -11,14 +11,28 @@ using SAKURA.NZB.Business;
 using SAKURA.NZB.Business.BootTasks;
 using SAKURA.NZB.Data;
 using Serilog;
+using System;
 using System.Linq;
 
 namespace SAKURA.NZB.Website
 {
 	public class Startup
 	{
+		private string _banner = @"
+'   $$$$$$\          $$\                                       $$\   $$\$$$$$$$$\       $$$$$$$\ $$\   $$\$$\     $$\ 
+'  $$  __$$\         $$ |                                      $$$\  $$ \____$$  |      $$  __$$\$$ |  $$ \$$\   $$  |
+'  $$ /  \__|$$$$$$\ $$ |  $$\$$\   $$\ $$$$$$\ $$$$$$\        $$$$\ $$ |   $$  /       $$ |  $$ $$ |  $$ |\$$\ $$  / 
+'  \$$$$$$\  \____$$\$$ | $$  $$ |  $$ $$  __$$\\____$$\       $$ $$\$$ |  $$  /        $$$$$$$\ $$ |  $$ | \$$$$  /  
+'   \____$$\ $$$$$$$ $$$$$$  /$$ |  $$ $$ |  \__$$$$$$$ |      $$ \$$$$ | $$  /         $$  __$$\$$ |  $$ |  \$$  /   
+'  $$\   $$ $$  __$$ $$  _$$< $$ |  $$ $$ |    $$  __$$ |      $$ |\$$$ |$$  /          $$ |  $$ $$ |  $$ |   $$ |    
+'  \$$$$$$  \$$$$$$$ $$ | \$$\\$$$$$$  $$ |    \$$$$$$$ |      $$ | \$$ $$$$$$$$\       $$$$$$$  \$$$$$$  |   $$ |    
+'   \______/ \_______\__|  \__|\______/\__|     \_______|      \__|  \__\________|      \_______/ \______/    \__|    
+'"; 
+
 		public Startup(IHostingEnvironment env)
 		{
+			PrintBanner();
+
 			// Set up configuration sources.
 			Log.Logger = new LoggerConfiguration()
 				.Enrich.WithProperty("SourceContext", string.Empty)
@@ -117,9 +131,21 @@ namespace SAKURA.NZB.Website
 				bootTask.Run();
 				Log.Logger.ForContext<Startup>().Information("Running boot task {0}", bootTask);
 			}
+
+			Log.Logger.Information("Background boot tasks initiated. Press ESC to stop.\n");
 		}
 
 		// Entry point for the application.
 		public static void Main(string[] args) => WebApplication.Run<Startup>(args);
+
+		private void PrintBanner()
+		{			
+			Console.ForegroundColor = ConsoleColor.Magenta;
+
+			foreach (var line in _banner.Split(new[] { Environment.NewLine }, StringSplitOptions.None))
+				Console.WriteLine(line);
+
+			Console.ForegroundColor = ConsoleColor.White;			
+		}
 	}
 }
