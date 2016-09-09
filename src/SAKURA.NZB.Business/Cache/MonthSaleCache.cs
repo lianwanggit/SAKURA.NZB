@@ -37,7 +37,7 @@ namespace SAKURA.NZB.Business.Cache
 				}
 
 				cost += (o.Freight ?? 0F);
-				var profit = income - cost * ExchangeRateCache.Rate;
+				var profit = income - cost * ExchangeRateCache.AverageRate;
 
 				var sale = result.FirstOrDefault(s => s.Month == month);
 				if (sale != null)

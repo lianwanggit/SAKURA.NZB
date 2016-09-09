@@ -51,7 +51,7 @@ namespace SAKURA.NZB.Website.Controllers.API
 			{
 				TotalNzd = currencyToNzd(totalNzd),
 				TotalCny = currencyToCny(totalCny),
-				Rate = (float)Math.Round(ExchangeRateCache.Rate, 4)
+				Rate = (float)Math.Round(ExchangeRateCache.AverageRate, 4)
 			});
 		}
 

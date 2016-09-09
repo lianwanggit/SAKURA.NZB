@@ -1,6 +1,8 @@
 ﻿using MediatR;
+using Microsoft.Data.Entity;
 using SAKURA.NZB.Business.Configuration;
 using SAKURA.NZB.Data;
+using Serilog;
 using System;
 using System.Linq;
 
@@ -12,7 +14,8 @@ namespace SAKURA.NZB.Business.Cache
 		private readonly Config _config;
 		private readonly IMediator _mediator;
 
-		public static float Rate { get; private set; }
+		public static float AverageRate { get; private set; }
+		public static float CounterRate { get; private set; }
 
 		public CacheKey Key => CacheKey.ExchangeRate;
 		public int Index => 0;
@@ -30,6 +33,8 @@ namespace SAKURA.NZB.Business.Cache
 			float totalCny = 0;
 			float averageRate = _config.FixedRateLow;
 
+			CounterRate = _config.CurrentRate + 0.05f;
+
 			var records = _context.ExchangeHistories.ToList();			
 			foreach (var r in records)
 			{
@@ -42,7 +47,19 @@ namespace SAKURA.NZB.Business.Cache
 				averageRate = (float)Math.Round(totalCny / totalNzd, 4);
 			}
 
-			Rate = averageRate;
+			var  totalIncome = 0f;
+			foreach (var o in _context.Orders.Include(o => o.Products).ToList()) 
+			{
+				totalIncome += o.Products.Sum(p => p.Price * p.Qty);			 
+			}
+
+			if (totalIncome > 0)
+				AverageRate = (averageRate * totalCny + _config.CurrentRate * (totalIncome - totalCny)) / totalIncome + 0.05f;
+			else
+				AverageRate = CounterRate;
+
+			Log.Information("Counter Live Rate: {0}", CounterRate);
+			Log.Information("Average Rate: {0}", AverageRate);
 		}
 	}
 }
