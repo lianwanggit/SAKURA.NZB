@@ -75,6 +75,10 @@
    justify-content:flex-end;
 }
 
+.order-time, .latest-express-info  {
+    padding-top: 8px;
+}
+
 .customer {
     border-top:  1px solid #ddd;
 }
@@ -96,6 +100,15 @@
 
 .product-list {
     padding-left: 0;
+}
+
+.latest-express-info span {
+    float: left;
+    line-height: 17px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 100%;
 }
 
 .product-list table {
@@ -178,6 +191,10 @@
 @media (min-width: 768px) {
     .month-header table td:nth-of-type(n+1) {
         padding-left: 15px !important;
+    }
+
+    .latest-express-info {
+        margin-left: -15px;
     }
 }
 

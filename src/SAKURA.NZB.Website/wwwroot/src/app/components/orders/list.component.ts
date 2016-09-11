@@ -20,6 +20,25 @@ class OrderDeliveryModel {
 	constructor(public orderId: number, public waybillNumber: string, public weight: number, public freight: number) { }
 }
 
+class LatestExpressInfo {
+	constructor(public waybillNumber: string, public expressInfo: string) { };
+}
+
+class LatestExpressInfoList {
+	public expressInfo: LatestExpressInfo[];
+
+	constructor() {
+		this.expressInfo = [];
+	}
+
+	getInfo(waybillNumber: string) {
+		var info = this.expressInfo.ToList<LatestExpressInfo>()
+						.FirstOrDefault(x => x.waybillNumber == waybillNumber);
+
+		return info == null ? '' : info.expressInfo;
+	}
+}
+
 @Component({
     selector: "customers",
     templateUrl: "./src/app/components/orders/list.html",
@@ -30,6 +49,7 @@ export class OrdersComponent implements OnInit {
 	orderList = [].ToList<OrderModel>();
 	deliveryModel: OrderDeliveryModel = null;
 	expressTrackInfo: ExpressTrack = null;
+	latestExpressInfoList: LatestExpressInfoList = new LatestExpressInfoList();
 
 	deliveryForm: ControlGroup;
 
@@ -136,6 +156,8 @@ export class OrdersComponent implements OnInit {
 
 				if (loadSearchList)
 					that.addToSearchList(that.orderList);
+
+				this.loadLatestExpressInfo(that.orderList.Select(o => o.waybillNumber).ToArray());
 			},
 			error => {
 				this.isLoading = false;
@@ -309,5 +331,24 @@ export class OrdersComponent implements OnInit {
 		});
 
 		this.searchList = list.ToArray();
+	}
+
+	loadLatestExpressInfo(waybillNumbers: string[]) {
+		var that = this;
+		var data = { WaybillNumbers: waybillNumbers };
+
+		this.http
+			.post(EXPRESS_TRACK_ENDPOINT + 'batchwaybillNumbers', JSON.stringify(data), { headers: this._headers })
+			.map(res => res.status === 404 ? null : res.json())
+			.subscribe(
+			json => {
+				if (!json) return;
+
+				this.latestExpressInfoList.expressInfo.length = 0;
+				json.expressInfoList.forEach(x => {
+					this.latestExpressInfoList.expressInfo.push(new LatestExpressInfo(x.waybillNumber, x.expressInfo));
+				});
+			},
+			error => console.error(error));
 	}
 }

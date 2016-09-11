@@ -12,7 +12,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
     var core_1, common_1, http_1, router_1, api_service_1, models_1, numberValidator_1, clipboard_directive_1, ng2_bootstrap_1;
-    var OrderDeliveryModel, OrdersComponent;
+    var OrderDeliveryModel, LatestExpressInfo, LatestExpressInfoList, OrdersComponent;
     return {
         setters:[
             function (core_1_1) {
@@ -53,6 +53,25 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/
                 }
                 return OrderDeliveryModel;
             }());
+            LatestExpressInfo = (function () {
+                function LatestExpressInfo(waybillNumber, expressInfo) {
+                    this.waybillNumber = waybillNumber;
+                    this.expressInfo = expressInfo;
+                }
+                ;
+                return LatestExpressInfo;
+            }());
+            LatestExpressInfoList = (function () {
+                function LatestExpressInfoList() {
+                    this.expressInfo = [];
+                }
+                LatestExpressInfoList.prototype.getInfo = function (waybillNumber) {
+                    var info = this.expressInfo.ToList()
+                        .FirstOrDefault(function (x) { return x.waybillNumber == waybillNumber; });
+                    return info == null ? '' : info.expressInfo;
+                };
+                return LatestExpressInfoList;
+            }());
             OrdersComponent = (function () {
                 function OrdersComponent(http, router) {
                     this.http = http;
@@ -60,6 +79,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/
                     this.orderList = [].ToList();
                     this.deliveryModel = null;
                     this.expressTrackInfo = null;
+                    this.latestExpressInfoList = new LatestExpressInfoList();
                     this.searchList = [];
                     this.filterText = '';
                     this.orderState = '';
@@ -145,6 +165,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/
                             that.totalAmount = that.totalItemCount;
                         if (loadSearchList)
                             that.addToSearchList(that.orderList);
+                        _this.loadLatestExpressInfo(that.orderList.Select(function (o) { return o.waybillNumber; }).ToArray());
                     }, function (error) {
                         _this.isLoading = false;
                         console.log(error);
@@ -278,6 +299,22 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/
                         list.Add(o);
                     });
                     this.searchList = list.ToArray();
+                };
+                OrdersComponent.prototype.loadLatestExpressInfo = function (waybillNumbers) {
+                    var _this = this;
+                    var that = this;
+                    var data = { WaybillNumbers: waybillNumbers };
+                    this.http
+                        .post(api_service_1.EXPRESS_TRACK_ENDPOINT + 'batchwaybillNumbers', JSON.stringify(data), { headers: this._headers })
+                        .map(function (res) { return res.status === 404 ? null : res.json(); })
+                        .subscribe(function (json) {
+                        if (!json)
+                            return;
+                        _this.latestExpressInfoList.expressInfo.length = 0;
+                        json.expressInfoList.forEach(function (x) {
+                            _this.latestExpressInfoList.expressInfo.push(new LatestExpressInfo(x.waybillNumber, x.expressInfo));
+                        });
+                    }, function (error) { return console.error(error); });
                 };
                 OrdersComponent = __decorate([
                     core_1.Component({
