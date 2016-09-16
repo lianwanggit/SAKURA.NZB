@@ -91,12 +91,12 @@ System.register([], function(exports_1, context_1) {
                     configurable: true
                 });
                 Object.defineProperty(OrderModel.prototype, "isLowProfit", {
-                    get: function () { return this.totalProfit <= this.totalCost * window.nzb.rate.live * 0.25 && !this.isNegativeProfit; },
+                    get: function () { return this.totalProfit <= this.totalCost * window.nzb.rate.base * 0.25 && !this.isNegativeProfit; },
                     enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(OrderModel.prototype, "isHighProfit", {
-                    get: function () { return this.totalProfit > this.totalCost * window.nzb.rate.live * 0.25; },
+                    get: function () { return this.totalProfit > this.totalCost * window.nzb.rate.base * 0.25; },
                     enumerable: true,
                     configurable: true
                 });
@@ -129,7 +129,7 @@ System.register([], function(exports_1, context_1) {
                     this.totalCost = list.Sum(function (co) { return co.totalCost; }) + this.freight;
                     this.totalPrice = list.Sum(function (co) { return co.totalPrice; });
                     this.totalQty = list.Sum(function (co) { return co.totalQty; });
-                    this.totalProfit = this.totalPrice - this.totalCost * window.nzb.rate.live;
+                    this.totalProfit = this.totalPrice - this.totalCost * window.nzb.rate.base;
                     this.strTotalProfit = formatCurrency(this.totalProfit, this.totalProfit.toFixed(2));
                 };
                 OrderModel.prototype.updateExpressText = function () {
@@ -208,7 +208,7 @@ System.register([], function(exports_1, context_1) {
                     this.calculateProfit();
                 }
                 OrderProduct.prototype.calculateProfit = function () {
-                    this.profit = (this.price - this.cost * window.nzb.rate.live) * this.qty;
+                    this.profit = (this.price - this.cost * window.nzb.rate.base) * this.qty;
                     this.strProfit = formatCurrency(this.profit, this.profit.toFixed(2));
                 };
                 Object.defineProperty(OrderProduct.prototype, "isValid", {

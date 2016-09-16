@@ -46,8 +46,8 @@ export class OrderModel {
 	get hasExpressWaybill() { return this.waybillNumber; }
 
 	get isNegativeProfit() { return this.totalProfit <= 0; }
-	get isLowProfit() { return this.totalProfit <= this.totalCost * (<any>window).nzb.rate.live * 0.25 && !this.isNegativeProfit; }
-	get isHighProfit() { return this.totalProfit > this.totalCost * (<any>window).nzb.rate.live * 0.25;  }
+	get isLowProfit() { return this.totalProfit <= this.totalCost * (<any>window).nzb.rate.base * 0.25 && !this.isNegativeProfit; }
+	get isHighProfit() { return this.totalProfit > this.totalCost * (<any>window).nzb.rate.base * 0.25;  }
 
 	updateStatus() {
 		var seed = this.paymentState == 'Paid' ? 20 : 0;
@@ -80,7 +80,7 @@ export class OrderModel {
 		this.totalCost = list.Sum(co => co.totalCost) + this.freight;
 		this.totalPrice = list.Sum(co => co.totalPrice);
 		this.totalQty = list.Sum(co => co.totalQty);
-		this.totalProfit = this.totalPrice - this.totalCost * (<any>window).nzb.rate.live;
+		this.totalProfit = this.totalPrice - this.totalCost * (<any>window).nzb.rate.base;
 		this.strTotalProfit = formatCurrency(this.totalProfit, this.totalProfit.toFixed(2));
 	}
 
@@ -148,7 +148,7 @@ export class OrderProduct {
 	}
 
 	calculateProfit() {
-		this.profit = (this.price - this.cost * (<any>window).nzb.rate.live) * this.qty;
+		this.profit = (this.price - this.cost * (<any>window).nzb.rate.base) * this.qty;
 		this.strProfit = formatCurrency(this.profit, this.profit.toFixed(2));
 	}
 
