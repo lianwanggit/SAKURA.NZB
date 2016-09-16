@@ -58,6 +58,8 @@ namespace SAKURA.NZB.Business.Cache
 			else
 				AverageRate = CounterRate;
 
+			CounterRate = Math.Max(5f, CounterRate);
+
 			Log.Information("Counter Live Rate: {0}", CounterRate);
 			Log.Information("Average Rate: {0}", AverageRate);
 		}

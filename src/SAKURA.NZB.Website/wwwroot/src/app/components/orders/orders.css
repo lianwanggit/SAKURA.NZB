@@ -145,6 +145,10 @@
     color: red;
 }
 
+.low {
+    color: orange;
+} 
+
 .underline {
 	border-bottom: #777 1px solid;
 }

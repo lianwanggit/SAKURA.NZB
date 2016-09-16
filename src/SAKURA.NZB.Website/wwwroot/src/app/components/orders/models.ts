@@ -45,6 +45,10 @@ export class OrderModel {
 	get delivered() { return this.orderState != 'Created' && this.orderState != 'Confirmed'; }
 	get hasExpressWaybill() { return this.waybillNumber; }
 
+	get isNegativeProfit() { return this.totalProfit <= 0; }
+	get isLowProfit() { return this.totalProfit <= this.totalCost * (<any>window).nzb.rate.live * 0.25 && !this.isNegativeProfit; }
+	get isHighProfit() { return this.totalProfit > this.totalCost * (<any>window).nzb.rate.live * 0.25;  }
+
 	updateStatus() {
 		var seed = this.paymentState == 'Paid' ? 20 : 0;
 		this.statusText = this.orderStates[this.orderState];

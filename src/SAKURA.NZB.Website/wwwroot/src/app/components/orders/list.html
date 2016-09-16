@@ -130,7 +130,7 @@
                                     <td class="hidden-xs"><span class="underline">{{(md.totalCost).toFixed(2)}}</span></td>
                                     <td class="hidden-xs"><span class="underline">{{md.totalPrice}}</span></td>
                                     <td class="hidden-xs">{{md.totalQty}}</td>
-                                    <td [ngClass]="{up: md.totalProfit > 0, down: md.totalProfit < 0}"><strong>{{md.strTotalProfit}}</strong></td>
+                                    <td [ngClass]="{up: md.isHighProfit, down: md.isNegativeProfit, low: md.isLowProfit}"><strong>{{md.strTotalProfit}}</strong></td>
                                 </tr>
                             </table>
                         </div>

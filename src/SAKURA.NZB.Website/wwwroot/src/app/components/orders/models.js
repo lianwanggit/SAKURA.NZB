@@ -85,6 +85,21 @@ System.register([], function(exports_1, context_1) {
                     enumerable: true,
                     configurable: true
                 });
+                Object.defineProperty(OrderModel.prototype, "isNegativeProfit", {
+                    get: function () { return this.totalProfit <= 0; },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(OrderModel.prototype, "isLowProfit", {
+                    get: function () { return this.totalProfit <= this.totalCost * window.nzb.rate.live * 0.25 && !this.isNegativeProfit; },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(OrderModel.prototype, "isHighProfit", {
+                    get: function () { return this.totalProfit > this.totalCost * window.nzb.rate.live * 0.25; },
+                    enumerable: true,
+                    configurable: true
+                });
                 OrderModel.prototype.updateStatus = function () {
                     var seed = this.paymentState == 'Paid' ? 20 : 0;
                     this.statusText = this.orderStates[this.orderState];
