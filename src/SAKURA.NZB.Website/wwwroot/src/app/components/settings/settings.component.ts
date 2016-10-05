@@ -9,7 +9,7 @@ class Settings {
 	constructor(public fixedRateLow: number, public fixedRateHigh: number, public freightRate: number,
 		public apiLayerAccessKey: string, public senderName: string, public senderPhone: string,
 		public flywayUri: string, public flywayCode: string, public efsPostUri: string, public ztoUri: string,
-		public nzstCode: string, public nzstUri: string, public ftdUri: string,
+		public nzstCode: string, public nzstUri: string, public ftdUri: string, public nsfUri: string,
 		public productItemsPerPage: number, public ordersItemsPerPage: number, public exchangeHistoriesItemsPerPage: number) { }
 }
 
@@ -43,6 +43,7 @@ export class SettingsComponent implements OnInit {
 			nzstCode: [null, Validators.required],
 			nzstUri: [null, Validators.required],
 			ftdUri: [null, Validators.required],
+			nsfUri: [null, Validators.required],
 
 			productItemsPerPage: [null, PositiveNumberValidator.unspecified],
 			ordersItemsPerPage: [null, PositiveNumberValidator.unspecified],
@@ -72,6 +73,7 @@ export class SettingsComponent implements OnInit {
 		this.model.nzstCode = this.settingsForm.value.nzstCode;
 		this.model.nzstUri = this.settingsForm.value.nzstUri;
 		this.model.ftdUri = this.settingsForm.value.ftdUri;
+		this.model.nsfUri = this.settingsForm.value.nsfUri;
 
 		this.model.productItemsPerPage = this.settingsForm.value.productItemsPerPage;
 		this.model.ordersItemsPerPage = this.settingsForm.value.ordersItemsPerPage;
@@ -100,7 +102,7 @@ export class SettingsComponent implements OnInit {
 
 				this.model = new Settings(json.fixedRateLow, json.fixedRateHigh, json.freightRate,
 					json.apiLayerAccessKey, json.senderName, json.senderPhone,
-					json.flywayUri, json.flywayCode, json.efsPostUri, json.ztoUri, json.nzstCode, json.nzstUri, json.ftdUri,
+					json.flywayUri, json.flywayCode, json.efsPostUri, json.ztoUri, json.nzstCode, json.nzstUri, json.ftdUri, json.nsfUri,
 					json.productItemsPerPage, json.ordersItemsPerPage, json.exchangeHistoriesItemsPerPage);
 
 				this.updateForm();		
@@ -127,6 +129,7 @@ export class SettingsComponent implements OnInit {
 		(<any>this.settingsForm.controls['nzstCode']).updateValue(this.model.nzstCode);
 		(<any>this.settingsForm.controls['nzstUri']).updateValue(this.model.nzstUri);
 		(<any>this.settingsForm.controls['ftdUri']).updateValue(this.model.ftdUri);
+		(<any>this.settingsForm.controls['nsfUri']).updateValue(this.model.nsfUri);
 
 		(<any>this.settingsForm.controls['productItemsPerPage']).updateValue(this.model.productItemsPerPage);
 		(<any>this.settingsForm.controls['ordersItemsPerPage']).updateValue(this.model.ordersItemsPerPage);

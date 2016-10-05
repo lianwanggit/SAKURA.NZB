@@ -165,6 +165,19 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="nsfUri">新顺丰 Url</label>
+                            <input type="text" class="form-control" id="nsfUri" required
+                                   ngControl="nsfUri" #nsfUri="ngForm">
+                            <div [hidden]="nsfUri.valid || nsfUri.pristine" class="alert alert-danger">
+                                新顺丰 Url不能为空
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </accordion-group>
 
             <accordion-group heading="页面显示" [panelClass]="ag4.isOpen ? 'panel-primary' : 'panel-default'" #ag4>

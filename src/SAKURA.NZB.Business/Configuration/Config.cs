@@ -100,6 +100,12 @@ namespace SAKURA.NZB.Business.Configuration
 			set { Set(ConfigKeys.ExpressTrackerUri_Ftd, value); }
 		}
 
+		public string NsfUri
+		{
+			get { return GetByKey(ConfigKeys.ExpressTrackerUri_Nsf); }
+			set { Set(ConfigKeys.ExpressTrackerUri_Nsf, value); }
+		}
+
 		public int ProductItemsPerPage
 		{
 			get { return GetIntByKey(ConfigKeys.ProductItemsPerPage); }

@@ -16,6 +16,7 @@
 		public static string ExpressTrackerCode_Nzst = "ExpressTrackerCode.NZST";
 		public static string ExpressTrackerUri_Nzst = "ExpressTrackerUri.NZST";
 		public static string ExpressTrackerUri_Ftd = "ExpressTrackerUri.Ftd";
+		public static string ExpressTrackerUri_Nsf = "ExpressTrackerUri.Nsf";
 
 		public static string ProductItemsPerPage = "ItemsPerPage.Products";
 		public static string OrdersItemsPerPage = "ItemsPerPage.Orders";

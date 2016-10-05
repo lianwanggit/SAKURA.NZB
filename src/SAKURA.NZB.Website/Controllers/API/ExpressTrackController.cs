@@ -27,6 +27,7 @@ namespace SAKURA.NZB.Website.Controllers.API
 			if (item == null)
 				return HttpNotFound();
 
+			item.Details = item.Details.OrderBy(d => d.When).ToList();
 			return new ObjectResult(item);
 		}
 

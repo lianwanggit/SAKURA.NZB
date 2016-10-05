@@ -71,6 +71,7 @@ namespace SAKURA.NZB.Business
 			services.AddTransient<IExpressTracker, ZTOExpressTracker>();
 			services.AddTransient<IExpressTracker, NZSTExpressTracker>();
 			services.AddTransient<IExpressTracker, FtdLogisticsTracker>();
+			services.AddTransient<IExpressTracker, NSFExpressTracker>();
 			services.AddSingleton<IExpressDistributor, ExpressDistributor>();
 
 			services.AddTransient<MonthSaleUpdatedHandler>();

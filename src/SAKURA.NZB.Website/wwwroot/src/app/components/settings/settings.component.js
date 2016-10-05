@@ -34,7 +34,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', "../api.se
             }],
         execute: function() {
             Settings = (function () {
-                function Settings(fixedRateLow, fixedRateHigh, freightRate, apiLayerAccessKey, senderName, senderPhone, flywayUri, flywayCode, efsPostUri, ztoUri, nzstCode, nzstUri, ftdUri, productItemsPerPage, ordersItemsPerPage, exchangeHistoriesItemsPerPage) {
+                function Settings(fixedRateLow, fixedRateHigh, freightRate, apiLayerAccessKey, senderName, senderPhone, flywayUri, flywayCode, efsPostUri, ztoUri, nzstCode, nzstUri, ftdUri, nsfUri, productItemsPerPage, ordersItemsPerPage, exchangeHistoriesItemsPerPage) {
                     this.fixedRateLow = fixedRateLow;
                     this.fixedRateHigh = fixedRateHigh;
                     this.freightRate = freightRate;
@@ -48,6 +48,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', "../api.se
                     this.nzstCode = nzstCode;
                     this.nzstUri = nzstUri;
                     this.ftdUri = ftdUri;
+                    this.nsfUri = nsfUri;
                     this.productItemsPerPage = productItemsPerPage;
                     this.ordersItemsPerPage = ordersItemsPerPage;
                     this.exchangeHistoriesItemsPerPage = exchangeHistoriesItemsPerPage;
@@ -73,6 +74,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', "../api.se
                         nzstCode: [null, common_1.Validators.required],
                         nzstUri: [null, common_1.Validators.required],
                         ftdUri: [null, common_1.Validators.required],
+                        nsfUri: [null, common_1.Validators.required],
                         productItemsPerPage: [null, numberValidator_1.PositiveNumberValidator.unspecified],
                         ordersItemsPerPage: [null, numberValidator_1.PositiveNumberValidator.unspecified],
                         exchangeHistoriesItemsPerPage: [null, numberValidator_1.PositiveNumberValidator.unspecified],
@@ -96,6 +98,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', "../api.se
                     this.model.nzstCode = this.settingsForm.value.nzstCode;
                     this.model.nzstUri = this.settingsForm.value.nzstUri;
                     this.model.ftdUri = this.settingsForm.value.ftdUri;
+                    this.model.nsfUri = this.settingsForm.value.nsfUri;
                     this.model.productItemsPerPage = this.settingsForm.value.productItemsPerPage;
                     this.model.ordersItemsPerPage = this.settingsForm.value.ordersItemsPerPage;
                     this.model.exchangeHistoriesItemsPerPage = this.settingsForm.value.exchangeHistoriesItemsPerPage;
@@ -116,7 +119,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', "../api.se
                         _this.isLoading = false;
                         if (!json)
                             return;
-                        _this.model = new Settings(json.fixedRateLow, json.fixedRateHigh, json.freightRate, json.apiLayerAccessKey, json.senderName, json.senderPhone, json.flywayUri, json.flywayCode, json.efsPostUri, json.ztoUri, json.nzstCode, json.nzstUri, json.ftdUri, json.productItemsPerPage, json.ordersItemsPerPage, json.exchangeHistoriesItemsPerPage);
+                        _this.model = new Settings(json.fixedRateLow, json.fixedRateHigh, json.freightRate, json.apiLayerAccessKey, json.senderName, json.senderPhone, json.flywayUri, json.flywayCode, json.efsPostUri, json.ztoUri, json.nzstCode, json.nzstUri, json.ftdUri, json.nsfUri, json.productItemsPerPage, json.ordersItemsPerPage, json.exchangeHistoriesItemsPerPage);
                         _this.updateForm();
                     }, function (error) {
                         _this.isLoading = false;
@@ -137,6 +140,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', "../api.se
                     this.settingsForm.controls['nzstCode'].updateValue(this.model.nzstCode);
                     this.settingsForm.controls['nzstUri'].updateValue(this.model.nzstUri);
                     this.settingsForm.controls['ftdUri'].updateValue(this.model.ftdUri);
+                    this.settingsForm.controls['nsfUri'].updateValue(this.model.nsfUri);
                     this.settingsForm.controls['productItemsPerPage'].updateValue(this.model.productItemsPerPage);
                     this.settingsForm.controls['ordersItemsPerPage'].updateValue(this.model.ordersItemsPerPage);
                     this.settingsForm.controls['exchangeHistoriesItemsPerPage'].updateValue(this.model.exchangeHistoriesItemsPerPage);
