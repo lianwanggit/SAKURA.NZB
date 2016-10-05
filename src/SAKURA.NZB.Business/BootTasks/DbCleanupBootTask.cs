@@ -27,14 +27,14 @@ namespace SAKURA.NZB.Business.BootTasks
 
 		public void CleanExchangeRate()
 		{
-			var toBeRemoved = _context.ExchangeRates.Where(e => e.ModifiedTime <= DateTimeOffset.Now.AddYears(-1));
+			var toBeRemoved = _context.ExchangeRates.Where(e => e.ModifiedTime <= DateTimeOffset.Now.AddYears(-3));
 			_context.ExchangeRates.RemoveRange(toBeRemoved);
 			_context.SaveChanges();
 		}
 
 		public void CleanExpressTrack()
 		{
-			var toBeRemoved = _context.ExpressTracks.Include(e => e.Details).Where(e => e.ModifiedTime <= DateTimeOffset.Now.AddMonths(-6));
+			var toBeRemoved = _context.ExpressTracks.Include(e => e.Details).Where(e => e.ModifiedTime <= DateTimeOffset.Now.AddYears(-1));
 			_context.ExpressTracks.RemoveRange(toBeRemoved);
 			_context.SaveChanges();
 		}
