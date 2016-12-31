@@ -21,13 +21,24 @@ namespace SAKURA.NZB.Business.Cache
 
 		public void Update()
 		{
-			Orders = _context.Orders
+			Orders = new List<Order>();
+			var orderIds = _context.Orders.Select(x => x.Id).ToList();
+
+			foreach (var id in orderIds)
+			{
+				var order = _context.Orders
 				.Include(o => o.Products)
 					.ThenInclude(p => p.Customer)
 				.Include(o => o.Products)
 					.ThenInclude(p => p.Product)
 					.ThenInclude(p => p.Brand)
-				.ToList();
+				.FirstOrDefault(o => o.Id == id);
+
+				if (order != null)
+				{
+					Orders.Add(order);
+				}
+			}
 		}
 	}
 }

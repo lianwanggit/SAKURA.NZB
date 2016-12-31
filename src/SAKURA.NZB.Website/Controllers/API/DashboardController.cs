@@ -110,8 +110,7 @@ namespace SAKURA.NZB.Website.Controllers.API
 		[HttpGet("top-sale-products")]
 		public IActionResult GetTopSaleProducts()
 		{
-			var orders = _context.Orders.Include(o => o.Products).ThenInclude(p => p.Product).ThenInclude(p => p.Brand).ToList();
-			var result = from o in orders
+			var result = from o in OrdersCache.Orders
 						 from op in o.Products
 						 group op by op.Product into pg
 						 select new { ProductName = string.Concat(pg.Key.Brand.Name, ' ', pg.Key.Name), Count = pg.Sum(x => x.Qty) };
@@ -122,8 +121,7 @@ namespace SAKURA.NZB.Website.Controllers.API
 		[HttpGet("top-sale-brands")]
 		public IActionResult GetTopSaleBrands()
 		{
-			var orders = _context.Orders.Include(o => o.Products).ThenInclude(p => p.Product).ThenInclude(p => p.Brand).ToList();
-			var result = from o in orders
+			var result = from o in OrdersCache.Orders
 						 from op in o.Products
 						 group op by op.Product.Brand into bg
 						 select new { BrandName = bg.Key.Name, Count = (float)Math.Round(bg.Sum(x => x.Qty * (x.Price - x.Cost * ExchangeRateCache.AverageRate)), 2) };
@@ -174,7 +172,7 @@ namespace SAKURA.NZB.Website.Controllers.API
 			foreach (var d in dates)
 			{
 				var rate = rates.FirstOrDefault(r => r.ModifiedTime.Date == d);
-				result.Add(new DayExchange { Date = d.ToShortDateString(), Exchange = (float)Math.Round(rate?.NZDCNY ?? 0F, 4) });
+				result.Add(new DayExchange { Date = d.ToShortDateString(), Exchange = (float)Math.Round(rate?.NZDCNY ?? 5.0F, 4) });
 			}
 
 			return new ObjectResult(result);
