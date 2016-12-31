@@ -14,7 +14,7 @@ namespace SAKURA.NZB.Business.Cache
 
 		public void UpdateAll()
 		{
-			var orderedCaches = _caches.OrderBy(c => c.Index).ToList();
+			var orderedCaches = _caches.OrderBy(c => (int)c.Key).ToList();
 			foreach (var cache in orderedCaches)
 			{
 				cache.Update();

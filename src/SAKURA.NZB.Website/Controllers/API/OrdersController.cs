@@ -34,15 +34,7 @@ namespace SAKURA.NZB.Website.Controllers
 		[HttpGet]
 		public IActionResult Get()
 		{
-			var orders = _context.Orders
-				.Include(o => o.Products)
-					.ThenInclude(p => p.Customer)
-				.Include(o => o.Products)
-					.ThenInclude(p => p.Product)
-					.ThenInclude(p => p.Brand)
-				.ToList();
-
-			var models = (from o in orders
+			var models = (from o in OrdersCache.Orders
 						  orderby o.Products.FirstOrDefault()?.Customer.NamePinYin
 						  orderby o.OrderTime descending
 						  select MapTo(o)).ToList();
@@ -65,8 +57,7 @@ namespace SAKURA.NZB.Website.Controllers
 		[HttpGet("get-latest-by-product/{id:int}")]
 		public IActionResult GetLatestByProduct(int? id)
 		{
-			var orders = (_context.Orders.Include(o => o.Products).ThenInclude(p => p.Customer)).ToList();
-			var order = (from o in orders
+			var order = (from o in OrdersCache.Orders
 						 from p in o.Products
 						 where p.ProductId == id
 						 orderby o.OrderTime descending

@@ -12,7 +12,6 @@ namespace SAKURA.NZB.Business.Cache
 		public static List<MonthSale> MonthSaleList { get;  private set;}
 
 		public CacheKey Key => CacheKey.MonthSale;
-		public int Index => 2;
 
 		public MonthSaleCache(NZBContext context)
 		{

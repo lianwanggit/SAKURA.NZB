@@ -77,6 +77,8 @@ namespace SAKURA.NZB.Business
 			services.AddTransient<MonthSaleUpdatedHandler>();
 			services.AddTransient<ExchangeRateUpdatedHandler>();
 
+
+			services.AddTransient<ICache, ProductsCache>();
 			services.AddTransient<ICache, OrdersCache>();
 			services.AddTransient<ICache, MonthSaleCache>();
 			services.AddTransient<ICache, ExchangeRateCache>();

@@ -1,9 +1,10 @@
 ﻿namespace SAKURA.NZB.Business.Cache
 {
 	public enum CacheKey
-    {
-		MonthSale = 0,
+	{
+		ExchangeRate = 0,		
+		Products,
 		Orders,
-		ExchangeRate
-    }
+		MonthSale,
+	}
 }

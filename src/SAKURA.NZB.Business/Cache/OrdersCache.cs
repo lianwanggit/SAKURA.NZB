@@ -12,7 +12,6 @@ namespace SAKURA.NZB.Business.Cache
 		public static IList<Order> Orders { get; private set; }
 
 		public CacheKey Key => CacheKey.Orders;
-		public int Index => 1;
 
 		public OrdersCache(NZBContext context)
 		{

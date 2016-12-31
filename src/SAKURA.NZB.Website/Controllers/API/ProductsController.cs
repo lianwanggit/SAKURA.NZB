@@ -8,6 +8,7 @@ using SAKURA.NZB.Website.ViewModels;
 using SAKURA.NZB.Business.Configuration;
 using System;
 using System.Web.Http;
+using SAKURA.NZB.Business.Cache;
 
 namespace SAKURA.NZB.Website.Controllers.API
 { 
@@ -16,25 +17,19 @@ namespace SAKURA.NZB.Website.Controllers.API
 	{
 		private readonly NZBContext _context;
 		private readonly int _itemsPerPage;
+		private readonly ICacheRepository _cacheRepository;
 
-		public ProductsController(NZBContext context, Config config)
+		public ProductsController(NZBContext context, Config config, ICacheRepository cacheRepository)
 		{
 			_context = context;
 			_itemsPerPage = config.ProductItemsPerPage;
+			_cacheRepository = cacheRepository;
 		}
 
 		[HttpGet]
 		public IActionResult Get()
 		{
-			return new ObjectResult(_context.Products
-				.Include(p => p.Category)
-				.Include(p => p.Brand)
-				.Include(p => p.Quotes).ThenInclude(q => q.Supplier)
-				.Include(p => p.Images)
-				.OrderBy(p => p.CategoryId)
-				.ThenBy(p => p.Brand.Name)
-				.ThenBy(p => p.Name)
-				.ToList());
+			return new ObjectResult(ProductsCache.Products);
 		}
 
 		[HttpGet("search")]
@@ -53,15 +48,11 @@ namespace SAKURA.NZB.Website.Controllers.API
 					p.Name.StartsWith(options.keyword, StringComparison.OrdinalIgnoreCase);
 			}
 
-			var products = (_context.Products
-				.Include(p => p.Category)
-				.Include(p => p.Brand)
-				.Include(p => p.Quotes).ThenInclude(q => q.Supplier)
-				.Include(p => p.Images)
-				.Where(p => categoryPredicate(p) && keywordPredicate(p))
-				.OrderBy(p => p.CategoryId)
-				.ThenBy(p => p.Brand.Name)
-				.ThenBy(p => p.Name)).ToList();
+			var products = ProductsCache.Products
+								.Where(p => categoryPredicate(p) && keywordPredicate(p))
+								.OrderBy(p => p.CategoryId)
+								.ThenBy(p => p.Brand.Name)
+								.ThenBy(p => p.Name).ToList();
 
 			var orders = _context.Orders.Include(o => o.Products).ToList();
 			var orderProducts = orders.SelectMany(o => o.Products);
@@ -109,12 +100,7 @@ namespace SAKURA.NZB.Website.Controllers.API
 			if (id == null)
 				return HttpNotFound();
 
-			var item = _context.Products
-				.Include(p => p.Category)
-				.Include(p => p.Brand)
-				.Include(p => p.Quotes).ThenInclude(q => q.Supplier)
-				.Include(p => p.Images)
-				.Single(p => p.Id == id);
+			var item = ProductsCache.Products.Single(p => p.Id == id);
 
 			if (item == null)
 				return HttpNotFound();
@@ -136,6 +122,7 @@ namespace SAKURA.NZB.Website.Controllers.API
 
 			_context.Products.Add(product);
 			_context.SaveChanges();
+			_cacheRepository.UpdateByKey(CacheKey.Products);
 
 			return CreatedAtRoute("GetProduct", new { controller = "Products", id = product.Id }, product);
 		}
@@ -177,6 +164,7 @@ namespace SAKURA.NZB.Website.Controllers.API
 				});
 			}
 			_context.SaveChanges();
+			_cacheRepository.UpdateByKey(CacheKey.Products);
 
 			return new NoContentResult();
 		}
@@ -189,6 +177,7 @@ namespace SAKURA.NZB.Website.Controllers.API
 			{
 				_context.Products.Remove(item);
 				_context.SaveChanges();
+				_cacheRepository.UpdateByKey(CacheKey.Products);
 			}
 		}
 

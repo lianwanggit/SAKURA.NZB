@@ -2,7 +2,6 @@
 {
 	public interface ICache
     {
-		int Index { get; }
 		CacheKey Key { get; }
 		void Update();
     }
