@@ -46,7 +46,7 @@
 
     <div *ngFor="#md of searchList">
         <div class="month-header clearfix bg-info-dark" *ngIf="md.isMonthSaleItem">
-            <span class="pull-left">{{md.monthSale.month}}</span>
+            <span class="pull-left">{{md.monthSale.month}} {{md.monthSale.year}}</span>
             <div class="pull-right">
                 <table class="font-weight-300">
                     <tr>

@@ -11,7 +11,6 @@ using SAKURA.NZB.Website.ViewModels;
 using System.Web.Http;
 using SAKURA.NZB.Business.Cache;
 using MediatR;
-using SAKURA.NZB.Business.MediatR.Messages;
 
 namespace SAKURA.NZB.Website.Controllers
 {
@@ -108,7 +107,7 @@ namespace SAKURA.NZB.Website.Controllers
 			orders.ForEach(o =>
 			{
 				var model = MapTo(o);
-				model.MonthSale = monthSaleSummary.First(ms => ms.Month == model.OrderTime.Month);
+				model.MonthSale = monthSaleSummary.First(ms => ms.Month == model.OrderTime.Month && ms.Year == model.OrderTime.Year);
 				models.Add(model);
 			});
 
@@ -121,15 +120,7 @@ namespace SAKURA.NZB.Website.Controllers
 			if (id == null)
 				return HttpNotFound();
 
-			var item = _context.Orders
-				.Include(o => o.Products)
-					.ThenInclude(p => p.Customer)
-				.Include(o => o.Products)
-					.ThenInclude(p => p.Product)
-					.ThenInclude(p => p.Brand)
-				.Where(o => o.Id == id)
-				.Single();
-
+			var item = OrdersCache.Orders.Single(o => o.Id == id);
 			if (item == null)
 				return HttpNotFound();
 
@@ -202,7 +193,7 @@ namespace SAKURA.NZB.Website.Controllers
 			_context.SaveChanges();
 
 			_cacheRepository.UpdateByKey(CacheKey.Orders);
-			_mediator.Publish(new MonthSaleUpdated());
+			_cacheRepository.UpdateByKey(CacheKey.MonthSale);
 
 			return CreatedAtRoute("GetOrder", new { controller = "Orders", id = model.Id }, model);
 		}
@@ -225,7 +216,7 @@ namespace SAKURA.NZB.Website.Controllers
 			_context.SaveChanges();
 
 			_cacheRepository.UpdateByKey(CacheKey.Orders);
-			_mediator.Publish(new MonthSaleUpdated());
+			_cacheRepository.UpdateByKey(CacheKey.MonthSale);
 
 			return new ObjectResult(new OrderDeliveryResultModel
 			{
@@ -288,7 +279,7 @@ namespace SAKURA.NZB.Website.Controllers
 			_context.SaveChanges();
 
 			_cacheRepository.UpdateByKey(CacheKey.Orders);
-			_mediator.Publish(new MonthSaleUpdated());
+			_cacheRepository.UpdateByKey(CacheKey.MonthSale);
 
 			return new NoContentResult();
 		}
@@ -303,7 +294,7 @@ namespace SAKURA.NZB.Website.Controllers
 				_context.SaveChanges();
 
 				_cacheRepository.UpdateByKey(CacheKey.Orders);
-				_mediator.Publish(new MonthSaleUpdated());
+				_cacheRepository.UpdateByKey(CacheKey.MonthSale);
 			}
 		}
 

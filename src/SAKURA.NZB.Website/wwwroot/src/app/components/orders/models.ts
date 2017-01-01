@@ -109,9 +109,11 @@ export class OrderModel {
 }
 
 export class MonthSale {
+	public year: string;
 	public month: string;
-	constructor(month: number, public count: number, public cost: string, public income: string, public profit: string) {
+	constructor(year: number, month: number, public count: number, public cost: string, public income: string, public profit: string) {
 		this.month = moment().month(month - 1).format('MMMM');
+		this.year = moment().year(year).format('YYYY');
 	}
 }
 

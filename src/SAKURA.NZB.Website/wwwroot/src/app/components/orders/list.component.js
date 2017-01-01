@@ -275,7 +275,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/
                 };
                 ;
                 OrdersComponent.prototype.map = function (json) {
-                    var monthSale = new models_1.MonthSale(json.monthSale.month, json.monthSale.count, json.monthSale.cost, json.monthSale.income, json.monthSale.profit);
+                    var monthSale = new models_1.MonthSale(json.monthSale.year, json.monthSale.month, json.monthSale.count, json.monthSale.cost, json.monthSale.income, json.monthSale.profit);
                     var customers = [].ToList();
                     json.customerOrders.forEach(function (co) {
                         var products = [].ToList();

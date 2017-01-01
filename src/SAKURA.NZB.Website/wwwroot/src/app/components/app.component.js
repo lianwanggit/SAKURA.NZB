@@ -110,9 +110,10 @@ System.register(["angular2/core", "angular2/router", "./dashboard.component", ".
                         templateUrl: "./src/app/components/app.html",
                         directives: [router_1.ROUTER_DIRECTIVES]
                     }), 
-                    __metadata('design:paramtypes', [router_1.Router, router_1.Location])
+                    __metadata('design:paramtypes', [router_1.Router, (typeof (_a = typeof router_1.Location !== 'undefined' && router_1.Location) === 'function' && _a) || Object])
                 ], AppComponent);
                 return AppComponent;
+                var _a;
             }());
             exports_1("AppComponent", AppComponent);
         }

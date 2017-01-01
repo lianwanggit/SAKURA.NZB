@@ -163,12 +163,13 @@ System.register([], function(exports_1, context_1) {
             }());
             exports_1("OrderModel", OrderModel);
             MonthSale = (function () {
-                function MonthSale(month, count, cost, income, profit) {
+                function MonthSale(year, month, count, cost, income, profit) {
                     this.count = count;
                     this.cost = cost;
                     this.income = income;
                     this.profit = profit;
                     this.month = moment().month(month - 1).format('MMMM');
+                    this.year = moment().year(year).format('YYYY');
                 }
                 return MonthSale;
             }());

@@ -296,7 +296,7 @@ export class OrdersComponent implements OnInit {
 	};
 
 	map(json: any) {
-		var monthSale = new MonthSale(json.monthSale.month, json.monthSale.count, json.monthSale.cost, json.monthSale.income, json.monthSale.profit);
+		var monthSale = new MonthSale(json.monthSale.year, json.monthSale.month, json.monthSale.count, json.monthSale.cost, json.monthSale.income, json.monthSale.profit);
 
 		var customers = [].ToList<CustomerOrder>();
 		json.customerOrders.forEach(co => {

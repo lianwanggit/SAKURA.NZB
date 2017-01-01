@@ -21,10 +21,10 @@ namespace SAKURA.NZB.Business.Cache
 		public void Update()
 		{
 			var result = new List<MonthSale>();
-			var orders = _context.Orders.Include(o => o.Products).Where(o => o.OrderTime.Year == DateTime.Now.Year).ToList();
 
-			foreach (var o in orders)
+			foreach (var o in OrdersCache.Orders)
 			{
+				var year = o.OrderTime.Year;
 				var month = o.OrderTime.Month;
 				var cost = 0F;
 				var income = 0F;
@@ -38,7 +38,7 @@ namespace SAKURA.NZB.Business.Cache
 				cost += (o.Freight ?? 0F);
 				var profit = income - cost * ExchangeRateCache.AverageRate;
 
-				var sale = result.FirstOrDefault(s => s.Month == month);
+				var sale = result.FirstOrDefault(s => s.Month == month && s.Year == year);
 				if (sale != null)
 				{
 					sale.Count += 1;
@@ -50,6 +50,7 @@ namespace SAKURA.NZB.Business.Cache
 				{
 					result.Add(new MonthSale
 					{
+						Year = year,
 						Month = month,
 						Count = 1,
 						Cost = cost,
@@ -59,27 +60,33 @@ namespace SAKURA.NZB.Business.Cache
 				}
 			}
 
-			for (var i = 1; i <= DateTime.Now.Month; i++)
+			var years = result.GroupBy(x => x.Year).Select(g => g.Key);
+			foreach (var year in years)
 			{
-				var sale = result.FirstOrDefault(r => r.Month == i);
-				if (sale == null)
+				for (var i = 1; i <= DateTime.Now.Month; i++)
 				{
-					result.Add(new MonthSale
+					var sale = result.FirstOrDefault(r => r.Month == i && r.Year == year);
+					if (sale == null)
 					{
-						Month = i,
-						Count = 0,
-						Cost = 0,
-						Income = 0,
-						Profit = 0
-					});
-				}
-				else
-				{
-					sale.Cost = (float)Math.Round(sale.Cost, 2);
-					sale.Income = (float)Math.Round(sale.Income, 2);
-					sale.Profit = (float)Math.Round(sale.Profit, 2);
+						result.Add(new MonthSale
+						{
+							Year = year,
+							Month = i,
+							Count = 0,
+							Cost = 0,
+							Income = 0,
+							Profit = 0
+						});
+					}
+					else
+					{
+						sale.Cost = (float)Math.Round(sale.Cost, 2);
+						sale.Income = (float)Math.Round(sale.Income, 2);
+						sale.Profit = (float)Math.Round(sale.Profit, 2);
+					}
 				}
 			}
+
 
 			MonthSaleList = result;
 		}
