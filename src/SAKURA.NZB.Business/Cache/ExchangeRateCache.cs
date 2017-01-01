@@ -82,7 +82,7 @@ namespace SAKURA.NZB.Business.Cache
 				totalCny += r.Cny;
 			}
 
-			return  totalNzd > 0f ? (float)Math.Round(totalCny / totalNzd, 4) : 5f;
+			return  totalNzd > 0f ? (totalCny / totalNzd) : 5f;
 		} 
 	}
 }

@@ -292,24 +292,6 @@ export class DashboardComponent implements OnInit {
 		var that = this;
 		this.summarizeByYear();
 
-        this.http.get(DASHBOARD_ANNUAL_SALES_ENDPOINT)
-			.map(res => res.status === 404 ? null : res.json())
-			.subscribe(json => {
-				if (!json) return;
-
-				json.forEach(x => {
-					that.costList.Add(x.cost);
-					that.incomeList.Add(x.income);
-					that.profitList.Add(x.profit);
-					that.orderCountList.Add(x.count);
-				});
-
-				that.changeAnnualSalesChartData();
-			},
-			error => {
-				console.log(error);
-			});
-
 		this.http.get(DASHBOARD_TOP_SALE_PRODUCTS_ENDPOINT)
 			.map(res => res.status === 404 ? null : res.json())
 			.subscribe(json => {
@@ -425,6 +407,30 @@ export class DashboardComponent implements OnInit {
 					json.totalCost, json.totalIncome, json.totalProfit, json.unpaidCount, json.unpaidAmount,
 					json.todayProfit, json.profitIncrementRate, json.profitIncrement, json.todayExchange,
 					json.exchangeIncrement, json.exchangeIncrementRate);
+			},
+			error => {
+				console.log(error);
+			});
+
+
+		this.costList = [].ToList<number>();
+		this.incomeList = [].ToList<number>();
+		this.profitList = [].ToList<number>();
+		this.orderCountList = [].ToList<number>();
+
+		this.http.get(DASHBOARD_ANNUAL_SALES_ENDPOINT + this.year)
+			.map(res => res.status === 404 ? null : res.json())
+			.subscribe(json => {
+				if (!json) return;
+
+				json.forEach(x => {
+					that.costList.Add(x.cost);
+					that.incomeList.Add(x.income);
+					that.profitList.Add(x.profit);
+					that.orderCountList.Add(x.count);
+				});
+
+				that.changeAnnualSalesChartData();
 			},
 			error => {
 				console.log(error);

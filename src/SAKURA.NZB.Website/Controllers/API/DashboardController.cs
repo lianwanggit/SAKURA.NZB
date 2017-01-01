@@ -75,8 +75,9 @@ namespace SAKURA.NZB.Website.Controllers.API
 				}
 			}
 
-			var totalRate = year == today.Year ? ExchangeRateCache.AverageRate : ExchangeRateCache.GetFixedRateByYear(_context, year);
+			var totalRate = year == today.Year ? ExchangeRateCache.CounterRate : ExchangeRateCache.GetFixedRateByYear(_context, year);
 			totalProfit = totalIncome - totalCost * totalRate;
+
 			profitIncrement = todayProfit - yesterdayProfit;
 			profitIncrementRate = Math.Abs(yesterdayProfit == 0 ? 0 : profitIncrement / yesterdayProfit);
 
@@ -107,10 +108,10 @@ namespace SAKURA.NZB.Website.Controllers.API
 			return new ObjectResult(summary);
 		}
 
-		[HttpGet("annual-sales")]
-		public IActionResult GetAnnualSales()
+		[HttpGet("annual-sales/{year}")]
+		public IActionResult GetAnnualSales(int year)
 		{
-			return new ObjectResult(MonthSaleCache.MonthSaleList.OrderBy(s => s.Month));
+			return new ObjectResult(MonthSaleCache.MonthSaleList.Where(s => s.Year == year).OrderBy(s => s.Month));
 		}
 
 		[HttpGet("top-sale-products")]

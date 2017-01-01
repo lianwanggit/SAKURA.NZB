@@ -321,21 +321,6 @@ System.register(["angular2/core", 'angular2/common', 'angular2/http', "./api.ser
                     var _this = this;
                     var that = this;
                     this.summarizeByYear();
-                    this.http.get(api_service_1.DASHBOARD_ANNUAL_SALES_ENDPOINT)
-                        .map(function (res) { return res.status === 404 ? null : res.json(); })
-                        .subscribe(function (json) {
-                        if (!json)
-                            return;
-                        json.forEach(function (x) {
-                            that.costList.Add(x.cost);
-                            that.incomeList.Add(x.income);
-                            that.profitList.Add(x.profit);
-                            that.orderCountList.Add(x.count);
-                        });
-                        that.changeAnnualSalesChartData();
-                    }, function (error) {
-                        console.log(error);
-                    });
                     this.http.get(api_service_1.DASHBOARD_TOP_SALE_PRODUCTS_ENDPOINT)
                         .map(function (res) { return res.status === 404 ? null : res.json(); })
                         .subscribe(function (json) {
@@ -428,6 +413,25 @@ System.register(["angular2/core", 'angular2/common', 'angular2/http', "./api.ser
                         if (!json)
                             return;
                         that.summary = new Summary(json.customerCount, json.brandCount, json.productCount, json.orderCount, json.totalCost, json.totalIncome, json.totalProfit, json.unpaidCount, json.unpaidAmount, json.todayProfit, json.profitIncrementRate, json.profitIncrement, json.todayExchange, json.exchangeIncrement, json.exchangeIncrementRate);
+                    }, function (error) {
+                        console.log(error);
+                    });
+                    this.costList = [].ToList();
+                    this.incomeList = [].ToList();
+                    this.profitList = [].ToList();
+                    this.orderCountList = [].ToList();
+                    this.http.get(api_service_1.DASHBOARD_ANNUAL_SALES_ENDPOINT + this.year)
+                        .map(function (res) { return res.status === 404 ? null : res.json(); })
+                        .subscribe(function (json) {
+                        if (!json)
+                            return;
+                        json.forEach(function (x) {
+                            that.costList.Add(x.cost);
+                            that.incomeList.Add(x.income);
+                            that.profitList.Add(x.profit);
+                            that.orderCountList.Add(x.count);
+                        });
+                        that.changeAnnualSalesChartData();
                     }, function (error) {
                         console.log(error);
                     });
