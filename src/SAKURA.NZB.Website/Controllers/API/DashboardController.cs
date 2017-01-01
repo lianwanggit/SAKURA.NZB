@@ -23,8 +23,8 @@ namespace SAKURA.NZB.Website.Controllers.API
 			_config = config;
 		}
 
-		[HttpGet("summary")]
-		public IActionResult GetSummary()
+		[HttpGet("summary/{year}")]
+		public IActionResult GetSummary(int year)
 		{
 			var totalCost = 0F;
 			var totalIncome = 0F;
@@ -43,6 +43,7 @@ namespace SAKURA.NZB.Website.Controllers.API
 			{
 				var cost = 0F;
 				var income = 0F;
+
 				foreach (var p in o.Products)
 				{
 					cost += (p.Cost * p.Qty);
@@ -50,8 +51,12 @@ namespace SAKURA.NZB.Website.Controllers.API
 				}
 
 				cost += (o.Freight ?? 0F);
-				totalCost += cost;
-				totalIncome += income;
+
+				if (o.OrderTime.Year == year)
+				{
+					totalCost += cost;
+					totalIncome += income;
+				}
 
 				if (o.PaymentState == Domain.PaymentState.Unpaid)
 				{
@@ -70,7 +75,8 @@ namespace SAKURA.NZB.Website.Controllers.API
 				}
 			}
 
-			totalProfit = totalIncome - totalCost * ExchangeRateCache.AverageRate;
+			var totalRate = year == today.Year ? ExchangeRateCache.AverageRate : ExchangeRateCache.GetFixedRateByYear(_context, year);
+			totalProfit = totalIncome - totalCost * totalRate;
 			profitIncrement = todayProfit - yesterdayProfit;
 			profitIncrementRate = Math.Abs(yesterdayProfit == 0 ? 0 : profitIncrement / yesterdayProfit);
 
@@ -186,6 +192,16 @@ namespace SAKURA.NZB.Website.Controllers.API
 				Count = orders.FirstOrDefault(o => o.Status == s)?.Count ?? 0 });
 
 			return new ObjectResult(result);
+		}
+
+		[HttpGet("sale-years")]
+		public IActionResult GetSaleYears()
+		{
+			var years = MonthSaleCache.MonthSaleList
+									.GroupBy(x => x.Year)
+									.Select(x => x.Key)
+									.OrderBy(x => x);
+			return new ObjectResult(years);
 		}
 
 		private Func<float, string> currencyToNzd = (f) => { return f.ToString("C", CultureInfo.CreateSpecificCulture("en-NZ")); };

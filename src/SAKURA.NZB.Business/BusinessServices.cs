@@ -9,8 +9,6 @@ using SAKURA.NZB.Business.Configuration;
 using SAKURA.NZB.Business.CurrencyTracking;
 using SAKURA.NZB.Business.ExpressTracking;
 using SAKURA.NZB.Business.Hangfire;
-using SAKURA.NZB.Business.MediatR;
-using SAKURA.NZB.Business.MediatR.MessageHandlers;
 using SAKURA.NZB.Business.Services;
 using SAKURA.NZB.Data;
 using System;
@@ -73,8 +71,6 @@ namespace SAKURA.NZB.Business
 			services.AddTransient<IExpressTracker, FtdLogisticsTracker>();
 			services.AddTransient<IExpressTracker, NSFExpressTracker>();
 			services.AddSingleton<IExpressDistributor, ExpressDistributor>();
-
-			services.AddTransient<ExchangeRateUpdatedHandler>();
 
 			services.AddTransient<ICache, ProductsCache>();
 			services.AddTransient<ICache, OrdersCache>();

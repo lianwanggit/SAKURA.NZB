@@ -114,6 +114,8 @@ System.register(["angular2/core", 'angular2/common', 'angular2/http', "./api.ser
                     this.orderStates = (new models_1.Dict()).orderStates;
                     this.orderStatusSummary = [];
                     this.annualSalesChartSwitch = 0;
+                    this.year = moment().format('YYYY');
+                    this.saleYears = [].ToList();
                     // lineChart
                     this.annualSalesChartData = [[], []];
                     this.annualSalesChartLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -318,15 +320,7 @@ System.register(["angular2/core", 'angular2/common', 'angular2/http', "./api.ser
                 DashboardComponent.prototype.ngOnInit = function () {
                     var _this = this;
                     var that = this;
-                    this.http.get(api_service_1.DASHBOARD_SUMMARY_ENDPOINT)
-                        .map(function (res) { return res.status === 404 ? null : res.json(); })
-                        .subscribe(function (json) {
-                        if (!json)
-                            return;
-                        that.summary = new Summary(json.customerCount, json.brandCount, json.productCount, json.orderCount, json.totalCost, json.totalIncome, json.totalProfit, json.unpaidCount, json.unpaidAmount, json.todayProfit, json.profitIncrementRate, json.profitIncrement, json.todayExchange, json.exchangeIncrement, json.exchangeIncrementRate);
-                    }, function (error) {
-                        console.log(error);
-                    });
+                    this.summarizeByYear();
                     this.http.get(api_service_1.DASHBOARD_ANNUAL_SALES_ENDPOINT)
                         .map(function (res) { return res.status === 404 ? null : res.json(); })
                         .subscribe(function (json) {
@@ -414,6 +408,29 @@ System.register(["angular2/core", 'angular2/common', 'angular2/http', "./api.ser
                     }, function (error) {
                         console.log(error);
                     });
+                    this.http.get(api_service_1.DASHBOARD_SALE_YEARS_ENDPOINT)
+                        .map(function (res) { return res.status === 404 ? null : res.json(); })
+                        .subscribe(function (json) {
+                        if (!json)
+                            return;
+                        json.forEach(function (x) {
+                            that.saleYears.Add(x);
+                        });
+                    }, function (error) {
+                        console.log(error);
+                    });
+                };
+                DashboardComponent.prototype.summarizeByYear = function () {
+                    var that = this;
+                    this.http.get(api_service_1.DASHBOARD_SUMMARY_ENDPOINT + this.year)
+                        .map(function (res) { return res.status === 404 ? null : res.json(); })
+                        .subscribe(function (json) {
+                        if (!json)
+                            return;
+                        that.summary = new Summary(json.customerCount, json.brandCount, json.productCount, json.orderCount, json.totalCost, json.totalIncome, json.totalProfit, json.unpaidCount, json.unpaidAmount, json.todayProfit, json.profitIncrementRate, json.profitIncrement, json.todayExchange, json.exchangeIncrement, json.exchangeIncrementRate);
+                    }, function (error) {
+                        console.log(error);
+                    });
                 };
                 DashboardComponent.prototype.onSwapAnnualSalesDateSource = function (value) {
                     if (this.annualSalesChartSwitch == value)
@@ -440,6 +457,36 @@ System.register(["angular2/core", 'angular2/common', 'angular2/http', "./api.ser
                         this.annualSalesChartSeries = ['收入 (CNY)', '&nbsp;', '&nbsp;'];
                     }
                 };
+                DashboardComponent.prototype.goNextYear = function () {
+                    if (this.canGoNextYear) {
+                        this.year += 1;
+                        this.summarizeByYear();
+                    }
+                };
+                DashboardComponent.prototype.goPreviousYear = function () {
+                    if (this.canGoPreviousYear) {
+                        this.year -= 1;
+                        this.summarizeByYear();
+                    }
+                };
+                Object.defineProperty(DashboardComponent.prototype, "canGoNextYear", {
+                    get: function () {
+                        var today = new Date();
+                        return this.year < today.getFullYear();
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(DashboardComponent.prototype, "canGoPreviousYear", {
+                    get: function () {
+                        if (this.saleYears.Count() > 0) {
+                            return this.year > this.saleYears.First();
+                        }
+                        return false;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
                 DashboardComponent = __decorate([
                     core_1.Component({
                         selector: "dashboard",

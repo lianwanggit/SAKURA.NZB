@@ -24,6 +24,7 @@ export const EXCHANGEHISTORIES_SUMMARY_ENDPOINT = "api/exchangehistories/summary
 export const EXCHANGEHISTORIES_SEARCH_ENDPOINT = "api/exchangehistories/search/";
 
 export const DASHBOARD_SUMMARY_ENDPOINT = "api/dashboard/summary/";
+export const DASHBOARD_SALE_YEARS_ENDPOINT = "api/dashboard/sale-years/";
 export const DASHBOARD_ANNUAL_SALES_ENDPOINT = "api/dashboard/annual-sales/";
 export const DASHBOARD_TOP_SALE_PRODUCTS_ENDPOINT = "api/dashboard/top-sale-products/";
 export const DASHBOARD_TOP_SALE_BRANDS_ENDPOINT = "api/dashboard/top-sale-brands/";

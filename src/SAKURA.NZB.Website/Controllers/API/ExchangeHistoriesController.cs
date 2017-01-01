@@ -2,7 +2,6 @@
 using Microsoft.AspNet.Mvc;
 using SAKURA.NZB.Business.Cache;
 using SAKURA.NZB.Business.Configuration;
-using SAKURA.NZB.Business.MediatR.Messages;
 using SAKURA.NZB.Data;
 using SAKURA.NZB.Domain;
 using SAKURA.NZB.Website.ViewModels;
@@ -18,14 +17,16 @@ namespace SAKURA.NZB.Website.Controllers.API
 		private readonly NZBContext _context;
 		private readonly Config _config;
 		private readonly IMediator _mediator;
+		private readonly ICacheRepository _cacheRepository;
 		private readonly int _itemsPerPage;
 
-		public ExchangeHistoriesController(NZBContext context, Config config, IMediator mediator)
+		public ExchangeHistoriesController(NZBContext context, Config config, IMediator mediator, ICacheRepository cacheRepository)
 		{
 			_context = context;
 			_itemsPerPage = config.ExchangeHistoriesItemsPerPage;
 			_config = config;
 			_mediator = mediator;
+			_cacheRepository = cacheRepository;
 		}
 
 		[HttpGet]
@@ -89,7 +90,7 @@ namespace SAKURA.NZB.Website.Controllers.API
 
 			_context.ExchangeHistories.Add(history);
 			_context.SaveChanges();
-			_mediator.Publish(new ExchangeRateUpdated());
+			_cacheRepository.UpdateAll();
 
 			return CreatedAtRoute("GetExchangeHistory", new { controller = "ExchangeHistories", id = history.Id }, history);
 		}
@@ -119,7 +120,7 @@ namespace SAKURA.NZB.Website.Controllers.API
 
 			_context.ExchangeHistories.Update(item);
 			_context.SaveChanges();
-			_mediator.Publish(new ExchangeRateUpdated());
+			_cacheRepository.UpdateAll();
 
 			return new NoContentResult();
 		}
@@ -132,9 +133,7 @@ namespace SAKURA.NZB.Website.Controllers.API
 			{
 				_context.ExchangeHistories.Remove(item);
 				_context.SaveChanges();
-				_mediator.Publish(new ExchangeRateUpdated());
-
-				_mediator.Publish(new ExchangeRateUpdated());
+				_cacheRepository.UpdateAll();
 			}
 		}
 

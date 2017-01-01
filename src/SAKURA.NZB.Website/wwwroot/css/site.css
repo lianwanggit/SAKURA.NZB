@@ -476,6 +476,11 @@ strong {
     width: 33%;
 }
 
+.md-table-cell-25 {
+    display: table-cell;
+    width: 25%;
+}
+
 .md-table-cell-20 {
     display: table-cell;
     width: 20%;

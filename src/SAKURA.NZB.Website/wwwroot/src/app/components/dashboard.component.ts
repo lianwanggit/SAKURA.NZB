@@ -2,7 +2,7 @@
 import {CORE_DIRECTIVES, FORM_DIRECTIVES, NgClass} from 'angular2/common';
 import {Http} from 'angular2/http';
 
-import {ORDERS_STATUS_ENDPOINT, DASHBOARD_ANNUAL_SALES_ENDPOINT, DASHBOARD_PAST_30_DAYS_EXCHANGE_ENDPOINT,
+import {ORDERS_STATUS_ENDPOINT, DASHBOARD_ANNUAL_SALES_ENDPOINT, DASHBOARD_SALE_YEARS_ENDPOINT, DASHBOARD_PAST_30_DAYS_EXCHANGE_ENDPOINT,
 	DASHBOARD_PAST_30_DAYS_PROFIT_ENDPOINT, DASHBOARD_SUMMARY_ENDPOINT, DASHBOARD_TOP_SALE_BRANDS_ENDPOINT,
 	DASHBOARD_TOP_SALE_PRODUCTS_ENDPOINT} from "./api.service";
 
@@ -10,7 +10,9 @@ import {Dict} from "./orders/models";
 
 import {BUTTON_DIRECTIVES} from 'ng2-bootstrap/ng2-bootstrap';
 import {CHART_DIRECTIVES} from 'ng2-charts/ng2-charts';
+
 declare var $: any;
+declare var moment: any;
 
 class Summary {
 	constructor(public customerCount: number, public brandCount: number, public productCount: number, public orderCount: number,
@@ -67,6 +69,8 @@ export class DashboardComponent implements OnInit {
 	orderStatusSummary: OrderStatus[] = [];
 
 	annualSalesChartSwitch = 0;
+	year = moment().format('YYYY');
+	saleYears = [].ToList<number>();
 
 	// lineChart
 	private annualSalesChartData: Array<any> = [[], []];
@@ -286,19 +290,7 @@ export class DashboardComponent implements OnInit {
 
     ngOnInit() {
 		var that = this;
-		this.http.get(DASHBOARD_SUMMARY_ENDPOINT)
-			.map(res => res.status === 404 ? null : res.json())
-			.subscribe(json => {
-				if (!json) return;
-
-				that.summary = new Summary(json.customerCount, json.brandCount, json.productCount, json.orderCount,
-					json.totalCost, json.totalIncome, json.totalProfit, json.unpaidCount, json.unpaidAmount,
-					json.todayProfit, json.profitIncrementRate, json.profitIncrement, json.todayExchange,
-					json.exchangeIncrement, json.exchangeIncrementRate);
-			},
-			error => {
-				console.log(error);
-			});
+		this.summarizeByYear();
 
         this.http.get(DASHBOARD_ANNUAL_SALES_ENDPOINT)
 			.map(res => res.status === 404 ? null : res.json())
@@ -406,7 +398,38 @@ export class DashboardComponent implements OnInit {
 			error => {
 				console.log(error);
 			});
+
+		this.http.get(DASHBOARD_SALE_YEARS_ENDPOINT)
+			.map(res => res.status === 404 ? null : res.json())
+			.subscribe(json => {
+				if (!json) return;
+
+				json.forEach(x => {
+					that.saleYears.Add(x);
+				});
+			},
+			error => {
+				console.log(error);
+			});
     }
+
+	summarizeByYear()
+	{
+		var that = this;
+		this.http.get(DASHBOARD_SUMMARY_ENDPOINT + this.year)
+			.map(res => res.status === 404 ? null : res.json())
+			.subscribe(json => {
+				if (!json) return;
+
+				that.summary = new Summary(json.customerCount, json.brandCount, json.productCount, json.orderCount,
+					json.totalCost, json.totalIncome, json.totalProfit, json.unpaidCount, json.unpaidAmount,
+					json.todayProfit, json.profitIncrementRate, json.profitIncrement, json.todayExchange,
+					json.exchangeIncrement, json.exchangeIncrementRate);
+			},
+			error => {
+				console.log(error);
+			});
+	}
 
 	onSwapAnnualSalesDateSource(value: number) {
 		if (this.annualSalesChartSwitch == value) return;
@@ -432,5 +455,34 @@ export class DashboardComponent implements OnInit {
 			this.annualSalesChartData = [this.incomeList.ToArray(), []];
 			this.annualSalesChartSeries = ['收入 (CNY)', '&nbsp;', '&nbsp;'];
 		}
+	}
+
+	goNextYear() {
+		if (this.canGoNextYear) {
+			this.year += 1;
+			this.summarizeByYear();
+		}
+			
+	}
+
+	goPreviousYear() {
+		if (this.canGoPreviousYear) {
+			this.year -= 1;
+			this.summarizeByYear();
+		}			
+	}
+
+	get canGoNextYear() {
+		var today = new Date();
+		return this.year < today.getFullYear()
+	}
+
+	get canGoPreviousYear() {
+		if (this.saleYears.Count() > 0)
+		{
+			return this.year > this.saleYears.First();
+		}
+
+		return false;
 	}
 }
