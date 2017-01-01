@@ -10,8 +10,15 @@ var ar = 0.7; // Randomness
 var maxDepth = 7;
 
 var colorIdx = 0;
-var stroke = '#777';
-var colorSheet = ['#4b717f', '#e7bda2', '#17324e', '#6ba6d4', '#edc613', '#4e8539', '#a5bd97', '#2585ae', '#ff8d00', '#a1008a', '#ff9f95', '#b30707'];
+var stroke = '#000000';
+var colorSheet = ['#d2d4dc', '#afafaf', '#f8f8fa', '#e5e6eb', '#c0c2ce',
+                '#ffb3ba', '#ffdfba', '#ffffba', '#baffc9', '#bae1ff',
+                '#77aaff', '#99ccff', '#bbeeff', '#5588ff', '#3366ff',
+                '#009688', '#35a79c', '#54b2a9', '#65c3ba', '#83d0c9',
+                '#a67c00', '#bf9b30', '#ffbf00', '#ffcf40', '#ffdc73',
+                '#ff00a9', '#fb9f9f', '#ff0065', '#ffbfd3', '#fb5858',
+                '#ee4035', '#f37736', '#fdf498', '#7bc043', '#0392cf',
+                '#a69eb0', '#efeff2', '#f2e2cd', '#dadae3', '#000000'];
 
 // Tree creation functions
 function branch(b) {
@@ -117,6 +124,10 @@ function recolor() {
        });
 
     //$('line').css('stroke', stroke);
+    d3.selectAll('.recolor')
+      .style('color', function () {
+          return stroke;
+      });
 }
 
 d3.selectAll('.regenerate')
@@ -126,3 +137,7 @@ d3.selectAll('.recolor')
 	.on('click', recolor);
 
 regenerate(true);
+
+var interval = 5000;
+setInterval(recolor, interval);
+setInterval(regenerate, colorSheet.length * interval);

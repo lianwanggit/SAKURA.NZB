@@ -19,6 +19,10 @@
     box-shadow: none;
 }
 
+.regenerate {
+    color: #333;
+}
+
 .navbar {
     margin-bottom: 1px;
 }
