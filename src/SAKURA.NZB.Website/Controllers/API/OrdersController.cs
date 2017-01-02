@@ -73,6 +73,12 @@ namespace SAKURA.NZB.Website.Controllers
 			return new ObjectResult(order);
 		}
 
+		[HttpGet("get-count")]
+		public IActionResult GetCount()
+		{
+			return new ObjectResult(OrdersCache.Orders.Count);
+		}
+
 		[HttpGet("search")]
 		public IActionResult Search([FromUri]SearchOptions options)
 		{

@@ -4,7 +4,7 @@ import {Component, OnInit} from "angular2/core";
 import {CORE_DIRECTIVES, FORM_DIRECTIVES, ControlGroup, Control, Validators} from "angular2/common";
 import {Http, Headers} from 'angular2/http';
 import {Router, RouteParams, ROUTER_DIRECTIVES} from 'angular2/router';
-import {ORDERS_SEARCH_ENDPOINT, ORDER_DELIVER_ENDPOINT, ORDER_UPDATE_STATUS_ENDPOINT, EXPRESS_TRACK_ENDPOINT} from "../api.service";
+import {ORDERS_SEARCH_ENDPOINT, ORDERS_GET_COUNT_ENDPOINT, ORDER_DELIVER_ENDPOINT, ORDER_UPDATE_STATUS_ENDPOINT, EXPRESS_TRACK_ENDPOINT} from "../api.service";
 import {OrderModel, MonthSale, CustomerOrder, OrderProduct, ExpressTrack, ExpressTrackRecord, Dict, formatCurrency} from "./models";
 import {NumberValidator, PositiveNumberValidator, ValidationResult} from "../../validators/numberValidator";
 import {ClipboardDirective} from '../../directives/clipboard.directive';
@@ -159,13 +159,23 @@ export class OrdersComponent implements OnInit {
 				that.itemsPerPage = json.itemsPerPage;
 				that.totalItemCount = json.totalItemCount;
 
-				if (!that.orderState && !that.paymentState)
-					that.totalAmount = that.totalItemCount;
-
 				if (loadSearchList)
 					that.addToSearchList(that.orderList);
 
 				this.loadLatestExpressInfo(that.orderList.Select(o => o.waybillNumber).ToArray());
+			},
+			error => {
+				this.isLoading = false;
+				console.log(error);
+			});
+
+		this.http.get(ORDERS_GET_COUNT_ENDPOINT)
+			.map(res => res.status === 404 ? null : res.json())
+			.subscribe(json => {
+				this.isLoading = false;
+				if (!json) return;
+
+				this.totalAmount = json;
 			},
 			error => {
 				this.isLoading = false;

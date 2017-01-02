@@ -12,6 +12,7 @@ export const CATEGORIES_ENDPOINT = "api/categories/";
 export const SUPPLIERS_ENDPOINT = "api/suppliers/";
 
 export const ORDERS_ENDPOINT = "api/orders/";
+export const ORDERS_GET_COUNT_ENDPOINT = "api/orders/get-count";
 export const ORDERS_SEARCH_ENDPOINT = "api/orders/search/";
 export const ORDERS_STATUS_ENDPOINT = "api/dashboard/order-status/";
 export const ORDER_DELIVER_ENDPOINT = "api/orders/deliver/";

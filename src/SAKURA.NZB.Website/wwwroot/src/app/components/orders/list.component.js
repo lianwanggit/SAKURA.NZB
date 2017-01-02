@@ -120,9 +120,9 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/
                     var pState = routeParams.get("paymentstate");
                     if (pState)
                         this.paymentState = pState;
-                    var orderState = routeParams.get("orderstate");
-                    if (orderState)
-                        this.orderState = orderState;
+                    var oState = routeParams.get("orderstate");
+                    if (oState)
+                        this.orderState = oState;
                 }
                 OrdersComponent.prototype.ngOnInit = function () {
                     this.get();
@@ -168,11 +168,20 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/
                         }
                         that.itemsPerPage = json.itemsPerPage;
                         that.totalItemCount = json.totalItemCount;
-                        if (!that.orderState && !that.paymentState)
-                            that.totalAmount = that.totalItemCount;
                         if (loadSearchList)
                             that.addToSearchList(that.orderList);
                         _this.loadLatestExpressInfo(that.orderList.Select(function (o) { return o.waybillNumber; }).ToArray());
+                    }, function (error) {
+                        _this.isLoading = false;
+                        console.log(error);
+                    });
+                    this.http.get(api_service_1.ORDERS_GET_COUNT_ENDPOINT)
+                        .map(function (res) { return res.status === 404 ? null : res.json(); })
+                        .subscribe(function (json) {
+                        _this.isLoading = false;
+                        if (!json)
+                            return;
+                        _this.totalAmount = json;
                     }, function (error) {
                         _this.isLoading = false;
                         console.log(error);
