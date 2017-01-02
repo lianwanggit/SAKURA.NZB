@@ -1,6 +1,7 @@
 ﻿import {Component, OnInit, ViewEncapsulation} from "angular2/core";
 import {CORE_DIRECTIVES, FORM_DIRECTIVES, NgClass} from 'angular2/common';
 import {Http} from 'angular2/http';
+import {ROUTER_DIRECTIVES} from "angular2/router";
 
 import {ORDERS_STATUS_ENDPOINT, DASHBOARD_ANNUAL_SALES_ENDPOINT, DASHBOARD_SALE_YEARS_ENDPOINT, DASHBOARD_PAST_30_DAYS_EXCHANGE_ENDPOINT,
 	DASHBOARD_PAST_30_DAYS_PROFIT_ENDPOINT, DASHBOARD_SUMMARY_ENDPOINT, DASHBOARD_TOP_SALE_BRANDS_ENDPOINT,
@@ -49,7 +50,7 @@ class Legend {
     selector: "dashboard",
     templateUrl: "./src/app/components/dashboard.html",
 	styleUrls: ["./src/app/components/dashboard.css"],
-	directives: [CHART_DIRECTIVES, BUTTON_DIRECTIVES, NgClass, CORE_DIRECTIVES, FORM_DIRECTIVES],
+	directives: [CHART_DIRECTIVES, BUTTON_DIRECTIVES, NgClass, CORE_DIRECTIVES, FORM_DIRECTIVES, ROUTER_DIRECTIVES],
 	encapsulation: ViewEncapsulation.None
 })
 

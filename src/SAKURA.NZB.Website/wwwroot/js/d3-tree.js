@@ -138,6 +138,6 @@ d3.selectAll('.recolor')
 
 regenerate(true);
 
-var interval = 5000;
+var interval = 10000;
 setInterval(recolor, interval);
 setInterval(regenerate, colorSheet.length * interval);
