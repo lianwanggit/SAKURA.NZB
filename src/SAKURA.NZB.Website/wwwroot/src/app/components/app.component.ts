@@ -38,6 +38,8 @@ export class AppComponent implements OnInit {
             this.routes = [
                 { path: "/index", component: DashboardComponent, name: "首页", useAsDefault: true },
 				{ path: "/orders", component: OrdersComponent, name: "订单", useAsDefault: false },
+				{ path: "/orders/:orderstate", component: OrdersComponent, name: "OState", useAsDefault: false },
+				{ path: "/orders/p/:paymentstate", component: OrdersComponent, name: "OPState", useAsDefault: false },
 				{ path: "/orders/add", component: OrderEditComponent, name: "OAdd", useAsDefault: false },
 				{ path: "/orders/edit/:id", component: OrderEditComponent, name: "OEdit", useAsDefault: false },
 				{ path: "/orders/view/:id", component: OrderEditComponent, name: "OView", data: { readonly: true }, useAsDefault: false },

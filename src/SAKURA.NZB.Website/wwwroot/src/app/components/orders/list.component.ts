@@ -3,7 +3,7 @@
 import {Component, OnInit} from "angular2/core";
 import {CORE_DIRECTIVES, FORM_DIRECTIVES, ControlGroup, Control, Validators} from "angular2/common";
 import {Http, Headers} from 'angular2/http';
-import {Router, ROUTER_DIRECTIVES} from 'angular2/router';
+import {Router, RouteParams, ROUTER_DIRECTIVES} from 'angular2/router';
 import {ORDERS_SEARCH_ENDPOINT, ORDER_DELIVER_ENDPOINT, ORDER_UPDATE_STATUS_ENDPOINT, EXPRESS_TRACK_ENDPOINT} from "../api.service";
 import {OrderModel, MonthSale, CustomerOrder, OrderProduct, ExpressTrack, ExpressTrackRecord, Dict, formatCurrency} from "./models";
 import {NumberValidator, PositiveNumberValidator, ValidationResult} from "../../validators/numberValidator";
@@ -80,7 +80,7 @@ export class OrdersComponent implements OnInit {
 	private _isNextItemsLoaded = false;
 	private _headers: Headers = new Headers();
 
-    constructor(private http: Http, private router: Router) {
+    constructor(private http: Http, private router: Router, private routeParams: RouteParams) {
 		this.deliveryModel = new OrderDeliveryModel(null, '', null, null);
 		this.expressTrackInfo = new ExpressTrack(null, null, null, null, null, null, null, []);
 
@@ -99,6 +99,14 @@ export class OrdersComponent implements OnInit {
 		}
 
 		this._headers.append('Content-Type', 'application/json');
+
+		var pState = routeParams.get("paymentstate");
+		if (pState)
+			this.paymentState = pState;
+
+		var oState = routeParams.get("orderstate");
+		if (oState)
+			this.orderState = oState;
 	}
 
     ngOnInit() {

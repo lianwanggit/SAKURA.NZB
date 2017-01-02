@@ -71,6 +71,8 @@ System.register(["angular2/core", "angular2/router", "./dashboard.component", ".
                         this.routes = [
                             { path: "/index", component: dashboard_component_1.DashboardComponent, name: "首页", useAsDefault: true },
                             { path: "/orders", component: list_component_3.OrdersComponent, name: "订单", useAsDefault: false },
+                            { path: "/orders/:orderstate", component: list_component_3.OrdersComponent, name: "OState", useAsDefault: false },
+                            { path: "/orders/p/:paymentstate", component: list_component_3.OrdersComponent, name: "OPState", useAsDefault: false },
                             { path: "/orders/add", component: edit_component_3.OrderEditComponent, name: "OAdd", useAsDefault: false },
                             { path: "/orders/edit/:id", component: edit_component_3.OrderEditComponent, name: "OEdit", useAsDefault: false },
                             { path: "/orders/view/:id", component: edit_component_3.OrderEditComponent, name: "OView", data: { readonly: true }, useAsDefault: false },

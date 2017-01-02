@@ -89,8 +89,9 @@ System.register(["angular2/core", 'angular2/common', 'angular2/http', "angular2/
                 return DayExchange;
             }());
             OrderStatus = (function () {
-                function OrderStatus(status, count) {
+                function OrderStatus(status, link, count) {
                     this.status = status;
+                    this.link = link;
                     this.count = count;
                 }
                 return OrderStatus;
@@ -391,7 +392,7 @@ System.register(["angular2/core", 'angular2/common', 'angular2/http', "angular2/
                         if (!json)
                             return;
                         json.forEach(function (x) {
-                            that.orderStatusSummary.push(new OrderStatus(that.orderStates[x.status], x.count));
+                            that.orderStatusSummary.push(new OrderStatus(that.orderStates[x.status], x.status, x.count));
                         });
                     }, function (error) {
                         console.log(error);

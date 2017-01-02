@@ -39,7 +39,7 @@ class DayExchange {
 }
 
 class OrderStatus {
-	constructor(public status: string, public count: number) { }
+	constructor(public status: string, public link: string, public count: number) { }
 }
 
 class Legend {
@@ -375,7 +375,7 @@ export class DashboardComponent implements OnInit {
 				if (!json) return;
 
 				json.forEach(x => {
-					that.orderStatusSummary.push(new OrderStatus(that.orderStates[x.status], x.count));
+					that.orderStatusSummary.push(new OrderStatus(that.orderStates[x.status], x.status, x.count));
 				});
 			},
 			error => {

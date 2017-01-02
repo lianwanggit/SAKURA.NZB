@@ -73,9 +73,10 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/
                 return LatestExpressInfoList;
             }());
             OrdersComponent = (function () {
-                function OrdersComponent(http, router) {
+                function OrdersComponent(http, router, routeParams) {
                     this.http = http;
                     this.router = router;
+                    this.routeParams = routeParams;
                     this.orderList = [].ToList();
                     this.deliveryModel = null;
                     this.expressTrackInfo = null;
@@ -116,6 +117,12 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/
                         this.paymentStateKeys.push(key);
                     }
                     this._headers.append('Content-Type', 'application/json');
+                    var pState = routeParams.get("paymentstate");
+                    if (pState)
+                        this.paymentState = pState;
+                    var orderState = routeParams.get("orderstate");
+                    if (orderState)
+                        this.orderState = orderState;
                 }
                 OrdersComponent.prototype.ngOnInit = function () {
                     this.get();
@@ -323,7 +330,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/
                         styleUrls: ["./src/app/components/orders/orders.css"],
                         directives: [common_1.CORE_DIRECTIVES, common_1.FORM_DIRECTIVES, router_1.ROUTER_DIRECTIVES, clipboard_directive_1.ClipboardDirective, ng2_bootstrap_1.PAGINATION_DIRECTIVES]
                     }), 
-                    __metadata('design:paramtypes', [http_1.Http, router_1.Router])
+                    __metadata('design:paramtypes', [http_1.Http, router_1.Router, router_1.RouteParams])
                 ], OrdersComponent);
                 return OrdersComponent;
             }());
