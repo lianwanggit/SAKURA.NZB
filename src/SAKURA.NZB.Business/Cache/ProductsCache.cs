@@ -1,6 +1,7 @@
 ﻿using Microsoft.Data.Entity;
 using SAKURA.NZB.Data;
 using SAKURA.NZB.Domain;
+using Serilog;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -8,6 +9,7 @@ namespace SAKURA.NZB.Business.Cache
 {
 	public class ProductsCache : ICache
     {
+		private readonly ILogger _logger = Log.ForContext<ProductsCache>();
 		private readonly NZBContext _context;
 		public static IList<Product> Products { get; private set; }
 
@@ -38,6 +40,8 @@ namespace SAKURA.NZB.Business.Cache
 					Products.Add(product);
 				}
 			}
+
+			_logger.Information("Cached Products: {0}", Products.Count);
 		}
 	}
 }

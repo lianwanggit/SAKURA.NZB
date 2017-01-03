@@ -1,4 +1,5 @@
 ﻿using SAKURA.NZB.Data;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,6 +8,7 @@ namespace SAKURA.NZB.Business.Cache
 {
 	public class MonthSaleCache : ICache
 	{
+		private readonly ILogger _logger = Log.ForContext<MonthSaleCache>();
 		private readonly NZBContext _context;
 		public static List<MonthSale> MonthSaleList { get;  private set;}
 
@@ -88,6 +90,8 @@ namespace SAKURA.NZB.Business.Cache
 			}
 
 			MonthSaleList = result;
+
+			_logger.Information("Cached Month Sales: {0}", MonthSaleList.Count);
 		}
     }
 }

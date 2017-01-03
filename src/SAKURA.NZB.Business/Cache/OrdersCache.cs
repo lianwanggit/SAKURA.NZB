@@ -35,6 +35,8 @@ namespace SAKURA.NZB.Business.Cache
 					Orders.Add(order);
 				}
 			}
+
+			_logger.Information("Cached Orders: {0}", Orders.Count);
 		}
 
 		public void UpdateItem(int id, UpdateItemAction action)
@@ -51,6 +53,8 @@ namespace SAKURA.NZB.Business.Cache
 					}
 
 					Orders.Add(order);
+					_logger.Information("Added new order to cache. Id: {0}", id);
+
 					break;
 				case UpdateItemAction.Remove:
 					order = Orders.FirstOrDefault(x => x.Id == id);
@@ -61,6 +65,8 @@ namespace SAKURA.NZB.Business.Cache
 					}
 
 					Orders.Remove(order);
+					_logger.Information("Removed order from cache. Id: {0}", id);
+
 					break;
 				case UpdateItemAction.Replace:
 					order = FindOrderById(_context, id);
@@ -79,6 +85,8 @@ namespace SAKURA.NZB.Business.Cache
 
 					Orders.Remove(oldOrder);
 					Orders.Add(order);
+					_logger.Information("Updated order in cache. Id: {0}", id);
+
 					break;
 			}
 		}
