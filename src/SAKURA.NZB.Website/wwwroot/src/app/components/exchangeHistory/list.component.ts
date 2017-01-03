@@ -4,7 +4,7 @@ import {Component, OnInit} from "angular2/core";
 import {CORE_DIRECTIVES, FORM_DIRECTIVES} from "angular2/common";
 import {Http} from 'angular2/http';
 import {Router, ROUTER_DIRECTIVES} from 'angular2/router';
-import {EXCHANGEHISTORIES_SEARCH_ENDPOINT, EXCHANGEHISTORIES_SUMMARY_ENDPOINT} from "../api.service";
+import {EXCHANGEHISTORIES_SEARCH_ENDPOINT, EXCHANGEHISTORIES_YEARS_ENDPOINT, EXCHANGEHISTORIES_SUMMARY_ENDPOINT} from "../api.service";
 import { PAGINATION_DIRECTIVES } from 'ng2-bootstrap/ng2-bootstrap';
 
 import '../../../../lib/TypeScript-Linq/Scripts/System/Collections/Generic/List.js';
@@ -58,6 +58,9 @@ export class ExchangeHistoriesComponent implements OnInit {
 	isListLoading = true;
 	isSummaryLoading = true;
 
+	yearList: number[] = [];
+	selectedYear: number = 0;
+
 	page = 1;
 	prevItems = [].ToList<ExchangeHistory>();
 	nextItems = [].ToList<ExchangeHistory>();
@@ -71,6 +74,19 @@ export class ExchangeHistoriesComponent implements OnInit {
 
     ngOnInit() {
         this.get();
+
+		this.http.get(EXCHANGEHISTORIES_YEARS_ENDPOINT)
+			.map(res => res.status === 404 ? null : res.json())
+			.subscribe(json => {
+				this.isSummaryLoading = false;
+				if (!json) return;
+
+				json.forEach(y => this.yearList.push(y));
+			},
+			error => {
+				this.isSummaryLoading = false;
+				console.log(error);
+			});
     }
 
     get() {
@@ -78,7 +94,11 @@ export class ExchangeHistoriesComponent implements OnInit {
 		this._isNextItemsLoaded = false;
 
 		var that = this;
-		this.http.get(EXCHANGEHISTORIES_SEARCH_ENDPOINT + this.page)
+		var url = EXCHANGEHISTORIES_SEARCH_ENDPOINT + '?page=' + this.page;
+		if (this.selectedYear)
+			url += '&year=' + this.selectedYear;
+
+		this.http.get(url)
 			.map(res => res.status === 404 ? null : res.json())
 			.subscribe(json => {
 				this.isListLoading = false;
@@ -107,16 +127,19 @@ export class ExchangeHistoriesComponent implements OnInit {
 					});
 					that._isNextItemsLoaded = true;
 				}
-
+	
 				that.itemsPerPage = json.itemsPerPage;
 				that.totalItemCount = json.totalItemCount;
+
+				if (!that.selectedYear)
+					that.totalAmount = that.totalItemCount;
 			},
 			error => {
 				this.isListLoading = false;
 				console.log(error);
 			});
 
-		this.http.get(EXCHANGEHISTORIES_SUMMARY_ENDPOINT)
+		this.http.get(EXCHANGEHISTORIES_SUMMARY_ENDPOINT + this.selectedYear)
 			.map(res => res.status === 404 ? null : res.json())
 			.subscribe(json => {
 				this.isSummaryLoading = false;
@@ -129,6 +152,14 @@ export class ExchangeHistoriesComponent implements OnInit {
 				console.log(error);
 			});
     }
+
+	onSearchByYear(year: number) {
+		if (this.selectedYear !== year)
+			this.selectedYear = year;
+
+		this.page = 1;
+		this.get();
+	}
 
 	onPageChanged(event: any): void {
 		this.historyList = [];

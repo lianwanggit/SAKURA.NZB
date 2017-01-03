@@ -2,7 +2,7 @@
 
 <div class="grey-border" *ngIf="!isLoading">
     <h2 class="page-header">
-        换汇记录 <small>({{historyList.length}} / {{totalItemCount}})</small>
+        换汇记录 <small>({{totalItemCount}} / {{totalAmount}})</small>
 
         <div class="pull-right">
             <button type="button" class="btn btn-info" [routerLink]="['EHAdd']">
@@ -47,6 +47,15 @@
                     <p class="md-body-2 margin-bottom-0 opacity-60">总汇出</p>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-6 col-sm-3">
+            <select class="form-control" [(ngModel)]="selectedYear" (change)="onSearchByYear($event.target.value)">
+                <option value="0" selected default>年份</option>
+                <option *ngFor="#y of yearList" value="{{y}}">{{y}}</option>
+            </select>
         </div>
     </div>
 

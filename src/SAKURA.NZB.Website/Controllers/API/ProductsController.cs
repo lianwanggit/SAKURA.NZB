@@ -33,7 +33,7 @@ namespace SAKURA.NZB.Website.Controllers.API
 		}
 
 		[HttpGet("search")]
-		public IActionResult Search([FromUri]SearchOptions options)
+		public IActionResult Search([FromUri]ProductSearchOptions options)
 		{
 			Func<Product, bool> categoryPredicate = (p) => true; 
 			if (options.category.HasValue)
@@ -230,7 +230,7 @@ namespace SAKURA.NZB.Website.Controllers.API
 		}
 	}
 
-	public class SearchOptions
+	public class ProductSearchOptions
 	{
 		public int? page { get; set; }
 		public int? category { get; set; }

@@ -65,6 +65,8 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/
                     this.totalAmount = 0;
                     this.isListLoading = true;
                     this.isSummaryLoading = true;
+                    this.yearList = [];
+                    this.selectedYear = 0;
                     this.page = 1;
                     this.prevItems = [].ToList();
                     this.nextItems = [].ToList();
@@ -74,14 +76,29 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/
                     this._isNextItemsLoaded = false;
                 }
                 ExchangeHistoriesComponent.prototype.ngOnInit = function () {
+                    var _this = this;
                     this.get();
+                    this.http.get(api_service_1.EXCHANGEHISTORIES_YEARS_ENDPOINT)
+                        .map(function (res) { return res.status === 404 ? null : res.json(); })
+                        .subscribe(function (json) {
+                        _this.isSummaryLoading = false;
+                        if (!json)
+                            return;
+                        json.forEach(function (y) { return _this.yearList.push(y); });
+                    }, function (error) {
+                        _this.isSummaryLoading = false;
+                        console.log(error);
+                    });
                 };
                 ExchangeHistoriesComponent.prototype.get = function () {
                     var _this = this;
                     this._isPrevItemsLoaded = false;
                     this._isNextItemsLoaded = false;
                     var that = this;
-                    this.http.get(api_service_1.EXCHANGEHISTORIES_SEARCH_ENDPOINT + this.page)
+                    var url = api_service_1.EXCHANGEHISTORIES_SEARCH_ENDPOINT + '?page=' + this.page;
+                    if (this.selectedYear)
+                        url += '&year=' + this.selectedYear;
+                    this.http.get(url)
                         .map(function (res) { return res.status === 404 ? null : res.json(); })
                         .subscribe(function (json) {
                         _this.isListLoading = false;
@@ -109,11 +126,13 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/
                         }
                         that.itemsPerPage = json.itemsPerPage;
                         that.totalItemCount = json.totalItemCount;
+                        if (!that.selectedYear)
+                            that.totalAmount = that.totalItemCount;
                     }, function (error) {
                         _this.isListLoading = false;
                         console.log(error);
                     });
-                    this.http.get(api_service_1.EXCHANGEHISTORIES_SUMMARY_ENDPOINT)
+                    this.http.get(api_service_1.EXCHANGEHISTORIES_SUMMARY_ENDPOINT + this.selectedYear)
                         .map(function (res) { return res.status === 404 ? null : res.json(); })
                         .subscribe(function (json) {
                         _this.isSummaryLoading = false;
@@ -124,6 +143,12 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/
                         _this.isSummaryLoading = false;
                         console.log(error);
                     });
+                };
+                ExchangeHistoriesComponent.prototype.onSearchByYear = function (year) {
+                    if (this.selectedYear !== year)
+                        this.selectedYear = year;
+                    this.page = 1;
+                    this.get();
                 };
                 ExchangeHistoriesComponent.prototype.onPageChanged = function (event) {
                     this.historyList = [];

@@ -8,6 +8,7 @@ using SAKURA.NZB.Website.ViewModels;
 using System;
 using System.Globalization;
 using System.Linq;
+using System.Web.Http;
 
 namespace SAKURA.NZB.Website.Controllers.API
 {
@@ -35,10 +36,23 @@ namespace SAKURA.NZB.Website.Controllers.API
 			return new ObjectResult(_context.ExchangeHistories.OrderByDescending(h => h.CreatedTime).ToList());
 		}
 
-		[HttpGet("summary")]
-		public IActionResult GetSummary()
+		[HttpGet("get-years")]
+		public IActionResult GetYears()
 		{
 			var records = _context.ExchangeHistories.ToList();
+			return new ObjectResult(records.GroupBy(x => x.CreatedTime.Year).Select(x => x.Key));
+		}
+
+		[HttpGet("summary/{year}")]
+		public IActionResult GetSummary(int year)
+		{
+			Func<ExchangeHistory, bool> predicate = (p) => true;
+			if (year > 0)
+			{
+				predicate = (p) => p.CreatedTime.Year == year;
+			}
+
+			var records = _context.ExchangeHistories.Where(x => predicate(x)).ToList();
 			float totalNzd = 0;
 			float totalCny = 0;
 
@@ -48,19 +62,31 @@ namespace SAKURA.NZB.Website.Controllers.API
 				totalCny += r.Cny;
 			}
 
+			var rate = totalNzd > 0 ? totalCny / totalNzd : ExchangeRateCache.CounterRate;
+
 			return new ObjectResult(new
 			{
 				TotalNzd = currencyToNzd(totalNzd),
 				TotalCny = currencyToCny(totalCny),
-				Rate = (float)Math.Round(ExchangeRateCache.CounterRate, 4)
+
+
+				Rate = (float)Math.Round(rate, 4)
 			});
 		}
 
-		[HttpGet("search/{page:int}")]
-		public IActionResult Search(int page)
+		[HttpGet("search")]
+		public IActionResult Search([FromUri]ExchangeHistorySearchOptions options)
 		{
-			var models = _context.ExchangeHistories.OrderByDescending(h => h.CreatedTime).Select(h => Map(h));
-			return new ObjectResult(new ExchangeHistoriesPagingModel(models.ToList(), _itemsPerPage, page));
+			Func<ExchangeHistory, bool> predicate = (p) => true;
+			if (options.year.HasValue)
+			{
+				predicate = (p) => p.CreatedTime.Year == options.year;
+			}
+
+			var records = _context.ExchangeHistories.Where(x => predicate(x)).ToList();
+			var models = records.OrderByDescending(h => h.CreatedTime).Select(h => Map(h));
+
+			return new ObjectResult(new ExchangeHistoriesPagingModel(models.ToList(), _itemsPerPage, options.page.GetValueOrDefault()));
 		}
 
 		[HttpGet("{id:int}", Name = "GetExchangeHistory")]
@@ -159,5 +185,11 @@ namespace SAKURA.NZB.Website.Controllers.API
 			ci.NumberFormat.CurrencyNegativePattern = 1;
 			return f.ToString("C", ci);
 		};
+	}
+
+	public class ExchangeHistorySearchOptions
+	{
+		public int? page { get; set; }
+		public int? year { get; set; }
 	}
 }

@@ -12,7 +12,7 @@ using System.Web.Http;
 using SAKURA.NZB.Business.Cache;
 using MediatR;
 
-namespace SAKURA.NZB.Website.Controllers
+namespace SAKURA.NZB.Website.Controllers.API
 {
 	[Route("api/[controller]")]
 	public class OrdersController : Controller
@@ -80,7 +80,7 @@ namespace SAKURA.NZB.Website.Controllers
 		}
 
 		[HttpGet("search")]
-		public IActionResult Search([FromUri]SearchOptions options)
+		public IActionResult Search([FromUri]OrderSearchOptions options)
 		{
 			Func<Order, bool> statePredicate = (p) => true;
 			if (!string.IsNullOrEmpty(options.state))
@@ -461,7 +461,7 @@ namespace SAKURA.NZB.Website.Controllers
 		}
 	}
 
-	public class SearchOptions
+	public class OrderSearchOptions
 	{
 		public int? page { get; set; }
 		public string keyword { get; set; }
