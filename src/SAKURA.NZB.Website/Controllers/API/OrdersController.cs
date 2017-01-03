@@ -176,7 +176,7 @@ namespace SAKURA.NZB.Website.Controllers.API
 			}
 
 			_context.SaveChanges();
-			_cacheRepository.UpdateByKey(CacheKey.Orders);
+			_cacheRepository.UpdateItemByKey(CacheKey.Orders, item.Id, UpdateItemAction.Replace);
 
 			return new ObjectResult(new UpdateOrderStatusResultModel
 			{
@@ -195,10 +195,12 @@ namespace SAKURA.NZB.Website.Controllers.API
 			if (!Validate(model))
 				return HttpBadRequest();
 
-			_context.Orders.Add(Map(model));
+			var entity = Map(model);
+
+			_context.Orders.Add(entity);
 			_context.SaveChanges();
 
-			_cacheRepository.UpdateByKey(CacheKey.Orders);
+			_cacheRepository.UpdateItemByKey(CacheKey.Orders, entity.Id, UpdateItemAction.Add);
 			_cacheRepository.UpdateByKey(CacheKey.MonthSale);
 
 			return CreatedAtRoute("GetOrder", new { controller = "Orders", id = model.Id }, model);
@@ -221,7 +223,7 @@ namespace SAKURA.NZB.Website.Controllers.API
 
 			_context.SaveChanges();
 
-			_cacheRepository.UpdateByKey(CacheKey.Orders);
+			_cacheRepository.UpdateItemByKey(CacheKey.Orders, item.Id, UpdateItemAction.Replace);
 			_cacheRepository.UpdateByKey(CacheKey.MonthSale);
 
 			return new ObjectResult(new OrderDeliveryResultModel
@@ -284,7 +286,7 @@ namespace SAKURA.NZB.Website.Controllers.API
 			}
 			_context.SaveChanges();
 
-			_cacheRepository.UpdateByKey(CacheKey.Orders);
+			_cacheRepository.UpdateItemByKey(CacheKey.Orders, item.Id, UpdateItemAction.Replace);
 			_cacheRepository.UpdateByKey(CacheKey.MonthSale);
 
 			return new NoContentResult();
@@ -299,7 +301,7 @@ namespace SAKURA.NZB.Website.Controllers.API
 				_context.Orders.Remove(item);
 				_context.SaveChanges();
 
-				_cacheRepository.UpdateByKey(CacheKey.Orders);
+				_cacheRepository.UpdateItemByKey(CacheKey.Orders, item.Id, UpdateItemAction.Remove);
 				_cacheRepository.UpdateByKey(CacheKey.MonthSale);
 			}
 		}

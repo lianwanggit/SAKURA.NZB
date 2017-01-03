@@ -4,5 +4,7 @@
     {
 		void UpdateAll();
 		void UpdateByKey(CacheKey key);
-    }
+		void UpdateItemByKey(CacheKey key, int id, UpdateItemAction action);
+
+	}
 }

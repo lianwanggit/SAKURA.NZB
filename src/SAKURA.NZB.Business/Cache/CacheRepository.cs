@@ -29,5 +29,14 @@ namespace SAKURA.NZB.Business.Cache
 				cache.Update();
 			}
 		}
+
+		public void UpdateItemByKey(CacheKey key, int id, UpdateItemAction action)
+		{
+			var cache = _caches.FirstOrDefault(c => c.Key == key);
+			if (cache != null && cache is IItemsCache)
+			{
+				((IItemsCache)cache).UpdateItem(id, action);
+			}
+		}
 	}
 }
