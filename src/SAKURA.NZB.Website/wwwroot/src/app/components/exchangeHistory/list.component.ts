@@ -95,7 +95,7 @@ export class ExchangeHistoriesComponent implements OnInit {
 
 		var that = this;
 		var url = EXCHANGEHISTORIES_SEARCH_ENDPOINT + '?page=' + this.page;
-		if (this.selectedYear)
+		if (this.selectedYear && this.selectedYear > 0)
 			url += '&year=' + this.selectedYear;
 
 		this.http.get(url)

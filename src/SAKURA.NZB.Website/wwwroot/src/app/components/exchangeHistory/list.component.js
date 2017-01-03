@@ -96,7 +96,7 @@ System.register(["angular2/core", "angular2/common", 'angular2/http', 'angular2/
                     this._isNextItemsLoaded = false;
                     var that = this;
                     var url = api_service_1.EXCHANGEHISTORIES_SEARCH_ENDPOINT + '?page=' + this.page;
-                    if (this.selectedYear)
+                    if (this.selectedYear && this.selectedYear > 0)
                         url += '&year=' + this.selectedYear;
                     this.http.get(url)
                         .map(function (res) { return res.status === 404 ? null : res.json(); })
