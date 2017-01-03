@@ -95,14 +95,14 @@ namespace SAKURA.NZB.Business.Cache
 				pastRate = (float)Math.Round(totalCny / totalNzd, 4);
 			}
 
-			var totalIncome = 0f;
+			var totalCost = 0f;
 			foreach (var o in _context.Orders.Include(o => o.Products).Where(o => o.OrderTime.Year == year).ToList())
 			{
-				totalIncome += o.Products.Sum(p => p.Price * p.Qty);
+				totalCost += o.Products.Sum(p => p.Cost * p.Qty);
 			}
 
-			if (totalIncome > totalCny)
-				averageRate = (pastRate * totalCny + floatingRate * (totalIncome - totalCny)) / totalIncome;
+			if (totalCost > totalNzd)
+				averageRate = (pastRate * totalNzd + floatingRate * (totalCost - totalNzd)) / totalCost;
 			else
 				averageRate = pastRate;
 
