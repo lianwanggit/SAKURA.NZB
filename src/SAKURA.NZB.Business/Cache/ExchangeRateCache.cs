@@ -2,8 +2,10 @@
 using Microsoft.Data.Entity;
 using SAKURA.NZB.Business.Configuration;
 using SAKURA.NZB.Data;
+using SAKURA.NZB.Domain;
 using Serilog;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace SAKURA.NZB.Business.Cache
@@ -15,14 +17,20 @@ namespace SAKURA.NZB.Business.Cache
 		private readonly IMediator _mediator;
 
 		/// <summary>
-		/// Average exchange rate for current year
-		/// </summary>
-		public static float AverageRate { get; private set; }
-
-		/// <summary>
 		/// Counter exchange rate for current year
 		/// </summary>
-		public static float CounterRate { get; private set; }
+		public static float CounterRate {
+			get
+			{
+				var thisYear = DateTime.Now.Year;
+				if (RateDictionary != null && RateDictionary.ContainsKey(thisYear))
+					return RateDictionary[thisYear];
+
+				return 5f;
+			}
+		}
+
+		public static Dictionary<int, float> RateDictionary { get; set; }
 
 		public CacheKey Key => CacheKey.ExchangeRate;
 
@@ -31,17 +39,51 @@ namespace SAKURA.NZB.Business.Cache
 			_context = context;
 			_config = config;
 			_mediator = mediator;
+
+			RateDictionary = new Dictionary<int, float>();
 		}
 
 		public void Update()
 		{
+			var thisYear = DateTime.Now.Year;
+			var histories = _context.ExchangeHistories.ToList();
+			var years = histories.GroupBy(x => x.CreatedTime.Year).Select(x => x.Key).ToList();
+			
+			foreach (var year in years)
+			{
+				var rate = 5f;
+				var records = histories.Where(x => x.CreatedTime.Year == year);
+
+				if (year == thisYear)
+					rate = CalculateFloatingRate(records);
+				else
+					rate = CalculateHistoricalRate(records);
+
+				RateDictionary.Add(year, rate);
+			}
+
+			if (!RateDictionary.ContainsKey(thisYear))
+			{
+				var rate = _config.CurrentRate + 0.15f;
+				RateDictionary.Add(thisYear, rate);
+			}
+
+			Log.Information("Exchange Rate:");
+			foreach (var kvp in RateDictionary)
+			{
+				Log.Information("Year: {0} Rate: {1}", kvp.Key, kvp.Value);
+			}
+		}
+
+		private float CalculateFloatingRate(IEnumerable<ExchangeHistory> records)
+		{
 			float totalNzd = 0;
 			float totalCny = 0;
-			float averageRate = _config.FixedRateLow;
+			float floatingRate = _config.CurrentRate + 0.15f;
+			float pastRate = 0;
 			var year = DateTime.Now.Year;
-			CounterRate = _config.CurrentRate + 0.05f;
+			float averageRate = 5f;
 
-			var records = _context.ExchangeHistories.Where(x => x.CreatedTime.Year == year).ToList();			
 			foreach (var r in records)
 			{
 				totalNzd += r.Nzd;
@@ -50,39 +92,35 @@ namespace SAKURA.NZB.Business.Cache
 
 			if (totalNzd > 0)
 			{
-				averageRate = (float)Math.Round(totalCny / totalNzd, 4);
+				pastRate = (float)Math.Round(totalCny / totalNzd, 4);
 			}
 
-			var  totalIncome = 0f;
-			foreach (var o in _context.Orders.Include(o => o.Products).Where(o => o.OrderTime.Year == year).ToList()) 
+			var totalIncome = 0f;
+			foreach (var o in _context.Orders.Include(o => o.Products).Where(o => o.OrderTime.Year == year).ToList())
 			{
-				totalIncome += o.Products.Sum(p => p.Price * p.Qty);			 
+				totalIncome += o.Products.Sum(p => p.Price * p.Qty);
 			}
 
-			if (totalIncome > 0)
-				AverageRate = (averageRate * totalCny + CounterRate * (totalIncome - totalCny)) / totalIncome;
+			if (totalIncome > totalCny)
+				averageRate = (pastRate * totalCny + floatingRate * (totalIncome - totalCny)) / totalIncome;
 			else
-				AverageRate = CounterRate;
+				averageRate = pastRate;
 
-			CounterRate = Math.Max(5f, CounterRate);
-
-			Log.Information("Counter Live Rate: {0}", CounterRate);
-			Log.Information("Average Rate: {0}", AverageRate);
+			return averageRate;
 		}
 
-		public static float GetFixedRateByYear(NZBContext context, int year)
+		private float CalculateHistoricalRate(IEnumerable<ExchangeHistory> records)
 		{
 			float totalNzd = 0;
 			float totalCny = 0;
 
-			var records = context.ExchangeHistories.Where(x => x.CreatedTime.Year == year).ToList();
 			foreach (var r in records)
 			{
 				totalNzd += r.Nzd;
 				totalCny += r.Cny;
 			}
 
-			return  totalNzd > 0f ? (totalCny / totalNzd) : 5f;
-		} 
+			return totalNzd > 0f ? (totalCny / totalNzd) : 5f;
+		}
 	}
 }

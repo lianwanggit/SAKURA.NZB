@@ -75,7 +75,7 @@ namespace SAKURA.NZB.Website.Controllers.API
 				}
 			}
 
-			var totalRate = year == today.Year ? ExchangeRateCache.CounterRate : ExchangeRateCache.GetFixedRateByYear(_context, year);
+			var totalRate = ExchangeRateCache.RateDictionary[year];
 			totalProfit = totalIncome - totalCost * totalRate;
 
 			profitIncrement = todayProfit - yesterdayProfit;
@@ -131,7 +131,7 @@ namespace SAKURA.NZB.Website.Controllers.API
 			var result = from o in OrdersCache.Orders
 						 from op in o.Products
 						 group op by op.Product.Brand into bg
-						 select new { BrandName = bg.Key.Name, Count = (float)Math.Round(bg.Sum(x => x.Qty * (x.Price - x.Cost * ExchangeRateCache.AverageRate)), 2) };
+						 select new { BrandName = bg.Key.Name, Count = (float)Math.Round(bg.Sum(x => x.Qty * (x.Price - x.Cost * ExchangeRateCache.CounterRate)), 2) };
 
 			return new ObjectResult(result.OrderByDescending(r => r.Count).Take(10));
 		}
@@ -160,7 +160,7 @@ namespace SAKURA.NZB.Website.Controllers.API
 
 					count += 1;
 					cost += (o.Freight ?? 0F);
-					profit += (income - cost * ExchangeRateCache.AverageRate);
+					profit += (income - cost * ExchangeRateCache.RateDictionary[DateTime.Now.Year]);
 				}
 
 				result.Add(new DaySale { Date = d.ToShortDateString(), OrderCount = count, Profit = (float)Math.Round(profit, 2) });

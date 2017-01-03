@@ -36,7 +36,7 @@ namespace SAKURA.NZB.Business.Cache
 				}
 
 				cost += (o.Freight ?? 0F);
-				var profit = income - cost * ExchangeRateCache.AverageRate;
+				var profit = income - cost * ExchangeRateCache.RateDictionary[year];
 
 				var sale = result.FirstOrDefault(s => s.Month == month && s.Year == year);
 				if (sale != null)
@@ -63,7 +63,8 @@ namespace SAKURA.NZB.Business.Cache
 			var years = result.GroupBy(x => x.Year).Select(g => g.Key);
 			foreach (var year in years)
 			{
-				for (var i = 1; i <= DateTime.Now.Month; i++)
+				var maxMonth = year == DateTime.Now.Year ? DateTime.Now.Month : 12;
+				for (var i = 1; i <= maxMonth; i++)
 				{
 					var sale = result.FirstOrDefault(r => r.Month == i && r.Year == year);
 					if (sale == null)

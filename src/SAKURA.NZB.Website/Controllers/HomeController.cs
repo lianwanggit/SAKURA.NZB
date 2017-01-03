@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNet.Mvc;
 using SAKURA.NZB.Business.Cache;
 using SAKURA.NZB.Business.Configuration;
+using System;
 
 namespace SAKURA.NZB.Website.Controllers
 {
@@ -15,7 +16,7 @@ namespace SAKURA.NZB.Website.Controllers
 
 		public IActionResult Index()
         {
-			ViewData["HistoryRate"] = ExchangeRateCache.AverageRate;
+			ViewData["HistoryRate"] = ExchangeRateCache.RateDictionary[DateTime.Now.Year];
 			ViewData["CounterRate"] = ExchangeRateCache.CounterRate;
 			ViewData["LiveRate"] = _config.CurrentRate;
 			ViewData["HighRate"] = _config.FixedRateHigh;
