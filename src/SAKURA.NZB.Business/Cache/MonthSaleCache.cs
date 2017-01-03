@@ -1,5 +1,4 @@
-﻿using Microsoft.Data.Entity;
-using SAKURA.NZB.Data;
+﻿using SAKURA.NZB.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -87,7 +86,6 @@ namespace SAKURA.NZB.Business.Cache
 					}
 				}
 			}
-
 
 			MonthSaleList = result;
 		}

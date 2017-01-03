@@ -39,12 +39,12 @@ namespace SAKURA.NZB.Business.Cache
 			_context = context;
 			_config = config;
 			_mediator = mediator;
-
-			RateDictionary = new Dictionary<int, float>();
 		}
 
 		public void Update()
 		{
+			RateDictionary = new Dictionary<int, float>();
+
 			var thisYear = DateTime.Now.Year;
 			var histories = _context.ExchangeHistories.ToList();
 			var years = histories.GroupBy(x => x.CreatedTime.Year).Select(x => x.Key).ToList();
