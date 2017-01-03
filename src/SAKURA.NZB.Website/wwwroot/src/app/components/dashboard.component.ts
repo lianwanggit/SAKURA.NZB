@@ -76,7 +76,7 @@ export class DashboardComponent implements OnInit {
 	// lineChart
 	private annualSalesChartData: Array<any> = [[], []];
 	private annualSalesChartLabels: Array<any> = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-	private annualSalesChartSeries: Array<any> = ['成本 (NZD)', '利润 (CNY)'];
+	private annualSalesChartSeries: Array<any> = ['利润 (CNY)', '成本 (NZD)'];
 	private annualSalesChartOptions: any = {
 		responsive: true,
 		multiTooltipTemplate: '<%if (datasetLabel){%><%=datasetLabel %>: <%}%><%= value %>',
@@ -100,19 +100,19 @@ export class DashboardComponent implements OnInit {
 	private annualSalesChartColours: Array<any> = [
 		{
 			fillColor: 'rgba(0,0,0,0)',
-			strokeColor: 'rgba(66,133,244,1)',
-			pointColor: 'rgba(66,133,244,1)',
-			pointStrokeColor: '#fff',
-			pointHighlightFill: 'rgba(66,133,244,1)',
-			pointHighlightStroke: 'rgba(66,133,244,1)'
-		},
-		{
-			fillColor: 'rgba(0,0,0,0)',
 			strokeColor: 'rgba(244,180,0,1)',
 			pointColor: 'rgba(244,180,0,1)',
 			pointStrokeColor: '#fff',
 			pointHighlightFill: 'rgba(244,180,0,1)',
 			pointHighlightStroke: 'rgba(244,180,0,1)'
+		},
+		{
+			fillColor: 'rgba(0,0,0,0)',
+			strokeColor: 'rgba(66,133,244,1)',
+			pointColor: 'rgba(66,133,244,1)',
+			pointStrokeColor: '#fff',
+			pointHighlightFill: 'rgba(66,133,244,1)',
+			pointHighlightStroke: 'rgba(66,133,244,1)'
 		},
 		{
 			fillColor: 'rgba(0,0,0,0)',
@@ -453,8 +453,8 @@ export class DashboardComponent implements OnInit {
 
 	changeAnnualSalesChartData() {
 		if (this.annualSalesChartSwitch == 0) {
-			this.annualSalesChartData = [this.costList.ToArray(), this.profitList.ToArray()];
-			this.annualSalesChartSeries = ['成本 (NZD)', '利润 (CNY)'];
+			this.annualSalesChartData = [this.profitList.ToArray(), this.costList.ToArray()];
+			this.annualSalesChartSeries = ['利润 (CNY)', '成本 (NZD)'];
 		} else if (this.annualSalesChartSwitch == 1) {
 			this.annualSalesChartData = [this.orderCountList.ToArray(), []];
 			this.annualSalesChartSeries = ['订单数量', '&nbsp;', '&nbsp;'];

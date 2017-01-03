@@ -123,7 +123,7 @@ System.register(["angular2/core", 'angular2/common', 'angular2/http', "angular2/
                     // lineChart
                     this.annualSalesChartData = [[], []];
                     this.annualSalesChartLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-                    this.annualSalesChartSeries = ['成本 (NZD)', '利润 (CNY)'];
+                    this.annualSalesChartSeries = ['利润 (CNY)', '成本 (NZD)'];
                     this.annualSalesChartOptions = {
                         responsive: true,
                         multiTooltipTemplate: '<%if (datasetLabel){%><%=datasetLabel %>: <%}%><%= value %>',
@@ -146,19 +146,19 @@ System.register(["angular2/core", 'angular2/common', 'angular2/http', "angular2/
                     this.annualSalesChartColours = [
                         {
                             fillColor: 'rgba(0,0,0,0)',
-                            strokeColor: 'rgba(66,133,244,1)',
-                            pointColor: 'rgba(66,133,244,1)',
-                            pointStrokeColor: '#fff',
-                            pointHighlightFill: 'rgba(66,133,244,1)',
-                            pointHighlightStroke: 'rgba(66,133,244,1)'
-                        },
-                        {
-                            fillColor: 'rgba(0,0,0,0)',
                             strokeColor: 'rgba(244,180,0,1)',
                             pointColor: 'rgba(244,180,0,1)',
                             pointStrokeColor: '#fff',
                             pointHighlightFill: 'rgba(244,180,0,1)',
                             pointHighlightStroke: 'rgba(244,180,0,1)'
+                        },
+                        {
+                            fillColor: 'rgba(0,0,0,0)',
+                            strokeColor: 'rgba(66,133,244,1)',
+                            pointColor: 'rgba(66,133,244,1)',
+                            pointStrokeColor: '#fff',
+                            pointHighlightFill: 'rgba(66,133,244,1)',
+                            pointHighlightStroke: 'rgba(66,133,244,1)'
                         },
                         {
                             fillColor: 'rgba(0,0,0,0)',
@@ -453,8 +453,8 @@ System.register(["angular2/core", 'angular2/common', 'angular2/http', "angular2/
                 };
                 DashboardComponent.prototype.changeAnnualSalesChartData = function () {
                     if (this.annualSalesChartSwitch == 0) {
-                        this.annualSalesChartData = [this.costList.ToArray(), this.profitList.ToArray()];
-                        this.annualSalesChartSeries = ['成本 (NZD)', '利润 (CNY)'];
+                        this.annualSalesChartData = [this.profitList.ToArray(), this.costList.ToArray()];
+                        this.annualSalesChartSeries = ['利润 (CNY)', '成本 (NZD)'];
                     }
                     else if (this.annualSalesChartSwitch == 1) {
                         this.annualSalesChartData = [this.orderCountList.ToArray(), []];
