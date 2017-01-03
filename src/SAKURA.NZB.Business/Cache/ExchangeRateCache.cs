@@ -15,6 +15,7 @@ namespace SAKURA.NZB.Business.Cache
 		private readonly NZBContext _context;
 		private readonly Config _config;
 		private readonly IMediator _mediator;
+		private const float Difference = 0.05f;
 
 		/// <summary>
 		/// Counter exchange rate for current year
@@ -46,6 +47,7 @@ namespace SAKURA.NZB.Business.Cache
 			RateDictionary = new Dictionary<int, float>();
 
 			var thisYear = DateTime.Now.Year;
+			var floatingRate = _config.CurrentRate + Difference;
 			var histories = _context.ExchangeHistories.ToList();
 			var years = histories.GroupBy(x => x.CreatedTime.Year).Select(x => x.Key).ToList();
 			
@@ -64,23 +66,26 @@ namespace SAKURA.NZB.Business.Cache
 
 			if (!RateDictionary.ContainsKey(thisYear))
 			{
-				var rate = _config.CurrentRate + 0.15f;
-				RateDictionary.Add(thisYear, rate);
+				RateDictionary.Add(thisYear, floatingRate);
 			}
 
-			Log.Information("Exchange Rate:");
+			Log.Information("Exchange Rates:");
 			foreach (var kvp in RateDictionary)
 			{
-				Log.Information("Year: {0} Rate: {1}", kvp.Key, kvp.Value);
+				Log.Information("\tYear: {0} Rate: {1}", kvp.Key, kvp.Value);
 			}
+
+			Log.Information("");
+			Log.Information("\tLive Rate: {0}", _config.CurrentRate);
+			Log.Information("\tCounter Rate: {0}", floatingRate);
 		}
 
 		private float CalculateFloatingRate(IEnumerable<ExchangeHistory> records)
 		{
 			float totalNzd = 0;
 			float totalCny = 0;
-			float floatingRate = _config.CurrentRate + 0.15f;
 			float pastRate = 0;
+			float floatingRate = _config.CurrentRate + Difference;
 			var year = DateTime.Now.Year;
 			float averageRate = 5f;
 
