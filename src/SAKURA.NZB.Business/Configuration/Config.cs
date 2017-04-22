@@ -106,6 +106,12 @@ namespace SAKURA.NZB.Business.Configuration
 			set { Set(ConfigKeys.ExpressTrackerUri_Nsf, value); }
 		}
 
+		public string WdlUri
+		{
+			get { return GetByKey(ConfigKeys.ExpressTrackerUri_Wdl); }
+			set { Set(ConfigKeys.ExpressTrackerUri_Wdl, value); }
+		}
+
 		public int ProductItemsPerPage
 		{
 			get { return GetIntByKey(ConfigKeys.ProductItemsPerPage); }

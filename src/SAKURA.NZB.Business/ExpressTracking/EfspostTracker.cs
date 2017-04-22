@@ -67,7 +67,7 @@ namespace SAKURA.NZB.Business.ExpressTracking
 				var record = new ExpressTrackRecord();
 
 				var dt = DateTime.Now;
-				if (!DateTime.TryParse(td[0].InnerText, out dt)) return;
+				if (!DateTime.TryParse(td[0].InnerText, out dt)) continue;
 				record.When = dt;
 				record.Where = td[1].InnerText;
 				record.Content = td[2].InnerText;

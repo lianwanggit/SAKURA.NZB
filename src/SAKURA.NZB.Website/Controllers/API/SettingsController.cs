@@ -35,6 +35,7 @@ namespace SAKURA.NZB.Website.Controllers.API
 				NzstUri = _config.NzstUri,
 				FtdUri = _config.FtdUri,
 				NsfUri = _config.NsfUri,
+				WdlUri = _config.WdlUri,
 
 				ProductItemsPerPage = _config.ProductItemsPerPage,
 				OrdersItemsPerPage = _config.OrdersItemsPerPage,
@@ -69,6 +70,7 @@ namespace SAKURA.NZB.Website.Controllers.API
 			_config.NzstUri = value.NzstUri;
 			_config.FtdUri = value.FtdUri;
 			_config.NsfUri = value.NsfUri;
+			_config.WdlUri = value.WdlUri;
 
 			_config.ProductItemsPerPage = value.ProductItemsPerPage;
 			_config.OrdersItemsPerPage = value.OrdersItemsPerPage;

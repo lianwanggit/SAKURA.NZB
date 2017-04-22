@@ -37,7 +37,7 @@ namespace SAKURA.NZB.Business.ExpressTracking
 		{
 			using (var client = new WebClient())
 			{
-				client.Headers[HttpRequestHeader.ContentType] = "charset=utf-8";
+				client.Headers[HttpRequestHeader.ContentType] = "charset=gb2312";
 
 				try
 				{

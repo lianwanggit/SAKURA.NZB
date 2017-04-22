@@ -19,6 +19,7 @@
 		public string NzstUri { get; set; }
 		public string FtdUri { get; set; }
 		public string NsfUri { get; set; }
+		public string WdlUri { get; set; }
 
 		public int ProductItemsPerPage { get; set; }
 		public int OrdersItemsPerPage { get; set; }
