@@ -16,10 +16,14 @@ namespace SAKURA.NZB.Business.ExpressTracking
 		{
 			foreach (var t in _tracker)
 			{
-				if (waybillNumber.StartsWith(t.Prefix, System.StringComparison.OrdinalIgnoreCase))
+				var prefixArray = t.Prefix.Split(new char[] { '|' });
+				foreach (var prefix in prefixArray)
 				{
-					return t.Track(waybillNumber);
-				}
+					if (waybillNumber.StartsWith(prefix, System.StringComparison.OrdinalIgnoreCase))
+					{
+						return t.Track(waybillNumber);
+					}
+				}				
 			}
 
 			return null;

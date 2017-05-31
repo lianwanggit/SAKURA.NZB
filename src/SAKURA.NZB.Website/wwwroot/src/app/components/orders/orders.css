@@ -147,6 +147,10 @@
 
 .low {
     color: orange;
+}
+
+.summary > td:last-of-type {
+    font-size: 14px;
 } 
 
 .underline {
