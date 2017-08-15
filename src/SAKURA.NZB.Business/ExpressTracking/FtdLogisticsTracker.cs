@@ -12,7 +12,7 @@ namespace SAKURA.NZB.Business.ExpressTracking
 		private readonly Config _config;
 		private ExpressTrack _expressTrack;
 		private string _emsSnUrl;
-		public string Prefix { get { return "NZ"; } }
+		public string Prefix { get { return "NZ|137"; } }
 
 		public FtdLogisticsTracker(Config config)
 		{

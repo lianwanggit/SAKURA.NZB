@@ -9,7 +9,7 @@ namespace SAKURA.NZB.Business.ExpressTracking
 		private readonly Config _config;
 		private readonly ILogger _logger = Log.ForContext<FlywayExpressTracker>();
 
-		public string Prefix { get { return "1000|31|20"; } }
+		public string Prefix { get { return "1000|31|20|1200|116"; } }
 
 		public FlywayExpressTracker(Config config)
 		{
